@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="aapps_settings">Settings</string>
+    <string name="aapps_about">About</string>
+    <string name="aapps_back">Back</string>
+    <string name="aapps_version">Version %1$s</string>
+    <string name="aapps_promise_ads">No ads</string>
+    <string name="aapps_promise_tracking">No tracking</string>
+    <string name="aapps_promise_internet">No internet permission</string>
+    <string name="aapps_source">Source code</string>
+    <string name="aapps_license">Free software under the GNU GPLv3. You may use, study, share and change it.</string>
+    <string name="aapps_fonts">Fonts: Space Grotesk and Inter, SIL Open Font License 1.1.</string>
+</resources>
