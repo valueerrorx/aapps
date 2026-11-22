@@ -4,9 +4,9 @@
 Ein visueller Timer nach dem Time-Timer-Prinzip: Die verbleibende Zeit sieht man als farbige Scheibe, die langsam schrumpft. Gedacht für Lernen, Meetings, Kochen und den Unterricht (Beamer im Querformat). Zielgruppe sind alle, also ausdrücklich keine Kinder- oder Gesundheits-App.
 
 ## Muss
-- **Hero-Scheibe**: Ein Sektor in Koralle beginnt bei 12 Uhr und läuft im Uhrzeigersinn. Seine Größe ist die Restzeit geteilt durch die Skala. Läuft der Timer, schrumpft er zurück Richtung 12 Uhr. Die ursprünglich eingestellte Zeit bleibt als blasser Schatten stehen. Der Lichthof um die Scheibe wird mit der Restzeit schwächer. In der letzten Minute pulsiert der Sektor leicht.
+- **Hero-Scheibe**: Ein Sektor in Koralle beginnt bei 12 Uhr und läuft im Uhrzeigersinn (bewusste Entscheidung: wie eine Uhr, im Uhrzeigersinn ziehen = mehr Zeit). Seine Größe ist die Restzeit geteilt durch die Skala. Läuft der Timer, schrumpft er zurück Richtung 12 Uhr. Die ursprünglich eingestellte Zeit bleibt als blasser Schatten stehen. Der Lichthof um die Scheibe wird mit der Restzeit schwächer. In der letzten Minute pulsiert der Sektor leicht.
 - **Skala** (in den Einstellungen): 5, 20, 60 oder 120 min, Standard ist 60. Es gibt 60 Rasten pro Umdrehung, also 5 s, 20 s, 1 min bzw. 2 min pro Raste. Beim Wechsel der Skala wird die eingestellte Zeit auf das Maximum begrenzt. Ein laufender Timer bleibt unverändert, die Scheibe zeigt dann höchstens „voll“.
-- **Einstellen per Ziehen** auf der Scheibe, und zwar in jedem Zustand. Der Sektorrand folgt dem Finger und rastet ein, jede Raste gibt Haptik (`tick`). Bei 12 Uhr bleibt er voll bzw. leer stehen und springt nicht über. Ein bloßes Tippen ändert nichts. Was beim Loslassen eingestellt ist, gilt als neue Zeit:
+- **Einstellen per Ziehen** auf der Scheibe, und zwar in jedem Zustand. Der Sektorrand folgt dem Finger und rastet ein, jede Raste gibt Haptik (`tick`). Bei 12 Uhr bleibt er voll bzw. leer stehen und springt nicht über, auch nicht beim Überdrehen um mehrere Umdrehungen. Er greift erst wieder, wenn der Finger 12 Uhr zurück überquert. Während der Timer läuft, nimmt die Scheibe Ziehen nur nahe der Kante an (±20°), damit ein versehentliches Wischen die Restzeit nicht verstellt. Ein bloßes Tippen ändert nichts. Was beim Loslassen eingestellt ist, gilt als neue Zeit:
   - im Leerlauf: neue Zeit
   - wenn der Timer läuft: läuft mit der neuen Restzeit weiter
   - pausiert: neue Restzeit
@@ -16,9 +16,10 @@ Ein visueller Timer nach dem Time-Timer-Prinzip: Die verbleibende Zeit sieht man
 - **Anzeige**: große Restzeit `m:ss` bzw. `h:mm:ss` (aufgerundet auf volle Sekunden, 0:00 erst am Ende). Darunter steht der Zustand: BEREIT, ENDET UM 14:35, PAUSIERT oder ZEIT UM.
 - **Ende**, auch im Hintergrund, bei gesperrtem Bildschirm und nach Prozess-Tod:
   - Ein exakter Alarm (`AlarmManager.setExactAndAllowWhileIdle`) weckt einen Receiver.
-  - Der Receiver spielt einen sanften, selbst erzeugten Glockenton (`res/raw/chime.wav`, ~3 s, Audio-Nutzung Alarm), vibriert (Muster ~2 s) und zeigt die Benachrichtigung „Zeit um“, wenn die App nicht sichtbar ist.
+  - Der Receiver spielt einen sanften, selbst erzeugten Glockenton (`res/raw/chime.wav`, ~3 s, Audio-Nutzung Alarm), vibriert (Muster ~2 s) und zeigt die Benachrichtigung „Zeit um“ mit der tatsächlich gelaufenen Dauer, wenn die App nicht sichtbar ist. Während der Glocke holt sich focusr den Audio-Fokus mit Ducken (andere Wiedergabe wird nur leiser).
   - Ton und Vibration sind einzeln abschaltbar.
-- **Benachrichtigung während des Laufs**: Ist die App im Hintergrund, zeigt eine stille, laufende Benachrichtigung einen Countdown (Chronometer). Kein Foreground-Service.
+- **Benachrichtigung während des Laufs**: Ist die App im Hintergrund, zeigt eine stille, laufende Benachrichtigung einen Countdown (Chronometer). Sie verschwindet 2 s nach dem Ende von selbst (`setTimeoutAfter`), es gibt also keinen negativen Countdown. Kein Foreground-Service.
+- Lauf und Alarm hängen an der Laufzeituhr (`elapsedRealtime`, `ELAPSED_REALTIME_WAKEUP`), ein Uhrzeitwechsel ändert nichts. Die Wanduhr dient nur der Anzeige („Endet um“) und zur Umrechnung nach einem Neustart (Erkennung über `BOOT_COUNT`).
 - Der Zustand wird bei jeder Änderung gespeichert und übersteht Drehen und Prozess-Tod. Ein abgelaufener Timer zeigt beim Öffnen „Zeit um“. Beim App-Start wird der Alarm für einen laufenden Timer neu gesetzt.
 - Der Bildschirm bleibt an, solange der Timer läuft (abschaltbar).
 - Hoch- und Querformat (quer: Text und Bedienung links, Scheibe rechts). Englisch und Deutsch. TalkBack: Die Scheibe ist ein Regler mit Zustand „25 Minuten“ und lässt sich über Lautstärke/Wischen in Rasten verstellen.
