@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicText
@@ -32,9 +33,11 @@ import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
@@ -42,11 +45,13 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.flow.first
 import solutions.xapient.aapps.core.ui.Aapps
+import solutions.xapient.aapps.core.ui.AappsIcon
 import solutions.xapient.aapps.core.ui.AappsIconButton
 import solutions.xapient.aapps.core.ui.AappsIcons
 import solutions.xapient.aapps.core.ui.AappsPillButton
@@ -59,6 +64,7 @@ import solutions.xapient.tunr.domain.Instrument
 import solutions.xapient.tunr.domain.Notation
 import solutions.xapient.tunr.domain.Notes
 import solutions.xapient.tunr.domain.Settings
+import kotlin.math.roundToInt
 
 // Mikrofon-Lage aus Sicht der Oberflaeche
 enum class MicUi { ON, ASK, BLOCKED, ERROR }
@@ -140,6 +146,8 @@ fun TunerScreen(
                 ) {
                     top(Modifier.fillMaxWidth())
                     Spacer(Modifier.weight(1f))
+                    StatusLine(state.coarse)
+                    Spacer(Modifier.height(16.dp))
                     strings()
                     Spacer(Modifier.height(24.dp))
                     action()
@@ -150,12 +158,13 @@ fun TunerScreen(
         } else {
             Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
                 top(Modifier.fillMaxWidth().padding(start = 8.dp, end = 8.dp))
-                // Hero und Saiten als Gruppe mittig: kein Leerraum nur unter dem Kreis
+                // Zustand, Hero und Saiten als Gruppe, optisch etwas ueber der Mitte
                 Column(
                     Modifier.weight(1f).fillMaxWidth(),
-                    verticalArrangement = Arrangement.Center,
+                    verticalArrangement = UpperBias,
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
+                    StatusLine(state.coarse, Modifier.padding(horizontal = 16.dp))
                     dial(Modifier.weight(1f, fill = false).fillMaxWidth().aspectRatio(1f, matchHeightConstraintsFirst = true))
                     if (!settings.instrument.chromatic) Spacer(Modifier.height(8.dp))
                     strings()
@@ -163,6 +172,47 @@ fun TunerScreen(
                 Spacer(Modifier.height(20.dp))
                 Box(Modifier.padding(bottom = 16.dp)) { action() }
             }
+        }
+    }
+}
+
+// freier Platz 30 % oben, 70 % unten
+private object UpperBias : Arrangement.Vertical {
+    override fun Density.arrange(totalSize: Int, sizes: IntArray, outPositions: IntArray) {
+        var y = ((totalSize - sizes.sum()) * 0.3f).roundToInt().coerceAtLeast(0)
+        sizes.forEachIndexed { i, s ->
+            outPositions[i] = y
+            y += s
+        }
+    }
+}
+
+// Grosse Zustandszeile: gestimmt mit Haken, sonst zu tief/zu hoch; nicht nur ueber Farbe. Ohne Ton leer, Hoehe bleibt.
+@Composable
+private fun StatusLine(coarse: Coarse, modifier: Modifier = Modifier) {
+    val text = when {
+        !coarse.active -> ""
+        coarse.inTune -> stringResource(R.string.status_in_tune)
+        coarse.dir < 0 -> stringResource(R.string.status_flat)
+        else -> stringResource(R.string.status_sharp)
+    }
+    val color = if (coarse.inTune) TunrGreen else stateColor(coarse.cents5.toFloat())
+    // Schrift waechst mit, aber hoechstens 1,5-fach
+    val grow = LocalDensity.current.fontScale.coerceIn(1f, 1.5f)
+    val size = with(LocalDensity.current) { (26.dp * grow).toSp() }
+    Row(
+        // Ansage steckt schon im Hero (stateDescription)
+        modifier.clearAndSetSemantics { },
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        BasicText(
+            text.uppercase(),
+            style = Aapps.type.headline.copy(color = color, fontSize = size, letterSpacing = 0.06.em),
+            maxLines = 1,
+        )
+        if (coarse.active && coarse.inTune) {
+            Spacer(Modifier.width(10.dp))
+            AappsIcon(AappsIcons.Check, null, TunrGreen, size = 28.dp * grow)
         }
     }
 }

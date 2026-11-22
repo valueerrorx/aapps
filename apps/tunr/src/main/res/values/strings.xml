@@ -11,6 +11,9 @@
     <string name="cent">cent</string>
     <string name="hz" translatable="false">Hz</string>
     <string name="a4_label">A4 · %1$d Hz</string>
+    <string name="status_in_tune">In tune</string>
+    <string name="status_flat">Too low</string>
+    <string name="status_sharp">Too high</string>
     <string name="state_listening">Listening</string>
     <string name="state_in_tune">%1$s, in tune</string>
     <string name="state_flat">%1$s, %2$d cents flat</string>

@@ -31,7 +31,7 @@ Kein INTERNET, kein VIBRATE (Haptik über die View), kein Dienst.
 - Kein Referenzton, keine eigenen Stimmungen, kein Verlauf/Aufnahme, keine Transposition, kein Diagnose-WAV (später).
 
 ## Screens
-1. **Stimmen**: oben Kammerton (A4 · 440 Hz) und Zahnrad; Hero = Kreis mit Strobe-Ring, Bogenskala ±50 Cent, Zeiger und mittig Note, Cent und Hz als eine Gruppe; darunter Saitenreihe (nur mit Instrument); Hauptaktion = Instrument-Pille. Ohne Mikrofon ersetzt Hinweis + Pille (Erlauben/Einstellungen/Erneut) die Instrument-Pille. Querformat: Bedienung links, Hero rechts.
+1. **Stimmen**: oben Kammerton (A4 · 440 Hz) und Zahnrad; darüber dem Hero groß der Zustand („GESTIMMT ✓“ / „ZU TIEF“ / „ZU HOCH“, gestimmt nicht nur über Farbe; ohne Ton leer); Hero = Kreis mit Strobe-Ring, Bogenskala ±50 Cent, Zeiger und mittig Note, Cent und Hz als eine Gruppe; darunter Saitenreihe (nur mit Instrument); Hauptaktion = Instrument-Pille. Ohne Mikrofon ersetzt Hinweis + Pille (Erlauben/Einstellungen/Erneut) die Instrument-Pille. Hochformat: Gruppe aus Zustand, Hero und Saiten leicht über der Mitte (freier Platz 30 % oben). Querformat: Zustand und Bedienung links, Hero rechts.
 2. **Instrument**: Liste mit Saiten, Auswahl springt zurück.
 3. **Einstellungen**: Kammerton (−/+), Schreibweise, Haptik, Info.
 4. **Info**: wie alle aapps.
@@ -48,7 +48,7 @@ Kein INTERNET, kein VIBRATE (Haptik über die View), kein Dienst.
 | `instruments`, `settings`, `about` | |
 | `icon_masks`, `icon_store_512` | App-Icon in Masken, Store-Icon |
 
-Varianten (Standard Pixel 7, en): `_de`, `_land`, `_font200`, `_land_font200` für `in_tune`, `flat_guitar`, `settings`; dazu `listen_360dp`, `in_tune_360dp`, `about_de`, `instruments_de`.
+Varianten (Standard Pixel 7, en): `_de`, `_land`, `_font200`, `_land_font200` für `in_tune`, `flat_guitar`, `settings`; dazu `listen_360dp`, `in_tune_360dp`, `in_tune_360dp_font200`, `about_de`, `instruments_de`.
 
 ## Abnahmekriterien
 - Domain ohne Android-Imports. Unit-Tests mit synthetischen Signalen bei 48 und 44,1 kHz: Sinus E1…C8 (< 1 Cent), Sägezahn, schwacher Grundton (Oktave stimmt), Rauschen/Stille (kein Ton), Sinus mit Rauschen, ±Cent-Verstimmung; FFT gegen DFT; Noten/Schreibweise/Kammerton; Saitenwahl; Tracker (Median, Ausreißer, Einrasten, Stille, Hysterese); Federn (schlafen ein, Strobe steht bei 0); Mikrofon-Zustand; Speicher; Kontrast (WCAG AA gemessen, inaktive Elemente ≥ 3:1).

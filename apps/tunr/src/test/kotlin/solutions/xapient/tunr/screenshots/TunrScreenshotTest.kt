@@ -71,6 +71,7 @@ class TunrScreenshotTest {
     @Test fun in_tune_font200() = shot("in_tune_font200", fontScale = 2f) { InTune() }
     @Test fun in_tune_land_font200() = shot("in_tune_land_font200", "+land", fontScale = 2f) { InTune() }
     @Test fun in_tune_360dp() = shot("in_tune_360dp", "w360dp-h740dp-normal-long-notround-any-xhdpi-keyshidden-nonav") { InTune() }
+    @Test fun in_tune_360dp_font200() = shot("in_tune_360dp_font200", "w360dp-h740dp-normal-long-notround-any-xhdpi-keyshidden-nonav", fontScale = 2f) { InTune() }
 
     @Test fun flat_guitar() = shot("flat_guitar") { FlatGuitar() }
     @Test fun flat_guitar_de() = shot("flat_guitar_de", "+de") { Screen(guitar.copy(notation = Notation.GERMAN), tone(45, -23f, string = 1), strobe = 21f, locked = 1) }

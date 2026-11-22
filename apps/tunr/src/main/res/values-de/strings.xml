@@ -9,6 +9,9 @@
     <string name="mic_silent">Kein Ton vom Mikrofon. Gesperrt oder von einer anderen App belegt?</string>
     <string name="cent">Cent</string>
     <string name="a4_label">A4 · %1$d Hz</string>
+    <string name="status_in_tune">Gestimmt</string>
+    <string name="status_flat">Zu tief</string>
+    <string name="status_sharp">Zu hoch</string>
     <string name="state_listening">Hört zu</string>
     <string name="state_in_tune">%1$s, gestimmt</string>
     <string name="state_flat">%1$s, %2$d Cent zu tief</string>
