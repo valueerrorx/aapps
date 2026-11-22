@@ -137,7 +137,7 @@ class DialParts(scope: CacheDrawScope, scale: Scale, val c: AappsColors, measure
 
     fun DrawScope.drawGhost(ghost: Float) {
         if (ghost <= 0f) return
-        drawArc(FocusrAccent.copy(alpha = 0.1f), -90f, 360f * ghost, true, faceTopLeft, faceSize)
+        drawArc(FocusrAccent.copy(alpha = 0.17f), -90f, 360f * ghost, true, faceTopLeft, faceSize)
         val end = polar(center, ghost, face)
         drawLine(FocusrAccent.copy(alpha = 0.3f), center, end, strokeWidth = 1.2f * dp, cap = StrokeCap.Round)
     }

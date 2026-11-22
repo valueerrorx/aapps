@@ -206,9 +206,10 @@ fun TimerScreen(
             AappsIconButton(AappsIcons.Gear, stringResource(solutions.xapient.aapps.core.ui.R.string.aapps_settings), onSettings)
         }
         if (landscape) {
-            Row(Modifier.fillMaxSize()) {
+            // Scheibe so hoch wie moeglich; links Text und Bedienung, rechts Platz fuer das Zahnrad: Abstaende gleichen sich aus
+            Row(Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
                 Column(
-                    Modifier.fillMaxHeight().weight(if (bigFont) 0.5f else 0.42f).padding(start = 16.dp, end = 4.dp),
+                    Modifier.fillMaxHeight().weight(1f).padding(start = 16.dp, end = 4.dp),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
@@ -216,9 +217,10 @@ fun TimerScreen(
                     Spacer(Modifier.height(20.dp))
                     controls()
                 }
-                Box(Modifier.fillMaxHeight().weight(if (bigFont) 0.5f else 0.58f).padding(12.dp), contentAlignment = Alignment.Center) {
+                Box(Modifier.fillMaxHeight().aspectRatio(1f, matchHeightConstraintsFirst = true).padding(12.dp), contentAlignment = Alignment.Center) {
                     TimerDial(look, haptics, onCommit, Modifier)
                 }
+                Spacer(Modifier.width(56.dp))
             }
             Box(Modifier.align(Alignment.TopEnd).padding(8.dp)) { gear() }
         } else {
@@ -227,9 +229,16 @@ fun TimerScreen(
                     Spacer(Modifier.weight(1f))
                     gear()
                 }
-                Readout(shownMs, endsIn, phase, zero, endText, if (bigFont) 112.dp else 136.dp)
-                Box(Modifier.weight(1f).fillMaxWidth().padding(horizontal = 14.dp, vertical = 8.dp), contentAlignment = Alignment.Center) {
-                    TimerDial(look, haptics, onCommit, Modifier)
+                // Ablesewert und Scheibe als Gruppe mittig, kein Loch dazwischen
+                Column(
+                    Modifier.weight(1f).fillMaxWidth(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Readout(shownMs, endsIn, phase, zero, endText, if (bigFont) 112.dp else 136.dp)
+                    Box(Modifier.weight(1f, fill = false).padding(8.dp), contentAlignment = Alignment.Center) {
+                        TimerDial(look, haptics, onCommit, Modifier)
+                    }
                 }
                 Box(Modifier.padding(bottom = 20.dp, top = 4.dp)) { controls() }
             }
