@@ -10,6 +10,7 @@ import android.media.MediaRecorder
 import android.os.Handler
 import android.os.Looper
 import android.os.Process
+import androidx.annotation.RequiresPermission
 import androidx.core.content.ContextCompat
 import solutions.xapient.tunr.domain.Frame
 import solutions.xapient.tunr.domain.PitchDetector
@@ -58,7 +59,8 @@ class AudioRecordMic(context: Context) : Mic {
         return false
     }
 
-    // geoeffnet und aufnehmend, sonst null (Geraet gibt es frei)
+    // geoeffnet und aufnehmend, sonst null (Geraet gibt es frei); Berechtigung prueft start()
+    @RequiresPermission(Manifest.permission.RECORD_AUDIO)
     private fun open(source: Int, rate: Int): AudioRecord? {
         val min = AudioRecord.getMinBufferSize(rate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT)
         if (min <= 0) return null
