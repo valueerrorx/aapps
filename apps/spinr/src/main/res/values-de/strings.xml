@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tagline">Ein Glücksrad, das sich dreht wie ein echtes und fair stehen bleibt. Für alles, was du nicht selbst entscheiden willst.</string>
+    <string name="note_fair">Fair gebaut: wo das Rad stehen bleibt, ist rundherum gleich wahrscheinlich, jeder Eintrag hat dieselbe Chance. Nicht für Glücksspiele mit Einsatz.</string>
+
+    <string name="hint_idle">Tippe aufs Rad oder gib ihm Schwung</string>
+    <string name="hint_too_few">Mindestens zwei Einträge nötig</string>
+    <string name="picked">Gezogen</string>
+    <string name="spin">Drehen</string>
+    <string name="spin_again">Nochmal</string>
+    <string name="remove">Entfernen</string>
+    <string name="restore">Alle zurück · %1$d</string>
+    <string name="wheel_desc">Glücksrad mit %1$d Einträgen</string>
+    <string name="result_desc">Gezogen: %1$s</string>
+    <string name="choose_wheel">Rad wählen</string>
+
+    <string name="wheels">Räder</string>
+    <string name="entries_count">%1$d Einträge</string>
+    <string name="new_wheel">Neues Rad</string>
+    <string name="new_wheel_name">Mein Rad</string>
+    <string name="templates">Vorlagen</string>
+    <string name="edit_named">%1$s bearbeiten</string>
+    <string name="edit_wheel">Rad bearbeiten</string>
+    <string name="name">Name</string>
+    <string name="entries_label">Einträge · %1$d von %2$d</string>
+    <string name="entry_hint">Eintrag %1$d</string>
+    <string name="delete_entry">Eintrag %1$d löschen</string>
+    <string name="add_entry">Eintrag hinzufügen</string>
+    <string name="delete_wheel">Rad löschen</string>
+    <string name="delete_confirm">Nochmal tippen zum Löschen</string>
+    <string name="delete_wheel_sub">Lässt sich nicht rückgängig machen</string>
+    <string name="delete_last_sub">Das letzte Rad bleibt</string>
+
+    <string name="group_wheel">Rad</string>
+    <string name="haptics">Vibration bei jedem Stift</string>
+    <string name="sound">Klick-Ton</string>
+    <string name="sound_sub">Folgt der Medienlautstärke</string>
+
+    <string name="tpl_food">Was essen wir?</string>
+    <string-array name="tpl_food">
+        <item>Pizza</item><item>Sushi</item><item>Burger</item><item>Pasta</item>
+        <item>Curry</item><item>Salat</item><item>Tacos</item><item>Suppe</item>
+    </string-array>
+    <string name="tpl_yesno">Ja oder nein?</string>
+    <string-array name="tpl_yesno">
+        <item>Ja</item><item>Nein</item>
+    </string-array>
+    <string name="tpl_dice">Würfel</string>
+    <string name="tpl_pay">Wer zahlt?</string>
+</resources>

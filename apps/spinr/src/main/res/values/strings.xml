@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">spinr</string>
+    <string name="tagline">A wheel that spins like a real one and stops fairly. For everything you would rather not decide yourself.</string>
+    <string name="note_fair">Fair by design: the stopping point is evenly random around the whole wheel, so every entry has the same chance. Not for games of chance with stakes.</string>
+
+    <string name="hint_idle">Tap the wheel or give it a swing</string>
+    <string name="hint_too_few">Add at least two entries</string>
+    <string name="picked">Picked</string>
+    <string name="spin">Spin</string>
+    <string name="spin_again">Spin again</string>
+    <string name="remove">Remove</string>
+    <string name="restore">All back · %1$d</string>
+    <string name="wheel_desc">Wheel with %1$d entries</string>
+    <string name="result_desc">Picked: %1$s</string>
+    <string name="choose_wheel">Choose wheel</string>
+
+    <string name="wheels">Wheels</string>
+    <string name="entries_count">%1$d entries</string>
+    <string name="new_wheel">New wheel</string>
+    <string name="new_wheel_name">My wheel</string>
+    <string name="templates">Templates</string>
+    <string name="edit_named">Edit %1$s</string>
+    <string name="edit_wheel">Edit wheel</string>
+    <string name="name">Name</string>
+    <string name="entries_label">Entries · %1$d of %2$d</string>
+    <string name="entry_hint">Entry %1$d</string>
+    <string name="delete_entry">Delete entry %1$d</string>
+    <string name="add_entry">Add entry</string>
+    <string name="delete_wheel">Delete wheel</string>
+    <string name="delete_confirm">Tap again to delete</string>
+    <string name="delete_wheel_sub">Cannot be undone</string>
+    <string name="delete_last_sub">The last wheel stays</string>
+
+    <string name="group_wheel">Wheel</string>
+    <string name="haptics">Vibrate at every peg</string>
+    <string name="sound">Click sound</string>
+    <string name="sound_sub">Follows the media volume</string>
+
+    <string name="tpl_food">What\'s for dinner?</string>
+    <string-array name="tpl_food">
+        <item>Pizza</item><item>Sushi</item><item>Burger</item><item>Pasta</item>
+        <item>Curry</item><item>Salad</item><item>Tacos</item><item>Soup</item>
+    </string-array>
+    <string name="tpl_yesno">Yes or no?</string>
+    <string-array name="tpl_yesno">
+        <item>Yes</item><item>No</item>
+    </string-array>
+    <string name="tpl_dice">Dice</string>
+    <string-array name="tpl_dice" translatable="false">
+        <item>1</item><item>2</item><item>3</item><item>4</item><item>5</item><item>6</item>
+    </string-array>
+    <string name="tpl_pay">Who pays?</string>
+    <string-array name="tpl_pay" translatable="false">
+        <item>Anna</item><item>Ben</item><item>Clara</item><item>David</item><item>Emma</item>
+    </string-array>
+</resources>
