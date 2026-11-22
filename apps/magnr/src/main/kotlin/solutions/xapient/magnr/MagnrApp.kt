@@ -2,6 +2,7 @@ package solutions.xapient.magnr
 
 import android.content.Context
 import android.hardware.SensorManager
+import android.os.SystemClock
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -53,7 +54,8 @@ fun MagnrApp(
         DetectorState(meter) { source.maxRange }.apply { introVisible = !prefs.introSeen }
     }
     val available = source.isAvailable
-    val live = available && !paused
+    // gemessen wird nur auf dem Hauptschirm: in Einstellungen/Info kein Sensor, kein Ton, keine Haptik
+    val live = available && !paused && screen == Screen.MAIN
 
     LaunchedEffect(settings.sensitivity, settings.drift) {
         meter.changeSensitivity(settings.sensitivity)
@@ -63,12 +65,15 @@ fun MagnrApp(
     LaunchedEffect(state.introVisible) {
         if (!state.introVisible) prefs.introSeen = true
     }
-    // Sensor nur zwischen ON_START und ON_STOP, nie im Hintergrund
-    LifecycleStartEffect(source, paused) {
-        if (!paused) source.start(state.listener)
+    // Sensor nur zwischen ON_START und ON_STOP, nie im Hintergrund; Grundwert bleibt bei kurzer Pause
+    LifecycleStartEffect(source, live) {
+        if (live) {
+            state.resume(SystemClock.elapsedRealtime())
+            source.start(state.listener)
+        }
         onStopOrDispose {
             source.stop()
-            state.pause()
+            state.pause(SystemClock.elapsedRealtime())
         }
     }
     // Ton ebenso, und nur wenn eingeschaltet

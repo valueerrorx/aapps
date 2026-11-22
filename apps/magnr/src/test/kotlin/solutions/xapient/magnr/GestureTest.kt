@@ -86,6 +86,24 @@ class GestureTest {
         assertTrue(beeper.running)
     }
 
+    // Einstellungen: kein Sensor, kein Ton; zurueck misst wieder, Grundwert bleibt
+    @Test fun settingsStopMeasuring() {
+        prefs().settings = Settings(sound = true)
+        app()
+        emit(48f, 50)
+        rule.onNodeWithContentDescription("Settings").performClick()
+        rule.waitForIdle()
+        assertFalse(source.running)
+        assertFalse(beeper.running)
+        rule.activity.onBackPressedDispatcher.let { d -> rule.runOnUiThread { d.onBackPressed() } }
+        rule.waitForIdle()
+        assertTrue(source.running)
+        assertTrue(beeper.running)
+        // Grundwert 48 noch da: +42 µT sofort voller Ausschlag, kein Einschwingen
+        emit(90f, 25)
+        assertEquals(1f, beeper.strength, 0f)
+    }
+
     // pausiert: Nullen misst weiter und schwingt neu ein
     @Test fun zeroWhilePausedResumes() {
         app()

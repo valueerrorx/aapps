@@ -6,27 +6,46 @@ import android.media.AudioTrack
 import solutions.xapient.magnr.domain.BeepSynth
 import solutions.xapient.magnr.domain.Beeper
 
-// Pieptoene ueber einen AudioTrack-Stream auf eigenem Thread; braucht keine Berechtigung
+/**
+ * Pieptoene ueber einen AudioTrack-Stream auf eigenem Thread; braucht keine Berechtigung.
+ * Hoechstens ein Thread (und damit ein AudioTrack): stop blockiert nicht, start waehrend des
+ * Ausklingens laesst denselben Thread weiterspielen.
+ */
 class AudioBeeper : Beeper {
     @Volatile override var strength = 0f
+    private val lock = Any()
+    // beide nur unter lock geaendert
     @Volatile private var running = false
     private var thread: Thread? = null
 
-    override fun start() {
-        if (thread != null) return
+    override fun start() = synchronized(lock) {
         running = true
-        thread = Thread(::loop, "magnr-beep").apply { start() }
+        if (thread == null) thread = Thread(::run, "magnr-beep").apply { start() }
     }
 
-    override fun stop() {
+    override fun stop() = synchronized(lock) {
         running = false
-        thread?.join(500)
-        thread = null
     }
 
-    private fun loop() {
+    // spielt, bis gestoppt; wurde beim Ausklingen neu gestartet, gleich weiter
+    private fun run() {
+        while (true) {
+            val ok = play()
+            synchronized(lock) {
+                // Fehler: aufgeben statt in einer Schleife neu zu versuchen
+                if (!ok) running = false
+                if (!running) {
+                    thread = null
+                    return
+                }
+            }
+        }
+    }
+
+    // false = kein Audio moeglich
+    private fun play(): Boolean {
         val minBuf = AudioTrack.getMinBufferSize(RATE, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT)
-        if (minBuf <= 0) return
+        if (minBuf <= 0) return false
         val track = try {
             AudioTrack.Builder()
                 .setAudioAttributes(
@@ -47,25 +66,28 @@ class AudioBeeper : Beeper {
                 .setPerformanceMode(AudioTrack.PERFORMANCE_MODE_LOW_LATENCY)
                 .build()
         } catch (_: Exception) {
-            return
+            return false
         }
         if (track.state != AudioTrack.STATE_INITIALIZED) {
             track.release()
-            return
+            return false
         }
         val synth = BeepSynth(RATE)
         val block = ShortArray(BLOCK)
-        try {
+        return try {
             track.play()
-            while (running) {
+            var ok = true
+            while (running && ok) {
                 synth.render(block, block.size, strength)
-                if (track.write(block, 0, block.size) < 0) break
+                ok = track.write(block, 0, block.size) >= 0
             }
             // sanft ausklingen statt Knacks
             synth.render(block, block.size, 0f)
             track.write(block, 0, block.size)
+            ok
         } catch (_: Exception) {
             // Audio weg (z. B. Geraet getrennt): still bleiben
+            false
         } finally {
             try {
                 track.stop()

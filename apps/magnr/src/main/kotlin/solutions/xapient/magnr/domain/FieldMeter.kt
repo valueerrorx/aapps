@@ -1,6 +1,5 @@
 package solutions.xapient.magnr.domain
 
-import kotlin.math.abs
 import kotlin.math.sqrt
 
 // Momentaufnahme fuer die Anzeige; history nur bei neuer Scheibe ein neues Array
@@ -85,8 +84,11 @@ class FieldMeter(
     private val peak = PeakHold()
     private val accuracy = AccuracyWatch()
     private val history = History()
+    private val saturation = SaturationWatch()
     private var level = Level.QUIET
     private var lastNanos = 0L
+    // Beginn der laufenden Pause in Sekunden seit Boot, NaN = misst
+    private var pausedAt = Float.NaN
 
     var reading = Reading.EMPTY
         private set
@@ -100,15 +102,15 @@ class FieldMeter(
         val dt = if (lastNanos == 0L) 0f else ((timestampNanos - lastNanos) / 1e9f).coerceIn(0f, 0.5f)
         lastNanos = timestampNanos
         val m = smooth.step(sqrt(x * x + y * y + z * z), dt)
-        baseline.update(m, dt, timestampNanos, drift)
+        // Drift nur in Ruhe: ein Fund wird nie zum Grundwert
+        baseline.update(m, dt, timestampNanos, drift && level == Level.QUIET, sensitivity.quietBand)
         val base = baseline.value
         val dev = m - base
         val s = sensitivity.strength(dev)
         val before = level
         level = if (base.isNaN()) Level.QUIET else Level.of(s, level)
         rose = level > before
-        val limit = maxRange * SATURATION
-        val saturated = maxRange > 0f && (abs(x) >= limit || abs(y) >= limit || abs(z) >= limit)
+        val saturated = saturation.update(x, y, z, maxRange)
         if (!base.isNaN()) {
             peak.update(dev, timestampNanos)
             history.add(s, timestampNanos)
@@ -141,39 +143,56 @@ class FieldMeter(
         reading = reading.copy(baseline = m, dev = 0f, strength = 0f, level = Level.QUIET, peak = Float.NaN)
     }
 
-    // Sensor aus: neue Zeitbasis, Glaettung frisch, Grundwert bleibt
-    fun pause() {
+    // Sensor aus: neue Zeitbasis, Glaettung frisch, Grundwert bleibt; nowSeconds = Uhr seit Boot (elapsedRealtime)
+    fun pause(nowSeconds: Float) {
+        if (pausedAt.isNaN()) pausedAt = nowSeconds
         lastNanos = 0L
         smooth.reset()
         peak.reset()
         accuracy.reset()
+        saturation.reset()
         history.pause()
         level = Level.QUIET
         rose = false
         reading = Reading(baseline = baseline.value, history = history.snapshot)
     }
 
-    // Empfindlichkeit wechseln: Ausschlag und Spitze neu
+    // Sensor wieder an: nach langer Pause (oder Neustart des Geraets) ist der Grundwert veraltet
+    fun resume(nowSeconds: Float) {
+        val away = nowSeconds - pausedAt
+        if (!pausedAt.isNaN() && (away > STALE_SECONDS || away < 0f)) {
+            baseline.reset()
+            reading = reading.copy(baseline = Float.NaN)
+        }
+        pausedAt = Float.NaN
+    }
+
+    // Empfindlichkeit wechseln: Stufe aus der aktuellen Abweichung, ohne Steigen zu melden
     fun changeSensitivity(s: Sensitivity) {
         if (s == sensitivity) return
         sensitivity = s
         peak.reset()
-        level = Level.QUIET
+        val dev = reading.dev
+        level = if (dev.isNaN()) Level.QUIET else Level.of(s.strength(dev))
+        rose = false
+        reading = reading.copy(strength = s.strength(dev), level = level, peak = Float.NaN)
     }
 
-    // Grundwert und Verlauf ueberstehen Prozess-Tod
-    fun save(): FloatArray = floatArrayOf(baseline.value) + history.snapshot
+    // Grundwert, Pausenbeginn und Verlauf ueberstehen Prozess-Tod
+    fun save(): FloatArray = floatArrayOf(baseline.value, pausedAt) + history.snapshot
 
     fun restore(state: FloatArray) {
-        if (state.isEmpty()) return
+        if (state.size < 2) return
         if (!state[0].isNaN()) baseline.set(state[0])
-        history.restore(state.copyOfRange(1, state.size))
+        pausedAt = state[1]
+        history.restore(state.copyOfRange(2, state.size))
         history.pause()
         reading = Reading(baseline = baseline.value, history = history.snapshot)
     }
 
     private companion object {
         const val SMOOTH_TAU = 0.12f
-        const val SATURATION = 0.98f
+        // laenger weg: Handy steht vermutlich woanders, neu einschwingen
+        const val STALE_SECONDS = 60f
     }
 }

@@ -9,6 +9,9 @@ enum class Sensitivity(val fullScale: Float, val noise: Float) {
     MEDIUM(40f, 0.9f),
     HIGH(12f, 0.6f);
 
+    // Ruhebereich fuer den Driftausgleich: doppelte Rauschschwelle
+    val quietBand: Float get() = 2f * noise
+
     // Ausschlag 0..1 aus der Abweichung, unter dem Rauschen 0
     fun strength(dev: Float): Float {
         if (dev.isNaN()) return 0f
@@ -53,7 +56,6 @@ class Smoother(private val tauSeconds: Float) {
 class Baseline(
     private val settleNanos: Long = 500_000_000L,
     private val driftTau: Float = 30f,
-    private val quietBand: Float = 2f,
 ) {
     var value = Float.NaN
         private set
@@ -75,7 +77,8 @@ class Baseline(
         value = v
     }
 
-    fun update(m: Float, dtSeconds: Float, timestampNanos: Long, drift: Boolean) {
+    // quietBand: Drift nur, solange |Abweichung| darunter bleibt (an die Rauschschwelle gekoppelt)
+    fun update(m: Float, dtSeconds: Float, timestampNanos: Long, drift: Boolean, quietBand: Float) {
         if (m.isNaN()) return
         if (!settled) {
             if (startNanos < 0L) startNanos = timestampNanos
@@ -107,6 +110,36 @@ class PeakHold(private val holdNanos: Long = 2_000_000_000L) {
             value = dev
         }
         return value
+    }
+}
+
+/**
+ * Sensor am Anschlag. Kalibrierte Werte sind um den Hart-Eisen-Versatz verschoben (bis einige 100 µT),
+ * die Rohgrenze maximumRange liegt also nicht genau bei |Achse| = maxRange. Darum zwei Zeichen:
+ * eine Achse nahe 90 % von maxRange, oder eine grosse Achse, die exakt stehen bleibt (geclippt, kein Rauschen mehr).
+ */
+class SaturationWatch(private val stuckSamples: Int = 10, private val stuckMin: Float = 200f) {
+    private val last = FloatArray(3) { Float.NaN }
+    private val same = IntArray(3)
+
+    fun reset() {
+        last.fill(Float.NaN)
+        same.fill(0)
+    }
+
+    fun update(x: Float, y: Float, z: Float, maxRange: Float): Boolean {
+        var saturated = false
+        val limit = maxRange * NEAR_LIMIT
+        floatArrayOf(x, y, z).forEachIndexed { i, v ->
+            same[i] = if (v == last[i] && abs(v) >= stuckMin) same[i] + 1 else 0
+            last[i] = v
+            if (same[i] >= stuckSamples || (maxRange > 0f && abs(v) >= limit)) saturated = true
+        }
+        return saturated
+    }
+
+    private companion object {
+        const val NEAR_LIMIT = 0.9f
     }
 }
 

@@ -22,7 +22,7 @@
     <string name="at_limit">Sensor at limit</string>
     <string name="settling">Zeroing</string>
     <string name="stat_baseline">Baseline</string>
-    <string name="stat_dev">Deviation</string>
+    <string name="stat_total">Field</string>
     <string name="stat_peak">Peak</string>
     <string name="history">Last 20 s</string>
     <string name="footnote">Finds iron, steel and magnets · no gold, copper or aluminium</string>
@@ -31,7 +31,7 @@
     <string name="field_none">No value yet</string>
     <string name="field_settling">%1$s microtesla, zeroing</string>
     <string name="field_limit">%1$s microtesla, sensor at its limit</string>
-    <string name="field_state">%1$s microtesla, deviation %2$s, %3$s</string>
+    <string name="field_state">Deviation %1$s microtesla, %2$s. Field %3$s, peak %4$s</string>
 
     <string name="no_sensor_title">No magnetic sensor</string>
     <string name="no_sensor_text">This device has no magnetometer, so magnr cannot measure anything here.</string>

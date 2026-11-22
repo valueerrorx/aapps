@@ -6,12 +6,13 @@ import androidx.compose.ui.graphics.luminance
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import solutions.xapient.aapps.core.ui.AappsColors
-import solutions.xapient.magnr.ui.ARC_START_ALPHA
+import androidx.compose.ui.graphics.lerp
+import solutions.xapient.magnr.ui.ARCS
 import solutions.xapient.magnr.ui.AccentLight
 import solutions.xapient.magnr.ui.GLOW_MAX
 import solutions.xapient.magnr.ui.MagnrAccent
 import solutions.xapient.magnr.ui.PAUSED_ALPHA
-import solutions.xapient.magnr.ui.RIPPLE_MAX
+import solutions.xapient.magnr.ui.PEAK_ALPHA
 import solutions.xapient.magnr.ui.Warn
 
 // WCAG-Kontrast gemessen statt geschaetzt; Text >= 4,5:1, Grafik >= 3:1
@@ -29,13 +30,10 @@ class ContrastTest {
         assertTrue("$what: %.2f < $min".format(r), r >= min)
     }
 
-    // hellster Grund hinter Zahl und Stufe: voller Lichthof plus eine Welle darueber.
-    // Gedaempfte Texte (Einheit, Skala) liegen ausserhalb der Wellen (Radar.kt), nur auf dem Lichthof
-    @Test fun textOnGlowAndRipple() {
+    // hellster Grund hinter Zahl, Einheit und Stufe: voller Lichthof des Sensorpunkts
+    @Test fun textOnGlow() {
         val glow = MagnrAccent.copy(alpha = GLOW_MAX).compositeOver(ui.bg)
-        val ripple = MagnrAccent.copy(alpha = RIPPLE_MAX).compositeOver(glow)
-        aa(ui.fg, glow, "Zahl auf Lichthof")
-        aa(ui.fg, ripple, "Zahl, Stufe auf Welle")
+        aa(ui.fg, glow, "Zahl, Stufe auf Lichthof")
         aa(ui.fgMuted, glow, "Einheit, Skala auf Lichthof")
     }
 
@@ -45,22 +43,24 @@ class ContrastTest {
         aa(ui.fg, ui.surface, "Text auf Karte")
     }
 
-    // Ausschlag aktiv und pausiert, auf Grund und Spur
-    @Test fun arcVisibleInEveryState() {
-        for (col in listOf(MagnrAccent.copy(alpha = ARC_START_ALPHA), MagnrAccent, AccentLight)) {
-            aa(col.compositeOver(ui.bg), ui.bg, "Bogen", 3.0)
-            aa(col.compositeOver(ui.surfaceHigh), ui.surfaceHigh, "Bogen auf Spur", 3.0)
-            val dim = col.copy(alpha = col.alpha * PAUSED_ALPHA)
-            aa(dim.compositeOver(ui.bg), ui.bg, "Bogen pausiert", 3.0)
-            aa(dim.compositeOver(ui.surfaceHigh), ui.surfaceHigh, "Bogen pausiert auf Spur", 3.0)
+    // jeder Faecherbogen aktiv und pausiert, gegen Grund und leeren Bogen; Spitzen-Bogen
+    @Test fun arcsVisibleInEveryState() {
+        for (i in 0 until ARCS) {
+            val col = lerp(MagnrAccent, AccentLight, i / (ARCS - 1f))
+            aa(col, ui.bg, "Bogen $i", 3.0)
+            aa(col, ui.surfaceHigh, "Bogen $i auf leerem Bogen", 3.0)
+            val dim = col.copy(alpha = PAUSED_ALPHA)
+            aa(dim.compositeOver(ui.bg), ui.bg, "Bogen $i pausiert", 3.0)
+            aa(dim.compositeOver(ui.surfaceHigh), ui.surfaceHigh, "Bogen $i pausiert auf leerem Bogen", 3.0)
         }
+        aa(AccentLight.copy(alpha = PEAK_ALPHA * PAUSED_ALPHA).compositeOver(ui.bg), ui.bg, "Spitze pausiert", 3.0)
+        aa(AccentLight.copy(alpha = PEAK_ALPHA * PAUSED_ALPHA).compositeOver(ui.surfaceHigh), ui.surfaceHigh, "Spitze auf leerem Bogen", 3.0)
     }
 
     // Verlaufslinie pausiert, Stufenpunkt, Spitzen-Marke
     @Test fun markers() {
         aa(MagnrAccent.copy(alpha = 0.8f * PAUSED_ALPHA).compositeOver(ui.bg), ui.bg, "Verlauf pausiert", 3.0)
         aa(MagnrAccent.copy(alpha = PAUSED_ALPHA).compositeOver(ui.bg), ui.bg, "Stufenpunkt pausiert", 3.0)
-        aa(ui.fg.copy(alpha = PAUSED_ALPHA).compositeOver(ui.surfaceHigh), ui.surfaceHigh, "Spitze pausiert", 3.0)
         aa(Warn, ui.bg, "Anschlag-Punkt", 3.0)
     }
 

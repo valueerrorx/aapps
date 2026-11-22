@@ -9,6 +9,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.semantics.stateDescription
+import kotlinx.coroutines.delay
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
@@ -35,24 +42,33 @@ import solutions.xapient.magnr.domain.History
 import solutions.xapient.magnr.domain.Level
 import solutions.xapient.magnr.domain.Reading
 
-// Grundwert · Abweichung · Spitze; Ziffern nur in der Zeichenphase
+// Feld (Betrag) · Grundwert · Spitze; Ziffern nur in der Zeichenphase, vorgelesen im Sekundentakt
 @Composable
-fun Stats(state: DetectorState, modifier: Modifier = Modifier) {
+fun Stats(state: DetectorState, live: Boolean, modifier: Modifier = Modifier) {
     val sep = decimalSeparator()
     val items = listOf<Pair<Int, (Reading) -> String>>(
+        R.string.stat_total to { formatUt(it.total, sep) },
         R.string.stat_baseline to { formatUt(it.baseline, sep) },
-        R.string.stat_dev to { if (it.settling) "–" else formatUt(it.dev, sep, signed = true) },
         R.string.stat_peak to { formatUt(it.peak, sep, signed = true) },
     )
+    // TalkBack: Werte als Zustand, hoechstens einmal pro Sekunde neu
+    var spoken by remember { mutableStateOf(items.map { "" }) }
+    LaunchedEffect(live) {
+        while (true) {
+            spoken = items.map { (_, pick) -> pick(state.shown) }
+            if (!live) break
+            delay(1_000)
+        }
+    }
     Row(modifier, horizontalArrangement = Arrangement.SpaceEvenly) {
-        items.forEach { (label, pick) ->
-            Stat(stringResource(label), { state.tick; pick(state.shown) }, Modifier.weight(1f))
+        items.forEachIndexed { i, (label, pick) ->
+            Stat(stringResource(label), spoken[i], { state.tick; pick(state.shown) }, Modifier.weight(1f))
         }
     }
 }
 
 @Composable
-private fun Stat(label: String, value: () -> String, modifier: Modifier) {
+private fun Stat(label: String, spoken: String, value: () -> String, modifier: Modifier) {
     val c = Aapps.colors
     val measurer = rememberTextMeasurer()
     // Zahlen wachsen mit der Schrift nur maessig, damit die drei Spalten nebeneinander passen
@@ -60,7 +76,13 @@ private fun Stat(label: String, value: () -> String, modifier: Modifier) {
     val labelMax = cappedSp(12f, 16f)
     // Hoehe einmal aus einer Probe, damit nichts springt
     val h = with(LocalDensity.current) { measurer.measure("+88.8", style).size.height.toDp() }
-    Column(modifier.semantics(mergeDescendants = true) { contentDescription = label }, horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        modifier.semantics(mergeDescendants = true) {
+            contentDescription = label
+            stateDescription = spoken
+        },
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
         BasicText(
             label.uppercase(),
             style = Aapps.type.label.copy(color = c.fgMuted, textAlign = TextAlign.Center),

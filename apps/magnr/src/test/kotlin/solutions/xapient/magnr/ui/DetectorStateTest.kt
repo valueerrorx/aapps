@@ -45,7 +45,7 @@ class DetectorStateTest {
         feed(48f, 1f)
         feed(90f, 0.5f)
         assertEquals(1f, s, 0f)
-        state.pause()
+        state.pause(100_000L)
         assertEquals(0f, s, 0f)
     }
 

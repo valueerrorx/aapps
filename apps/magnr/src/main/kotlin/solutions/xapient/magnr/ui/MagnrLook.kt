@@ -28,12 +28,10 @@ val Warn = Color(0xFFF2B84E)
 
 // Pausiert: Ausschlag und Verlauf gedimmt, aber >= 3:1 zum Grund (ContrastTest)
 const val PAUSED_ALPHA = 0.75f
-// Anfang des Ausschlags etwas gedeckter, Ende hell
-const val ARC_START_ALPHA = 0.85f
 // Lichthof hinter der Zahl, hoechstens so stark (Text bleibt >= 4,5:1)
 const val GLOW_MAX = 0.16f
-// Wellen im Radar, hoechstens so deckend
-const val RIPPLE_MAX = 0.32f
+// Spitzen-Bogen: duenn, nachleuchtend
+const val PEAK_ALPHA = 0.85f
 
 // Schrift waechst mit der Systemgroesse, aber hoechstens bis max (sichtbare sp)
 @Composable
@@ -91,21 +89,6 @@ object MagnrIcons {
             moveTo(20.5f, 9.5f); lineTo(15.5f, 14.5f)
         }
     }
-    val Magnet: ImageVector by lazy {
-        line("magnet") {
-            moveTo(6f, 19f); lineTo(6f, 11f)
-            arcTo(6f, 6f, 0f, false, true, 18f, 11f)
-            lineTo(18f, 19f)
-            moveTo(6f, 15.5f); lineTo(9.5f, 15.5f)
-            moveTo(18f, 15.5f); lineTo(14.5f, 15.5f)
-            moveTo(9.5f, 19f); lineTo(9.5f, 11f)
-            arcTo(2.5f, 2.5f, 0f, false, true, 14.5f, 11f)
-            lineTo(14.5f, 19f)
-            moveTo(6f, 19f); lineTo(9.5f, 19f)
-            moveTo(14.5f, 19f); lineTo(18f, 19f)
-        }
-    }
-
     private fun PathBuilder.speaker() {
         moveTo(4f, 9.5f); lineTo(7.5f, 9.5f); lineTo(11.5f, 5.5f); lineTo(11.5f, 18.5f); lineTo(7.5f, 14.5f); lineTo(4f, 14.5f); close()
     }

@@ -70,7 +70,7 @@ class FieldMeterTest {
     @Test fun tareWhilePausedSettlesAgain() {
         val f = FieldMeter()
         f.feed(48f, 1f)
-        f.pause()
+        f.pause(100f)
         f.tare()
         assertTrue(f.reading.baseline.isNaN())
         t += 5_000 * ms
@@ -94,7 +94,24 @@ class FieldMeterTest {
         f.feed(48f, 1f)
         assertEquals(Level.QUIET, f.feed(58f, 1f).level)
         f.changeSensitivity(Sensitivity.HIGH)
-        assertEquals(Level.STRONG, f.feed(58f, 0.1f).level)
+        // Stufe gleich aus der aktuellen Abweichung, kein falsches "gestiegen" beim naechsten Wert
+        assertEquals(Level.STRONG, f.reading.level)
+        f.onSample(0f, 0f, 58f, 2000f, 3, t)
+        assertFalse(f.rose)
+        assertEquals(Level.STRONG, f.reading.level)
+    }
+
+    @Test fun driftOnlyWhileQuiet() {
+        // niedrig: +4 µT ist Ruhe und wird langsam Grundwert
+        val low = FieldMeter(Sensitivity.LOW)
+        low.feed(48f, 1f)
+        low.feed(52f, 60f)
+        assertTrue(low.reading.baseline > 51f)
+        // hoch: +4 µT ist ein Fund, der Grundwert bleibt
+        val high = FieldMeter(Sensitivity.HIGH)
+        high.feed(48f, 1f)
+        high.feed(52f, 60f)
+        assertEquals(48f, high.reading.baseline, 0.01f)
     }
 
     @Test fun saturationFromAnyAxis() {
@@ -127,14 +144,35 @@ class FieldMeterTest {
     @Test fun pauseLeavesGapAndKeepsBaseline() {
         val f = FieldMeter()
         f.feed(48f, 2f)
-        f.pause()
+        f.pause(100f)
         assertEquals(48f, f.reading.baseline, 0.01f)
         assertTrue(f.reading.total.isNaN())
         t += 5_000 * ms
+        f.resume(105f)
         val r = f.feed(48f, 1f)
-        // kein neues Einschwingen, Grundwert sofort da
+        // kurze Pause: kein neues Einschwingen, Grundwert sofort da
         assertFalse(r.settling)
         assertTrue(r.history.any { it.isNaN() })
+    }
+
+    @Test fun longPauseSettlesAgain() {
+        val f = FieldMeter()
+        f.feed(48f, 1f)
+        f.pause(100f)
+        // zweites pause (Dispose nach Stop) verschiebt den Beginn nicht
+        f.pause(150f)
+        f.resume(161f)
+        assertTrue(f.reading.baseline.isNaN())
+        assertTrue(f.feed(55f, 0.2f).settling)
+        assertEquals(55f, f.feed(55f, 0.5f).baseline, 0.01f)
+    }
+
+    @Test fun rebootCountsAsLongPause() {
+        val f = FieldMeter()
+        f.feed(48f, 1f)
+        f.pause(5_000f)
+        f.resume(30f)
+        assertTrue(f.reading.baseline.isNaN())
     }
 
     @Test fun lowAccuracyReported() {
@@ -148,18 +186,26 @@ class FieldMeterTest {
         val f = FieldMeter()
         f.feed(48f, 1f)
         f.feed(60f, 3f)
+        val history = f.reading.history
+        // wie in der App: erst ON_STOP, dann Sichern
+        f.pause(100f)
         val saved = f.save()
         val g = FieldMeter().apply { restore(saved) }
         assertEquals(48f, g.reading.baseline, 0.01f)
-        assertArrayEquals(f.reading.history, g.reading.history, 0f)
-        // weiter ohne Einschwingen, mit Luecke
+        assertArrayEquals(history, g.reading.history, 0f)
+        // bald zurueck: weiter ohne Einschwingen, mit Luecke
+        g.resume(130f)
         val r = g.feed(60f, 0.5f)
         assertEquals(12f, r.dev, 0.1f)
         assertTrue(r.history.any { it.isNaN() })
+        // lange weg (Prozess-Tod ueber Nacht): neu einschwingen
+        val h = FieldMeter().apply { restore(saved) }
+        h.resume(4_000f)
+        assertTrue(h.feed(60f, 0.2f).settling)
     }
 
     @Test fun restoreWithoutBaselineSettlesAgain() {
-        val g = FieldMeter().apply { restore(floatArrayOf(Float.NaN)) }
+        val g = FieldMeter().apply { restore(floatArrayOf(Float.NaN, Float.NaN)) }
         assertTrue(g.feed(48f, 0.2f).settling)
     }
 }

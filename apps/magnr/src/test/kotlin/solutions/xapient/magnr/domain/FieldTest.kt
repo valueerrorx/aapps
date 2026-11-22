@@ -61,7 +61,7 @@ class FieldTest {
         val b = Baseline()
         var t = 1_000 * ms
         for (i in 0..26) {
-            b.update(if (i % 2 == 0) 47f else 49f, 0.02f, t, drift = true)
+            b.update(if (i % 2 == 0) 47f else 49f, 0.02f, t, drift = true, quietBand = 1.8f)
             if (i < 25) assertFalse("zu frueh bei $i", b.settled)
             t += 20 * ms
         }
@@ -72,17 +72,39 @@ class FieldTest {
     @Test fun driftOnlyInsideQuietBand() {
         val b = Baseline().apply { set(48f) }
         // Fund mit +10 µT: Grundwert bleibt
-        repeat(3000) { b.update(58f, 0.02f, it * 20 * ms, drift = true) }
+        repeat(3000) { b.update(58f, 0.02f, it * 20 * ms, drift = true, quietBand = 1.8f) }
         assertEquals(48f, b.value, 0f)
         // kleine Drift +1 µT: wird nach 60 s weitgehend ausgeglichen
-        repeat(3000) { b.update(49f, 0.02f, it * 20 * ms, drift = true) }
+        repeat(3000) { b.update(49f, 0.02f, it * 20 * ms, drift = true, quietBand = 1.8f) }
         assertEquals(48f + 1f - exp(-2f), b.value, 0.02f)
+    }
+
+    @Test fun quietBandFollowsSensitivity() {
+        assertEquals(1.2f, Sensitivity.HIGH.quietBand, 1e-6f)
+        assertEquals(6f, Sensitivity.LOW.quietBand, 1e-6f)
+        // +1,5 µT: bei hoher Empfindlichkeit schon ein Fund, keine Drift
+        val b = Baseline().apply { set(48f) }
+        repeat(500) { b.update(49.5f, 0.02f, it * 20 * ms, drift = true, quietBand = Sensitivity.HIGH.quietBand) }
+        assertEquals(48f, b.value, 0f)
     }
 
     @Test fun driftOffKeepsBaseline() {
         val b = Baseline().apply { set(48f) }
-        repeat(3000) { b.update(49f, 0.02f, it * 20 * ms, drift = false) }
+        repeat(3000) { b.update(49f, 0.02f, it * 20 * ms, drift = false, quietBand = 1.8f) }
         assertEquals(48f, b.value, 0f)
+    }
+
+    @Test fun saturationNearRangeOrStuckAxis() {
+        val s = SaturationWatch()
+        assertFalse(s.update(30f, -20f, 10f, 2000f))
+        assertTrue(s.update(1810f, 0f, 0f, 2000f))
+        // Versatz verschiebt die Grenze: geclippte Achse bleibt exakt stehen
+        val w = SaturationWatch()
+        repeat(10) { assertFalse(w.update(1650f, 3f + it * 0.1f, 1f, 2000f)) }
+        assertTrue(w.update(1650f, 9f, 1f, 2000f))
+        // kleine, ruhige Werte gelten nicht als Anschlag
+        val q = SaturationWatch()
+        repeat(30) { assertFalse(q.update(40f, 0f, 0f, 0f)) }
     }
 
     @Test fun peakHoldsTwoSecondsThenFollows() {

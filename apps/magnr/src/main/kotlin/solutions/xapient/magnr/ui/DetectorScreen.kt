@@ -59,7 +59,7 @@ import solutions.xapient.magnr.domain.Reading
 import solutions.xapient.magnr.domain.Sensitivity
 import androidx.compose.animation.core.animateFloatAsState
 
-// Detektor: Radar als Hero, darunter Werte und Verlauf; Hauptaktion Nullen
+// Detektor: Faecher als Hero, darunter Werte und Verlauf; Hauptaktion Nullen
 @Composable
 fun DetectorScreen(
     state: DetectorState,
@@ -91,18 +91,16 @@ fun DetectorScreen(
         }
     }
 
-    val radar: @Composable (Modifier) -> Unit = { m ->
+    val fan: @Composable (Modifier) -> Unit = { m ->
         val desc = stringResource(R.string.field)
-        Radar(
+        Fan(
             state, sensitivity, live, empty = !available,
             modifier = m.semantics {
                 contentDescription = desc
                 stateDescription = spoken
                 liveRegion = LiveRegionMode.Polite
             },
-        ) {
-            if (!available) AappsIcon(MagnrIcons.Magnet, null, Aapps.colors.fgMuted, size = 56.dp)
-        }
+        )
     }
     val top: @Composable () -> Unit = {
         Row(
@@ -172,7 +170,7 @@ fun DetectorScreen(
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
                             if (available) {
-                                Stats(state, Modifier.fillMaxWidth())
+                                Stats(state, live, Modifier.fillMaxWidth())
                                 Spacer(Modifier.height(16.dp))
                                 // fill = false: sonst erzwingt weight die volle Hoehe und heightIn greift nicht
                                 chart(Modifier.fillMaxWidth().weight(1f, fill = false).heightIn(max = 130.dp))
@@ -187,28 +185,28 @@ fun DetectorScreen(
                     Spacer(Modifier.height(12.dp))
                     if (available) bottom()
                 }
-                radar(Modifier.weight(0.54f).fillMaxHeight())
+                fan(Modifier.weight(0.54f).fillMaxHeight().padding(end = 8.dp))
             }
         } else {
             Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
                 top()
                 BoxWithConstraints(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.BottomCenter) {
-                    val radarMax = maxHeight * 0.56f
-                    // Radar und Werte als Gruppe mittig: kein Leerraum zwischen Hero und Ablesewert
+                    val fanMax = maxHeight * 0.6f
+                    // Faecher und Werte als Gruppe mittig: kein Leerraum zwischen Hero und Ablesewert
                     Column(
                         Modifier.fillMaxSize(),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         if (available) {
-                            radar(Modifier.padding(horizontal = 8.dp).heightIn(max = radarMax).aspectRatio(RADAR_ASPECT))
-                            Stats(state, Modifier.fillMaxWidth().padding(horizontal = 24.dp))
+                            fan(Modifier.padding(horizontal = 8.dp).heightIn(max = fanMax).aspectRatio(FAN_ASPECT))
+                            Stats(state, live, Modifier.fillMaxWidth().padding(horizontal = 24.dp))
                             Spacer(Modifier.height(22.dp))
-                            chart(Modifier.fillMaxWidth().padding(horizontal = 24.dp).weight(1f, fill = false).heightIn(max = 170.dp))
+                            chart(Modifier.fillMaxWidth().padding(horizontal = 24.dp).weight(1f, fill = false).heightIn(max = 200.dp))
                             Spacer(Modifier.height(10.dp))
                             Footnote(onIntro)
                         } else {
-                            radar(Modifier.fillMaxWidth(0.75f).heightIn(max = radarMax).aspectRatio(RADAR_ASPECT))
+                            fan(Modifier.fillMaxWidth(0.75f).heightIn(max = fanMax).aspectRatio(FAN_ASPECT))
                             NoSensor()
                         }
                     }
@@ -296,5 +294,8 @@ private fun describe(res: android.content.res.Resources, r: Reading, sep: Char):
     val total = formatUt(r.total, sep)
     if (r.saturated) return res.getString(R.string.field_limit, total)
     if (r.settling) return res.getString(R.string.field_settling, total)
-    return res.getString(R.string.field_state, total, formatUt(r.dev, sep, signed = true), res.getString(levelRes(r.level)))
+    return res.getString(
+        R.string.field_state,
+        formatUt(r.dev, sep, signed = true), res.getString(levelRes(r.level)), total, formatUt(r.peak, sep, signed = true),
+    )
 }

@@ -81,9 +81,17 @@ class DetectorState(val meter: FieldMeter, private val maxRange: () -> Float = {
         tick++
     }
 
-    // Sensor aus
-    fun pause() {
-        meter.pause()
+    // Sensor wieder an; nowMillis = elapsedRealtime, lange weg = neu einschwingen
+    fun resume(nowMillis: Long) {
+        meter.resume(nowMillis / 1000f)
+        shown = meter.reading
+        shownAt = 0L
+        tick++
+    }
+
+    // Sensor aus; nowMillis = elapsedRealtime
+    fun pause(nowMillis: Long) {
+        meter.pause(nowMillis / 1000f)
         shown = meter.reading
         shownAt = 0L
         onStrength?.invoke(0f)

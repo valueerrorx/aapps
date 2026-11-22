@@ -20,7 +20,7 @@
     <string name="at_limit">Sensor am Anschlag</string>
     <string name="settling">Nullpunkt</string>
     <string name="stat_baseline">Grundwert</string>
-    <string name="stat_dev">Abweichung</string>
+    <string name="stat_total">Feld</string>
     <string name="stat_peak">Spitze</string>
     <string name="history">Letzte 20 s</string>
     <string name="footnote">Findet Eisen, Stahl und Magnete · kein Gold, Kupfer oder Alu</string>
@@ -29,7 +29,7 @@
     <string name="field_none">Noch kein Wert</string>
     <string name="field_settling">%1$s Mikrotesla, Nullpunkt wird gesetzt</string>
     <string name="field_limit">%1$s Mikrotesla, Sensor am Anschlag</string>
-    <string name="field_state">%1$s Mikrotesla, Abweichung %2$s, %3$s</string>
+    <string name="field_state">Abweichung %1$s Mikrotesla, %2$s. Feld %3$s, Spitze %4$s</string>
 
     <string name="no_sensor_title">Kein Magnetfeldsensor</string>
     <string name="no_sensor_text">Dieses Gerät hat kein Magnetometer, daher kann magnr hier nichts messen.</string>
