@@ -48,20 +48,20 @@ fun RoundrApp() {
         prefs.workout = w
     }
 
-    // Recht fuer die Benachrichtigung einmal erfragen; der Timer laeuft auch ohne
-    val askNotify = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {}
+    // Recht fuer die Benachrichtigung einmal VOR dem ersten Start erfragen; gestartet wird danach, der Timer laeuft auch ohne
+    val askNotify = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { store.start(workout) }
     fun start(w: Workout) {
-        store.start(w)
-        TimerService.start(context)
         if (Build.VERSION.SDK_INT >= 33 && !prefs.askedNotify &&
             ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
         ) {
             prefs.askedNotify = true
             askNotify.launch(Manifest.permission.POST_NOTIFICATIONS)
+            return
         }
+        store.start(w)
     }
 
-    // Nach Prozess-Tod: laufenden Lauf wieder an den Dienst haengen
+    // Dienst haengt sich an jeden Lauf, auch nach Prozess-Tod
     val active = run
     LaunchedEffect(active?.id) {
         if (active != null && !active.finished(store.now())) TimerService.start(context)
