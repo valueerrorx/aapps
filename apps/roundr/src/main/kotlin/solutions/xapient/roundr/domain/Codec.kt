@@ -32,17 +32,18 @@ object Codec {
         return listOf(w.copy(name = n).clamped()) + rest
     }
 
-    // Lauf: id|offset|laeuftSeit(-1 = angehalten)|Training
+    // Lauf: id|offset|laeuftSeit(-1 = angehalten)|Geraetestart|Training
     fun encodeRun(r: Run): String =
-        "r1|${r.id}|${r.session.offsetMs}|${r.session.runningSince ?: -1}|${encode(r.workout)}"
+        "r2|${r.id}|${r.session.offsetMs}|${r.session.runningSince ?: -1}|${r.boot}|${encode(r.workout)}"
 
     fun decodeRun(s: String?): Run? {
-        val p = s?.split('|', limit = 5) ?: return null
-        if (p.size != 5 || p[0] != "r1") return null
+        val p = s?.split('|', limit = 6) ?: return null
+        if (p.size != 6 || p[0] != "r2") return null
         val id = p[1].toLongOrNull() ?: return null
         val off = p[2].toLongOrNull()?.takeIf { it >= 0 } ?: return null
         val since = p[3].toLongOrNull() ?: return null
-        val w = decode(p[4]) ?: return null
-        return Run(w, Session(off, since.takeIf { it >= 0 }), id)
+        val boot = p[4].toIntOrNull() ?: return null
+        val w = decode(p[5]) ?: return null
+        return Run(w, Session(off, since.takeIf { it >= 0 }), id, boot)
     }
 }

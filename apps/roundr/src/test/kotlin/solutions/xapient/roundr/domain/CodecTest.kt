@@ -45,15 +45,14 @@ class CodecTest {
     }
 
     @Test fun runRoundTrip() {
-        val r = Run(Workout("A", 5, 30, 10, 4), Session(12_345, 99_000), 42)
-        val back = Codec.decodeRun(Codec.encodeRun(r))!!
-        assertEquals(r.workout, back.workout)
-        assertEquals(r.session, back.session)
-        assertEquals(42, back.id)
-        val paused = r.copy(session = Session(7_000, null))
-        assertEquals(paused.session, Codec.decodeRun(Codec.encodeRun(paused))!!.session)
-        assertNull(Codec.decodeRun("r1|x|0|0|w1"))
-        assertNull(Codec.decodeRun("r1|1|-5|0|" + Codec.encode(Workout())))
+        val r = Run(Workout("A", 5, 30, 10, 4), Session(12_345, 99_000), 42, boot = 17)
+        assertEquals(r, Codec.decodeRun(Codec.encodeRun(r)))
+        val paused = r.copy(session = Session(7_000, null), boot = -1)
+        assertEquals(paused, Codec.decodeRun(Codec.encodeRun(paused)))
+        assertNull(Codec.decodeRun("r2|x|0|0|1|w1"))
+        assertNull(Codec.decodeRun("r2|1|-5|0|1|" + Codec.encode(Workout())))
+        assertNull(Codec.decodeRun("r2|1|0|0|x|" + Codec.encode(Workout())))
+        assertNull(Codec.decodeRun("r1|1|0|0|" + Codec.encode(Workout())))
         assertNull(Codec.decodeRun(null))
     }
 }
