@@ -3,6 +3,7 @@ package solutions.xapient.tunr
 import android.content.Context
 import androidx.core.content.edit
 import solutions.xapient.tunr.domain.Settings
+import java.util.Locale
 
 // Einstellungen sofort gespeichert; Backup ist aus
 class Prefs(context: Context) {
@@ -10,7 +11,7 @@ class Prefs(context: Context) {
 
     var settings: Settings
         get() {
-            val d = Settings()
+            val d = Settings(notation = Settings.notationFor(Locale.getDefault().language))
             return Settings(
                 a4 = sp.getInt("a4", d.a4),
                 notation = enumOr(sp.getString("notation", null), d.notation),

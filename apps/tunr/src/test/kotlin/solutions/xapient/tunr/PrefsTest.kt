@@ -11,6 +11,7 @@ import org.robolectric.RuntimeEnvironment
 import solutions.xapient.tunr.domain.Instrument
 import solutions.xapient.tunr.domain.Notation
 import solutions.xapient.tunr.domain.Settings
+import java.util.Locale
 
 // Einstellungen ueberstehen Prozess-Tod: neue Prefs-Instanz liest dasselbe
 @RunWith(RobolectricTestRunner::class)
@@ -40,5 +41,24 @@ class PrefsTest {
         assertEquals(Settings.A4_MAX, s.a4)
         assertEquals(Instrument.CHROMATIC, s.instrument)
         assertEquals(Notation.SHARP, s.notation)
+    }
+
+    // ohne gespeicherten Wert: Schreibweise nach Sprache
+    @Test fun notationFromLocale() {
+        val old = Locale.getDefault()
+        try {
+            Locale.setDefault(Locale.GERMANY)
+            assertEquals(Notation.GERMAN, Prefs(ctx).settings.notation)
+            Locale.setDefault(Locale.forLanguageTag("de-AT"))
+            assertEquals(Notation.GERMAN, Prefs(ctx).settings.notation)
+            Locale.setDefault(Locale.FRANCE)
+            assertEquals(Notation.SHARP, Prefs(ctx).settings.notation)
+            // gespeichert schlaegt Sprache
+            Prefs(ctx).settings = Settings(notation = Notation.FLAT)
+            Locale.setDefault(Locale.GERMANY)
+            assertEquals(Notation.FLAT, Prefs(ctx).settings.notation)
+        } finally {
+            Locale.setDefault(old)
+        }
     }
 }

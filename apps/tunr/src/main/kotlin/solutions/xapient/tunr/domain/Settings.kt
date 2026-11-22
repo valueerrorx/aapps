@@ -11,6 +11,9 @@ data class Settings(
     companion object {
         const val A4_MIN = 415
         const val A4_MAX = 466
+
+        // deutschsprachig H und B, sonst Kreuze
+        fun notationFor(language: String): Notation = if (language == "de") Notation.GERMAN else Notation.SHARP
     }
 }
 
