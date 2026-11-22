@@ -73,7 +73,9 @@ data class Game(
         if (last is Action.Score && last.player == player && recent(now)) {
             val sum = clamp(last.delta.toLong() + delta)
             val rest = actions.dropLast(1)
-            return copy(actions = if (sum == 0) rest else rest + Action.Score(player, sum), lastAt = now)
+            // aufgehobener Zug ist weg; der naechste Tipp beginnt einen neuen
+            return if (sum == 0) copy(actions = rest, lastAt = Long.MIN_VALUE)
+            else copy(actions = rest + Action.Score(player, sum), lastAt = now)
         }
         return copy(actions = actions + Action.Score(player, clamp(delta.toLong())), lastAt = now)
     }
@@ -83,11 +85,15 @@ data class Game(
 
     fun endRound(): Game = copy(actions = actions + Action.EndRound, lastAt = Long.MIN_VALUE)
 
-    fun undo(): Game = copy(actions = actions.dropLast(1), lastAt = Long.MIN_VALUE)
+    // ohne Runden sind Rundenenden unsichtbar und werden mit zurueckgenommen
+    fun undo(rounds: Boolean = true): Game {
+        val a = if (rounds) actions else actions.dropLastWhile { it == Action.EndRound }
+        return copy(actions = a.dropLast(1), lastAt = Long.MIN_VALUE)
+    }
 
     fun newGame(): Game = copy(actions = emptyList(), lastAt = Long.MIN_VALUE)
 
-    fun withTarget(t: Int?): Game = copy(target = t?.coerceIn(-MAX, MAX))
+    fun withTarget(t: Int?): Game = copy(target = validTarget(t))
 
     fun withRule(r: WinRule): Game = copy(rule = r)
 
@@ -130,6 +136,9 @@ data class Game(
         const val MERGE_MS = 2000L
 
         fun initial(): Game = Game(listOf(Player("", 0), Player("", 2)))
+
+        // Ziel <= 0 waere sofort erreicht: gilt als kein Ziel
+        fun validTarget(t: Int?): Int? = t?.takeIf { it > 0 }?.coerceAtMost(MAX)
 
         fun clamp(v: Long): Int = v.coerceIn(-MAX.toLong(), MAX.toLong()).toInt()
 

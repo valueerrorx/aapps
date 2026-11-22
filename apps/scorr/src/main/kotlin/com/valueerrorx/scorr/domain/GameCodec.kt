@@ -17,6 +17,16 @@ object GameCodec {
         }
     }
 
+    // Stand vor „Neues Spiel": gleiches Format mit den alten Zuegen; null = keiner
+    fun encodeBefore(s: Session): String? = s.before?.let { encode(s.game.copy(actions = it)) }
+
+    // alter Stand gilt nur, wenn die Spielerzahl noch passt
+    fun decodeSession(game: String?, before: String?): Session {
+        val g = decode(game)
+        val b = before?.takeIf { it.isNotEmpty() }?.let { decode(it) }?.takeIf { it.players.size == g.players.size }
+        return Session(g, b?.actions?.takeIf { it.isNotEmpty() })
+    }
+
     // Tolerant: unbekannte oder kaputte Zeilen werden uebersprungen; ohne Spieler gibt es ein neues Spiel
     fun decode(text: String?): Game {
         if (text.isNullOrEmpty()) return Game.initial()
@@ -29,7 +39,7 @@ object GameCodec {
         for (line in lines.drop(1)) {
             val f = line.split('|', limit = 3)
             when (f[0]) {
-                "T" -> target = f.getOrNull(1)?.toIntOrNull()?.coerceIn(-Game.MAX, Game.MAX)
+                "T" -> target = Game.validTarget(f.getOrNull(1)?.toIntOrNull())
                 "R" -> rule = WinRule.entries.firstOrNull { it.name == f.getOrNull(1) } ?: WinRule.MOST
                 "P" -> if (players.size < Game.MAX_PLAYERS) {
                     val color = f.getOrNull(1)?.toIntOrNull() ?: continue

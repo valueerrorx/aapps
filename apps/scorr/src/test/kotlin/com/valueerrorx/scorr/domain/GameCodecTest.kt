@@ -45,6 +45,27 @@ class GameCodecTest {
         assertEquals(Game.MAX, g.scores[0])
     }
 
+    @Test fun targetZeroOrNegativeIsDropped() {
+        assertNull(GameCodec.decode("scorr1\nT|0\nP|0|a").target)
+        assertNull(GameCodec.decode("scorr1\nT|-3\nP|0|a").target)
+    }
+
+    @Test fun sessionWithBeforeRoundTrips() {
+        val s = Session(Game.initial().score(0, 4, 0).endRound().score(1, 2, 5000)).newGame()
+        val back = GameCodec.decodeSession(GameCodec.encode(s.game), GameCodec.encodeBefore(s))
+        assertEquals(s.before, back.before)
+        assertEquals(listOf(4, 2), back.undo().game.scores)
+        assertNull(GameCodec.encodeBefore(Session(Game.initial())))
+        assertNull(GameCodec.decodeSession(GameCodec.encode(s.game), null).before)
+    }
+
+    @Test fun beforeWithOtherPlayerCountIsDropped() {
+        val old = Game.initial().addPlayer().score(2, 5, 0)
+        val now = Game.initial()
+        assertNull(GameCodec.decodeSession(GameCodec.encode(now), GameCodec.encode(old)).before)
+        assertNull(GameCodec.decodeSession(GameCodec.encode(now), "kaputt").before)
+    }
+
     @Test fun controlCharsInNamesDoNotBreakFormat() {
         val g = Game.initial().rename(0, "a\nS|0|99")
         val back = GameCodec.decode(GameCodec.encode(g))

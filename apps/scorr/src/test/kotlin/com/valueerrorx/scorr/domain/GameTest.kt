@@ -55,6 +55,29 @@ class GameTest {
         assertEquals(listOf(0, 2), g.scores)
     }
 
+    @Test fun cancelledMoveDoesNotSwallowNextTap() {
+        val g = two().score(0, 5, 0).score(0, 1, 5000).score(0, -1, 5100)
+        assertEquals(listOf<Action>(Action.Score(0, 5)), g.actions)
+        assertNull(g.burst(0, 5200))
+        val next = g.score(0, 1, 5200)
+        assertEquals(listOf(Action.Score(0, 5), Action.Score(0, 1)), next.actions)
+        assertEquals(listOf(5, 0), next.undo().scores)
+    }
+
+    @Test fun undoWithoutRoundsTakesHiddenRoundEnds() {
+        val g = two().score(0, 3, 0).endRound().score(1, 2, 5000).endRound().endRound()
+        assertEquals(listOf(Action.Score(0, 3), Action.EndRound), g.undo(rounds = false).actions)
+        assertEquals(listOf(3, 2), g.undo().scores)
+        assertEquals(emptyList<Action>(), two().endRound().undo(rounds = false).actions)
+    }
+
+    @Test fun targetZeroOrBelowMeansNone() {
+        assertNull(two().withTarget(0).target)
+        assertNull(two().withTarget(-5).target)
+        assertEquals(Game.MAX, two().withTarget(Int.MAX_VALUE).target)
+        assertFalse(two().withTarget(0).finished)
+    }
+
     @Test fun enteredNumberIsItsOwnMove() {
         val g = two().score(0, 1, 0).enter(0, 37, 100)
         assertEquals(listOf(Action.Score(0, 1), Action.Score(0, 37)), g.actions)
