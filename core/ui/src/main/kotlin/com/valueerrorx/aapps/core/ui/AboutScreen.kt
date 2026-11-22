@@ -48,7 +48,7 @@ fun AboutScreen(
                     .verticalScroll(rememberScrollState())
                     .padding(start = 24.dp, end = 24.dp, bottom = 32.dp),
             ) {
-                Box(Modifier.glow(c.accent, 90.dp, 0.22f)) { icon() }
+                icon()
                 Spacer(Modifier.height(20.dp))
                 BasicText(appName, style = Aapps.type.headline.copy(color = c.fg))
                 Spacer(Modifier.height(4.dp))
