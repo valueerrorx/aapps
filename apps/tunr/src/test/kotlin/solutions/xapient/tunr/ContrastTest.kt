@@ -46,7 +46,8 @@ class ContrastTest {
     // ohne Ton: Strobe, Teilstriche und Zone bleiben sichtbar
     @Test fun idleGraphicsVisible() {
         aa(idleLine(), ui.bg, "Strobe/Teilstriche im Ruhezustand", 3.0)
-        aa(zoneDim(), ui.bg, "Zone gestimmt ohne Ton", 3.0)
+        // ohne Ton zeigt die Zone idleLine, mit Ton zoneDim
+        aa(zoneDim(), ui.bg, "Zone gestimmt mit Ton, nicht eingerastet", 3.0)
         assertTrue("Zone eingerastet hebt sich ab", ratio(TunrGreen, zoneDim()) > 1.5)
         for (s in states) aa(s, ui.bg, "Zeiger und Strobe in Zustandsfarbe", 3.0)
     }

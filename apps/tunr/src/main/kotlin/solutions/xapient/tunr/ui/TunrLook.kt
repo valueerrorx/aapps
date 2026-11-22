@@ -40,7 +40,7 @@ fun stateColor(cents: Float): Color {
 // Ruhezustand (kein Ton): Strobe und Skala gedimmt, aber >= 3:1 zum Grund (ContrastTest)
 const val IDLE_MIX = 0.66f
 fun idleLine(): Color = lerp(Bg, FgMuted, IDLE_MIX)
-// Zone "gestimmt" ohne Ton
+// Zone "gestimmt" mit Ton, noch nicht eingerastet (ohne Ton: idleLine)
 const val ZONE_DIM = 0.55f
 fun zoneDim(): Color = lerp(Bg, TunrGreen, ZONE_DIM)
 

@@ -12,6 +12,7 @@ import solutions.xapient.tunr.domain.Notes
 import solutions.xapient.tunr.domain.PitchTracker
 import solutions.xapient.tunr.domain.Reading
 import solutions.xapient.tunr.domain.TunerMotion
+import kotlin.math.roundToInt
 
 // Was die Komposition braucht; aendert sich selten (Note, Saite, Einrasten)
 data class Coarse(
@@ -23,6 +24,8 @@ data class Coarse(
     val locks: Int = 0,
     // -1 zu tief, 0 gestimmt/still, 1 zu hoch (Ansage)
     val dir: Int = 0,
+    // Abweichung in 5-Cent-Schritten (Ansage, Zustandszeile); 0 ohne Ton
+    val cents5: Int = 0,
 )
 
 // Anzeige-Zustand auf dem Main-Thread; Feinwerte nur in der Zeichenphase lesen (frame)
@@ -91,5 +94,6 @@ class TunerState(a4: Int = Notes.A4_DEFAULT, instrument: Instrument = Instrument
     private fun coarseOf(r: Reading) = Coarse(
         r.active, r.heard, r.target, r.string, r.inTune, r.locks,
         dir = if (!r.active || r.inTune) 0 else if (r.cents > 0) 1 else -1,
+        cents5 = if (r.active) (r.cents / 5f).roundToInt() * 5 else 0,
     )
 }

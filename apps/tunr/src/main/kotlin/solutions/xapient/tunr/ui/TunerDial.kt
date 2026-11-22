@@ -68,8 +68,9 @@ fun TunerDial(state: TunerState, notation: Notation, hint: String?, modifier: Mo
         hint != null -> hint
         !coarse.heard || coarse.target < 0 -> stringResource(R.string.state_listening)
         coarse.inTune -> stringResource(R.string.state_in_tune, noteText)
-        coarse.dir < 0 -> stringResource(R.string.state_flat, noteText, abs(state.reading.cents).roundToInt())
-        coarse.dir > 0 -> stringResource(R.string.state_sharp, noteText, abs(state.reading.cents).roundToInt())
+        // Ansage in 5-Cent-Schritten, bleibt so aktuell ohne Neukomposition je Frame
+        coarse.dir < 0 -> stringResource(R.string.state_flat, noteText, abs(coarse.cents5))
+        coarse.dir > 0 -> stringResource(R.string.state_sharp, noteText, abs(coarse.cents5))
         else -> noteText
     }
     val centerHint = hint ?: if (!coarse.heard) play else null
@@ -121,6 +122,11 @@ fun TunerDial(state: TunerState, notation: Notation, hint: String?, modifier: Mo
                 val letter = name?.let { measurer.measure(it.letter, letterStyle) }
                 val octave = name?.let { measurer.measure(it.octave.toString(), octaveStyle) }
                 val unit = measurer.measure(centWord.uppercase(), labelStyle)
+                // Cent und Hz nur neu setzen, wenn sich der gerundete Wert aendert
+                var numKey = Int.MIN_VALUE
+                var numLayout: TextLayoutResult? = null
+                var hzKey = Int.MIN_VALUE
+                var hzLayout: TextLayoutResult? = null
                 onDrawBehind {
                     state.frame
                     val rd = state.reading
@@ -142,8 +148,8 @@ fun TunerDial(state: TunerState, notation: Notation, hint: String?, modifier: Mo
                     // Bogen und Teilstriche
                     drawArc(c.line, 150f, 240f, false, gaugeTL, gaugeSize, style = Stroke(1.5.dp.toPx(), cap = StrokeCap.Round))
                     drawPath(ticks, idle, style = tickStroke)
-                    // Zone gestimmt
-                    val zone = lerp(zoneOff, TunrGreen, lock.coerceAtMost(1f))
+                    // Zone gestimmt: ohne Ton grau wie die Skala, mit Ton gedimmt gruen, eingerastet voll
+                    val zone = lerp(lerp(idle, zoneOff, pres), TunrGreen, lock.coerceAtMost(1f))
                     if (lock > 0.01f) {
                         drawArc(TunrGreen.copy(alpha = 0.16f * lock.coerceAtMost(1f)), angleOf(-5f), 10 * DEG_PER_CENT, false, gaugeTL, gaugeSize, style = Stroke(r * 0.09f, cap = StrokeCap.Round))
                     }
@@ -188,8 +194,12 @@ fun TunerDial(state: TunerState, notation: Notation, hint: String?, modifier: Mo
                         drawText(octave, lerp(c.fgMuted, ink, 0.6f), Offset(side, base - octave.firstBaseline))
                         if (pres > 0.01f) {
                             val cents = rd.cents.roundToInt()
-                            val sign = if (cents > 0) "+" else if (cents < 0) "−" else "±"
-                            val num = measurer.measure(sign + abs(cents), centStyle)
+                            if (cents != numKey || numLayout == null) {
+                                val sign = if (cents > 0) "+" else if (cents < 0) "−" else "±"
+                                numLayout = measurer.measure(sign + abs(cents), centStyle)
+                                numKey = cents
+                            }
+                            val num = numLayout!!
                             val gap = r * 0.03f
                             val w = num.size.width + gap + unit.size.width
                             val cy = mid.y + r * 0.27f
@@ -197,7 +207,12 @@ fun TunerDial(state: TunerState, notation: Notation, hint: String?, modifier: Mo
                             drawText(num, col.copy(alpha = pres), Offset(x0, cy - num.size.height / 2f))
                             val baseY = cy - num.size.height / 2f + num.firstBaseline
                             drawText(unit, c.fgMuted.copy(alpha = pres), Offset(x0 + num.size.width + gap, baseY - unit.firstBaseline))
-                            val hz = measurer.measure(String.format(locale, "%.1f %s", rd.hz, hzWord), labelStyle.copy(letterSpacing = 0.04.sp))
+                            val hz10 = (rd.hz * 10f).roundToInt()
+                            if (hz10 != hzKey || hzLayout == null) {
+                                hzLayout = measurer.measure(String.format(locale, "%.1f %s", hz10 / 10f, hzWord), labelStyle.copy(letterSpacing = 0.04.sp))
+                                hzKey = hz10
+                            }
+                            val hz = hzLayout!!
                             drawText(hz, c.fgMuted.copy(alpha = pres), Offset(mid.x - hz.size.width / 2f, mid.y + r * 0.43f - hz.size.height / 2f))
                         }
                     }
