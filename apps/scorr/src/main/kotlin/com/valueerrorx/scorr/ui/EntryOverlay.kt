@@ -3,6 +3,7 @@ package com.valueerrorx.scorr.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -38,6 +39,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
@@ -50,6 +52,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.valueerrorx.aapps.core.ui.Aapps
+import com.valueerrorx.aapps.core.ui.AappsIconButton
 import com.valueerrorx.aapps.core.ui.AappsPillButton
 import com.valueerrorx.aapps.core.ui.AappsTextButton
 import com.valueerrorx.aapps.core.ui.AappsTheme
@@ -93,8 +96,8 @@ fun EntryOverlay(
                     .glow(color, 220.dp, 0.10f)
                     .background(c.surface, RoundedCornerShape(28.dp))
                     .border(1.dp, c.line, RoundedCornerShape(28.dp))
-                    // Tippen in der Karte schliesst nicht
-                    .clickable(remember { MutableInteractionSource() }, indication = null) {}
+                    // Tippen in der Karte schliesst nicht; kein Klick-Knoten fuer TalkBack
+                    .pointerInput(Unit) { detectTapGestures {} }
                     .verticalScroll(rememberScrollState())
                     .padding(horizontal = 22.dp, vertical = 20.dp),
             ) {
@@ -107,6 +110,11 @@ fun EntryOverlay(
                     )
                     Spacer(Modifier.width(8.dp))
                     BasicText(Board.format(score), style = Aapps.type.number.copy(color = c.fgMuted))
+                    // Querformat: Schliessen oben statt unten, sonst reicht die Hoehe nicht
+                    if (landscape) {
+                        Spacer(Modifier.width(4.dp))
+                        AappsIconButton(ScorrIcons.Close, stringResource(R.string.cancel), onDismiss)
+                    }
                 }
                 Spacer(Modifier.height(if (landscape) 8.dp else 18.dp))
                 val hint = stringResource(R.string.entry_hint)
@@ -154,9 +162,11 @@ fun EntryOverlay(
                         add(Modifier.weight(1f))
                     }
                 }
-                Spacer(Modifier.height(6.dp))
-                Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                    AappsTextButton(stringResource(R.string.cancel), onDismiss)
+                if (!landscape) {
+                    Spacer(Modifier.height(6.dp))
+                    Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                        AappsTextButton(stringResource(R.string.cancel), onDismiss)
+                    }
                 }
             }
         }

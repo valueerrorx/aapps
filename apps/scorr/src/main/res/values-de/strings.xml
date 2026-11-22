@@ -15,7 +15,8 @@
     <string name="target_short">bis %1$s</string>
 
     <string name="tile_desc">%1$s, %2$s Punkte</string>
-    <string name="tile_desc_winner">%1$s, %2$s Punkte, gewinnt</string>
+    <string name="tile_desc_winner">%1$s, gewinnt</string>
+    <string name="points_n">%1$s Punkte</string>
     <string name="action_plus">Plus eins</string>
     <string name="action_minus">Minus eins</string>
     <string name="action_enter">Punkte eingeben</string>
@@ -54,4 +55,5 @@
     <string name="keep_on">Bildschirm an lassen</string>
     <string name="new_game_sub">Punkte und Verlauf werden gelöscht, die Spieler bleiben</string>
     <string name="new_game_confirm">Nochmal tippen zum Löschen</string>
+    <string name="new_game_again">Nochmal tippen</string>
 </resources>

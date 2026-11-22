@@ -2,16 +2,21 @@ package com.valueerrorx.scorr
 
 import android.content.Context
 import androidx.core.content.edit
-import com.valueerrorx.scorr.domain.Game
 import com.valueerrorx.scorr.domain.GameCodec
+import com.valueerrorx.scorr.domain.Session
 
 // Spielstand und Einstellungen; Backup ist aus
 class Prefs(context: Context) {
     private val sp = context.getSharedPreferences("scorr", Context.MODE_PRIVATE)
 
-    var game: Game
-        get() = GameCodec.decode(sp.getString("game", null))
-        set(v) = sp.edit { putString("game", GameCodec.encode(v)) }
+    // Spiel plus Stand vor „Neues Spiel"
+    var session: Session
+        get() = GameCodec.decodeSession(sp.getString("game", null), sp.getString("before", null))
+        set(v) = sp.edit {
+            putString("game", GameCodec.encode(v.game))
+            val b = GameCodec.encodeBefore(v)
+            if (b == null) remove("before") else putString("before", b)
+        }
 
     var rounds: Boolean
         get() = sp.getBoolean("rounds", true)

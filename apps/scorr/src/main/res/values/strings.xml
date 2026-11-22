@@ -16,7 +16,8 @@
     <string name="target_short">to %1$s</string>
 
     <string name="tile_desc">%1$s, %2$s points</string>
-    <string name="tile_desc_winner">%1$s, %2$s points, winner</string>
+    <string name="tile_desc_winner">%1$s, winner</string>
+    <string name="points_n">%1$s points</string>
     <string name="action_plus">Plus one</string>
     <string name="action_minus">Minus one</string>
     <string name="action_enter">Enter points</string>
@@ -56,4 +57,5 @@
     <string name="keep_on">Keep screen on</string>
     <string name="new_game_sub">Scores and history are cleared, players stay</string>
     <string name="new_game_confirm">Tap again to clear</string>
+    <string name="new_game_again">Tap again</string>
 </resources>

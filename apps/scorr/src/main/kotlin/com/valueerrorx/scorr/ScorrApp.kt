@@ -1,5 +1,7 @@
 package com.valueerrorx.scorr
 
+import android.os.Build
+import android.view.HapticFeedbackConstants
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -9,10 +11,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import com.valueerrorx.aapps.core.ui.AappsTheme
 import com.valueerrorx.aapps.core.ui.KeepScreenOn
 import com.valueerrorx.aapps.core.ui.rememberHaptics
 import com.valueerrorx.scorr.domain.Game
+import com.valueerrorx.scorr.domain.Session
 import com.valueerrorx.scorr.ui.EntryOverlay
 import com.valueerrorx.scorr.ui.HistoryScreen
 import com.valueerrorx.scorr.ui.PlayersScreen
@@ -29,9 +33,10 @@ private enum class Screen { BOARD, HISTORY, PLAYERS, SETTINGS, ABOUT }
 fun ScorrApp() {
     val context = LocalContext.current
     val prefs = remember { Prefs(context) }
-    var game by remember { mutableStateOf(prefs.game) }
-    // Stand vor „Neues Spiel", damit Rueckgaengig auch das zuruecknimmt (nur im Speicher)
-    var beforeNew by remember { mutableStateOf<Game?>(null) }
+    // Spiel samt Stand vor „Neues Spiel"
+    var session by remember { mutableStateOf(prefs.session) }
+    // nur zum Anzeigen; Aenderungen lesen immer session.game (kein veralteter Stand)
+    val game = session.game
     var rounds by remember { mutableStateOf(prefs.rounds) }
     var hapticsOn by remember { mutableStateOf(prefs.haptics) }
     var keepOn by remember { mutableStateOf(prefs.keepOn) }
@@ -39,39 +44,43 @@ fun ScorrApp() {
     var entry by rememberSaveable { mutableIntStateOf(-1) }
 
     // Jede Aenderung sofort speichern: uebersteht Prozess-Tod
-    fun update(g: Game, keepUndo: Boolean = false) {
-        if (!keepUndo) beforeNew = null
-        game = g
-        prefs.game = g
+    fun save(s: Session) {
+        session = s
+        prefs.session = s
     }
 
-    fun newGame() {
-        beforeNew = game
-        update(game.newGame(), keepUndo = true)
-    }
+    fun update(g: Game, keepUndo: Boolean = false) = save(if (keepUndo) session.edit(g) else session.play(g))
+
+    fun newGame() = save(session.newGame())
 
     AappsTheme(ScorrAccent) {
         val haptics = rememberHaptics(hapticsOn)
+        val view = LocalView.current
+        // Abweisen nach Spielende; Haptics aus core kennt keinen Reject
+        val reject = {
+            if (hapticsOn) {
+                view.performHapticFeedback(
+                    if (Build.VERSION.SDK_INT >= 30) HapticFeedbackConstants.REJECT else HapticFeedbackConstants.LONG_PRESS,
+                )
+            }
+        }
         if (keepOn && screen == Screen.BOARD) KeepScreenOn()
         when (screen) {
             Screen.BOARD -> {
                 if (entry >= 0) BackHandler { entry = -1 }
-                val restore = beforeNew
                 ScoreScreen(
                     game = game,
                     rounds = rounds,
                     haptics = haptics,
-                    onScore = { p, d -> update(game.score(p, d, System.currentTimeMillis())) },
+                    onScore = { p, d -> update(session.game.score(p, d, System.currentTimeMillis())) },
                     onEnter = { entry = it },
-                    onUndo = {
-                        val prev = beforeNew
-                        if (!game.canUndo && prev != null) update(prev) else update(game.undo())
-                    },
-                    onNextRound = { update(game.endRound()) },
+                    onUndo = { save(session.undo(rounds)) },
+                    onNextRound = { update(session.game.endRound()) },
                     onNewGame = { newGame() },
                     onHistory = { screen = Screen.HISTORY },
                     onSettings = { screen = Screen.SETTINGS },
-                    canUndo = game.canUndo || restore != null,
+                    canUndo = session.canUndo,
+                    onReject = reject,
                     overlay = {
                         val i = entry
                         if (i in game.players.indices) {
@@ -80,7 +89,7 @@ fun ScorrApp() {
                                 color = playerColor(game.players[i].color),
                                 score = game.scores[i],
                                 onApply = { d ->
-                                    update(game.enter(i, d, System.currentTimeMillis()))
+                                    update(session.game.enter(i, d, System.currentTimeMillis()))
                                     haptics.tick()
                                     entry = -1
                                 },
@@ -98,10 +107,10 @@ fun ScorrApp() {
                 BackHandler { screen = Screen.SETTINGS }
                 PlayersScreen(
                     game = game,
-                    onRename = { i, n -> update(game.rename(i, n), keepUndo = true) },
-                    onRecolor = { i, k -> update(game.recolor(i, k), keepUndo = true) },
-                    onRemove = { update(game.removePlayer(it)) },
-                    onAdd = { update(game.addPlayer()) },
+                    onRename = { i, n -> update(session.game.rename(i, n), keepUndo = true) },
+                    onRecolor = { i, k -> update(session.game.recolor(i, k), keepUndo = true) },
+                    onRemove = { update(session.game.removePlayer(it)) },
+                    onAdd = { update(session.game.addPlayer()) },
                     onBack = { screen = Screen.SETTINGS },
                 )
             }
@@ -110,9 +119,9 @@ fun ScorrApp() {
                 ScorrSettings(
                     playerNames = game.players.indices.map { displayName(game, it) }.joinToString(", "),
                     target = game.target,
-                    onTarget = { update(game.withTarget(it), keepUndo = true) },
+                    onTarget = { update(session.game.withTarget(it), keepUndo = true) },
                     rule = game.rule,
-                    onRule = { update(game.withRule(it), keepUndo = true) },
+                    onRule = { update(session.game.withRule(it), keepUndo = true) },
                     rounds = rounds,
                     onRounds = { rounds = it; prefs.rounds = it },
                     haptics = hapticsOn,

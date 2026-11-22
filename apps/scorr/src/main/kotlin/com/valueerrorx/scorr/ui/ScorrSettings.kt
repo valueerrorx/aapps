@@ -15,16 +15,22 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
@@ -44,6 +50,7 @@ import com.valueerrorx.aapps.core.ui.SettingsToggle
 import com.valueerrorx.scorr.R
 import com.valueerrorx.scorr.domain.Board
 import com.valueerrorx.scorr.domain.WinRule
+import kotlinx.coroutines.delay
 
 @Composable
 fun ScorrSettings(
@@ -64,6 +71,8 @@ fun ScorrSettings(
     onBack: () -> Unit,
 ) {
     var confirmNew by rememberSaveable { mutableStateOf(false) }
+    // Bestaetigung verfaellt nach ein paar Sekunden
+    if (confirmNew) LaunchedEffect(Unit) { delay(3000); confirmNew = false }
     SettingsScreen(onBack) {
         SettingsGroup(stringResource(R.string.group_game)) {
             SettingsAction(stringResource(R.string.players), playerNames, onClick = onPlayers)
@@ -110,6 +119,14 @@ private fun TargetRow(target: Int?, onTarget: (Int?) -> Unit) {
     val off = stringResource(R.string.target_off)
     val style = Aapps.type.number.copy(color = c.accent, textAlign = TextAlign.End, fontSize = Aapps.type.body.fontSize * 1.15f)
     val fs = LocalDensity.current.fontScale.coerceIn(1f, 2f)
+    // erst bei Fertig, Fokusverlust oder Verlassen uebernehmen, nicht bei jeder Ziffer
+    val current = rememberUpdatedState(text)
+    val commit = rememberUpdatedState {
+        val t = Board.parseAmount(current.value)?.takeIf { it > 0 }
+        if (t != target) onTarget(t)
+    }
+    DisposableEffect(Unit) { onDispose { commit.value() } }
+    val focus = LocalFocusManager.current
     val texts: @Composable (Modifier) -> Unit = { m ->
         Column(m) {
             BasicText(title, style = Aapps.type.body.copy(color = c.fg))
@@ -120,18 +137,17 @@ private fun TargetRow(target: Int?, onTarget: (Int?) -> Unit) {
     val field: @Composable () -> Unit = {
         BasicTextField(
             value = text,
-            onValueChange = { v ->
-                text = v.filter { it.isDigit() }.take(6)
-                onTarget(Board.parseAmount(text)?.takeIf { it > 0 })
-            },
+            onValueChange = { v -> text = v.filter { it.isDigit() }.take(6) },
             modifier = Modifier
                 .width(92.dp * fs)
+                .onFocusChanged { if (!it.isFocused) commit.value() }
                 .background(c.bg, CircleShape)
                 .semantics { contentDescription = title },
             textStyle = style,
             singleLine = true,
             cursorBrush = SolidColor(c.accent),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(onDone = { commit.value(); focus.clearFocus() }),
             decorationBox = { inner ->
                 Box(Modifier.heightIn(min = 48.dp).padding(horizontal = 16.dp), contentAlignment = Alignment.CenterEnd) {
                     if (text.isEmpty()) BasicText(off, style = style.copy(color = c.fgFaint))
