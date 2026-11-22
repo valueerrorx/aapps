@@ -53,15 +53,22 @@ object Orientation {
         else -> v
     }
 
-    // Blickrichtung: Bildschirm-oben plus Rueckseite. Flach zaehlt oben, aufrecht die Rueckseite,
-    // dazwischen beide gleichsinnig, also kein Sprung. Grad 0..360, NaN wenn unbestimmt
+    // Bildschirm-rechts in Geraetekoordinaten je Display-Rotation (0..3)
+    fun screenRight(quarterTurns: Int): Vec3 = screenUp(quarterTurns).let { Vec3(it.y, -it.x, 0f) }
+
+    // Blickrichtung = Bildschirm-rechts waagrecht um 90° nach links gedreht: flach die Oberkante,
+    // aufrecht die Rueckseite; Nicken und seitliches Kippen aendern sie nicht. Grad 0..360, NaN wenn rechts senkrecht steht
     fun heading(r: FloatArray, quarterTurns: Int): Float {
-        val f = screenUp(quarterTurns) + Vec3(0f, 0f, -1f)
-        val e = r[0] * f.x + r[1] * f.y + r[2] * f.z
-        val n = r[3] * f.x + r[4] * f.y + r[5] * f.z
-        if (hypot(e, n) < 1e-3f) return Float.NaN
-        return Angles.normalize(atan2(e, n) * RAD_TO_DEG)
+        val s = screenRight(quarterTurns)
+        val e = r[0] * s.x + r[1] * s.y + r[2] * s.z
+        val n = r[3] * s.x + r[4] * s.y + r[5] * s.z
+        if (hypot(e, n) < MIN_HORIZONTAL) return Float.NaN
+        // vorne = (-n, e), wenn rechts = (e, n) in Ost/Nord
+        return Angles.normalize(atan2(-n, e) * RAD_TO_DEG)
     }
+
+    // unter ~84° seitlicher Kippung ist rechts zu steil fuer eine ruhige Richtung
+    private const val MIN_HORIZONTAL = 0.1f
 
     // Welt-oben in Bildschirmkoordinaten (Einheitsvektor), fuer die Glas-Spiegelung
     fun upOnScreen(r: FloatArray, quarterTurns: Int): Vec3 = toScreen(Vec3(r[6], r[7], r[8]), quarterTurns)

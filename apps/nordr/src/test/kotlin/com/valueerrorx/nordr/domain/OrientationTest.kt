@@ -34,6 +34,43 @@ class OrientationTest {
     }
 
     @Test
+    fun sidewaysTiltKeepsDirection() {
+        // flach und aufrecht: seitlich kippen aendert die Blickrichtung nicht
+        for (pitch in listOf(0f, 30f, 90f)) {
+            for (roll in listOf(-60f, -30f, -10f, 10f, 30f, 60f)) {
+                for (h in listOf(0f, 123f, 247f)) {
+                    assertHeading(h, Orientation.heading(Poses.pose(h, pitch, roll), 0))
+                }
+            }
+        }
+    }
+
+    @Test
+    fun noFlipBeyondUprightOrFacingDown() {
+        // frueher 180°-Sprung bei Pitch -45° und 135°
+        for (pitch in -60..120 step 5) {
+            assertHeading(77f, Orientation.heading(Poses.pose(77f, pitch.toFloat()), 0))
+            assertHeading(77f, Orientation.heading(Poses.pose(77f, pitch.toFloat(), 20f), 0))
+        }
+    }
+
+    @Test
+    fun uprightLandscapeUsesBack() {
+        for (h in listOf(0f, 90f, 200f)) {
+            // Oberkante links = Rotation 1, Oberkante rechts = Rotation 3
+            assertHeading(h, Orientation.heading(Poses.pose(h, 90f, -90f), 1))
+            assertHeading(h, Orientation.heading(Poses.pose(h, 90f, 90f), 3))
+            assertHeading(h, Orientation.heading(Poses.pose(h, 90f, -75f), 1))
+        }
+    }
+
+    @Test
+    fun screenRightVerticalIsUndetermined() {
+        assertTrue(Orientation.heading(Poses.pose(40f, 90f, 90f), 0).isNaN())
+        assertTrue(Orientation.heading(Poses.pose(40f, 0f, -88f), 0).isNaN())
+    }
+
+    @Test
     fun landscapeUsesScreenTop() {
         // quer gedreht (Oberkante links): Bildschirm-oben ist die rechte Geraetekante
         assertHeading(0f, Orientation.heading(Poses.pose(270f), 1))
@@ -59,8 +96,8 @@ class OrientationTest {
 
     @Test
     fun gravityAndMagneticMatchesPose() {
-        for ((h, pitch) in listOf(0f to 0f, 77f to 20f, 250f to 60f, 320f to 90f)) {
-            val r = Poses.pose(h, pitch)
+        for ((h, pitch, roll) in listOf(Triple(0f, 0f, 0f), Triple(77f, 20f, 15f), Triple(250f, 60f, -40f), Triple(320f, 90f, 0f))) {
+            val r = Poses.pose(h, pitch, roll)
             val m = Orientation.fromGravityMagnetic(Poses.gravity(r), Poses.magnetic(r))!!
             for (i in 0 until 9) assertEquals("Element $i bei $h/$pitch", r[i], m[i], 1e-4f)
         }
