@@ -355,7 +355,15 @@ private fun BigNumber(text: String, template: String, pulse: () -> Float, outlin
             }
             base.copy(fontSize = with(density) { lo.toSp() })
         }
-        val drawn = if (outline) style.copy(drawStyle = Stroke(width = with(density) { style.fontSize.toPx() } * OUTLINE)) else style
+        if (outline) {
+            // nur Aussenkontur: breiter Strich, Fuellung ausgestanzt; ueberlappende Glyph-Teile bleiben unsichtbar
+            val stroke = style.copy(drawStyle = Stroke(width = with(density) { style.fontSize.toPx() } * OUTLINE * 2))
+            Box(Modifier.graphicsLayer { compositingStrategy = CompositingStrategy.Offscreen }, contentAlignment = Alignment.Center) {
+                BasicText(text, style = stroke, maxLines = 1, softWrap = false)
+                BasicText(text, Modifier.graphicsLayer { blendMode = BlendMode.DstOut }, style = style, maxLines = 1, softWrap = false)
+            }
+            return@BoxWithConstraints
+        }
         BasicText(
             text,
             Modifier.graphicsLayer {
@@ -363,7 +371,7 @@ private fun BigNumber(text: String, template: String, pulse: () -> Float, outlin
                 scaleX = s
                 scaleY = s
             },
-            style = drawn,
+            style = style,
             maxLines = 1,
             softWrap = false,
         )
