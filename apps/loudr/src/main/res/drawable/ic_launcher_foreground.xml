@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Drei Schallboegen um eine Quelle, der aeusserste leuchtet orange -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Lichthof hinter dem aeusseren Bogen -->
+    <path android:pathData="M28,54a30,30 0 1,0 60,0a30,30 0 1,0 -60,0z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="radial"
+                android:centerX="58"
+                android:centerY="54"
+                android:gradientRadius="30"
+                android:startColor="#38FF8A3D"
+                android:endColor="#00FF8A3D" />
+        </aapt:attr>
+    </path>
+    <!-- Quelle -->
+    <path
+        android:pathData="M32,54a5,5 0 1,0 10,0a5,5 0 1,0 -10,0z"
+        android:fillColor="#FFDCE3E8" />
+    <path
+        android:pathData="M45.70,44.34A13,13 0 0,1 45.70,63.66"
+        android:strokeWidth="4.5"
+        android:strokeColor="#FFDCE3E8"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M53.06,36.17A24,24 0 0,1 53.06,71.83"
+        android:strokeWidth="4.5"
+        android:strokeColor="#FFFFC49A"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M60.42,28.0A35,35 0 0,1 60.42,80.0"
+        android:strokeWidth="5"
+        android:strokeColor="#FFFF8A3D"
+        android:strokeLineCap="round" />
+</vector>

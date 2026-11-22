@@ -16,7 +16,6 @@
     <string name="stat_min">Min</string>
     <string name="stat_avg">Average</string>
     <string name="stat_max">Max</string>
-    <string name="stat_state">%1$s %2$s dB</string>
     <string name="history">Last 60 s</string>
     <string name="footnote">Estimate · phone mics are not calibrated</string>
     <string name="footnote_cal">Estimate · calibrated %1$s dB</string>

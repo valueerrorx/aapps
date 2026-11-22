@@ -14,7 +14,6 @@
     <string name="stat_min">Min</string>
     <string name="stat_avg">Mittel</string>
     <string name="stat_max">Max</string>
-    <string name="stat_state">%1$s %2$s dB</string>
     <string name="history">Letzte 60 s</string>
     <string name="footnote">Schätzwert · Handy-Mikros sind nicht geeicht</string>
     <string name="footnote_cal">Schätzwert · kalibriert %1$s dB</string>
