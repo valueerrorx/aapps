@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tacho-Bogen mit leuchtendem Ausschlag und Nadel -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Lichthof an der Nadelspitze -->
+    <path android:pathData="M47,52a24,24 0 1,0 48,0a24,24 0 1,0 -48,0z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="radial"
+                android:centerX="71"
+                android:centerY="52"
+                android:gradientRadius="24"
+                android:startColor="#4046F0A8"
+                android:endColor="#0046F0A8" />
+        </aapt:attr>
+    </path>
+    <!-- Spur -->
+    <path
+        android:pathData="M37.03,73.97A24,24 0 1,1 70.97,73.97"
+        android:strokeWidth="5"
+        android:strokeColor="#FF2E3B46"
+        android:strokeLineCap="round" />
+    <!-- Ausschlag -->
+    <path
+        android:pathData="M37.03,73.97A24,24 0 1,1 77.18,50.79"
+        android:strokeWidth="5"
+        android:strokeLineCap="round">
+        <aapt:attr name="android:strokeColor">
+            <gradient
+                android:type="linear"
+                android:startX="34"
+                android:startY="74"
+                android:endX="78"
+                android:endY="40"
+                android:startColor="#FF1E8C64"
+                android:endColor="#FF46F0A8" />
+        </aapt:attr>
+    </path>
+    <!-- Nadel -->
+    <path
+        android:pathData="M54,57L71.39,52.34"
+        android:strokeWidth="3.5"
+        android:strokeColor="#FFDCE3E8"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M50,57a4,4 0 1,0 8,0a4,4 0 1,0 -8,0z"
+        android:fillColor="#FFDCE3E8" />
+</vector>
