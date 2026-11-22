@@ -1,6 +1,7 @@
 package com.valueerrorx.levlr.domain
 
 import kotlin.math.PI
+import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
@@ -40,8 +41,20 @@ object TiltMath {
     // Welche Bildschirmkante unten liegt (0 = untere, 1 = rechte, 2 = obere, 3 = linke)
     fun edgeQuadrant(raw: Float): Int = Math.floorMod((raw / 90f).roundToInt(), 4)
 
+    // Wie oben, aber die bisherige Kante bleibt bis 45° + Hysterese
+    fun edgeQuadrant(raw: Float, previous: Int, hysteresis: Float = 5f): Int =
+        if (abs(edgeAngle(raw, previous)) <= 45f + hysteresis) previous else edgeQuadrant(raw)
+
     // Abweichung von der naechsten Kante, -45..45
     fun edgeAngle(raw: Float): Float = raw - 90f * (raw / 90f).roundToInt()
+
+    // Abweichung von einer bestimmten Kante, -180..180
+    fun edgeAngle(raw: Float, quadrant: Int): Float {
+        var d = (raw - quadrant * 90f) % 360f
+        if (d > 180f) d -= 360f
+        if (d < -180f) d += 360f
+        return d
+    }
 
     // Flach: Neigung um die Y-Achse (rechts hoeher = positiv) und um die X-Achse (oben hoeher = positiv)
     fun flatX(up: Vec3): Float = atan2(up.x, sqrt(up.y * up.y + up.z * up.z)) * RAD_TO_DEG

@@ -34,6 +34,16 @@ class TiltMathTest {
     }
 
     @Test
+    fun quadrantHasHysteresis() {
+        val raw = TiltMath.edgeRaw(edgeSample(47f))
+        assertEquals(1, TiltMath.edgeQuadrant(raw))
+        assertEquals(0, TiltMath.edgeQuadrant(raw, previous = 0))
+        assertEquals(47f, TiltMath.edgeAngle(raw, 0), 1e-3f)
+        assertEquals(1, TiltMath.edgeQuadrant(TiltMath.edgeRaw(edgeSample(52f)), previous = 0))
+        assertEquals(-2f, TiltMath.edgeAngle(TiltMath.edgeRaw(edgeSample(178f)), 2), 1e-3f)
+    }
+
+    @Test
     fun screenRemapKeepsLevelOnLongEdge() {
         // ROTATION_90 = Geraet 90° gegen den Uhrzeigersinn, dazu 1,5° im Uhrzeigersinn
         for ((turns, base) in listOf(1 to -90f, 3 to 90f, 2 to 180f)) {

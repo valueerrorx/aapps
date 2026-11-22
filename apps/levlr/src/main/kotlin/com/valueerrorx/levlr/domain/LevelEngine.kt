@@ -37,6 +37,7 @@ class LevelEngine(calibration: Calibration = Calibration()) {
     private val deadX = Deadband(DEADBAND)
     private val deadY = Deadband(DEADBAND)
     private var lastNanos = 0L
+    private var quadrant: Int? = null
 
     var mode: LevelMode = LevelMode.FLAT
         private set
@@ -50,6 +51,7 @@ class LevelEngine(calibration: Calibration = Calibration()) {
     fun reset() {
         smoother.reset(); snap.reset(); deadA.reset(); deadX.reset(); deadY.reset()
         lastNanos = 0L
+        quadrant = null
     }
 
     // Verarbeitet einen Messwert; Rueckgabe: ob sich die Anzeige geaendert hat
@@ -68,9 +70,12 @@ class LevelEngine(calibration: Calibration = Calibration()) {
         val next = when (mode) {
             LevelMode.EDGE -> {
                 val raw360 = TiltMath.edgeRaw(up)
-                val a = deadA.update(TiltMath.edgeAngle(raw360))
+                val q = quadrant?.let { TiltMath.edgeQuadrant(raw360, it) } ?: TiltMath.edgeQuadrant(raw360)
+                if (q != quadrant) deadA.reset()
+                quadrant = q
+                val a = deadA.update(TiltMath.edgeAngle(raw360, q))
                 justLeveled = snap.update(abs(a))
-                LevelReading(LevelMode.EDGE, edgeAngle = a, quadrant = TiltMath.edgeQuadrant(raw360), isLevel = snap.isLevel)
+                LevelReading(LevelMode.EDGE, edgeAngle = a, quadrant = q, isLevel = snap.isLevel)
             }
             LevelMode.FLAT -> {
                 val x = deadX.update(TiltMath.flatX(up))

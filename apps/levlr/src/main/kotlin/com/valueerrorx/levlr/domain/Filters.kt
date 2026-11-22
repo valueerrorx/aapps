@@ -41,7 +41,7 @@ class Deadband(private val threshold: Float) {
 }
 
 // Ein-/Ausrasten mit Hysterese gegen Flattern an der Grenze
-class SnapDetector(private val enter: Float = 0.05f, private val exit: Float = 0.2f) {
+class SnapDetector(private val enter: Float = 0.05f, private val exit: Float = 0.1f) {
     var isLevel = false
         private set
 
