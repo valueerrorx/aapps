@@ -6,7 +6,7 @@
 
     <string name="north_magnetic">Magnetisch</string>
     <string name="north_true">Geografisch</string>
-    <string name="heading_desc">%1$d Grad, %2$s</string>
+    <string name="heading_desc">%1$d°, %2$s</string>
     <string name="accuracy_low">geringe Genauigkeit</string>
     <string name="set_course">Kurs setzen</string>
     <string name="clear_course">Kurs löschen</string>
