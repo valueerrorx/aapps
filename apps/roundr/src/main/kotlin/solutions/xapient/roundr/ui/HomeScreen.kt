@@ -109,8 +109,13 @@ fun HomeScreen(
                     Box(Modifier.weight(1f)) { NameChip(workout, onLibrary) }
                     Gear(onSettings)
                 }
-                hero(Modifier.weight(1f).fillMaxWidth().padding(horizontal = 24.dp, vertical = 8.dp))
-                Values(workout, onEdit, Modifier.fillMaxWidth().padding(horizontal = 16.dp))
+                // Ring und Werte als Gruppe leicht ueber der Mitte
+                Spacer(Modifier.weight(0.4f))
+                Column(verticalArrangement = Arrangement.spacedBy(28.dp)) {
+                    hero(Modifier.weight(1f, fill = false).fillMaxWidth().padding(horizontal = 12.dp))
+                    Values(workout, onEdit, Modifier.fillMaxWidth().padding(horizontal = 16.dp))
+                }
+                Spacer(Modifier.weight(0.6f))
                 Box(Modifier.fillMaxWidth().padding(top = 20.dp, bottom = 16.dp), contentAlignment = Alignment.Center) { start() }
             }
         }

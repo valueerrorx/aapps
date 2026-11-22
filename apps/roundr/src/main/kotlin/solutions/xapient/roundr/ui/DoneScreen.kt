@@ -75,12 +75,13 @@ fun DoneScreen(workout: Workout, onAgain: () -> Unit, onClose: () -> Unit) {
                             maxLines = 1,
                             autoSize = TextAutoSize.StepBased(minFontSize = 18.sp, maxFontSize = 72.sp, stepSize = 2.sp),
                         )
+                        Spacer(Modifier.height(4.dp))
                         BasicText(
-                            pluralStringResource(R.plurals.rounds_done, rounds, rounds),
+                            pluralStringResource(R.plurals.rounds_done, rounds, rounds).uppercase(),
                             Modifier.fillMaxWidth(),
-                            style = Aapps.type.number.copy(color = c.fgMuted, textAlign = TextAlign.Center),
+                            style = Aapps.type.label.copy(color = c.fgMuted, textAlign = TextAlign.Center),
                             maxLines = 1,
-                            autoSize = TextAutoSize.StepBased(minFontSize = 10.sp, maxFontSize = 20.sp, stepSize = 0.5.sp),
+                            autoSize = TextAutoSize.StepBased(minFontSize = 8.sp, maxFontSize = Aapps.type.label.fontSize, stepSize = 0.5.sp),
                         )
                     }
                 }
@@ -123,8 +124,13 @@ fun DoneScreen(workout: Workout, onAgain: () -> Unit, onClose: () -> Unit) {
                         maxLines = 1,
                     )
                 }
-                hero(Modifier.weight(1f).fillMaxWidth().padding(24.dp))
-                Box(Modifier.fillMaxWidth().padding(bottom = 12.dp), contentAlignment = Alignment.Center) { actions() }
+                // Ring und Aktionen als Gruppe leicht ueber der Mitte
+                Spacer(Modifier.weight(0.4f))
+                Column(verticalArrangement = Arrangement.spacedBy(32.dp)) {
+                    hero(Modifier.weight(1f, fill = false).fillMaxWidth().padding(horizontal = 12.dp))
+                    Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) { actions() }
+                }
+                Spacer(Modifier.weight(0.6f))
             }
         }
     }

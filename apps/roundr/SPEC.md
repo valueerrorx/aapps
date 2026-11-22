@@ -45,7 +45,7 @@ Kein INTERNET, kein Exact-Alarm (der Dienst läuft ja).
 | `run_work` | Arbeit, Runde 3/8, 60 % übrig |
 | `run_rest`, `run_prep`, `run_setrest` | Pause fast leer, Vorbereitung, Satzpause |
 | `run_last3` | Arbeit, 2 s übrig |
-| `run_paused` | angehalten, gedimmt |
+| `run_paused` | angehalten: „Paused" groß, Zahl als Umriss, Schraffur |
 | `run_long` | Boxen, 2:41 übrig |
 | `done` | Fertig |
 | `library`, `editor`, `settings`, `about` | |
