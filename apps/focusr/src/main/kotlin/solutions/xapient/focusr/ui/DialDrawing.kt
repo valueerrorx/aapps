@@ -26,6 +26,11 @@ private fun polar(center: Offset, frac: Float, radius: Float): Offset {
     return Offset(center.x + (sin(a) * radius).toFloat(), center.y - (cos(a) * radius).toFloat())
 }
 
+// Gehaeuse- und Muldenradius aus der Groesse; Mulde = Flaeche des Sektors
+fun caseRadius(width: Float, height: Float, density: Float): Float = min(width, height) / 2f - 6f * density
+
+fun faceRadius(width: Float, height: Float, density: Float): Float = caseRadius(width, height, density) * 0.74f
+
 // Pausiert: Sektor gedaempft, aber gegen die Mulde noch >= 3:1 (ContrastTest)
 const val DIM_ALPHA = 0.75f
 
@@ -47,9 +52,9 @@ private class Label(val pos: Offset, val layout: TextLayoutResult)
 class DialParts(scope: CacheDrawScope, scale: Scale, val c: AappsColors, measurer: TextMeasurer, labelStyle: TextStyle) {
     val dp = scope.density
     val center = Offset(scope.size.width / 2f, scope.size.height / 2f)
-    val r = min(scope.size.width, scope.size.height) / 2f - 6f * dp
+    val r = caseRadius(scope.size.width, scope.size.height, dp)
     val visible = r > 40f * dp
-    val face = r * 0.74f
+    val face = faceRadius(scope.size.width, scope.size.height, dp)
     private val faceSize = Size(face * 2f, face * 2f)
     private val faceTopLeft = center - Offset(face, face)
 

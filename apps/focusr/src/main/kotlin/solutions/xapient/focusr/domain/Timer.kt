@@ -41,7 +41,8 @@ data class Timer(
 
     fun reset(): Timer = copy(mode = Mode.IDLE, endAt = 0, leftMs = 0, totalMs = 0)
 
-    fun canStart(now: Long): Boolean = when (phase(now)) {
+    // Phase statt Uhr: die Oberflaeche kennt sie schon und liest so keine tickende Zeit
+    fun canStart(phase: Phase): Boolean = when (phase) {
         Phase.PAUSED -> true
         Phase.RUNNING -> false
         else -> setMs > 0

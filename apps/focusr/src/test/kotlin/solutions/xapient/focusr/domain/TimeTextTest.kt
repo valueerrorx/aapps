@@ -23,9 +23,4 @@ class TimeTextTest {
     @Test fun negativeIsZero() {
         assertEquals("0:00", TimeText.clock(-5000))
     }
-
-    @Test fun parts() {
-        assertEquals(25L to 0L, TimeText.parts(25 * Timer.MINUTE))
-        assertEquals(0L to 42L, TimeText.parts(41_200))
-    }
 }

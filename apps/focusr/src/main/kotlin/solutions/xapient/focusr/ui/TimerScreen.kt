@@ -47,6 +47,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.pluralStringResource
@@ -121,25 +122,22 @@ fun TimerScreen(
     val now = remember { mutableLongStateOf(clock()) }
     val drag = remember { mutableStateOf(dragPreview) }
     val pulse = remember { mutableFloatStateOf(pulseAt) }
-    // Radius in px fuer das Ticker-Intervall, kommt aus dem Zeichnen
+    // Radius in px fuer das Ticker-Intervall, kommt aus dem Layout
     val radiusPx = remember { floatArrayOf(0f) }
 
     val phase by remember(timer) { derivedStateOf { timer.phase(now.longValue) } }
 
-    // Ticker: nur waehrend des Laufs, so selten wie moeglich; letzte Minute pro Frame
+    // Ticker: nur waehrend des Laufs, so selten wie moeglich; letzte Minute pro Frame.
+    // Jeder Schritt wartet auf einen Frame: im Hintergrund (ab ON_STOP) pausiert die Frame-Uhr und damit der Ticker
     LaunchedEffect(timer, scale, animate) {
         now.longValue = clock()
         if (!animate) return@LaunchedEffect
         while (timer.phase(now.longValue) == Phase.RUNNING) {
             val rem = timer.remaining(now.longValue)
-            if (rem <= PULSE_MS) {
-                withFrameMillis { }
-                now.longValue = clock()
-                pulse.floatValue = pulseOf(now.longValue)
-            } else {
-                delay(min(Dial.tickMs(scale, radiusPx[0]), Dial.msToNextSecond(rem)))
-                now.longValue = clock()
-            }
+            if (rem > PULSE_MS) delay(min(Dial.tickMs(scale, radiusPx[0]), Dial.msToNextSecond(rem)))
+            withFrameMillis { }
+            now.longValue = clock()
+            if (timer.remaining(now.longValue) <= PULSE_MS) pulse.floatValue = pulseOf(now.longValue)
         }
         pulse.floatValue = 0f
     }
@@ -200,11 +198,7 @@ fun TimerScreen(
     AappsScaffold {
         val landscape = LocalWindowInfo.current.containerSize.let { it.width > it.height }
         val bigFont = LocalDensity.current.fontScale > 1.5f
-        val canStart = when (phase) {
-            Phase.PAUSED -> true
-            Phase.RUNNING -> false
-            else -> timer.setMs > 0
-        }
+        val canStart = timer.canStart(phase)
         val controls: @Composable () -> Unit = {
             Controls(phase, canStart, haptics, onStart, onPause, onReset, onReject, plainPill = landscape && bigFont)
         }
@@ -273,6 +267,7 @@ private fun TimerDial(look: DialInputs, haptics: Haptics?, onCommit: (Long) -> U
     val measurer = rememberTextMeasurer()
     val labelStyle = Aapps.type.number
     val dialDesc = stringResource(R.string.dial_desc)
+    val density = LocalDensity.current.density
 
     // Ansage: ganze Minuten, in der letzten Minute Sekunden; aendert sich selten
     val spoken by remember(look) {
@@ -290,7 +285,6 @@ private fun TimerDial(look: DialInputs, haptics: Haptics?, onCommit: (Long) -> U
     val draw = remember(look, scale, colors, measurer, labelStyle) {
         Modifier.drawWithCache {
             val parts = DialParts(this, scale, colors, measurer, labelStyle)
-            look.radiusPx[0] = parts.face
             onDrawBehind {
                 drawDial(
                     parts,
@@ -310,6 +304,8 @@ private fun TimerDial(look: DialInputs, haptics: Haptics?, onCommit: (Long) -> U
     Box(
         modifier
             .aspectRatio(1f)
+            // Muldenradius fuer das Ticker-Intervall, schon beim Layout bekannt
+            .onSizeChanged { look.radiusPx[0] = faceRadius(it.width.toFloat(), it.height.toFloat(), density) }
             .semantics {
                 contentDescription = dialDesc
                 stateDescription = spokenText

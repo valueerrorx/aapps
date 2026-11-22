@@ -1,6 +1,7 @@
 package solutions.xapient.focusr
 
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.TouchInjectionScope
@@ -10,8 +11,15 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performSemanticsAction
 import androidx.compose.ui.test.performTouchInput
+import android.Manifest
+import android.app.NotificationManager
+import androidx.lifecycle.Lifecycle
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
+import org.robolectric.Shadows.shadowOf
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -113,5 +121,32 @@ class GestureTest {
         val t = Prefs(rule.activity).timer
         assertEquals(Mode.RUNNING, t.mode)
         assertEquals(25 * 60_000L, t.setMs)
+    }
+
+    // TalkBack: Regler in Rasten verstellen
+    @Test fun talkBackSetProgressSetsTime() {
+        dial().performSemanticsAction(SemanticsActions.SetProgress) { it(30f) }
+        shows("30 minutes")
+        assertEquals(30 * 60_000L, Prefs(rule.activity).timer.setMs)
+    }
+
+    // Im Hintergrund Countdown-Benachrichtigung, beim Zurueckkommen weg
+    @Test fun countdownNotificationOnlyInBackground() {
+        val app = rule.activity.application
+        shadowOf(app).grantPermissions(Manifest.permission.POST_NOTIFICATIONS)
+        val nm = app.getSystemService(NotificationManager::class.java)
+        rule.onNodeWithText("START").performClick()
+        rule.activityRule.scenario.moveToState(Lifecycle.State.CREATED)
+        assertNotNull(shadowOf(nm).getNotification(Notifier.ID_RUNNING))
+        rule.activityRule.scenario.moveToState(Lifecycle.State.RESUMED)
+        assertNull(shadowOf(nm).getNotification(Notifier.ID_RUNNING))
+    }
+
+    // Leerlauf im Hintergrund: keine Benachrichtigung
+    @Test fun noCountdownWhenIdle() {
+        val app = rule.activity.application
+        shadowOf(app).grantPermissions(Manifest.permission.POST_NOTIFICATIONS)
+        rule.activityRule.scenario.moveToState(Lifecycle.State.CREATED)
+        assertNull(shadowOf(app.getSystemService(NotificationManager::class.java)).getNotification(Notifier.ID_RUNNING))
     }
 }

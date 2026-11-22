@@ -65,9 +65,9 @@ class TimerTest {
 
     @Test fun zeroCannotStart() {
         val z = Timer(0)
-        assertFalse(z.canStart(t0))
+        assertFalse(z.canStart(z.phase(t0)))
         assertSame(z, z.start(t0))
-        assertTrue(Timer(0, Mode.PAUSED, 0, 1000).canStart(t0))
+        assertTrue(Timer(0, Mode.PAUSED, 0, 1000).canStart(Phase.PAUSED))
     }
 
     @Test fun resetGoesIdleKeepingSetTime() {
@@ -105,6 +105,16 @@ class TimerTest {
     @Test fun setClampsToMax() {
         assertEquals(Timer.MAX_MS, Timer().set(999 * min, t0).setMs)
         assertEquals(0L, Timer().set(-5, t0).setMs)
+    }
+
+    // Skala bei laufendem Timer gewechselt: Lauf unveraendert, Scheibe zeigt hoechstens voll
+    @Test fun scaleChangeWhileRunning() {
+        val run = Timer(25 * min).start(t0).limitTo(Scale.MIN5)
+        assertEquals(Phase.RUNNING, run.phase(t0 + min))
+        assertEquals(24 * min, run.remaining(t0 + min))
+        assertEquals(1f, Dial.fill(run.remaining(t0 + min), Scale.MIN5), 0f)
+        // zurueck auf 60: Scheibe zeigt wieder den echten Anteil
+        assertEquals(0.4f, Dial.fill(run.remaining(t0 + min), Scale.MIN60), 1e-6f)
     }
 
     @Test fun limitToScaleOnlyTouchesSetTime() {
