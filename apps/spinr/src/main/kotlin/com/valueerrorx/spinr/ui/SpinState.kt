@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
 import com.valueerrorx.spinr.domain.Flapper
 import com.valueerrorx.spinr.domain.Spin
 import com.valueerrorx.spinr.domain.Spinner
@@ -15,8 +16,16 @@ import kotlin.random.Random
 
 // Zustand des Rads fuer Compose; alle Aufrufe auf dem Main-Thread
 @Stable
-class SpinState(labels: List<String> = emptyList(), private val random: Random = Random.Default) {
+class SpinState(
+    labels: List<String> = emptyList(),
+    colors: List<Color> = segmentColors(labels.size),
+    private val random: Random = Random.Default,
+) {
     var labels by mutableStateOf(labels)
+        private set
+
+    // Farbe je Segment, passend zu labels
+    var colors by mutableStateOf(colors)
         private set
 
     // Drehung im Uhrzeigersinn in Grad; Float fuer die Grafik, Double fuer die Rechnung
@@ -52,9 +61,11 @@ class SpinState(labels: List<String> = emptyList(), private val random: Random =
     // Segment unter dem Zeiger (nur Anzeige, liest den beobachtbaren Winkel)
     val current: Int get() = if (labels.isEmpty()) -1 else WheelMath.segmentAt(angle.toDouble(), labels.size)
 
-    fun showLabels(new: List<String>) {
-        if (new == labels) return
+    // Neue Eintraege brechen eine laufende Drehung ab
+    fun showLabels(new: List<String>, newColors: List<Color> = segmentColors(new.size)) {
+        if (new == labels && newColors == colors) return
         labels = new
+        colors = newColors
         winner = null
         spin = null
         spinning = false
@@ -97,9 +108,15 @@ class SpinState(labels: List<String> = emptyList(), private val random: Random =
 
     // Ein Frame; Rueckgabe: ueberstrichene Stifte
     fun step(dt: Double): Int {
+        if (labels.size < 2) {
+            // ohne Stifte nichts nachschwingen lassen, damit die Schleife einschlaeft
+            flapper.pose(0.0)
+            flap = 0f
+            return 0
+        }
         val s = spin
         if (s == null) {
-            if (labels.size >= 2) moveTo(exact, dt)
+            moveTo(exact, dt)
             return 0
         }
         elapsed += dt
@@ -126,7 +143,7 @@ class SpinState(labels: List<String> = emptyList(), private val random: Random =
         return ticks
     }
 
-    // Fester Zustand fuer Screenshots
+    // Fester Zustand fuer Screenshots und nach Prozess-Neustart
     fun pose(angle: Float, speed: Float = 0f, flap: Float = 0f, winner: Int? = null) {
         exact = angle.toDouble()
         this.angle = angle
