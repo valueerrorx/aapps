@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- App-Icon fuer die Info-Seite (adaptive Icons kann Compose nicht direkt zeichnen); erzeugt aus ic_launcher_foreground -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="72dp"
+    android:height="72dp"
+    android:viewportWidth="72"
+    android:viewportHeight="72">
+    <path android:pathData="M20,0h32a20,20 0 0 1 20,20v32a20,20 0 0 1 -20,20h-32a20,20 0 0 1 -20,-20v-32a20,20 0 0 1 20,-20z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="radial"
+                android:centerX="36"
+                android:centerY="32"
+                android:gradientRadius="44"
+                android:startColor="#FF22252B"
+                android:endColor="#FF10161B" />
+        </aapt:attr>
+    </path>
+    <path
+        android:pathData="M20,0.5h32a19.5,19.5 0 0 1 19.5,19.5v32a19.5,19.5 0 0 1 -19.5,19.5h-32a19.5,19.5 0 0 1 -19.5,-19.5v-32a19.5,19.5 0 0 1 19.5,-19.5z"
+        android:strokeWidth="1"
+        android:strokeColor="#FF26323C" />
+    <group android:translateX="-18" android:translateY="-18">
+        <!-- Lichthof -->
+        <path android:pathData="M20,54a34,34 0 1,0 68,0a34,34 0 1,0 -68,0z">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:type="radial"
+                    android:centerX="54"
+                    android:centerY="54"
+                    android:gradientRadius="34"
+                    android:startColor="#38FFD24A"
+                    android:endColor="#00FFD24A" />
+            </aapt:attr>
+        </path>
+        <!-- linke Tafel -->
+        <path android:pathData="M29,34h18a4,4 0 0,1 4,4v32a4,4 0 0,1 -4,4h-18a4,4 0 0,1 -4,-4v-32a4,4 0 0,1 4,-4z">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:type="linear"
+                    android:startX="0"
+                    android:startY="34"
+                    android:endX="0"
+                    android:endY="74"
+                    android:startColor="#FFFFE07A"
+                    android:endColor="#FFF0B32C" />
+            </aapt:attr>
+        </path>
+        <!-- rechte Tafel -->
+        <path android:pathData="M61,34h18a4,4 0 0,1 4,4v32a4,4 0 0,1 -4,4h-18a4,4 0 0,1 -4,-4v-32a4,4 0 0,1 4,-4z">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:type="linear"
+                    android:startX="0"
+                    android:startY="34"
+                    android:endX="0"
+                    android:endY="74"
+                    android:startColor="#FF86D8FF"
+                    android:endColor="#FF35A6E6" />
+            </aapt:attr>
+        </path>
+        <!-- untere Blatthaelften etwas dunkler -->
+        <path
+            android:fillColor="#1F000000"
+            android:pathData="M25,54h26v16a4,4 0 0,1 -4,4h-18a4,4 0 0,1 -4,-4zM57,54h26v16a4,4 0 0,1 -4,4h-18a4,4 0 0,1 -4,-4z" />
+        <!-- Ziffern -->
+        <path
+            android:pathData="M32,44C32,39.5 35,38 38,38C41.5,38 44,40.5 44,44C44,48.5 39.5,52.5 32,67L44.5,67"
+            android:strokeWidth="3.4"
+            android:strokeColor="#FF0E1318"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round" />
+        <path
+            android:pathData="M64.5,43L70.5,38L70.5,67"
+            android:strokeWidth="3.4"
+            android:strokeColor="#FF0E1318"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round" />
+        <!-- Fallblatt-Spalt -->
+        <path
+            android:pathData="M25,54h26M57,54h26"
+            android:strokeWidth="1.4"
+            android:strokeColor="#FF10161B" />
+        <!-- Reflex oben -->
+        <path
+            android:pathData="M29,35.2h18M61,35.2h18"
+            android:strokeWidth="0.8"
+            android:strokeColor="#88FFFFFF"
+            android:strokeLineCap="round" />
+        <!-- Doppelpunkt -->
+        <path
+            android:fillColor="#FFDCE3E8"
+            android:pathData="M52.3,48.5a1.7,1.7 0 1,0 3.4,0a1.7,1.7 0 1,0 -3.4,0zM52.3,59.5a1.7,1.7 0 1,0 3.4,0a1.7,1.7 0 1,0 -3.4,0z" />
+    </group>
+</vector>
