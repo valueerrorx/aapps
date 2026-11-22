@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tagline">Eine Wasserwaage, die mit echter Physik zur Ruhe kommt. Eine Aufgabe, schön gelöst.</string>
+    <string name="note_survey">Nicht für Vermessungsarbeiten. Handy-Sensoren sind keine geeichten Messgeräte.</string>
+
+    <string name="mode_flat">Flach</string>
+    <string name="mode_edge">Kante</string>
+    <string name="level">Gerade</string>
+    <string name="hold">Halten</string>
+    <string name="held">Gehalten</string>
+    <string name="flat_axes">X %1$s · Y %2$s</string>
+    <string name="no_sensor">Dieses Gerät hat keinen Lagesensor.</string>
+
+    <string name="group_measure">Messen</string>
+    <string name="group_calibration">Kalibrierung</string>
+    <string name="group_debug">Diagnose</string>
+    <string name="unit">Einheit</string>
+    <string name="unit_degree">Grad</string>
+    <string name="unit_percent">Prozent</string>
+    <string name="haptics">Vibrieren beim Einrasten</string>
+    <string name="calibrate">Kalibrieren</string>
+    <string name="calibrate_sub">Zwei Messungen, dazwischen um 180° drehen</string>
+    <string name="reset_calibration">Kalibrierung zurücksetzen</string>
+    <string name="calibration_state">Flach: %1$s · Kante: %2$s</string>
+    <string name="calibrated">kalibriert</string>
+    <string name="not_calibrated">Werkszustand</string>
+    <string name="record_sensor">Sensor aufzeichnen (10 s)</string>
+    <string name="record_sub">CSV über das Teilen-Menü</string>
+    <string name="recording">Zeichne auf … %1$d s</string>
+
+    <string name="cal_title">Kalibrieren · %1$d/2</string>
+    <string name="cal_title_done">Kalibriert</string>
+    <string name="cal_step1">Leg das Handy flach hin oder stell es auf eine Kante, dann messen. Still halten.</string>
+    <string name="cal_step2_flat">Dreh es an derselben Stelle um 180° und miss noch einmal.</string>
+    <string name="cal_step2_edge">Stell es an derselben Stelle auf die gegenüberliegende Kante und miss noch einmal.</string>
+    <string name="cal_done">Die Werte sind jetzt für dieses Handy korrigiert.</string>
+    <string name="cal_measure">Messen</string>
+    <string name="cal_measuring">Messe …</string>
+    <string name="cal_cancel">Abbrechen</string>
+    <string name="cal_finish">Fertig</string>
+    <string name="cal_wrong_mode_flat">Zum Weitermachen flach hinlegen.</string>
+    <string name="cal_wrong_mode_edge">Zum Weitermachen auf eine Kante stellen.</string>
+    <string name="cal_not_rotated">Das war dieselbe Kante. Stell es auf die gegenüberliegende.</string>
+    <string name="cal_implausible">Die Messungen liegen zu weit auseinander. Gleiche Stelle, noch einmal.</string>
+</resources>
