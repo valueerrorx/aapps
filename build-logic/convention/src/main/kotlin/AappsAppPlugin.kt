@@ -31,9 +31,9 @@ class AappsAppPlugin : Plugin<Project> {
 
         extensions.configure<ApplicationExtension> {
             configureAndroidCommon(this)
-            namespace = "com.valueerrorx.$appName"
+            namespace = "solutions.xapient.$appName"
             defaultConfig {
-                applicationId = "com.valueerrorx.$appName"
+                applicationId = "solutions.xapient.$appName"
                 targetSdk = Sdk.TARGET
                 versionName = version
                 versionCode = parts[0] * 10000 + parts[1] * 100 + parts[2]

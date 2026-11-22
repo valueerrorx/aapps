@@ -10,7 +10,7 @@ Ideen und Recherche: `research/ideen.md`.
   - `core/audio`: kommt erst ab roundr dazu
   - `apps/<name>/`: SPEC.md, CHECKLIST.md, fastlane-Metadaten, version.txt
   - `docs/`: DESIGN.md, AGENTS.md, PRIVACY.md
-- Jede App bekommt eine eigene applicationId `com.valueerrorx.<name>`. Tags heißen `<name>-vX.Y.Z`, Releases `<name>-latest`.
+- Jede App bekommt eine eigene applicationId `solutions.xapient.<name>`. Tags heißen `<name>-vX.Y.Z`, Releases `<name>-latest`.
 - Empfehlung: das Repo öffentlich machen (GPLv3 wie sleepr). Dann ist CI kostenlos, privat wären die Actions-Minuten schnell aufgebraucht.
 
 ## Stack

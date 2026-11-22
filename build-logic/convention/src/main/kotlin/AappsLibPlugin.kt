@@ -9,8 +9,8 @@ class AappsLibPlugin : Plugin<Project> {
         pluginManager.apply("org.jetbrains.kotlin.plugin.compose")
         extensions.configure<LibraryExtension> {
             configureAndroidCommon(this)
-            // :core:ui -> com.valueerrorx.aapps.core.ui
-            namespace = "com.valueerrorx.aapps" + path.replace(':', '.')
+            // :core:ui -> solutions.xapient.aapps.core.ui
+            namespace = "solutions.xapient.aapps" + path.replace(':', '.')
         }
     }
 }
