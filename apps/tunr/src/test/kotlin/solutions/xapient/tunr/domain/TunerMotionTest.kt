@@ -36,12 +36,35 @@ class TunerMotionTest {
     @Test fun strobeDirection() {
         val m = TunerMotion()
         m.setTarget(Reading(active = true, heard = true, cents = 10f, target = 69))
-        m.step(0.1f)
-        assertEquals(6f, m.strobe, 0.01f)
+        m.step(1f / 60f)
+        assertTrue(m.strobe in 0.5f..1.5f)
         val n = TunerMotion()
         n.setTarget(Reading(active = true, heard = true, cents = -10f, target = 69))
-        n.step(0.1f)
-        assertEquals(354f, n.strobe, 0.01f)
+        n.step(1f / 60f)
+        assertTrue(n.strobe in 358.5f..359.5f)
+    }
+
+    // kein Rueckwaerts-Effekt: je Bild weniger als 0,4 Strichabstand, beide Ringe, auch bei Rucklern
+    @Test fun strobeNoAliasing() {
+        val outer = 360f / TunerMotion.STROBE_OUTER
+        val inner = 360f / TunerMotion.STROBE_INNER
+        var last = -Float.MAX_VALUE
+        for (c in -200..200) {
+            for (dt in listOf(1f / 120f, 1f / 60f, 1f / 30f, 0.2f)) {
+                val m = TunerMotion()
+                m.setTarget(Reading(active = true, heard = true, cents = c.toFloat(), target = 69))
+                m.step(dt)
+                val shift = if (m.strobe > 180f) 360f - m.strobe else m.strobe
+                assertTrue("aussen $c Cent: $shift", shift < 0.4f * outer)
+                assertTrue("innen $c Cent", shift * TunerMotion.INNER_RATIO < 0.4f * inner)
+                if (c != 0) assertEquals("Richtung $c", c > 0, m.strobe in 0f..180f)
+            }
+            // mehr Abweichung = schneller
+            val s = TunerMotion.strobeSpeedOf(c.toFloat())
+            assertTrue("monoton $c", if (c in -60..60) s > last else s >= last)
+            last = s
+        }
+        assertEquals(6f, TunerMotion.strobeSpeedOf(1f), 0.01f)
     }
 
     @Test fun needleClampedAtEdge() {

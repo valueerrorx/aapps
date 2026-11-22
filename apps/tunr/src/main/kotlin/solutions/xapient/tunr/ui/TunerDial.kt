@@ -33,6 +33,9 @@ import solutions.xapient.tunr.R
 import solutions.xapient.tunr.domain.Accidental
 import solutions.xapient.tunr.domain.Notation
 import solutions.xapient.tunr.domain.Notes
+import solutions.xapient.tunr.domain.TunerMotion.Companion.INNER_RATIO
+import solutions.xapient.tunr.domain.TunerMotion.Companion.STROBE_INNER
+import solutions.xapient.tunr.domain.TunerMotion.Companion.STROBE_OUTER
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.cos
@@ -42,8 +45,6 @@ import kotlin.math.sin
 
 // Skala: +-50 Cent ueber +-120 Grad, oben Mitte = 0
 const val DEG_PER_CENT = 2.4f
-private const val STROBE_OUTER = 64
-private const val STROBE_INNER = 24
 
 private fun angleOf(cents: Float) = -90f + cents * DEG_PER_CENT
 
@@ -135,7 +136,7 @@ fun TunerDial(state: TunerState, notation: Notation, hint: String?, modifier: Mo
                     rotate(m.strobe, mid) {
                         drawCircle(live, rOuter, mid, style = Stroke(outerW, pathEffect = outerDash))
                     }
-                    rotate(m.strobe * 0.5f, mid) {
+                    rotate(m.strobe * INNER_RATIO, mid) {
                         drawCircle(live.copy(alpha = 0.55f + 0.45f * (1 - pres)), rInner, mid, style = Stroke(innerW, pathEffect = innerDash))
                     }
                     // Bogen und Teilstriche

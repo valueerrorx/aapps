@@ -1,6 +1,7 @@
 package solutions.xapient.tunr.domain
 
 import kotlin.math.abs
+import kotlin.math.tanh
 
 // Bewegung der Anzeige: Zeiger, Praesenz, Einrasten, Strobe-Drehung und Glanz; schlaeft ein, wenn alles ruht
 class TunerMotion {
@@ -22,7 +23,7 @@ class TunerMotion {
         if (r.active) needle.target = r.cents.coerceIn(-NEEDLE_LIMIT, NEEDLE_LIMIT)
         presence.target = if (r.active) 1f else 0f
         lock.target = if (r.inTune) 1f else 0f
-        strobeSpeed = if (r.active) r.cents.coerceIn(-50f, 50f) * DEG_PER_CENT_S else 0f
+        strobeSpeed = if (r.active) strobeSpeedOf(r.cents) else 0f
         if (seenLocks >= 0 && r.locks > seenLocks) shine = 0f
         seenLocks = r.locks
     }
@@ -41,7 +42,7 @@ class TunerMotion {
         needle.step(dt)
         presence.step(dt)
         lock.step(dt)
-        if (strobeSpeed != 0f) strobe = ((strobe + strobeSpeed * dt.coerceAtMost(0.1f)) % 360f + 360f) % 360f
+        if (strobeSpeed != 0f) strobe = ((strobe + strobeSpeed * dt.coerceAtMost(MAX_DT)) % 360f + 360f) % 360f
         if (shine < 1f) shine = (shine + dt / SHINE_S).coerceAtMost(1f)
     }
 
@@ -54,5 +55,16 @@ class TunerMotion {
         const val NEEDLE_LIMIT = 55f
         const val DEG_PER_CENT_S = 6f
         const val SHINE_S = 0.9f
+        // Strichzahl der Strobe-Ringe; innen dreht halb so schnell
+        const val STROBE_OUTER = 64
+        const val STROBE_INNER = 24
+        const val INNER_RATIO = 0.5f
+        // hoechstens 0,36 Strichabstand je Bild bei 60 Hz, sonst dreht der Ring scheinbar rueckwaerts
+        const val MAX_STROBE_DEG_S = 120f
+        // laengere Bilder (Ruckler, 30 Hz) drehen langsamer statt zu springen
+        const val MAX_DT = 1f / 60f
+
+        // nahe 0 linear (6 Grad/s je Cent), gross sanft gestaucht; Richtung bleibt
+        fun strobeSpeedOf(cents: Float): Float = MAX_STROBE_DEG_S * tanh(cents * DEG_PER_CENT_S / MAX_STROBE_DEG_S)
     }
 }
