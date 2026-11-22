@@ -10,12 +10,18 @@
     <string name="spin_again">Nochmal</string>
     <string name="remove">Entfernen</string>
     <string name="restore">Alle zurück · %1$d</string>
-    <string name="wheel_desc">Glücksrad mit %1$d Einträgen</string>
+    <plurals name="wheel_desc">
+        <item quantity="one">Glücksrad mit %1$d Eintrag</item>
+        <item quantity="other">Glücksrad mit %1$d Einträgen</item>
+    </plurals>
     <string name="result_desc">Gezogen: %1$s</string>
     <string name="choose_wheel">Rad wählen</string>
 
     <string name="wheels">Räder</string>
-    <string name="entries_count">%1$d Einträge</string>
+    <plurals name="entries_count">
+        <item quantity="one">%1$d Eintrag</item>
+        <item quantity="other">%1$d Einträge</item>
+    </plurals>
     <string name="new_wheel">Neues Rad</string>
     <string name="new_wheel_name">Mein Rad</string>
     <string name="templates">Vorlagen</string>

@@ -11,7 +11,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
+import androidx.compose.ui.res.stringResource
 import com.valueerrorx.aapps.core.ui.AappsTheme
 import com.valueerrorx.aapps.core.ui.rememberHaptics
 import com.valueerrorx.spinr.domain.Round
@@ -40,7 +43,10 @@ fun templates(res: Resources): List<Wheel> = listOf(
 fun SpinrApp() {
     val context = LocalContext.current
     val prefs = remember { Prefs(context) }
-    val presets = remember { templates(context.resources) }
+    // Vorlagen und Name eines neuen Rads folgen der aktuellen Sprache
+    val resources = LocalResources.current
+    val presets = remember(LocalConfiguration.current) { templates(resources) }
+    val newWheelName = stringResource(R.string.new_wheel_name)
     var wheels by remember { mutableStateOf(prefs.wheels.ifEmpty { presets.also { prefs.wheels = it } }) }
     var active by remember { mutableIntStateOf(prefs.active.coerceIn(0, wheels.lastIndex)) }
     var editing by rememberSaveable { mutableIntStateOf(0) }
@@ -98,8 +104,7 @@ fun SpinrApp() {
                         screen = Screen.EDIT
                     },
                     onNew = {
-                        val name = context.getString(R.string.new_wheel_name)
-                        save(wheels + Wheel(name, listOf("", "")), wheels.size)
+                        save(wheels + Wheel(newWheelName, listOf("", "")), wheels.size)
                         editing = wheels.lastIndex
                         screen = Screen.EDIT
                     },

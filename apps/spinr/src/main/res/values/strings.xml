@@ -11,12 +11,18 @@
     <string name="spin_again">Spin again</string>
     <string name="remove">Remove</string>
     <string name="restore">All back · %1$d</string>
-    <string name="wheel_desc">Wheel with %1$d entries</string>
+    <plurals name="wheel_desc">
+        <item quantity="one">Wheel with %1$d entry</item>
+        <item quantity="other">Wheel with %1$d entries</item>
+    </plurals>
     <string name="result_desc">Picked: %1$s</string>
     <string name="choose_wheel">Choose wheel</string>
 
     <string name="wheels">Wheels</string>
-    <string name="entries_count">%1$d entries</string>
+    <plurals name="entries_count">
+        <item quantity="one">%1$d entry</item>
+        <item quantity="other">%1$d entries</item>
+    </plurals>
     <string name="new_wheel">New wheel</string>
     <string name="new_wheel_name">My wheel</string>
     <string name="templates">Templates</string>

@@ -56,6 +56,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.util.VelocityTracker1D
 import androidx.compose.ui.platform.LocalViewConfiguration
 import androidx.compose.ui.platform.LocalWindowInfo
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
@@ -205,7 +206,7 @@ private fun WheelHero(
     val textStyle = Aapps.type.label.copy(fontFamily = Inter, fontWeight = FontWeight.SemiBold, letterSpacing = 0.sp)
     val labels = state.labels
     val slop = LocalViewConfiguration.current.touchSlop
-    val description = if (labels.size >= 2) stringResource(R.string.wheel_desc, labels.size) else stringResource(R.string.hint_too_few)
+    val description = if (labels.size >= 2) pluralStringResource(R.plurals.wheel_desc, labels.size, labels.size) else stringResource(R.string.hint_too_few)
     val spinLabel = stringResource(R.string.spin)
 
     Box(

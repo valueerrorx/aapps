@@ -36,6 +36,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
@@ -123,7 +124,7 @@ fun WheelsScreen(
                                 maxLines = 2, overflow = TextOverflow.Ellipsis,
                             )
                             BasicText(
-                                stringResource(R.string.entries_count, wheel.labels.size),
+                                pluralStringResource(R.plurals.entries_count, wheel.labels.size, wheel.labels.size),
                                 style = Aapps.type.body.copy(color = c.fgMuted, fontSize = Aapps.type.label.fontSize * 1.1f),
                             )
                         }
