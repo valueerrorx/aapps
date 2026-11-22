@@ -1,5 +1,6 @@
 package solutions.xapient.loudr
 
+import android.Manifest
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -21,6 +22,7 @@ import org.junit.rules.ExternalResource
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
+import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
 import solutions.xapient.aapps.core.ui.AappsTheme
@@ -179,8 +181,29 @@ class GestureTest {
         assertEquals(solutions.xapient.loudr.domain.TimeWeighting.SLOW, s.weighting)
     }
 
-    // schon gefragt, kein Begruendungs-Hinweis mehr = "nie wieder fragen": Weg in die Einstellungen
-    @Test fun withoutPermissionNoMic() {
+    private fun rationale(show: Boolean) =
+        shadowOf(RuntimeEnvironment.getApplication().packageManager).setShouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO, show)
+
+    // Dialog weggetippt: keine Begruendung, aber nie abgelehnt -> weiter fragen
+    @Test fun dismissedStaysAskable() {
+        rationale(false)
+        app()
+        assertEquals(0, meter.starts)
+        rule.onNodeWithText("Allow microphone", ignoreCase = true).assertExists()
+    }
+
+    // einmal abgelehnt: System will Begruendung, wird gemerkt
+    @Test fun deniedOnceAsksAgain() {
+        rationale(true)
+        app()
+        rule.onNodeWithText("Allow microphone", ignoreCase = true).assertExists()
+        assertTrue(Prefs(RuntimeEnvironment.getApplication()).rationaleSeen)
+    }
+
+    // zweimal abgelehnt: Begruendung war da, jetzt keine mehr = "nie wieder fragen"
+    @Test fun deniedTwiceIsBlocked() {
+        Prefs(RuntimeEnvironment.getApplication()).rationaleSeen = true
+        rationale(false)
         app()
         assertEquals(0, meter.starts)
         rule.onNodeWithText("Open settings", ignoreCase = true).assertExists()

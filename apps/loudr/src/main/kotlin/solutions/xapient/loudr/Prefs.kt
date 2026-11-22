@@ -33,4 +33,9 @@ class Prefs(context: Context) {
     var askedMic: Boolean
         get() = sp.getBoolean("askedMic", false)
         set(v) = sp.edit { putBoolean("askedMic", v) }
+
+    // das System hat schon einmal eine Begruendung verlangt, also wurde wirklich abgelehnt
+    var rationaleSeen: Boolean
+        get() = sp.getBoolean("rationaleSeen", false)
+        set(v) = sp.edit { putBoolean("rationaleSeen", v) }
 }

@@ -55,15 +55,19 @@ fun LoudrApp(newMeter: (Context) -> LevelMeter = ::MicMeter) {
     ) { newMeter(context) }
 
     fun granted() = context.checkSelfPermission(MIC) == PackageManager.PERMISSION_GRANTED
-    // "nie wieder fragen": schon gefragt und das System zeigt keine Begruendung mehr
-    fun blockedNow() = prefs.askedMic && !granted() &&
-        activity?.let { !ActivityCompat.shouldShowRequestPermissionRationale(it, MIC) } == true
+    // "nie wieder fragen": nach echter Ablehnung (Begruendung war schon gefragt) zeigt das System keine mehr; weggetippt bleibt fragbar
+    fun blockedNow(): Boolean {
+        if (granted()) return false
+        val rationale = activity?.let { ActivityCompat.shouldShowRequestPermissionRationale(it, MIC) } == true
+        if (rationale) prefs.rationaleSeen = true
+        return prefs.rationaleSeen && !rationale
+    }
     var hasMic by remember { mutableStateOf(granted()) }
     var blocked by remember { mutableStateOf(blockedNow()) }
     val ask = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { ok ->
         prefs.askedMic = true
         hasMic = ok
-        blocked = !ok && blockedNow()
+        blocked = blockedNow()
     }
     // beim allerersten Start einmal von selbst fragen
     LaunchedEffect(Unit) {
@@ -72,7 +76,7 @@ fun LoudrApp(newMeter: (Context) -> LevelMeter = ::MicMeter) {
     // Rueckkehr aus den App-Einstellungen
     LifecycleResumeEffect(Unit) {
         hasMic = granted()
-        if (hasMic) blocked = false
+        blocked = blockedNow()
         onPauseOrDispose { }
     }
 
