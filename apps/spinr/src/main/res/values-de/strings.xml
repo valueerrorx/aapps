@@ -53,4 +53,48 @@
     </string-array>
     <string name="tpl_dice">Würfel</string>
     <string name="tpl_pay">Wer zahlt?</string>
+    <string name="tpl_weekdays">Wochentage</string>
+    <string-array name="tpl_weekdays">
+        <item>Montag</item><item>Dienstag</item><item>Mittwoch</item><item>Donnerstag</item>
+        <item>Freitag</item><item>Samstag</item><item>Sonntag</item>
+    </string-array>
+    <string name="tpl_colors">Farben</string>
+    <string-array name="tpl_colors">
+        <item>Rot</item><item>Orange</item><item>Gelb</item><item>Grün</item>
+        <item>Blau</item><item>Lila</item><item>Rosa</item><item>Schwarz</item>
+    </string-array>
+    <string name="tpl_numbers">Zahlen 1–10</string>
+    <string name="tpl_way">Wohin?</string>
+    <string-array name="tpl_way">
+        <item>Links</item><item>Rechts</item><item>Geradeaus</item><item>Zurück</item>
+    </string-array>
+    <string name="tpl_compass">Himmelsrichtungen</string>
+    <string-array name="tpl_compass">
+        <item>N</item><item>NO</item><item>O</item><item>SO</item>
+        <item>S</item><item>SW</item><item>W</item><item>NW</item>
+    </string-array>
+    <string name="tpl_coin">Münzwurf</string>
+    <string-array name="tpl_coin">
+        <item>Kopf</item><item>Zahl</item>
+    </string-array>
+    <string name="tpl_rps">Schere, Stein, Papier</string>
+    <string-array name="tpl_rps">
+        <item>Schere</item><item>Stein</item><item>Papier</item>
+    </string-array>
+    <string name="tpl_truth">Wahrheit oder Pflicht</string>
+    <string-array name="tpl_truth">
+        <item>Wahrheit</item><item>Pflicht</item>
+    </string-array>
+    <string name="tpl_letters">Buchstaben A–Z</string>
+
+    <string name="from_template">Aus Vorlage</string>
+    <string name="tpl_group_everyday">Alltag</string>
+    <string name="tpl_group_numbers">Zahlen</string>
+    <string name="tpl_group_directions">Richtungen</string>
+    <string name="tpl_group_games">Spiele</string>
+    <string name="range">Zahlenbereich</string>
+    <string name="range_from">Von</string>
+    <string name="range_to">Bis</string>
+    <string name="range_hint">2 bis %1$d Zahlen</string>
+    <string name="range_add">Rad %1$s hinzufügen</string>
 </resources>

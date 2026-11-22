@@ -60,4 +60,48 @@
     <string-array name="tpl_pay" translatable="false">
         <item>Anna</item><item>Ben</item><item>Clara</item><item>David</item><item>Emma</item>
     </string-array>
+    <string name="tpl_weekdays">Days of the week</string>
+    <string-array name="tpl_weekdays">
+        <item>Monday</item><item>Tuesday</item><item>Wednesday</item><item>Thursday</item>
+        <item>Friday</item><item>Saturday</item><item>Sunday</item>
+    </string-array>
+    <string name="tpl_colors">Colours</string>
+    <string-array name="tpl_colors">
+        <item>Red</item><item>Orange</item><item>Yellow</item><item>Green</item>
+        <item>Blue</item><item>Purple</item><item>Pink</item><item>Black</item>
+    </string-array>
+    <string name="tpl_numbers">Numbers 1–10</string>
+    <string name="tpl_way">Which way?</string>
+    <string-array name="tpl_way">
+        <item>Left</item><item>Right</item><item>Straight on</item><item>Back</item>
+    </string-array>
+    <string name="tpl_compass">Compass points</string>
+    <string-array name="tpl_compass">
+        <item>N</item><item>NE</item><item>E</item><item>SE</item>
+        <item>S</item><item>SW</item><item>W</item><item>NW</item>
+    </string-array>
+    <string name="tpl_coin">Coin toss</string>
+    <string-array name="tpl_coin">
+        <item>Heads</item><item>Tails</item>
+    </string-array>
+    <string name="tpl_rps">Rock, paper, scissors</string>
+    <string-array name="tpl_rps">
+        <item>Rock</item><item>Paper</item><item>Scissors</item>
+    </string-array>
+    <string name="tpl_truth">Truth or dare</string>
+    <string-array name="tpl_truth">
+        <item>Truth</item><item>Dare</item>
+    </string-array>
+    <string name="tpl_letters">Letters A–Z</string>
+
+    <string name="from_template">From a template</string>
+    <string name="tpl_group_everyday">Everyday</string>
+    <string name="tpl_group_numbers">Numbers</string>
+    <string name="tpl_group_directions">Directions</string>
+    <string name="tpl_group_games">Games</string>
+    <string name="range">Number range</string>
+    <string name="range_from">From</string>
+    <string name="range_to">To</string>
+    <string name="range_hint">2 to %1$d numbers</string>
+    <string name="range_add">Add wheel %1$s</string>
 </resources>

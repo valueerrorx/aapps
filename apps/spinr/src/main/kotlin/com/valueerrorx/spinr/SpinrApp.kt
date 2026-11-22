@@ -20,6 +20,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.valueerrorx.aapps.core.ui.AappsTheme
 import com.valueerrorx.aapps.core.ui.rememberHaptics
+import com.valueerrorx.spinr.domain.NumberRange
 import com.valueerrorx.spinr.domain.Palette
 import com.valueerrorx.spinr.domain.Round
 import com.valueerrorx.spinr.domain.Wheel
@@ -29,11 +30,12 @@ import com.valueerrorx.spinr.ui.SpinState
 import com.valueerrorx.spinr.ui.SpinrAbout
 import com.valueerrorx.spinr.ui.SpinrPalette
 import com.valueerrorx.spinr.ui.SpinrSettings
+import com.valueerrorx.spinr.ui.TemplatesScreen
 import com.valueerrorx.spinr.ui.WheelsScreen
 
 val SpinrAccent = SpinrPalette[0]
 
-private enum class Screen { WHEEL, WHEELS, EDIT, SETTINGS, ABOUT }
+private enum class Screen { WHEEL, WHEELS, TEMPLATES, EDIT, SETTINGS, ABOUT }
 
 // Runde als Groesse + entfernte Indizes
 private val RoundSaver = Saver<Round, IntArray>(
@@ -41,13 +43,51 @@ private val RoundSaver = Saver<Round, IntArray>(
     restore = { Round(it[0], it.drop(1).toSet()) },
 )
 
-// Vorlagen in der Sprache des Geraets
-fun templates(res: Resources): List<Wheel> = listOf(
-    R.string.tpl_food to R.array.tpl_food,
-    R.string.tpl_yesno to R.array.tpl_yesno,
-    R.string.tpl_dice to R.array.tpl_dice,
-    R.string.tpl_pay to R.array.tpl_pay,
-).map { (name, items) -> Wheel(res.getString(name), res.getStringArray(items).toList()) }
+// Vorlagen in der Sprache des Geraets, gruppiert
+class TemplateGroup(val title: String, val wheels: List<Wheel>, val withRange: Boolean = false)
+
+fun templateGroups(res: Resources): List<TemplateGroup> {
+    fun t(name: Int, items: Int) = Wheel(res.getString(name), res.getStringArray(items).toList())
+    return listOf(
+        TemplateGroup(
+            res.getString(R.string.tpl_group_everyday),
+            listOf(
+                t(R.string.tpl_food, R.array.tpl_food),
+                t(R.string.tpl_yesno, R.array.tpl_yesno),
+                t(R.string.tpl_pay, R.array.tpl_pay),
+                t(R.string.tpl_weekdays, R.array.tpl_weekdays),
+                t(R.string.tpl_colors, R.array.tpl_colors),
+            ),
+        ),
+        TemplateGroup(
+            res.getString(R.string.tpl_group_numbers),
+            listOf(
+                t(R.string.tpl_dice, R.array.tpl_dice),
+                Wheel(res.getString(R.string.tpl_numbers), NumberRange.entries(1, 10)!!),
+            ),
+            withRange = true,
+        ),
+        TemplateGroup(
+            res.getString(R.string.tpl_group_directions),
+            listOf(t(R.string.tpl_way, R.array.tpl_way), t(R.string.tpl_compass, R.array.tpl_compass)),
+        ),
+        TemplateGroup(
+            res.getString(R.string.tpl_group_games),
+            listOf(
+                t(R.string.tpl_coin, R.array.tpl_coin),
+                t(R.string.tpl_rps, R.array.tpl_rps),
+                t(R.string.tpl_truth, R.array.tpl_truth),
+                Wheel(res.getString(R.string.tpl_letters), ('A'..'Z').map { "$it" }),
+            ),
+        ),
+    )
+}
+
+// Raeder beim ersten Start
+fun starterWheels(res: Resources): List<Wheel> {
+    val all = templateGroups(res).flatMap { it.wheels }.associateBy { it.name }
+    return listOf(R.string.tpl_food, R.string.tpl_yesno, R.string.tpl_dice, R.string.tpl_pay).map { all.getValue(res.getString(it)) }
+}
 
 @Composable
 fun SpinrApp() {
@@ -55,9 +95,9 @@ fun SpinrApp() {
     val prefs = remember { Prefs(context) }
     // Vorlagen und Name eines neuen Rads folgen der aktuellen Sprache
     val resources = LocalResources.current
-    val presets = remember(LocalConfiguration.current) { templates(resources) }
+    val groups = remember(LocalConfiguration.current) { templateGroups(resources) }
     val newWheelName = stringResource(R.string.new_wheel_name)
-    var wheels by remember { mutableStateOf(prefs.wheels.ifEmpty { presets.also { prefs.wheels = it } }) }
+    var wheels by remember { mutableStateOf(prefs.wheels.ifEmpty { starterWheels(resources).also { prefs.wheels = it } }) }
     // Aenderungen im Editor erst beim Verlassen bzw. beim Wegschalten der App schreiben
     var dirty by remember { mutableStateOf(false) }
     var active by remember { mutableIntStateOf(prefs.active.coerceIn(0, wheels.lastIndex)) }
@@ -117,7 +157,6 @@ fun SpinrApp() {
                 WheelsScreen(
                     wheels = wheels,
                     active = active,
-                    templates = presets,
                     onSelect = {
                         save(wheels, it)
                         haptics.tick()
@@ -132,12 +171,20 @@ fun SpinrApp() {
                         editing = wheels.lastIndex
                         screen = Screen.EDIT
                     },
-                    onAddTemplate = {
+                    onTemplates = { screen = Screen.TEMPLATES },
+                    onBack = { screen = Screen.WHEEL },
+                )
+            }
+            Screen.TEMPLATES -> {
+                BackHandler { screen = Screen.WHEELS }
+                TemplatesScreen(
+                    groups = groups,
+                    onAdd = {
                         save(wheels + it, wheels.size)
                         haptics.tick()
                         screen = Screen.WHEEL
                     },
-                    onBack = { screen = Screen.WHEEL },
+                    onBack = { screen = Screen.WHEELS },
                 )
             }
             Screen.EDIT -> {

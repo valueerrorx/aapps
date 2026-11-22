@@ -9,13 +9,15 @@ import com.valueerrorx.spinr.SpinrAccent
 import com.valueerrorx.spinr.domain.Palette
 import com.valueerrorx.spinr.domain.Wheel
 import com.valueerrorx.spinr.domain.WheelMath
-import com.valueerrorx.spinr.templates
+import com.valueerrorx.spinr.starterWheels
+import com.valueerrorx.spinr.templateGroups
 import com.valueerrorx.spinr.ui.EditorScreen
 import com.valueerrorx.spinr.ui.SpinScreen
 import com.valueerrorx.spinr.ui.SpinState
 import com.valueerrorx.spinr.ui.SpinrPalette
 import com.valueerrorx.spinr.ui.SpinrAbout
 import com.valueerrorx.spinr.ui.SpinrSettings
+import com.valueerrorx.spinr.ui.TemplatesScreen
 import com.valueerrorx.spinr.ui.WheelsScreen
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -44,7 +46,8 @@ class SpinScreenshotTest {
     }
 
     // Vorlagen in der Sprache des gerade gesetzten Qualifiers
-    private fun presets() = templates(RuntimeEnvironment.getApplication().resources)
+    private fun res() = RuntimeEnvironment.getApplication().resources
+    private fun presets() = starterWheels(res())
     private fun food() = presets()[0]
 
     @Composable
@@ -127,10 +130,24 @@ class SpinScreenshotTest {
     @Composable
     private fun Wheels() {
         val p = presets()
-        WheelsScreen(p, 0, p, {}, {}, {}, {}, {})
+        WheelsScreen(p, 0, {}, {}, {}, {}, {})
     }
 
     @Test fun wheels() = shot("wheels") { Wheels() }
+
+    @Composable
+    private fun Templates() = TemplatesScreen(templateGroups(res()), {}, {})
+
+    @Test fun templates_de() = shot("templates_de", "+de") { Templates() }
+
+    @Test fun templates_de_font200() = shot("templates_de_font200", "+de", fontScale = 2f) { Templates() }
+
+    // Vorlage als Rad: Himmelsrichtungen und Buchstaben A-Z (26, kurze Eintraege)
+    private fun template(name: String) = templateGroups(res()).flatMap { it.wheels }.first { it.name == name }
+
+    @Test fun compass_de() = shot("compass_de", "+de") { template("Himmelsrichtungen").let { Spin(idle(it), it.name) } }
+
+    @Test fun letters_de() = shot("letters_de", "+de") { template("Buchstaben A–Z").let { Spin(idle(it), it.name) } }
 
     @Composable
     private fun Editor() {
