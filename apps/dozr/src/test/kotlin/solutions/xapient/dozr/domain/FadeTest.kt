@@ -10,9 +10,15 @@ import org.junit.Test
 private class FakeVolume(var value: Int, private val floor: Int = 0) : Volume {
     val writes = mutableListOf<Int>()
     override val current: Int get() = value
+    override var device: Int = SPEAKER
     override fun set(index: Int) {
         writes += index
         value = index.coerceAtLeast(floor)
+    }
+
+    companion object {
+        const val SPEAKER = 2
+        const val BT = 8
     }
 }
 
@@ -63,7 +69,7 @@ class FaderTest {
         val v = FakeVolume(9)
         val f = Fader(v)
         assertTrue(f.step(0.0))
-        assertEquals(FadeMemo(9, 9), f.memo)
+        assertEquals(FadeMemo(9, 9, device = FakeVolume.SPEAKER), f.memo)
         assertTrue(v.writes.isEmpty())
     }
 
@@ -156,6 +162,49 @@ class FaderTest {
         assertFalse(f.memo!!.touched)
         f.restore()
         assertEquals(6, v.value)
+    }
+
+    // Bluetooth faellt waehrend des Ausblendens weg: kein Nutzer-Eingriff, Lautsprecher bleibt unberuehrt,
+    // zurueckgestellt wird erst, wenn Bluetooth wieder spielt
+    @Test fun outputSwitchDuringFadeRestoresLaterOnSameDevice() {
+        val v = FakeVolume(10)
+        v.device = FakeVolume.BT
+        val f = Fader(v)
+        f.step(0.0)
+        f.step(0.5)
+        assertEquals(5, v.value)
+        v.device = FakeVolume.SPEAKER
+        v.value = 6
+        val writes = v.writes.size
+        f.step(0.8)
+        f.step(1.0)
+        assertFalse(f.memo!!.touched)
+        assertFalse(f.restore())
+        assertEquals("Lautsprecher nicht angefasst", writes, v.writes.size)
+        v.device = FakeVolume.BT
+        v.value = 5
+        assertTrue(f.restore())
+        assertEquals(10, v.value)
+        assertNull(f.memo)
+    }
+
+    // Gehoerschutz begrenzt das Zurueckstellen: Merker bleibt fuer einen spaeteren Versuch
+    @Test fun clampedRestoreKeepsMemo() {
+        val v = FakeVolume(12)
+        val f = Fader(v)
+        f.step(0.0)
+        f.step(1.0)
+        val clamped = Fader(object : Volume by v {
+            override fun set(index: Int) = v.set(index.coerceAtMost(9))
+        }, f.memo)
+        clamped.restore()
+        assertEquals(9, v.value)
+        assertEquals(FadeMemo(12, 9, device = FakeVolume.SPEAKER), clamped.memo)
+        // spaeter ohne Begrenzung: jetzt klappt es
+        val later = Fader(v, clamped.memo)
+        later.restore()
+        assertEquals(12, v.value)
+        assertNull(later.memo)
     }
 
     @Test fun silentStartNeedsNoWrites() {

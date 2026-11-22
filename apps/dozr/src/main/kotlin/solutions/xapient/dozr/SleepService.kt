@@ -1,5 +1,6 @@
 package solutions.xapient.dozr
 
+import android.app.AlarmManager
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -54,6 +55,8 @@ class SleepService : Service(), SensorEventListener {
     private var ending = false
     private var endStarted = 0L
     private var keyed = false
+    private var wakeFor = 0L
+    private var alarmAt = 0L
     private val tick = Runnable { onTick() }
     private val endCheck = Runnable { onEndCheck() }
 
@@ -70,11 +73,13 @@ class SleepService : Service(), SensorEventListener {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        // Pflicht nach startForegroundService: sofort in den Vordergrund; nicht erlaubt -> aufhoeren, die App startet neu
-        if (!goForeground(store.state.value)) {
+        // Pflicht nach startForegroundService: sofort in den Vordergrund; nicht erlaubt -> aufraeumen, Hinweis, aufhoeren
+        if (denyForeground || !goForeground(store.state.value)) {
+            foregroundRefused()
             stopSelf()
             return START_NOT_STICKY
         }
+        getSystemService(NotificationManager::class.java).cancel(ID_RESUME)
         when (intent?.action) {
             ACTION_EXTEND -> store.extend()
             ACTION_STOP -> store.stop()
@@ -100,6 +105,35 @@ class SleepService : Service(), SensorEventListener {
         super.onDestroy()
     }
 
+    // z. B. Neustart durch das System aus dem Hintergrund: ohne Vordergrund kein Ausblenden moeglich
+    private fun foregroundRefused() {
+        alive = false
+        val s = store.state.value
+        val now = store.now()
+        if (s.mode == Mode.RUNNING && (s.overdue(now) || s.remaining(now) == 0L)) store.finish()
+        restorePending(this)
+        if (store.state.value.mode != Mode.RUNNING) return
+        // laeuft noch: Nutzer bitten, die App zu oeffnen; ohne Benachrichtigung lieber ehrlich stoppen
+        val nm = getSystemService(NotificationManager::class.java)
+        if (!nm.areNotificationsEnabled()) {
+            store.stop()
+            return
+        }
+        val n = NotificationCompat.Builder(this, CHANNEL_INFO)
+            .setSmallIcon(R.drawable.ic_stat_dozr)
+            .setColor(DozrAccent.toArgb())
+            .setContentTitle(getString(R.string.notif_resume_title))
+            .setContentText(getString(R.string.notif_resume_text))
+            .setAutoCancel(true)
+            .setContentIntent(openApp(this))
+            .build()
+        try {
+            nm.notify(ID_RESUME, n)
+        } catch (_: SecurityException) {
+            store.stop()
+        }
+    }
+
     private fun sync(s: Sleep) {
         handler.removeCallbacks(tick)
         when (s.mode) {
@@ -110,8 +144,6 @@ class SleepService : Service(), SensorEventListener {
                     store.finish()
                     return
                 }
-                acquireWake(s)
-                if (prefs.shake) sensorsOn() else sensorsOff()
                 onTick()
             }
             // vom Nutzer gestoppt: Lautstaerke sofort zurueck
@@ -132,12 +164,22 @@ class SleepService : Service(), SensorEventListener {
         if (s.mode != Mode.RUNNING || ending) return
         val now = store.now()
         val fadeMs = prefs.fade.ms
+        val fadeAt = s.fadeStart(fadeMs)
+        // Wecksperre erst kurz vor dem Ausblenden, Sensor erst kurz vor dem Einschlafen
+        val wakeAt = fadeAt - WAKE_LEAD_MS
+        val shakeAt = fadeAt - SHAKE_LEAD_MS
+        if (now >= wakeAt) acquireWake(s) else {
+            releaseWake()
+            scheduleWake(wakeAt)
+        }
+        if (prefs.shake && now >= shakeAt) sensorsOn() else sensorsOff()
         when (s.phase(now, fadeMs)) {
             Phase.RUNNING -> {
                 // verlaengert waehrend des Ausblendens
                 if (fader.faded) restore()
                 goForeground(s)
-                handler.postDelayed(tick, (s.fadeStart(fadeMs) - now).coerceIn(1L, IDLE_TICK_MS))
+                val next = listOf(fadeAt, shakeAt, wakeAt).filter { it > now }.minOrNull() ?: fadeAt
+                handler.postDelayed(tick, (next - now).coerceIn(1L, IDLE_TICK_MS))
             }
             Phase.FADING -> {
                 if (!silencer.fixedVolume && fader.step(s.fadeProgress(now, fadeMs))) prefs.memo = fader.memo
@@ -199,6 +241,7 @@ class SleepService : Service(), SensorEventListener {
         handler.removeCallbacks(endCheck)
         sensorsOff()
         releaseWake()
+        cancelWakeAlarm()
         if (foreground) {
             stopForeground(STOP_FOREGROUND_REMOVE)
             foreground = false
@@ -284,27 +327,45 @@ class SleepService : Service(), SensorEventListener {
         PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
     )
 
-    // CPU wach halten: sonst bleiben Handler-Zeiten bei Offload-Wiedergabe stehen
+    // CPU wach halten ab kurz vor dem Ausblenden: sonst bleiben Handler-Zeiten bei Offload-Wiedergabe stehen
     private fun acquireWake(s: Sleep) {
+        cancelWakeAlarm()
         val w = wake ?: getSystemService(PowerManager::class.java)
             .newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "dozr:timer")
             .apply { setReferenceCounted(false) }
             .also { wake = it }
+        // nur neu setzen, wenn noetig (nicht bei jedem Tick)
+        if (w.isHeld && wakeFor == s.endAt) return
         w.acquire(s.remaining(store.now()) + WAKE_SLACK_MS)
+        wakeFor = s.endAt
     }
 
     private fun releaseWake() {
         wake?.let { if (it.isHeld) it.release() }
+        wakeFor = 0L
     }
 
-    // Beschleunigungssensor nur, solange der Timer laeuft
+    // Bis dahin schlaeft die CPU ggf.; ungenauer Wecker ohne Sonderrecht, Vorlauf deckt Verzoegerung ab
+    private fun scheduleWake(at: Long) {
+        if (alarmAt == at) return
+        getSystemService(AlarmManager::class.java)?.setAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP, at, action(ACTION_WAKE, 3))
+        alarmAt = at
+    }
+
+    private fun cancelWakeAlarm() {
+        if (alarmAt == 0L) return
+        getSystemService(AlarmManager::class.java)?.cancel(action(ACTION_WAKE, 3))
+        alarmAt = 0L
+    }
+
+    // Beschleunigungssensor nur kurz vor und waehrend des Ausblendens
     private fun sensorsOn() {
         if (sensors != null) return
         val sm = getSystemService(SensorManager::class.java) ?: return
         val acc = sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) ?: return
         shake = ShakeDetector()
         sensors = sm
-        sm.registerListener(this, acc, SensorManager.SENSOR_DELAY_GAME, handler)
+        sm.registerListener(this, acc, SensorManager.SENSOR_DELAY_UI, handler)
     }
 
     private fun sensorsOff() {
@@ -346,12 +407,20 @@ class SleepService : Service(), SensorEventListener {
         const val POLL_MS = 500L
         const val GIVE_UP_MS = 10_000L
         const val WAKE_SLACK_MS = 60_000L
+        // Doze verschiebt ungenaue Wecker um bis zu ~9 min
+        const val WAKE_LEAD_MS = 10 * Sleep.MINUTE
+        const val SHAKE_LEAD_MS = 5 * Sleep.MINUTE
+        const val ID_RESUME = 3
         const val ACTION_EXTEND = "solutions.xapient.dozr.EXTEND"
         const val ACTION_STOP = "solutions.xapient.dozr.STOP"
+        const val ACTION_WAKE = "solutions.xapient.dozr.WAKE"
 
         // Prozess-lokal: Dienst laeuft gerade (dann gehoert ihm der Lautstaerke-Merker)
         @Volatile var alive = false
             internal set
+
+        // Test: System verweigert den Vordergrund
+        @Volatile internal var denyForeground = false
 
         fun channels(context: Context) {
             val nm = context.getSystemService(NotificationManager::class.java)
@@ -388,8 +457,9 @@ class SleepService : Service(), SensorEventListener {
             val memo = prefs.memo ?: return
             val f = Fader(MusicVolume(context.getSystemService(android.media.AudioManager::class.java)), memo)
             f.restore()
-            prefs.memo = null
-            context.getSystemService(NotificationManager::class.java).cancel(ID_MUTED)
+            // anderes Ausgabegeraet oder Gehoerschutz-Grenze: gemerkt lassen, naechstes Oeffnen versucht es wieder
+            prefs.memo = f.memo
+            if (f.memo == null) context.getSystemService(NotificationManager::class.java).cancel(ID_MUTED)
         }
     }
 }

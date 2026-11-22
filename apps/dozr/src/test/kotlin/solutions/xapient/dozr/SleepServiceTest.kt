@@ -1,10 +1,12 @@
 package solutions.xapient.dozr
 
+import android.app.AlarmManager
 import android.app.Application
 import android.app.NotificationManager
 import android.content.Intent
 import android.hardware.Sensor
 import android.hardware.SensorManager
+import android.media.AudioDeviceInfo
 import android.media.AudioManager
 import android.os.Looper
 import android.os.SystemClock
@@ -51,7 +53,8 @@ class SleepServiceTest {
         am = app.getSystemService(AudioManager::class.java)
         am.setStreamVolume(AudioManager.STREAM_MUSIC, 10, 0)
         prefs = Prefs(app)
-        prefs.fade = FadeLength.S30
+        prefs.fade = FadeLength.M1
+        SleepService.denyForeground = false
         // Zeit vorstellen: Laufzeituhr steht im Test sonst bei fast 0
         idle(60 * MINUTE)
     }
@@ -60,6 +63,7 @@ class SleepServiceTest {
         controller?.destroy()
         SleepStore.reset()
         SleepService.alive = false
+        SleepService.denyForeground = false
     }
 
     private fun store() = SleepStore.get(app)
@@ -79,12 +83,12 @@ class SleepServiceTest {
 
     @Test fun fadesStopsAndRestoresVolume() {
         val service = runFiveMinutes()
-        idle(4 * MINUTE + 29_000)
+        idle(3 * MINUTE + 59_000)
         assertEquals("vor dem Ausblenden unveraendert", 10, volume)
-        idle(16_000)
+        idle(31_000)
         assertTrue("halb ausgeblendet", volume in 3..7)
         assertEquals(10, prefs.memo!!.orig)
-        idle(15_000)
+        idle(30_000)
         // Ende: Fokus geholt, nach dem Pruefen zurueck auf 10
         assertNotNull(shadowOf(am).lastAudioFocusRequest)
         assertEquals(Mode.DONE, store().state.value.mode)
@@ -96,9 +100,9 @@ class SleepServiceTest {
 
     @Test fun userChangeDuringFadeIsKept() {
         runFiveMinutes()
-        idle(4 * MINUTE + 45_000)
+        idle(4 * MINUTE + 30_000)
         am.setStreamVolume(AudioManager.STREAM_MUSIC, 7, 0)
-        idle(20_000)
+        idle(40_000)
         assertEquals("nicht weiter ausgeblendet", 7, volume)
         idle(SleepService.KEY_AFTER_MS + 100)
         assertEquals("nicht ueberschrieben", 7, volume)
@@ -145,7 +149,7 @@ class SleepServiceTest {
     // Prozess-Tod mitten im Ausblenden: neuer Prozess macht mit dem gesicherten Merker weiter
     @Test fun processDeathDuringFade() {
         runFiveMinutes()
-        idle(4 * MINUTE + 45_000)
+        idle(4 * MINUTE + 30_000)
         val faded = volume
         assertTrue(faded < 10)
         controller!!.destroy()
@@ -153,7 +157,7 @@ class SleepServiceTest {
         SleepStore.reset()
         startService()
         assertEquals(Mode.RUNNING, store().state.value.mode)
-        idle(20_000)
+        idle(40_000)
         idle(SleepService.KEY_AFTER_MS + 100)
         assertEquals("Ausgangsstufe aus dem Merker", 10, volume)
     }
@@ -178,6 +182,80 @@ class SleepServiceTest {
         store().stop()
         idle()
         assertFalse(wake.isHeld)
+    }
+
+    // Langer Lauf: keine Wecksperre bis kurz vor dem Ausblenden, stattdessen ungenauer Wecker
+    @Test fun wakeLockOnlyNearFade() {
+        store().choose(60)
+        store().start()
+        val fadeAt = store().state.value.fadeStart(FadeLength.M1.ms)
+        startService()
+        assertFalse(ShadowPowerManager.getLatestWakeLock()?.isHeld ?: false)
+        val alarms = shadowOf(app.getSystemService(AlarmManager::class.java))
+        val alarm = alarms.peekNextScheduledAlarm()!!
+        assertEquals(AlarmManager.ELAPSED_REALTIME_WAKEUP, alarm.type)
+        assertEquals(fadeAt - SleepService.WAKE_LEAD_MS, alarm.triggerAtMs)
+        idle(49 * MINUTE + 1_000)
+        assertTrue(ShadowPowerManager.getLatestWakeLock().isHeld)
+        assertNull("Wecker erledigt", alarms.peekNextScheduledAlarm())
+    }
+
+    // Schuettel-Sensor erst 5 min vor dem Ausblenden
+    @Test fun shakeSensorOnlyNearFade() {
+        val sm = app.getSystemService(SensorManager::class.java)
+        shadowOf(sm).addSensor(ShadowSensor.newInstance(Sensor.TYPE_ACCELEROMETER))
+        store().choose(30)
+        store().start()
+        val service = startService()
+        assertFalse(shadowOf(sm).hasListener(service))
+        idle(24 * MINUTE + 1_000)
+        assertTrue(shadowOf(sm).hasListener(service))
+    }
+
+    // System verweigert den Vordergrund (Neustart aus dem Hintergrund): Hinweis statt stiller Timer
+    @Test fun refusedForegroundShowsHint() {
+        store().choose(30)
+        store().start()
+        SleepService.denyForeground = true
+        val service = startService()
+        assertTrue(shadowOf(service).isStoppedBySelf)
+        assertFalse(SleepService.alive)
+        assertEquals(Mode.RUNNING, store().state.value.mode)
+        val nm = app.getSystemService(NotificationManager::class.java)
+        assertNotNull(shadowOf(nm).getNotification(SleepService.ID_RESUME))
+    }
+
+    @Test fun refusedForegroundWithoutNotificationsStops() {
+        shadowOf(app.getSystemService(NotificationManager::class.java)).setNotificationsEnabled(false)
+        store().choose(30)
+        store().start()
+        SleepService.denyForeground = true
+        startService()
+        assertEquals(Mode.IDLE, store().state.value.mode)
+    }
+
+    // Verweigert nach dem Ende: abschliessen und Lautstaerke zurueck, kein Hinweis
+    @Test fun refusedForegroundAfterEndRestores() {
+        val now = SystemClock.elapsedRealtime()
+        prefs.sleep = Sleep(30, Mode.RUNNING, now - 30 * MINUTE, now - 1_000)
+        am.setStreamVolume(AudioManager.STREAM_MUSIC, 2, 0)
+        prefs.memo = FadeMemo(orig = 10, last = 2)
+        SleepService.denyForeground = true
+        startService()
+        assertEquals(Mode.DONE, store().state.value.mode)
+        assertEquals(10, volume)
+        assertNull(prefs.memo)
+        val nm = app.getSystemService(NotificationManager::class.java)
+        assertNull(shadowOf(nm).getNotification(SleepService.ID_RESUME))
+    }
+
+    // Ausgeblendet am Bluetooth-Geraet, jetzt Lautsprecher: nichts anfassen, Merker bleibt
+    @Test fun restorePendingKeepsMemoForOtherOutput() {
+        am.setStreamVolume(AudioManager.STREAM_MUSIC, 2, 0)
+        prefs.memo = FadeMemo(orig = 10, last = 2, device = AudioDeviceInfo.TYPE_BLUETOOTH_A2DP)
+        SleepService.restorePending(app)
+        assertEquals(2, volume)
+        assertNotNull(prefs.memo)
     }
 
     // Sensor nur beim Lauf; drei Stoesse verlaengern um 10 min

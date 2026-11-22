@@ -81,4 +81,12 @@ class TimeTextTest {
         assertEquals("1:05:09", TimeText.clock(65 * Sleep.MINUTE + 9_000))
         assertEquals("0:00", TimeText.clock(-500))
     }
+
+    @Test fun parts() {
+        assertEquals(TimeText.Parts(23, 41), TimeText.parts(23 * Sleep.MINUTE + 40_500))
+        assertEquals(TimeText.Parts(30, 0), TimeText.parts(30 * Sleep.MINUTE))
+        assertEquals(TimeText.Parts(120, 0), TimeText.parts(120 * Sleep.MINUTE))
+        assertEquals(TimeText.Parts(0, 1), TimeText.parts(1))
+        assertEquals(TimeText.Parts(0, 0), TimeText.parts(-5))
+    }
 }

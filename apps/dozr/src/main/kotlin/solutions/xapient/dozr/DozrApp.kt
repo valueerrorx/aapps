@@ -32,6 +32,7 @@ import solutions.xapient.dozr.domain.Mode
 import solutions.xapient.dozr.ui.DozrAbout
 import solutions.xapient.dozr.ui.DozrAccent
 import solutions.xapient.dozr.ui.DozrSettings
+import solutions.xapient.dozr.ui.NotifyHint
 import solutions.xapient.dozr.ui.SleepScreen
 import java.util.Date
 
@@ -104,12 +105,21 @@ fun DozrApp(startRequests: Int = 0) {
         launcher.launch(Manifest.permission.POST_NOTIFICATIONS)
     }
 
-    // Vor dem Start fragen, solange nicht erteilt und nicht schon einmal abgelehnt; weggetippt = beim naechsten Start wieder
+    var hint by remember { mutableStateOf(false) }
+
+    // Vor dem Start fragen, solange nicht erteilt und nicht endgueltig abgelehnt; weggetippt = beim naechsten Start wieder.
+    // Einmal abgelehnt: einmal eigene Erklaerung, dann erneut fragen
     fun start() {
         SleepService.restorePending(context)
-        if (Build.VERSION.SDK_INT >= 33 && !notificationsAllowed(context) && !rationale() && !prefs.notifyBlocked) {
-            ask(thenStart = true)
-            return
+        if (Build.VERSION.SDK_INT >= 33 && !notificationsAllowed(context) && !prefs.notifyBlocked) {
+            if (!rationale()) {
+                ask(thenStart = true)
+                return
+            }
+            if (!prefs.notifyExplained) {
+                hint = true
+                return
+            }
         }
         store.start()
         SleepService.start(context)
@@ -122,6 +132,22 @@ fun DozrApp(startRequests: Int = 0) {
 
     AappsTheme(DozrAccent) {
         val haptics = rememberHaptics(hapticsOn)
+        if (hint) {
+            NotifyHint(
+                onContinue = {
+                    hint = false
+                    prefs.notifyExplained = true
+                    ask(thenStart = true)
+                },
+                // weggetippt: ohne Frage starten, Erklaerung kommt nicht wieder
+                onDismiss = {
+                    hint = false
+                    prefs.notifyExplained = true
+                    store.start()
+                    SleepService.start(context)
+                },
+            )
+        }
         when (screen) {
             Screen.TIMER -> SleepScreen(
                 sleep = sleep,

@@ -81,15 +81,11 @@ class DialGeo(width: Float, height: Float, density: Float) {
 // Was sich pro Bild aendert
 class MoonLook(
     val frac: Float, // Mondposition 0..1
-    val ghost: Float, // eingestellte Zeit beim Lauf, < 0 = aus
     val dip: Float, // 0..1 wie weit der Mond im Wasser ist
     val glow: Float, // 0..1 Helligkeit (folgt der Lautstaerke)
     val lit: Boolean, // Bogen leuchtet (Lauf)
     val dragging: Boolean,
 )
-
-// Umriss des Schatten-Monds: gegen den Himmel noch >= 3:1 (ContrastTest)
-const val GHOST_ALPHA = 0.42f
 
 // Leuchtender Bogen am Ende des Ausblendens: noch >= 3:1
 const val ARC_MIN_ALPHA = 0.6f
@@ -201,13 +197,6 @@ class MoonParts(scope: CacheDrawScope, val c: AappsColors, measurer: TextMeasure
         }
     }
 
-    fun DrawScope.drawGhost(ghost: Float) {
-        if (ghost < 0f) return
-        val p = g.moonAt(ghost)
-        drawCircle(MoonLight.copy(alpha = 0.06f), g.moonR, p)
-        drawCircle(MoonLight.copy(alpha = GHOST_ALPHA), g.moonR, p, style = Stroke(1.2f * dp))
-    }
-
     fun DrawScope.drawMoon(look: MoonLook, moon: Offset) {
         if (look.dragging) drawCircle(DozrAccent.copy(alpha = 0.7f), g.moonR * 1.45f, moon, style = Stroke(1.6f * dp))
         // aschgraues Licht: ganze Scheibe zart sichtbar und deckend (keine Sterne durch den Mond)
@@ -249,7 +238,6 @@ fun DrawScope.drawMoonDial(parts: MoonParts, look: MoonLook) = with(parts) {
     clipPath(window) {
         drawSky(look, moon)
         drawTrack(look)
-        drawGhost(look.ghost)
         drawMoon(look, moon)
         drawWater(look, moon)
     }
@@ -283,10 +271,10 @@ class DialInputs(
                 }
                 val frac = Moon.fraction(s.remaining(now))
                 lastFrac[0] = frac
-                MoonLook(frac, Moon.fraction(s.totalMs), if (phase == Phase.RUNNING) 0f else p, glow, true, false)
+                MoonLook(frac, if (phase == Phase.RUNNING) 0f else p, glow, true, false)
             }
-            Mode.DONE -> MoonLook(0f, -1f, 1f, 0f, false, false)
-            Mode.IDLE -> MoonLook(idle.value, -1f, 0f, 1f, false, dragging)
+            Mode.DONE -> MoonLook(0f, 1f, 0f, false, false)
+            Mode.IDLE -> MoonLook(idle.value, 0f, 1f, false, dragging)
         }
     }
 
@@ -324,12 +312,13 @@ fun MoonDial(inputs: DialInputs, haptics: Haptics?, onChoose: (Int) -> Unit, mod
             .semantics {
                 contentDescription = desc
                 stateDescription = spoken
-                progressBarRangeInfo = ProgressBarRangeInfo(
-                    (minutes / Sleep.STEP_MIN).toFloat(),
-                    (Sleep.MIN_MIN / Sleep.STEP_MIN).toFloat()..Moon.STEPS.toFloat(),
-                    Moon.STEPS - Sleep.MIN_MIN / Sleep.STEP_MIN - 1,
-                )
+                // Regler nur im Leerlauf; beim Lauf ist der Himmel reine Anzeige
                 if (!running) {
+                    progressBarRangeInfo = ProgressBarRangeInfo(
+                        (minutes / Sleep.STEP_MIN).toFloat(),
+                        (Sleep.MIN_MIN / Sleep.STEP_MIN).toFloat()..Moon.STEPS.toFloat(),
+                        Moon.STEPS - Sleep.MIN_MIN / Sleep.STEP_MIN - 1,
+                    )
                     setProgress { v ->
                         onChoose(Sleep.clampMin(Math.round(v) * Sleep.STEP_MIN))
                         true

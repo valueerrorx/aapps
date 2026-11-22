@@ -17,6 +17,7 @@ import androidx.compose.ui.test.performTouchInput
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.ExternalResource
@@ -139,11 +140,32 @@ class GestureTest {
         assertEquals(Mode.IDLE, prefs().sleep.mode)
     }
 
-    // Einmal abgelehnt (System zeigt Hinweis): nicht von selbst fragen, sofort starten
-    @Test fun noAutoAskAfterDenial() {
+    // Einmal abgelehnt (System zeigt Hinweis): erst eigene Erklaerung, dann erneut fragen
+    @Test fun explainsOnceAfterDenial() {
         shadowOf(app.packageManager).setShouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS, true)
         compose.onNodeWithText("START").performClick()
         assertNull(shadowOf(compose.activity).lastRequestedPermission)
+        assertEquals(Mode.IDLE, prefs().sleep.mode)
+        compose.onNodeWithText("CONTINUE").performClick()
+        assertNotNull(shadowOf(compose.activity).lastRequestedPermission)
+        assertTrue(prefs().notifyExplained)
+    }
+
+    // Erklaerung schon gezeigt: nicht noch einmal draengen, sofort starten
+    @Test fun noSecondExplanation() {
+        shadowOf(app.packageManager).setShouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS, true)
+        prefs().notifyExplained = true
+        compose.onNodeWithText("START").performClick()
+        assertNull(shadowOf(compose.activity).lastRequestedPermission)
         assertEquals(Mode.RUNNING, prefs().sleep.mode)
+    }
+
+    // Beim Lauf: Restzeit fuer TalkBack ausgesprochen, Himmel ohne Regler
+    @Test fun runningReadoutAndNoSlider() {
+        grant()
+        compose.onNodeWithText("START").performClick()
+        compose.onNodeWithContentDescription("seconds left", substring = true).assertExists()
+        dial().assert(SemanticsMatcher.keyNotDefined(SemanticsProperties.ProgressBarRangeInfo))
+        dial().assert(SemanticsMatcher.keyNotDefined(SemanticsActions.SetProgress))
     }
 }

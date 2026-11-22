@@ -134,6 +134,8 @@ class SleepTest {
     @Test fun fadeLengthParsing() {
         assertEquals(FadeLength.M3, FadeLength.of("M3"))
         assertEquals(FadeLength.DEFAULT, FadeLength.of("kaputt"))
+        // fruehere 30-s-Wahl faellt auf den Standard zurueck
+        assertEquals(FadeLength.DEFAULT, FadeLength.of("S30"))
         assertEquals(FadeLength.DEFAULT, FadeLength.of(null))
     }
 }

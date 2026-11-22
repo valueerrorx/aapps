@@ -56,7 +56,6 @@ class ContrastTest {
         assertAtLeast(3.0, MoonLight, SkyLow, "Mond")
         assertAtLeast(3.0, MoonShade.copy(alpha = 0.675f).compositeOver(SkyLow), SkyLow, "Mond halb ausgeblendet")
         assertAtLeast(3.0, TrackDot, SkyTop, "Rasten oben")
-        assertAtLeast(3.0, MoonLight.copy(alpha = GHOST_ALPHA).compositeOver(SkyTop), SkyTop, "Schatten-Mond")
     }
 
     @Test fun fadeGraph() {

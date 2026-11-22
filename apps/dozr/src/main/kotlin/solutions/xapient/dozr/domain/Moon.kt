@@ -52,6 +52,14 @@ object TimeText {
     // Aufgerundet auf volle Sekunden: 0:00 erst am Ende
     fun seconds(ms: Long): Long = (ms.coerceAtLeast(0L) + 999L) / 1000L
 
+    // Ganze Minuten plus Restsekunden fuer die Anzeige "23 min 41 s"
+    data class Parts(val minutes: Long, val seconds: Long)
+
+    fun parts(ms: Long): Parts {
+        val s = seconds(ms)
+        return Parts(s / 60, s % 60)
+    }
+
     fun clock(ms: Long): String {
         val s = seconds(ms)
         val h = s / 3600

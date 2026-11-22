@@ -43,12 +43,13 @@ class Prefs(private val context: Context) {
             val orig = sp.getInt("fadeOrig", -1)
             val last = sp.getInt("fadeLast", -1)
             if (orig < 0 || last < 0) return null
-            return FadeMemo(orig, last, sp.getBoolean("fadeTouched", false))
+            return FadeMemo(orig, last, sp.getBoolean("fadeTouched", false), sp.getInt("fadeDevice", -1))
         }
         set(v) = sp.edit(commit = true) {
             putInt("fadeOrig", v?.orig ?: -1)
             putInt("fadeLast", v?.last ?: -1)
             putBoolean("fadeTouched", v?.touched ?: false)
+            putInt("fadeDevice", v?.device ?: -1)
         }
 
     var fade: FadeLength
@@ -67,4 +68,9 @@ class Prefs(private val context: Context) {
     var notifyBlocked: Boolean
         get() = sp.getBoolean("notifyBlocked", false)
         set(v) = sp.edit { putBoolean("notifyBlocked", v) }
+
+    // Eigene Erklaerung nach der ersten Ablehnung schon gezeigt
+    var notifyExplained: Boolean
+        get() = sp.getBoolean("notifyExplained", false)
+        set(v) = sp.edit { putBoolean("notifyExplained", v) }
 }

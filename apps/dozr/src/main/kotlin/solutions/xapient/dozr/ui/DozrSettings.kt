@@ -37,7 +37,6 @@ fun DozrSettings(
             SettingsChoice(
                 stringResource(R.string.fade_length),
                 listOf(
-                    FadeLength.S30 to stringResource(R.string.len_30s),
                     FadeLength.M1 to stringResource(R.string.len_1m),
                     FadeLength.M3 to stringResource(R.string.len_3m),
                     FadeLength.M5 to stringResource(R.string.len_5m),

@@ -7,7 +7,7 @@
     <string name="stop">Stopp</string>
     <string name="extend">+10 min</string>
 
-    <string name="state_stops">Stoppt um %1$s</string>
+    <string name="state_stops">Ende %1$s</string>
     <string name="state_fading">Blendet aus</string>
     <string name="state_done">Gestoppt um %1$s</string>
 
@@ -16,15 +16,24 @@
         <item quantity="one">%1$d Minute</item>
         <item quantity="other">%1$d Minuten</item>
     </plurals>
+    <plurals name="seconds_n">
+        <item quantity="one">%1$d Sekunde</item>
+        <item quantity="other">%1$d Sekunden</item>
+    </plurals>
+    <string name="time_left">noch %1$s %2$s</string>
+    <string name="unit_min">min</string>
+    <string name="unit_s">s</string>
+    <string name="notify_why">dozr zeigt die Restzeit mit +10 min und Stopp in einer Benachrichtigung. Bitte erlaube sie im nächsten Schritt.</string>
+    <string name="notify_ok">Weiter</string>
+    <string name="notif_resume_title">Einschlaf-Timer läuft noch</string>
+    <string name="notif_resume_text">Tippe, um dozr zu öffnen, damit der Timer ausblenden kann.</string>
 
-    <string name="fade_title_s">Ausblenden · %1$d s</string>
     <string name="fade_title_m">Ausblenden · %1$d min</string>
     <string name="fade_desc">Lautstärke wird von %1$s bis %2$s ausgeblendet</string>
 
     <string name="group_end">Ausblenden</string>
     <string name="group_timer">Timer</string>
     <string name="fade_length">Dauer des Ausblendens</string>
-    <string name="len_30s">30 s</string>
     <string name="len_1m">1 min</string>
     <string name="len_3m">3 min</string>
     <string name="len_5m">5 min</string>

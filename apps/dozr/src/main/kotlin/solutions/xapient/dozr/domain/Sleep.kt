@@ -85,9 +85,9 @@ data class Sleep(
     }
 }
 
-// Ausblend-Dauer in den Einstellungen
+// Ausblend-Dauer in den Einstellungen; unter 1 min waeren es bei wenigen Stufen hoerbare Spruenge
 enum class FadeLength(val ms: Long) {
-    S30(30_000L), M1(60_000L), M3(180_000L), M5(300_000L);
+    M1(60_000L), M3(180_000L), M5(300_000L);
 
     companion object {
         val DEFAULT = M1
