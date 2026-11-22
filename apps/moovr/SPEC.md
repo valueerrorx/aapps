@@ -32,7 +32,7 @@ Store-Untertitel: „Clumsy Cow". Paket `solutions.xapient.moovr`, minSdk 26.
 - Musik startet ohne Tipp (`mediaPlaybackRequiresUserGesture = false`), Fallback: erster Tipp gibt den AudioContext frei.
 
 ## Look
-- Akzent Lila `#B9A2FF` (lila Kuh), Icon: Kuhkopf mit Hörnern, schielenden Glubschaugen und Maul, adaptiv + Monochrom.
+- Akzent Wiesengrün `#8FDC5C` (Kuh auf der Wiese), Icon: Kuhkopf mit Hörnern, schielenden Glubschaugen und Maul, adaptiv + Monochrom.
 - Splash: ab Android 12 SplashScreen-API mit Vektor-Icon, darunter `windowBackground`-Layer-List mit demselben Vektor. Splash bleibt, bis die Seite geladen ist (max. 2 s).
 
 ## Berechtigungen

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Kuhkopf aus Clumsy Cow: Hoerner, schielende Glubschaugen, Maul -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Lichthof -->
+    <path android:pathData="M26,55a28,28 0 1,0 56,0a28,28 0 1,0 -56,0z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="radial"
+                android:centerX="54"
+                android:centerY="55"
+                android:gradientRadius="28"
+                android:startColor="#3D8FDC5C"
+                android:endColor="#008FDC5C" />
+        </aapt:attr>
+    </path>
+    <!-- Hoerner -->
+    <path
+        android:pathData="M44.5,37.5C41,34 39.5,30 41,26.5M63.5,37.5C67,34 68.5,30 67,26.5"
+        android:strokeWidth="2.4"
+        android:strokeColor="#FF8FDC5C"
+        android:strokeLineCap="round" />
+    <!-- Ohren -->
+    <path
+        android:fillColor="#338FDC5C"
+        android:pathData="M40.5,44C35,41.5 31,42.5 29.5,45C32,47.5 36.5,48.5 40.5,48M67.5,44C73,41.5 77,42.5 78.5,45C76,47.5 71.5,48.5 67.5,48"
+        android:strokeWidth="2.2"
+        android:strokeColor="#FF8FDC5C"
+        android:strokeLineJoin="round"
+        android:strokeLineCap="round" />
+    <!-- Kopf -->
+    <path
+        android:fillColor="#FF1E2932"
+        android:pathData="M41,58C39.5,50 39.5,42 43,38C46,34.5 50,33.5 54,33.5C58,33.5 62,34.5 65,38C68.5,42 68.5,50 67,58z"
+        android:strokeWidth="2.4"
+        android:strokeColor="#FF8FDC5C"
+        android:strokeLineJoin="round" />
+    <!-- Fleck -->
+    <path
+        android:fillColor="#558FDC5C"
+        android:pathData="M58,36.6C61.5,36.1 64,38 64.6,41.2C61.8,41.7 59,40.1 58,36.6z" />
+    <!-- Reflex -->
+    <path
+        android:pathData="M45.2,39.6C46.6,37.7 48.4,36.7 50.4,36.2"
+        android:strokeWidth="1.1"
+        android:strokeAlpha="0.4"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeLineCap="round" />
+    <!-- Augen -->
+    <path
+        android:fillColor="#FFF3F0FF"
+        android:pathData="M43,47a5,5 0 1,0 10,0a5,5 0 1,0 -10,0zM55,47a5,5 0 1,0 10,0a5,5 0 1,0 -10,0z" />
+    <path
+        android:fillColor="#FF10161B"
+        android:pathData="M48.1,48.2a2.1,2.1 0 1,0 4.2,0a2.1,2.1 0 1,0 -4.2,0zM55.5,48.6a2.1,2.1 0 1,0 4.2,0a2.1,2.1 0 1,0 -4.2,0z" />
+    <!-- Maul -->
+    <path
+        android:fillColor="#FF1E2932"
+        android:pathData="M38.5,65a15.5,10.5 0 1,0 31,0a15.5,10.5 0 1,0 -31,0z" />
+    <path
+        android:fillColor="#2E8FDC5C"
+        android:pathData="M38.5,65a15.5,10.5 0 1,0 31,0a15.5,10.5 0 1,0 -31,0z"
+        android:strokeWidth="2.4"
+        android:strokeColor="#FF8FDC5C" />
+    <!-- Nasenloecher -->
+    <path
+        android:fillColor="#FF8FDC5C"
+        android:pathData="M46.6,64.5a1.9,2.6 0 1,0 3.8,0a1.9,2.6 0 1,0 -3.8,0zM57.6,64.5a1.9,2.6 0 1,0 3.8,0a1.9,2.6 0 1,0 -3.8,0z" />
+</vector>
