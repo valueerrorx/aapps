@@ -19,7 +19,7 @@ import androidx.core.content.ContextCompat
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
-import solutions.xapient.roundr.domain.CuePoint
+import solutions.xapient.roundr.domain.CueTracker
 import solutions.xapient.roundr.domain.Cues
 import solutions.xapient.roundr.domain.Phase
 import solutions.xapient.roundr.domain.Run
@@ -35,12 +35,15 @@ class TimerService : Service() {
     private lateinit var signals: Signals
     private var wake: PowerManager.WakeLock? = null
     private var trackedId = Long.MIN_VALUE
-    private var points: List<CuePoint> = emptyList()
-    // verstrichene Zeit beim letzten Tick; Ansagen kommen aus dem Fenster (last, jetzt]
-    private var last = 0L
+    private var cues: CueTracker? = null
+    private var phase = -1
     private var shown: Any? = null
     private var foreground = false
+    // Fertig-Signal ausklingen lassen, dann erst beenden
+    private var lingering = false
+    private var collecting = false
     private val tick = Runnable { onTick() }
+    private val stop = Runnable { finish() }
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -55,12 +58,15 @@ class TimerService : Service() {
                 setShowBadge(false)
             },
         )
-        // Pflicht nach startForegroundService: sofort in den Vordergrund, auch wenn gleich Schluss ist
-        goForeground(store.state.value)
-        scope.launch { store.state.collect { sync(it) } }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        // Pflicht nach startForegroundService: sofort in den Vordergrund; nicht erlaubt (Neustart aus dem Hintergrund) -> aufhoeren
+        if (!goForeground(store.state.value)) return START_NOT_STICKY
+        if (!collecting) {
+            collecting = true
+            scope.launch { store.state.collect { sync(it) } }
+        }
         when (intent?.action) {
             ACTION_TOGGLE -> store.toggle()
             ACTION_SKIP -> store.skip()
@@ -72,6 +78,7 @@ class TimerService : Service() {
 
     override fun onDestroy() {
         handler.removeCallbacks(tick)
+        handler.removeCallbacks(stop)
         scope.cancel()
         releaseWake()
         signals.release()
@@ -80,49 +87,67 @@ class TimerService : Service() {
 
     private fun sync(r: Run?) {
         handler.removeCallbacks(tick)
-        val now = store.now()
-        if (r == null || r.finished(now)) {
-            finish()
+        if (r == null) {
+            // Schliessen waehrend des Fertig-Signals: ausklingen lassen
+            if (!lingering) finish()
             return
         }
+        val now = store.now()
         val e = r.session.elapsed(now)
         if (r.id != trackedId) {
+            // neuer Lauf (auch „Nochmal" waehrend das Fertig-Signal ausklingt)
             trackedId = r.id
-            points = Cues.points(r.timeline)
-            // frischer Start: Startsignal mitnehmen; nach Prozess-Neustart nichts nachholen
-            last = if (e < 1000) -1 else e
+            cues = CueTracker(Cues.points(r.timeline), e)
+            phase = r.timeline.at(e)?.index ?: -1
+            handler.removeCallbacks(stop)
+            lingering = false
         }
-        // zurueckgesprungen: Startsignal des Ziel-Abschnitts spielen
-        if (e < last) last = e - 1
-        if (r.session.running) {
-            acquireWake(r, e)
-            onTick()
-        } else {
-            releaseWake()
-            last = e
-            goForeground(r)
+        if (lingering) return
+        val c = cues ?: return
+        c.onSync(e, r.session.running, r.session.offsetMs)
+        when {
+            // ans Ende gesprungen: Fertig-Signal noch spielen
+            r.finished(now) -> if (c.last < r.timeline.totalMs) onTick() else finish()
+            r.session.running -> {
+                acquireWake(r, e)
+                onTick()
+            }
+            else -> {
+                releaseWake()
+                goForeground(r)
+            }
         }
     }
 
     private fun onTick() {
         val r = store.state.value ?: return
+        val c = cues ?: return
         val now = store.now()
         val e = r.session.elapsed(now)
-        Cues.due(points, last, e)?.let { signals.play(it, prefs.sound, prefs.vibrate) }
-        last = e
+        c.onTick(e)?.let { signals.play(it, prefs.sound, prefs.vibrate) }
         if (e >= r.timeline.totalMs) {
-            finish()
+            // Wakelock bleibt, bis das Signal ausgeklungen ist
+            lingering = true
+            handler.postDelayed(stop, DONE_LINGER_MS)
             return
+        }
+        val index = r.timeline.at(e)?.index ?: -1
+        if (index != phase) {
+            phase = index
+            // Fortschritt sichern; nach Geraete-Neustart geht hoechstens der laufende Abschnitt verloren
+            if (r.session.running) store.checkpoint()
         }
         goForeground(r)
         if (r.session.running) {
-            val next = Cues.nextAt(points, e) ?: r.timeline.totalMs
+            val next = c.nextAt(e) ?: r.timeline.totalMs
             handler.postDelayed(tick, (next - e).coerceIn(1, 30_000))
         }
     }
 
     private fun finish() {
         handler.removeCallbacks(tick)
+        handler.removeCallbacks(stop)
+        lingering = false
         releaseWake()
         if (foreground) {
             stopForeground(STOP_FOREGROUND_REMOVE)
@@ -132,24 +157,31 @@ class TimerService : Service() {
         stopSelf()
     }
 
-    private fun goForeground(r: Run?) {
+    // false = Vordergrund nicht erlaubt; dann beendet sich der Dienst, die Oberflaeche startet ihn beim Oeffnen neu
+    private fun goForeground(r: Run?): Boolean {
         val now = store.now()
         val pos = r?.timeline?.at(r.session.elapsed(now))
-        // nur bei Abschnitts- oder Zustandswechsel neu melden
-        val key = pos?.index to r?.session?.running
-        if (foreground && key == shown) return
+        // nur bei Abschnitts- oder Sitzungswechsel (Anhalten, Weiter, Springen) neu melden
+        val key = pos?.index to r?.session
+        if (foreground && key == shown) return true
         val n = notification(r)
         if (!foreground) {
-            if (Build.VERSION.SDK_INT >= 34) {
-                startForeground(ID, n, ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE)
-            } else {
-                startForeground(ID, n)
+            try {
+                if (Build.VERSION.SDK_INT >= 34) {
+                    startForeground(ID, n, ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE)
+                } else {
+                    startForeground(ID, n)
+                }
+            } catch (_: RuntimeException) {
+                finish()
+                return false
             }
             foreground = true
         } else {
             getSystemService(NotificationManager::class.java).notify(ID, n)
         }
         shown = key
+        return true
     }
 
     private fun notification(r: Run?): Notification {
@@ -183,7 +215,8 @@ class TimerService : Service() {
             b.setUsesChronometer(true)
                 .setChronometerCountDown(true)
                 .setShowWhen(true)
-                .setWhen(System.currentTimeMillis() + pos.remainingMs)
+                // Chronometer schneidet ab; +999 ms rundet auf wie die App
+                .setWhen(System.currentTimeMillis() + pos.remainingMs + 999)
             r.timeline.next(pos.index)?.let {
                 b.setContentText(getString(R.string.next_is, getString(phaseRes(it.phase)), TimeFormat.clock((it.durationMs / 1000).toInt())))
             }
@@ -221,6 +254,8 @@ class TimerService : Service() {
     companion object {
         private const val CHANNEL = "run"
         private const val ID = 1
+        // laenger als das Fertig-Signal (0,8 s Ton, 1 s Vibration)
+        const val DONE_LINGER_MS = 1_500L
         const val ACTION_TOGGLE = "solutions.xapient.roundr.TOGGLE"
         const val ACTION_SKIP = "solutions.xapient.roundr.SKIP"
         const val ACTION_STOP = "solutions.xapient.roundr.STOP"
@@ -233,7 +268,11 @@ class TimerService : Service() {
         }
 
         fun start(context: Context) {
-            ContextCompat.startForegroundService(context, Intent(context, TimerService::class.java))
+            try {
+                ContextCompat.startForegroundService(context, Intent(context, TimerService::class.java))
+            } catch (_: RuntimeException) {
+                // aus dem Hintergrund nicht erlaubt; beim naechsten Oeffnen erneut
+            }
         }
     }
 }

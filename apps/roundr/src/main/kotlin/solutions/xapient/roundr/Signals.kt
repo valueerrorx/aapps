@@ -5,6 +5,9 @@ import android.media.AudioAttributes
 import android.media.AudioFormat
 import android.media.AudioTrack
 import android.os.Build
+import android.os.Handler
+import android.os.HandlerThread
+import android.os.VibrationAttributes
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
@@ -22,10 +25,17 @@ class Signals(context: Context) {
         @Suppress("DEPRECATION")
         context.getSystemService(Vibrator::class.java)
     }
+    // Toene auf eigenem Thread: vorab erzeugt, Abspielen blockiert den Main-Thread nicht
+    private val thread = HandlerThread("roundr-audio").apply { start() }
+    private val audio = Handler(thread.looper)
     private val tracks = HashMap<String, AudioTrack?>()
 
+    init {
+        audio.post { KEYS.forEach { tracks[it] = build(notes(it)) } }
+    }
+
     fun play(cue: Cue, sound: Boolean, vibrate: Boolean) {
-        if (sound) tone(cue)
+        if (sound) audio.post { tone(cue) }
         if (vibrate) buzz(cue)
     }
 
@@ -35,7 +45,7 @@ class Signals(context: Context) {
             is Cue.Start -> if (cue.phase == Phase.WORK) "work" else "rest"
             Cue.Done -> "done"
         }
-        val t = tracks.getOrPut(key) { build(notes(key)) } ?: return
+        val t = tracks[key] ?: return
         try {
             if (t.playState == AudioTrack.PLAYSTATE_PLAYING) t.stop()
             t.reloadStaticData()
@@ -107,11 +117,25 @@ class Signals(context: Context) {
             is Cue.Start -> if (cue.phase == Phase.WORK) longArrayOf(0, 380) else longArrayOf(0, 120, 90, 120)
             Cue.Done -> longArrayOf(0, 160, 80, 160, 80, 480)
         }
-        v.vibrate(VibrationEffect.createWaveform(pattern, -1))
+        val effect = VibrationEffect.createWaveform(pattern, -1)
+        // Wecker-Kategorie: kommt auch, wenn Medien- oder Beruehrungsvibration aus ist
+        if (Build.VERSION.SDK_INT >= 33) {
+            v.vibrate(effect, VibrationAttributes.createForUsage(VibrationAttributes.USAGE_ALARM))
+        } else {
+            @Suppress("DEPRECATION")
+            v.vibrate(effect, AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM).build())
+        }
     }
 
     fun release() {
-        tracks.values.forEach { it?.release() }
-        tracks.clear()
+        audio.post {
+            tracks.values.forEach { it?.release() }
+            tracks.clear()
+        }
+        thread.quitSafely()
+    }
+
+    private companion object {
+        val KEYS = listOf("count", "work", "rest", "done")
     }
 }
