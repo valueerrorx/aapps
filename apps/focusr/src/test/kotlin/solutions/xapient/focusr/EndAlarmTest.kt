@@ -6,6 +6,7 @@ import android.app.Application
 import android.app.Notification
 import android.app.NotificationManager
 import android.content.Intent
+import android.os.SystemClock
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -37,17 +38,17 @@ class EndAlarmTest {
     }
 
     @Test fun runningSchedulesExactAlarmAtEnd() {
-        val now = System.currentTimeMillis()
+        val now = SystemClock.elapsedRealtime()
         EndAlarm.sync(ctx, Timer(10 * min).start(now), now)
         val a = shadowOf(am).peekNextScheduledAlarm()
         assertNotNull(a)
         assertEquals(now + 10 * min, a!!.triggerAtMs)
-        assertEquals(AlarmManager.RTC_WAKEUP, a.type)
+        assertEquals(AlarmManager.ELAPSED_REALTIME_WAKEUP, a.type)
         assertTrue(a.isAllowWhileIdle)
     }
 
     @Test fun pauseResetAndDoneCancel() {
-        val now = System.currentTimeMillis()
+        val now = SystemClock.elapsedRealtime()
         val run = Timer(10 * min).start(now)
         EndAlarm.sync(ctx, run, now)
         EndAlarm.sync(ctx, run.pause(now + 1000), now + 1000)
@@ -61,7 +62,7 @@ class EndAlarmTest {
 
     // Nur ein Alarm, auch wenn mehrfach gesetzt wird
     @Test fun rescheduleReplaces() {
-        val now = System.currentTimeMillis()
+        val now = SystemClock.elapsedRealtime()
         val run = Timer(10 * min).start(now)
         EndAlarm.sync(ctx, run, now)
         EndAlarm.sync(ctx, run.set(3 * min, now), now)
@@ -78,8 +79,8 @@ class EndAlarmTest {
     }
 
     @Test fun receiverShowsTimeIsUpInBackground() {
-        val now = System.currentTimeMillis()
-        Notifier.showRunning(ctx, now + 5000)
+        val now = SystemClock.elapsedRealtime()
+        Notifier.showRunning(ctx, 5000)
         fire(Timer(min).start(now - min - 100))
         val n = shadowOf(nm).getNotification(Notifier.ID_DONE)
         assertNotNull(n)
@@ -91,13 +92,13 @@ class EndAlarmTest {
 
     @Test fun receiverQuietWhenAppVisible() {
         Visibility.visible = true
-        fire(Timer(min).start(System.currentTimeMillis() - 2 * min))
+        fire(Timer(min).start(SystemClock.elapsedRealtime() - 2 * min))
         assertNull(shadowOf(nm).getNotification(Notifier.ID_DONE))
     }
 
     // Veralteter Alarm nach Pause oder Verlaengern
     @Test fun receiverIgnoresStaleAlarm() {
-        val now = System.currentTimeMillis()
+        val now = SystemClock.elapsedRealtime()
         fire(Timer(10 * min).start(now).pause(now + 1000))
         assertNull(shadowOf(nm).getNotification(Notifier.ID_DONE))
         fire(Timer(10 * min).start(now))
@@ -105,26 +106,33 @@ class EndAlarmTest {
     }
 
     @Test fun receiverIgnoresOtherActions() {
-        Prefs(ctx).timer = Timer(min).start(System.currentTimeMillis() - 2 * min)
+        Prefs(ctx).timer = Timer(min).start(SystemClock.elapsedRealtime() - 2 * min)
         EndReceiver().onReceive(ctx, Intent("x"))
         assertNull(shadowOf(nm).getNotification(Notifier.ID_DONE))
     }
 
     @Test fun noNotificationWithoutPermission() {
         shadowOf(ctx).denyPermissions(Manifest.permission.POST_NOTIFICATIONS)
-        fire(Timer(min).start(System.currentTimeMillis() - 2 * min))
+        fire(Timer(min).start(SystemClock.elapsedRealtime() - 2 * min))
         assertNull(shadowOf(nm).getNotification(Notifier.ID_DONE))
     }
 
     @Test fun runningNotificationCountsDownSilently() {
-        val end = System.currentTimeMillis() + 7 * min
-        Notifier.showRunning(ctx, end)
+        val wall = System.currentTimeMillis()
+        Notifier.showRunning(ctx, 7 * min)
         val n = shadowOf(nm).getNotification(Notifier.ID_RUNNING)
         assertNotNull(n)
-        assertEquals(end, n.`when`)
+        assertTrue(n.`when` - (wall + 7 * min) in 0..1000)
         assertTrue(n.extras.getBoolean(Notification.EXTRA_SHOW_CHRONOMETER))
         assertTrue(n.extras.getBoolean(Notification.EXTRA_CHRONOMETER_COUNT_DOWN))
         assertTrue(n.flags and Notification.FLAG_ONGOING_EVENT != 0)
         assertEquals(NotificationManager.IMPORTANCE_LOW, nm.getNotificationChannel(n.channelId).importance)
+        // verschwindet kurz nach dem Ende, kein negativer Countdown
+        assertEquals(7 * min + Notifier.TIMEOUT_SLACK_MS, n.timeoutAfter)
+    }
+
+    @Test fun noCountdownWhenNothingLeft() {
+        Notifier.showRunning(ctx, 0)
+        assertNull(shadowOf(nm).getNotification(Notifier.ID_RUNNING))
     }
 }

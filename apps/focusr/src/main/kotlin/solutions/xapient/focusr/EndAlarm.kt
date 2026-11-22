@@ -5,11 +5,13 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.os.SystemClock
 import solutions.xapient.focusr.domain.Timer
 
-// Exakter Alarm zum Ende; kein Dienst, die App darf dazwischen sterben
+// Exakter Alarm zum Ende auf der Laufzeituhr; kein Dienst, die App darf dazwischen sterben
 object EndAlarm {
     const val ACTION = "solutions.xapient.focusr.END"
+    private const val TYPE = AlarmManager.ELAPSED_REALTIME_WAKEUP
 
     private fun pending(ctx: Context): PendingIntent = PendingIntent.getBroadcast(
         ctx, 0,
@@ -18,7 +20,7 @@ object EndAlarm {
     )
 
     // Alarm passend zum Timer setzen oder loeschen
-    fun sync(ctx: Context, timer: Timer, now: Long = System.currentTimeMillis()) {
+    fun sync(ctx: Context, timer: Timer, now: Long = SystemClock.elapsedRealtime()) {
         val am = ctx.getSystemService(AlarmManager::class.java) ?: return
         val at = timer.alarmAt(now)
         if (at == null) {
@@ -29,13 +31,13 @@ object EndAlarm {
         val exact = Build.VERSION.SDK_INT < 31 || am.canScheduleExactAlarms()
         try {
             if (exact) {
-                am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, at, pi)
+                am.setExactAndAllowWhileIdle(TYPE, at, pi)
             } else {
-                am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, at, pi)
+                am.setAndAllowWhileIdle(TYPE, at, pi)
             }
         } catch (_: SecurityException) {
             // Recht genau jetzt entzogen: ungenau ist besser als gar nicht
-            am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, at, pi)
+            am.setAndAllowWhileIdle(TYPE, at, pi)
         }
     }
 }

@@ -3,6 +3,7 @@ package solutions.xapient.focusr
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.os.SystemClock
 import solutions.xapient.focusr.domain.Mode
 
 // Alarm am Ende: Ton, Vibration, Benachrichtigung; veraltete Alarme werden ignoriert
@@ -11,7 +12,7 @@ class EndReceiver : BroadcastReceiver() {
         if (intent.action != EndAlarm.ACTION) return
         val prefs = Prefs(context)
         val t = prefs.timer
-        if (t.mode != Mode.RUNNING || t.endAt - System.currentTimeMillis() > EARLY_MS) return
+        if (t.mode != Mode.RUNNING || t.endAt - SystemClock.elapsedRealtime() > EARLY_MS) return
         Notifier.cancel(context, Notifier.ID_RUNNING)
         if (!Visibility.visible) Notifier.showDone(context, t.setMs)
         if (prefs.vibrate) Alert.vibrate(context)

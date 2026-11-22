@@ -1,5 +1,6 @@
 package solutions.xapient.focusr.ui
 
+import android.os.SystemClock
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.spring
@@ -107,10 +108,11 @@ fun TimerScreen(
     onPause: () -> Unit,
     onReset: () -> Unit,
     onSettings: () -> Unit,
+    // Restzeit -> Uhrzeit des Endes
     endText: (Long) -> String,
     keepOn: Boolean = false,
     onReject: () -> Unit = {},
-    clock: () -> Long = System::currentTimeMillis,
+    clock: () -> Long = SystemClock::elapsedRealtime,
     animate: Boolean = true,
     dragPreview: Long? = null,
     pulseAt: Float = 0f,
@@ -176,6 +178,7 @@ fun TimerScreen(
     val zero = phase == Phase.IDLE && timer.setMs == 0L && !dragging
     val ghost = if ((phase == Phase.RUNNING || phase == Phase.PAUSED) && !dragging) Dial.fill(timer.setMs, scale) else -1f
     val shownMs = remember(timer) { { drag.value ?: timer.remaining(now.longValue) } }
+    val endsIn = remember(timer) { timer.remaining(clock()) }
 
     // einmal angelegt: Gesten und Zeichen-Cache bleiben ueber Rekompositionen bestehen
     val timerState = rememberUpdatedState(timer)
@@ -215,7 +218,7 @@ fun TimerScreen(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    Readout(shownMs, timer, phase, zero, endText, if (bigFont) 96.dp else 112.dp)
+                    Readout(shownMs, endsIn, phase, zero, endText, if (bigFont) 96.dp else 112.dp)
                     Spacer(Modifier.height(20.dp))
                     controls()
                 }
@@ -230,7 +233,7 @@ fun TimerScreen(
                     Spacer(Modifier.weight(1f))
                     gear()
                 }
-                Readout(shownMs, timer, phase, zero, endText, if (bigFont) 112.dp else 136.dp)
+                Readout(shownMs, endsIn, phase, zero, endText, if (bigFont) 112.dp else 136.dp)
                 Box(Modifier.weight(1f).fillMaxWidth().padding(horizontal = 14.dp, vertical = 8.dp), contentAlignment = Alignment.Center) {
                     TimerDial(look, haptics, onCommit, Modifier)
                 }
@@ -368,7 +371,7 @@ private fun TimerDial(look: DialInputs, haptics: Haptics?, onCommit: (Long) -> U
 @Composable
 private fun Readout(
     shownMs: () -> Long,
-    timer: Timer,
+    endsIn: Long,
     phase: Phase,
     zero: Boolean,
     endText: (Long) -> String,
@@ -392,7 +395,7 @@ private fun Readout(
         Spacer(Modifier.height(4.dp))
         val status = when {
             phase == Phase.DONE -> stringResource(R.string.state_done)
-            phase == Phase.RUNNING -> stringResource(R.string.state_ends, endText(timer.endAt))
+            phase == Phase.RUNNING -> stringResource(R.string.state_ends, endText(endsIn))
             phase == Phase.PAUSED -> stringResource(R.string.state_paused)
             zero -> null
             else -> stringResource(R.string.state_ready)

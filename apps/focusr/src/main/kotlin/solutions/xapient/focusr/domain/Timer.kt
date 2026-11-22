@@ -5,11 +5,7 @@ enum class Mode { IDLE, RUNNING, PAUSED }
 
 enum class Phase { IDLE, RUNNING, PAUSED, DONE }
 
-fun interface Clock {
-    fun now(): Long
-}
-
-// Ein Timer: eingestellte Zeit plus Lauf- bzw. Pausenzustand, alles in ms (Wanduhr)
+// Ein Timer: alle Zeiten in ms auf der Laufzeituhr (seit Geraetestart, unberuehrt von Uhrzeitwechseln)
 data class Timer(
     val setMs: Long = DEFAULT_MS,
     val mode: Mode = Mode.IDLE,
@@ -63,13 +59,19 @@ data class Timer(
     // Skala gewechselt: eingestellte Zeit begrenzen, laufender Timer bleibt
     fun limitTo(scale: Scale): Timer = if (setMs > scale.ms) copy(setMs = scale.ms) else this
 
-    // Kaputte oder alte Daten: lieber Leerlauf als Unsinn
+    // Laden: im selben Geraetestart gilt die Laufzeituhr, nach einem Neustart rechnet die Wanduhr das Ende um
+    fun restored(now: Long, wallNow: Long, endWall: Long, sameBoot: Boolean): Timer {
+        val moved = mode == Mode.RUNNING && endWall > 0 && (!sameBoot || endAt - now > MAX_MS + SLACK_MS)
+        return (if (moved) copy(endAt = now + (endWall - wallNow)) else this).sanitized(now)
+    }
+
+    // Kaputte Daten: Werte begrenzen; ein Lauf bleibt ein Lauf (schlimmstenfalls "Zeit um")
     fun sanitized(now: Long): Timer {
         val s = setMs.coerceIn(0L, MAX_MS)
         return when (mode) {
             Mode.IDLE -> Timer(setMs = s)
             Mode.PAUSED -> if (leftMs in 1..MAX_MS) Timer(s, Mode.PAUSED, 0, leftMs) else Timer(setMs = s)
-            Mode.RUNNING -> if (endAt > 0 && endAt - now <= MAX_MS + SLACK_MS) Timer(s, Mode.RUNNING, endAt, 0) else Timer(setMs = s)
+            Mode.RUNNING -> Timer(s, Mode.RUNNING, endAt.coerceAtMost(now + MAX_MS), 0)
         }
     }
 

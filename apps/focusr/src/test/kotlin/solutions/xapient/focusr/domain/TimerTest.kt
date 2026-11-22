@@ -128,10 +128,41 @@ class TimerTest {
         assertEquals(Timer(0), Timer(-7).sanitized(t0))
         assertEquals(Timer(5 * min), Timer(5 * min, Mode.PAUSED, 0, -3).sanitized(t0))
         assertEquals(Timer(5 * min), Timer(5 * min, Mode.PAUSED, 0, Timer.MAX_MS + 1).sanitized(t0))
-        assertEquals(Timer(5 * min), Timer(5 * min, Mode.RUNNING, 0, 0).sanitized(t0))
-        // Ende weit in der Zukunft (z. B. Uhr verstellt)
-        assertEquals(Timer(5 * min), Timer(5 * min, Mode.RUNNING, t0 + 500 * min, 0).sanitized(t0))
+        // Lauf ohne brauchbares Ende: nicht still verwerfen, sondern "Zeit um"
+        assertEquals(Phase.DONE, Timer(5 * min, Mode.RUNNING, 0, 0).sanitized(t0).phase(t0))
+        // Ende unmoeglich weit weg: Lauf bleibt, begrenzt auf das Maximum
+        assertEquals(Timer(5 * min, Mode.RUNNING, t0 + Timer.MAX_MS, 0), Timer(5 * min, Mode.RUNNING, t0 + 500 * min, 0).sanitized(t0))
         // Idle mit Restdaten wird bereinigt
         assertEquals(Timer(5 * min), Timer(5 * min, Mode.IDLE, 77, 88).sanitized(t0))
+    }
+
+    private val wall = 1_700_000_000_000L
+
+    // Uhrzeit verstellt (Zeitzone, Sommerzeit, Netzzeit): Lauf haengt nur an der Laufzeituhr
+    @Test fun wallClockJumpChangesNothing() {
+        val run = Timer(10 * min).start(t0)
+        val endWall = wall + 10 * min
+        assertEquals(run, run.restored(t0 + min, wall + min + 60 * min, endWall, sameBoot = true))
+        assertEquals(run, run.restored(t0 + min, wall + min - 60 * min, endWall, sameBoot = true))
+        assertEquals(Phase.RUNNING, run.restored(t0 + min, wall + 30 * min, endWall, sameBoot = true).phase(t0 + min))
+    }
+
+    // Nach einem Neustart beginnt die Laufzeituhr bei 0: Ende ueber die Wanduhr umrechnen
+    @Test fun afterRebootWallClockRebasesEnd() {
+        val run = Timer(10 * min).start(t0)
+        val endWall = wall + 10 * min
+        val boot = 5_000L
+        val r = run.restored(boot, wall + 4 * min, endWall, sameBoot = false)
+        assertEquals(Phase.RUNNING, r.phase(boot))
+        assertEquals(6 * min, r.remaining(boot))
+        // Ende waehrend des Neustarts verpasst: Zeit um
+        val late = run.restored(boot, wall + 30 * min, endWall, sameBoot = false)
+        assertEquals(Phase.DONE, late.phase(boot))
+        assertEquals(Mode.RUNNING, late.mode)
+        // Neustart nicht erkannt, aber Ende unmoeglich weit weg: ebenfalls umrechnen
+        assertEquals(6 * min, run.restored(boot, wall + 4 * min, endWall, sameBoot = true).remaining(boot))
+        // Pause braucht keine Uhr
+        val p = run.pause(t0 + min)
+        assertEquals(p, p.restored(boot, wall, 0, sameBoot = false))
     }
 }

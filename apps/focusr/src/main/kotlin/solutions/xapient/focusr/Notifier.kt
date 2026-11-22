@@ -23,6 +23,9 @@ object Notifier {
     const val ID_RUNNING = 2
     private const val ACCENT = 0xFFFF6E5A.toInt()
 
+    // Countdown nie negativ: kurz nach dem Ende weg, auch wenn der Alarm ausbleibt
+    const val TIMEOUT_SLACK_MS = 2000L
+
     fun allowed(ctx: Context): Boolean {
         val perm = Build.VERSION.SDK_INT < 33 ||
             ContextCompat.checkSelfPermission(ctx, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
@@ -68,9 +71,11 @@ object Notifier {
         notify(ctx, ID_DONE, n)
     }
 
-    fun showRunning(ctx: Context, endAt: Long) {
-        if (!allowed(ctx)) return
+    // Countdown bis leftMs; Wanduhr nur fuer Anzeige, nach dem Ende verschwindet sie von selbst
+    fun showRunning(ctx: Context, leftMs: Long) {
+        if (!allowed(ctx) || leftMs <= 0) return
         channels(ctx)
+        val endAt = System.currentTimeMillis() + leftMs
         val n = NotificationCompat.Builder(ctx, CH_RUNNING)
             .setSmallIcon(R.drawable.ic_stat_focusr)
             .setColor(ACCENT)
@@ -80,6 +85,7 @@ object Notifier {
             .setShowWhen(true)
             .setUsesChronometer(true)
             .setChronometerCountDown(true)
+            .setTimeoutAfter(leftMs + TIMEOUT_SLACK_MS)
             .setOngoing(true)
             .setOnlyAlertOnce(true)
             .setSilent(true)

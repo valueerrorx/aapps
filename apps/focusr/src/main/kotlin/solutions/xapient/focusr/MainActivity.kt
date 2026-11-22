@@ -1,6 +1,7 @@
 package solutions.xapient.focusr
 
 import android.os.Bundle
+import android.os.SystemClock
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
@@ -30,6 +31,7 @@ class MainActivity : ComponentActivity() {
     override fun onStop() {
         super.onStop()
         Visibility.visible = false
-        Prefs(this).timer.alarmAt(System.currentTimeMillis())?.let { Notifier.showRunning(this, it) }
+        val now = SystemClock.elapsedRealtime()
+        Prefs(this).timer.alarmAt(now)?.let { Notifier.showRunning(this, it - now) }
     }
 }

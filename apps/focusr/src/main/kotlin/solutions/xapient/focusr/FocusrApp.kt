@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.os.Build
+import android.os.SystemClock
 import android.provider.Settings
 import android.text.format.DateFormat
 import android.view.HapticFeedbackConstants
@@ -92,15 +93,16 @@ fun FocusrApp() {
                 timer = timer,
                 scale = scale,
                 haptics = haptics,
-                onSet = { update(timer.set(it, System.currentTimeMillis())) },
+                onSet = { update(timer.set(it, SystemClock.elapsedRealtime())) },
                 onStart = {
-                    update(timer.start(System.currentTimeMillis()))
+                    update(timer.start(SystemClock.elapsedRealtime()))
                     askNotifications(fromSettings = false)
                 },
-                onPause = { update(timer.pause(System.currentTimeMillis())) },
+                onPause = { update(timer.pause(SystemClock.elapsedRealtime())) },
                 onReset = { update(timer.reset()) },
                 onSettings = { screen = Screen.SETTINGS },
-                endText = { DateFormat.getTimeFormat(context).format(Date(it)) },
+                // Endzeit nur als Anzeige ueber die Wanduhr
+                endText = { DateFormat.getTimeFormat(context).format(Date(System.currentTimeMillis() + it)) },
                 keepOn = keepOn,
                 onReject = reject,
             )
