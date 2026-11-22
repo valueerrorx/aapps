@@ -67,6 +67,17 @@ class FieldMeterTest {
         assertEquals(0f, r.dev, 0.05f)
     }
 
+    @Test fun tareWhilePausedSettlesAgain() {
+        val f = FieldMeter()
+        f.feed(48f, 1f)
+        f.pause()
+        f.tare()
+        assertTrue(f.reading.baseline.isNaN())
+        t += 5_000 * ms
+        assertTrue(f.feed(55f, 0.2f).settling)
+        assertEquals(55f, f.feed(55f, 0.5f).baseline, 0.01f)
+    }
+
     @Test fun roseOnlyWhenLevelClimbs() {
         val f = FieldMeter()
         f.feed(48f, 1f)

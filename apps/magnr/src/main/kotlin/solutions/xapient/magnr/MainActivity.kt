@@ -1,5 +1,6 @@
 package solutions.xapient.magnr
 
+import android.media.AudioManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
@@ -14,6 +15,8 @@ class MainActivity : ComponentActivity() {
             navigationBarStyle = SystemBarStyle.dark(android.graphics.Color.TRANSPARENT),
         )
         super.onCreate(savedInstanceState)
-        setContent { }
+        // Lautstaerketasten regeln den Piepton
+        volumeControlStream = AudioManager.STREAM_MUSIC
+        setContent { MagnrApp() }
     }
 }

@@ -127,13 +127,17 @@ class FieldMeter(
         return reading
     }
 
-    // Nullen: aktueller Betrag wird Grundwert
+    // Nullen: aktueller Betrag wird Grundwert; ohne Messung (pausiert) neu einschwingen
     fun tare() {
         val m = smooth.value
-        if (m.isNaN()) return
-        baseline.set(m)
         peak.reset()
         level = Level.QUIET
+        if (m.isNaN()) {
+            baseline.reset()
+            reading = reading.copy(baseline = Float.NaN, peak = Float.NaN)
+            return
+        }
+        baseline.set(m)
         reading = reading.copy(baseline = m, dev = 0f, strength = 0f, level = Level.QUIET, peak = Float.NaN)
     }
 
