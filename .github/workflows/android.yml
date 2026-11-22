@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   # Pfadfilter: nur betroffene Apps bauen; Aenderungen an Core/Build bauen alle
@@ -71,25 +71,32 @@ jobs:
 
       - uses: gradle/actions/setup-gradle@v4
 
-      # Keystore nur aus Secrets; fehlt er, signiert Gradle mit dem Debug-Schluessel
+      # Keystore nur aus Secrets. Push auf main/Tag: Pflicht, sonst Abbruch.
+      # PRs/manuell: Debug-Schluessel als Fallback (APK nicht updatefaehig)
       - name: Keystore
         env:
           KEYSTORE_B64: ${{ secrets.KEYSTORE_B64 }}
+          RELEASE_BUILD: ${{ github.event_name == 'push' }}
         run: |
           if [ -n "$KEYSTORE_B64" ]; then
             echo "$KEYSTORE_B64" | base64 -d > "$RUNNER_TEMP/release.jks"
             echo "KEYSTORE_FILE=$RUNNER_TEMP/release.jks" >> "$GITHUB_ENV"
+          elif [ "$RELEASE_BUILD" = true ]; then
+            echo "::error::KEYSTORE_B64 fehlt, Release-Build abgebrochen"
+            exit 1
           else
-            echo "::warning::KEYSTORE_B64 fehlt, Release-APK ist mit Debug-Schluessel signiert"
+            echo "::warning::KEYSTORE_B64 fehlt, APK ist mit Debug-Schluessel signiert"
           fi
 
       - name: Pruefen und bauen
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_PASSWORD: ${{ secrets[format('KEY_PASSWORD_{0}', matrix.app)] }}
+          RELEASE_BUILD: ${{ github.event_name == 'push' }}
         run: |
           export "KEY_PASSWORD_${APP^^}=$KEY_PASSWORD"
-          ./gradlew --no-daemon ":apps:$APP:check" ":apps:$APP:verifyRoborazziDebug" ":apps:$APP:assembleRelease"
+          ./gradlew --no-daemon -Paapps.requireReleaseKey="$RELEASE_BUILD" \
+            ":apps:$APP:check" ":apps:$APP:verifyRoborazziDebug" ":apps:$APP:assembleRelease"
           cp "apps/$APP/build/outputs/apk/release/$APP-release.apk" "$APP.apk"
 
       - name: Screenshot-Diffs
@@ -104,6 +111,28 @@ jobs:
         with:
           name: ${{ matrix.app }}-apk
           path: ${{ matrix.app }}.apk
+
+  # Nur dieser Job darf schreiben; laeuft nur bei Push auf main oder Tag
+  release:
+    needs: [changes, build]
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        app: ${{ fromJSON(needs.changes.outputs.apps) }}
+    env:
+      APP: ${{ matrix.app }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: ${{ matrix.app }}-apk
 
       # jeder Push auf main aktualisiert <app>-latest (direkter Download aufs Handy)
       - name: Release <app>-latest
@@ -120,4 +149,10 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "$GITHUB_REF_NAME" "$APP.apk" --title "$APP ${GITHUB_REF_NAME#$APP-}" --generate-notes
+        run: |
+          # Tags nur auf Commits, die schon in main sind
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" origin/main; then
+            echo "::error::Tag $GITHUB_REF_NAME zeigt nicht auf einen Commit in main"
+            exit 1
+          fi
+          gh release create "$GITHUB_REF_NAME" "$APP.apk" --title "$APP ${GITHUB_REF_NAME#$APP-}" --generate-notes

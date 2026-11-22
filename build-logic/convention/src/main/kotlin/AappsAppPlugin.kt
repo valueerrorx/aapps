@@ -46,6 +46,10 @@ class AappsAppPlugin : Plugin<Project> {
             val ksPass = providers.environmentVariable("KEYSTORE_PASSWORD").orNull
             val keyPass = providers.environmentVariable("KEY_PASSWORD_${appName.uppercase()}").orNull
             val haveKey = !ks.isNullOrBlank() && !ksPass.isNullOrBlank() && !keyPass.isNullOrBlank()
+            // CI auf main/Tags: ohne echten Schluessel abbrechen, sonst wechselt die Signatur je Runner
+            if (providers.gradleProperty("aapps.requireReleaseKey").orNull == "true" && !haveKey) {
+                fail("Release-Schluessel fehlt: KEYSTORE_FILE, KEYSTORE_PASSWORD, KEY_PASSWORD_${appName.uppercase()}")
+            }
             if (haveKey) {
                 signingConfigs.create("release") {
                     storeFile = file(ks!!)
