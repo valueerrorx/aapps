@@ -22,6 +22,47 @@ class WheelTest {
         assertEquals(Wheel.MAX_LENGTH, Wheel.clean("x".repeat(100)).length)
         assertEquals("Grüße 🎉", Wheel.clean("Grüße 🎉"))
         assertEquals("x".repeat(39), Wheel.clean("x".repeat(39) + "🎉"))
+        // e + kombinierender Akzent bleibt zusammen
+        assertEquals("x".repeat(39), Wheel.clean("x".repeat(39) + "é"))
+        assertEquals("x".repeat(38) + "é", Wheel.clean("x".repeat(38) + "é" + "yz"))
+    }
+
+    @Test
+    fun removeShownMapsSegmentToEntry() {
+        var r = Round(5).remove(1)
+        // Segmente: 0, 2, 3, 4
+        r = r.removeShown(1)
+        assertEquals(listOf(0, 3, 4), r.remaining)
+        assertEquals(r, r.removeShown(7))
+        r = r.removeShown(2)
+        assertEquals(listOf(0, 3), r.remaining)
+        assertEquals(r, r.removeShown(0))
+    }
+
+    @Test
+    fun colorsStayWithTheirEntry() {
+        val k = 6
+        for (total in 2..Wheel.MAX_ENTRIES) {
+            val full = (0 until total).toList()
+            assertEquals(full.map { Palette.colorIndex(it, total, k) }, Palette.colors(full, total, k))
+            val random = kotlin.random.Random(total)
+            repeat(20) {
+                val ids = full.filter { random.nextInt(3) > 0 }.ifEmpty { listOf(0) }
+                val colors = Palette.colors(ids, total, k)
+                val m = ids.size
+                for (j in 0 until m) {
+                    if (m > 1) assertNotEquals("total=$total ids=$ids", colors[j], colors[(j + 1) % m])
+                }
+                // die meisten behalten ihre Farbe
+                val kept = ids.indices.count { colors[it] == Palette.colorIndex(ids[it], total, k) }
+                assertTrue(kept >= m - m / 2 - 1)
+            }
+        }
+        // Beispiel: 8 Eintraege, Nr. 1 raus -> nur ein Nachbar muss ausweichen
+        val ids = listOf(0, 2, 3, 4, 5, 6, 7)
+        val before = ids.map { Palette.colorIndex(it, 8, k) }
+        val after = Palette.colors(ids, 8, k)
+        assertTrue(ids.indices.count { before[it] != after[it] } <= 1)
     }
 
     @Test

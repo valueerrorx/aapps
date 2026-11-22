@@ -1,5 +1,7 @@
 package com.valueerrorx.spinr.domain
 
+import java.text.BreakIterator
+
 // Ein gespeichertes Rad; entries darf leere Zeilen enthalten (Bearbeiten), labels nicht
 data class Wheel(val name: String, val entries: List<String>) {
     val labels: List<String> get() = entries.map { it.trim() }.filter { it.isNotEmpty() }
@@ -15,9 +17,10 @@ data class Wheel(val name: String, val entries: List<String>) {
             val s = text.map { if (it == '\n' || it == '\r' || it == '\t') ' ' else it }
                 .filter { !it.isISOControl() }
                 .joinToString("")
-                .take(MAX_LENGTH)
-            // kein halbes Emoji am Ende
-            return if (s.isNotEmpty() && s.last().isHighSurrogate()) s.dropLast(1) else s
+            if (s.length <= MAX_LENGTH) return s
+            // nur an Zeichengrenzen kuerzen: kein halbes Emoji, kein loser Akzent
+            val bi = BreakIterator.getCharacterInstance().apply { setText(s) }
+            return s.substring(0, if (bi.isBoundary(MAX_LENGTH)) MAX_LENGTH else bi.preceding(MAX_LENGTH))
         }
     }
 }
@@ -50,5 +53,8 @@ data class Round(val size: Int, val removed: Set<Int> = emptySet()) {
     val canRemove: Boolean get() = remaining.size > Wheel.MIN_ENTRIES
 
     fun remove(label: Int): Round = if (canRemove && label in remaining) copy(removed = removed + label) else this
+
+    // Segment auf dem Rad (Index in remaining) herausnehmen
+    fun removeShown(segment: Int): Round = remaining.getOrNull(segment)?.let { remove(it) } ?: this
     fun restore(): Round = copy(removed = emptySet())
 }

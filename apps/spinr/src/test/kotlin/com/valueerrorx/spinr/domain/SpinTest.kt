@@ -66,23 +66,36 @@ class SpinTest {
     @Test
     fun weakFlingIsNoSpin() {
         assertNull(Spinner.fling(0.0, 40.0, Random(1)))
-        assertNull(Spinner.fling(0.0, -149.0, Random(1)))
+        assertNull(Spinner.fling(0.0, -499.0, Random(1)))
         assertNull(Spinner.fling(0.0, Double.NaN, Random(1)))
-        assertNotNull(Spinner.fling(0.0, 151.0, Random(1)))
+        assertNotNull(Spinner.fling(0.0, 501.0, Random(1)))
     }
 
     @Test
     fun flingKeepsDirectionAndStaysNearNaturalDistance() {
         val random = Random(2)
-        val f = Friction()
-        for (v in listOf(-2500.0, -900.0, 400.0, 1200.0, 1800.0, 2600.0, 9000.0)) {
-            val natural = f.distance(abs(v)).coerceIn(Spinner.MIN_DISTANCE, Spinner.MAX_DISTANCE)
+        for (v in listOf(-2500.0, -900.0, 600.0, 1200.0, 1800.0, 2600.0, 9000.0)) {
+            val natural = Spinner.naturalDistance(abs(v))
             repeat(50) {
                 val spin = Spinner.fling(10.0, v, random)!!
                 assertEquals(if (v > 0) 1 else -1, spin.direction)
                 assertTrue(abs(spin.distance - natural) <= 180.0 + 1e-6)
+                assertTrue(spin.distance >= Spinner.MIN_DISTANCE - 1e-6 && spin.distance < Spinner.MAX_DISTANCE)
             }
         }
+    }
+
+    @Test
+    fun naturalDistanceGrowsAndIsCappedSoftly() {
+        var last = 0.0
+        for (v in 500..40_000 step 250) {
+            val d = Spinner.naturalDistance(v.toDouble())
+            assertTrue(d >= last)
+            assertTrue(d in Spinner.MIN_DISTANCE + 180.0..Spinner.MAX_DISTANCE - 180.0)
+            last = d
+        }
+        // nahe der Grenze nimmt der Weg noch zu, nur langsamer
+        assertTrue(Spinner.naturalDistance(6000.0) > Spinner.naturalDistance(4000.0))
     }
 
     @Test
