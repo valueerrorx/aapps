@@ -105,6 +105,16 @@ class CompassEngineTest {
     }
 
     @Test
+    fun undeterminedHeadingKeepsLastValue() {
+        val e = CompassEngine()
+        e.hold(212f)
+        // Bildschirm-rechts senkrecht: keine Richtung, Anzeige bleibt
+        assertFalse(e.onRotation(Poses.pose(30f, 90f, 90f), t, 0))
+        near(212f, e.reading.heading)
+        assertTrue(e.reading.valid)
+    }
+
+    @Test
     fun courseNeedsValidHeading() {
         val e = CompassEngine()
         e.setCourse()
@@ -140,6 +150,20 @@ class CompassEngineTest {
         val e = CompassEngine()
         e.hold(45f, pitch = 90f)
         near(45f, e.reading.heading)
-        assertEquals(1f, e.reading.tiltY, 0.03f)
+        assertEquals(1f, e.upY, 0.03f)
+    }
+
+    @Test
+    fun tiltAloneDoesNotChangeReading() {
+        val e = CompassEngine()
+        e.hold(80f)
+        // nur nicken: Richtung bleibt, Anzeige bleibt
+        var changes = 0
+        for (pitch in 0..40) {
+            if (e.onRotation(Poses.pose(80f, pitch.toFloat()), t, 0)) changes++
+            t += 20_000_000L
+        }
+        assertEquals(0, changes)
+        assertTrue(e.upY > 0.6f)
     }
 }

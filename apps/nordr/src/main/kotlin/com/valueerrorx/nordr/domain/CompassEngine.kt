@@ -1,7 +1,5 @@
 package com.valueerrorx.nordr.domain
 
-import kotlin.math.abs
-
 // Momentaufnahme fuer die Anzeige; Winkel in Grad, heading/course im gewaehlten Nordbezug
 data class CompassReading(
     val valid: Boolean = false,
@@ -11,8 +9,6 @@ data class CompassReading(
     val deviation: Float = 0f, // positiv = Kurs liegt rechts
     val onCourse: Boolean = false,
     val accuracy: Accuracy = Accuracy.GOOD,
-    val tiltX: Float = 0f, // Welt-oben auf dem Bildschirm, -1..1
-    val tiltY: Float = 0f,
 ) {
     val whole: Int get() = Angles.whole(heading)
     val point: Int get() = Angles.point16(heading)
@@ -33,11 +29,15 @@ class CompassEngine {
     private val tracker = CourseTracker()
     private val cardinal = CardinalDetector()
     private val accuracyMonitor = AccuracyMonitor()
-    private var tiltX = 0f
-    private var tiltY = 0f
     private var lastNanos = 0L
 
     var reading = CompassReading()
+        private set
+
+    // Welt-oben auf dem Bildschirm (-1..1), roh; geht direkt an die Glas-Spiegelung, nicht in die Anzeige
+    var upX = 0f
+        private set
+    var upY = 0f
         private set
 
     // Ereignisse des letzten Messwerts, fuer Haptik
@@ -59,11 +59,11 @@ class CompassEngine {
         lastNanos = timestampNanos
         val raw = Orientation.heading(r, quarterTurns)
         val smooth = smoother.update(raw, dt)
+        val up = Orientation.upOnScreen(r, quarterTurns)
+        upX = up.x
+        upY = up.y
         if (smooth.isNaN()) return false
         dead.update(smooth)
-        val up = Orientation.upOnScreen(r, quarterTurns)
-        if (abs(up.x - tiltX) >= TILT_DEADBAND) tiltX = up.x
-        if (abs(up.y - tiltY) >= TILT_DEADBAND) tiltY = up.y
         return refresh(events = true)
     }
 
@@ -113,8 +113,6 @@ class CompassEngine {
             deviation = tracker.deviation(mag),
             onCourse = tracker.onCourse,
             accuracy = accuracyMonitor.state,
-            tiltX = tiltX,
-            tiltY = tiltY,
         )
         val changed = next != reading
         reading = next
@@ -123,6 +121,5 @@ class CompassEngine {
 
     private companion object {
         const val DEADBAND = 0.4f
-        const val TILT_DEADBAND = 0.02f
     }
 }

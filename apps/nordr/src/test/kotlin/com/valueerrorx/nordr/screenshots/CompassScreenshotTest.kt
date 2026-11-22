@@ -54,7 +54,8 @@ class CompassScreenshotTest {
 
     // 247° WSW, Rose schwingt noch nach, Handy leicht gekippt
     private fun headingState() = CompassState().apply {
-        show(CompassReading(valid = true, heading = 247f, magnetic = 247f, tiltX = 0.12f, tiltY = 0.3f))
+        show(CompassReading(valid = true, heading = 247f, magnetic = 247f))
+        physics.setTilt(0.12f, 0.3f)
         physics.dial.pose(253f, -18f)
     }
 
@@ -76,7 +77,8 @@ class CompassScreenshotTest {
     }
 
     private fun courseState() = CompassState().apply {
-        show(CompassReading(valid = true, heading = 232f, magnetic = 232f, course = 250f, deviation = 18f, tiltY = 0.2f))
+        show(CompassReading(valid = true, heading = 232f, magnetic = 232f, course = 250f, deviation = 18f))
+        physics.setTilt(0f, 0.2f)
     }
 
     @Test fun course() = shot("course") { Compass(courseState()) }

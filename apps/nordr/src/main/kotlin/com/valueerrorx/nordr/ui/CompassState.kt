@@ -37,14 +37,14 @@ class CompassState {
 
     var quarterTurns = 0
 
-    // Hinweis: von Hand geoeffnet oder bei schlechter Genauigkeit, bis er ausgeblendet wird
+    // Hinweis: von Hand geoeffnet oder bei schlechter Genauigkeit; ausgeblendet bis zur naechsten Verschlechterung
     private var manualHint by mutableStateOf(false)
-    private var dismissed by mutableStateOf<Accuracy?>(null)
+    private var dismissed by mutableStateOf(Accuracy.GOOD)
     val hint: Hint?
         get() = when {
-            reading.accuracy == Accuracy.INTERFERENCE && dismissed != Accuracy.INTERFERENCE -> Hint.INTERFERENCE
+            reading.accuracy == Accuracy.INTERFERENCE && dismissed < Accuracy.INTERFERENCE -> Hint.INTERFERENCE
             manualHint -> Hint.CALIBRATE
-            reading.accuracy == Accuracy.LOW && dismissed != Accuracy.LOW -> Hint.CALIBRATE
+            reading.accuracy == Accuracy.LOW && dismissed < Accuracy.LOW -> Hint.CALIBRATE
             else -> null
         }
     val hintIsManual: Boolean get() = manualHint && reading.accuracy == Accuracy.GOOD
@@ -52,6 +52,8 @@ class CompassState {
     val listener = object : CompassListener {
         override fun onRotation(r: FloatArray, timestampNanos: Long) {
             if (engine.onRotation(r, timestampNanos, quarterTurns)) show(engine.reading)
+            // Neigung nur an die Physik, kein neuer Anzeigezustand
+            if (physics.setTilt(engine.upX, engine.upY)) targetVersion++
             if (engine.justOnCourse) courseSnaps++
             if (engine.justCardinal) cardinalTicks++
         }
@@ -64,7 +66,8 @@ class CompassState {
     // Fester Wert, z. B. fuer Screenshots
     fun show(r: CompassReading) {
         reading = r
-        if (r.accuracy == Accuracy.GOOD) dismissed = null
+        // Verbesserung senkt die Schwelle, die naechste Verschlechterung zeigt den Hinweis wieder
+        if (r.accuracy < dismissed) dismissed = r.accuracy
         physics.setTarget(r)
         targetVersion++
     }
@@ -83,12 +86,12 @@ class CompassState {
 
     fun showHint() {
         manualHint = true
-        dismissed = null
+        dismissed = Accuracy.GOOD
     }
 
     fun dismissHint() {
         manualHint = false
-        dismissed = reading.accuracy.takeIf { it != Accuracy.GOOD }
+        dismissed = reading.accuracy
     }
 
     // Sensor-Pause: Zeitbasis und Filter neu
