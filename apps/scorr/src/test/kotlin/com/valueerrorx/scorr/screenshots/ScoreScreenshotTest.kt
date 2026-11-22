@@ -70,11 +70,14 @@ class ScoreScreenshotTest {
         .play(0 to 39, 1 to 25, 2 to 27)
 
     @Composable
-    private fun Board(g: Game, scrub: Pair<Int, Int>? = null, shine: Float = -1f, rounds: Boolean = true, overlay: @Composable () -> Unit = {}) {
+    private fun Board(
+        g: Game, scrub: Pair<Int, Int>? = null, shine: Float = -1f, rounds: Boolean = true, confirm: Boolean = false,
+        overlay: @Composable () -> Unit = {},
+    ) {
         ScoreScreen(
             g, rounds, haptics = null, onScore = { _, _ -> }, onEnter = {}, onUndo = {}, onNextRound = {}, onNewGame = {},
             onHistory = {}, onSettings = {}, clock = { g.lastAt + 400 }, animate = false, scrubPreview = scrub, shineAt = shine,
-            overlay = overlay,
+            confirmNew = confirm, overlay = overlay,
         )
     }
 
@@ -101,9 +104,21 @@ class ScoreScreenshotTest {
     @Test fun board8() = shot("board8") { Eight() }
     @Test fun board8_land() = shot("board8_land", "+land") { Eight() }
 
+    // Grenzwerte: laengste Zahl darf nie abgeschnitten werden
+    @Test fun board8_land_extreme() = shot("board8_land_extreme", "+land") {
+        Board(eight().play(1 to -1_000_000, 3 to 999_999).settled(), rounds = false)
+    }
+
     @Test fun scrub() = shot("scrub") { Board(two().settled(), scrub = 1 to 7) }
 
-    @Composable private fun Winner() = Board(finishedGame().settled(), shine = 0.45f)
+    // Ruhezustand nach dem Glanz; winner_shine zeigt den Glanz mitten im Lauf
+    @Composable private fun Winner() = Board(finishedGame().settled())
+
+    @Test fun winner_shine() = shot("winner_shine") { Board(finishedGame().settled(), shine = 0.45f) }
+    @Test fun winner_again_land_font200_de() = shot("winner_again_land_font200_de", "+de-land", fontScale = 2f) {
+        Board(finishedGame().settled(), confirm = true)
+    }
+    @Test fun board_land_font200_de() = shot("board_land_font200_de", "+de-land", fontScale = 2f) { Two() }
 
     @Test fun winner() = shot("winner") { Winner() }
     @Test fun winner_de() = shot("winner_de", "+de") { Winner() }

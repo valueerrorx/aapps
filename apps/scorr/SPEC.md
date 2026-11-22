@@ -38,12 +38,13 @@ Hochformat: 1–3 untereinander, 4 = 2×2, 5–6 = 2×3, 7–8 = 2×4. Querforma
 | `board4` | 4 Spieler, Zug-Anzeige „+3" |
 | `board8` | 8 Spieler, ein Wert negativ |
 | `scrub` | Ziehen mit Vorschau „+7" |
-| `winner` | Ziel 100 erreicht, Gewinner hervorgehoben |
+| `winner` | Ziel 100 erreicht, Gewinner hervorgehoben (Ruhezustand), `winner_shine` mit Glanz |
+| `board8_land_extreme` | 8 Spieler quer, Grenzwerte −999 990 und 999 999 |
 | `entry` | Eingabe über der Tafel |
 | `history`, `players`, `settings`, `about` | Verlauf, Spieler, Einstellungen, Info |
 | `icon_masks`, `icon_store_512` | App-Icon in Masken, Store-Icon |
 
-Varianten (Standard Pixel 7, en): `_de`, `_land`, `_font200`, `_land_font200` für alle Hauptansichten (Tafel, Gewinner, Eingabe, Verlauf, Spieler, Einstellungen); dazu `board_360dp`, `board_font130`, `board4_land`, `board8_land`.
+Varianten (Standard Pixel 7, en): `_de`, `_land`, `_font200`, `_land_font200` für alle Hauptansichten (Tafel, Gewinner, Eingabe, Verlauf, Spieler, Einstellungen); dazu `board_360dp`, `board_font130`, `board4_land`, `board8_land`, `board_land_font200_de`, `winner_again_land_font200_de` (Bestätigung „Neues Spiel").
 
 ## Abnahmekriterien
 - Domain ohne Android-Imports, Unit-Tests für Zählen/Zusammenfassen, Rückgängig, Runden-Tabelle, Ziel/Gewinner (beide Richtungen, Gleichstand), Spieler ändern/entfernen, Grenzen, Speicherformat (inkl. kaputter Daten), Raster, Zahlformat.
