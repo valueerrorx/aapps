@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Sinus im Bogen mit Marke -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path android:pathData="M34.908,73.092A27,27 0 1,1 73.092,73.092" android:strokeWidth="3" android:strokeColor="#80000000" android:strokeLineCap="round" />
+    <path android:pathData="M34.908,73.092A27,27 0 0,1 67.500,30.617" android:strokeWidth="3" android:strokeColor="#FF000000" android:strokeLineCap="round" />
+    <path android:pathData="M38.00,54.00L38.67,52.76L39.33,51.54L40.00,50.36L40.67,49.25L41.33,48.22L42.00,47.28L42.67,46.46L43.33,45.77L44.00,45.22L44.67,44.82L45.33,44.58L46.00,44.50L46.67,44.58L47.33,44.82L48.00,45.22L48.67,45.77L49.33,46.46L50.00,47.28L50.67,48.22L51.33,49.25L52.00,50.36L52.67,51.54L53.33,52.76L54.00,54.00L54.67,55.24L55.33,56.46L56.00,57.64L56.67,58.75L57.33,59.78L58.00,60.72L58.67,61.54L59.33,62.23L60.00,62.78L60.67,63.18L61.33,63.42L62.00,63.50L62.67,63.42L63.33,63.18L64.00,62.78L64.67,62.23L65.33,61.54L66.00,60.72L66.67,59.78L67.33,58.75L68.00,57.64L68.67,56.46L69.33,55.24L70.00,54.00" android:strokeWidth="4" android:strokeColor="#FF000000" android:strokeLineCap="round" android:strokeLineJoin="round" />
+    <path android:pathData="M63.700,30.617a3.8,3.8 0 1,0 7.6,0a3.8,3.8 0 1,0 -7.6,0z" android:fillColor="#FF000000" />
+</vector>

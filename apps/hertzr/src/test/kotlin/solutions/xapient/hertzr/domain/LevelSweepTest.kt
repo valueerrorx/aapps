@@ -45,9 +45,8 @@ class LevelSweepTest {
     @Test fun durations() {
         assertEquals(10, Sweep.nearestDuration(12))
         assertEquals(60, Sweep.nearestDuration(500))
-        assertEquals(20, Sweep.stepDuration(10, 1))
-        assertEquals(5, Sweep.stepDuration(5, -1))
-        assertEquals(60, Sweep.stepDuration(60, 1))
+        assertEquals(20, Sweep.nextDuration(10))
+        assertEquals(5, Sweep.nextDuration(60))
     }
 
     @Test fun settingsSane() {

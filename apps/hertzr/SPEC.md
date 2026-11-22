@@ -10,7 +10,7 @@ Sauberer Tongenerator ohne Esoterik: einen reinen Ton mit genau einstellbarer Fr
   - Feineinstellung −/+ (Halten wiederholt immer schneller): Schritt 0,1 Hz unter 100 Hz, 1 Hz bis 10 kHz, 10 Hz darüber.
   - Oktave ÷2 und ×2.
   - Direkte Eingabe: Tippen auf die Zahl öffnet ein Zahlenfeld („440", „1,5k", „12 kHz").
-- Wellenformen Sinus, Rechteck, Dreieck, Sägezahn. Rechteck und Sägezahn mit PolyBLEP, Dreieck mit PolyBLAMP. Ab 1/10 der Abtastrate wird die Form gleitend zum Sinus überblendet, bei 1/6 ist es ein reiner Sinus (die 3. Harmonische läge dann über Nyquist). Umschalten im Lauf mit 20 ms Überblendung.
+- Wellenformen Sinus, Rechteck, Dreieck, Sägezahn. Rechteck und Sägezahn mit PolyBLEP, Dreieck mit PolyBLAMP. Gemessen bei 48 kHz (stärkste Spiegelfrequenz relativ zum Grundton, 1,2/3,1/4,7 kHz): Sägezahn bis 16 kHz ≤ −32,6 dB (naiv −16,4), Rechteck ≤ −32,6 dB, Dreieck ≤ −49,5 dB; ab 8 kHz reiner Sinus (< −150 dB). Bewusst kein Oversampling (Aufwand), PolyBLEP ist der übliche Kompromiss. Ab 1/10 der Abtastrate wird die Form gleitend zum Sinus überblendet, bei 1/6 ist es ein reiner Sinus (die 3. Harmonische läge dann über Nyquist). Umschalten im Lauf mit 20 ms Überblendung.
 - Phasenkontinuierlich: ein Phasen-Akkumulator (Double), Frequenzwechsel gleitet in 8 ms logarithmisch, kein Sprung im Signal.
 - Pegel −60 bis 0 dBFS in 1-dB-Schritten (Schieber). Schutz:
   - Standard −24 dB; nach einem App-Neustart höchstens −12 dB (bewusste Ausnahme vom Wiederherstellen).

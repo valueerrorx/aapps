@@ -13,9 +13,9 @@ object Sweep {
 
     fun nearestDuration(s: Int): Int = DURATIONS.minBy { abs(it - s) }
 
-    // naechste/vorige Dauer aus der Liste, am Rand bleibt sie
-    fun stepDuration(s: Int, dir: Int): Int {
+    // Tippen auf die Dauer: naechste, nach der laengsten wieder die kuerzeste
+    fun nextDuration(s: Int): Int {
         val i = DURATIONS.indexOf(nearestDuration(s))
-        return DURATIONS[(i + dir).coerceIn(0, DURATIONS.lastIndex)]
+        return DURATIONS[(i + 1) % DURATIONS.size]
     }
 }
