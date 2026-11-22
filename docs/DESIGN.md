@@ -22,7 +22,7 @@ Ein Werkzeug, ein Hero. Das Hero-Element nimmt mindestens 60 % der Fläche ein, 
 - Eingerastet: Akzent-Kante, stärkerer Halo, einmaliger Glanz.
 
 ## Bewegung
-- Nur Federn (`Springs`, `SpringValue`), nie linear. Physik-Schleifen schlafen ein, sobald alles ruht.
+- Nur Federn (`Springs` für Compose, eigene Physik als reines Kotlin im Domain), nie linear. Physik-Schleifen schlafen ein, sobald alles ruht.
 - Jede Rastung = Haptik (`Haptics.confirm`/`tick`), ohne VIBRATE-Berechtigung.
 
 ## Layout

@@ -9,6 +9,8 @@
     <string name="level">Level</string>
     <string name="hold">Hold</string>
     <string name="held">Held</string>
+    <string name="left_lower">↙ left side low</string>
+    <string name="right_lower">right side low ↘</string>
     <string name="flat_axes">X %1$s · Y %2$s</string>
     <string name="no_sensor">This device has no motion sensor.</string>
 

@@ -136,7 +136,7 @@ fun LevelScreen(
                 state.frame
                 if (hero != Rect.Zero && edgeAlpha > 0f) {
                     drawEdgeLevel(
-                        state.physics, hero, reading.quadrant, level,
+                        state.physics, hero, reading.quadrant, level, unit,
                         if (shineOverride >= 0f) shineOverride else shine.value, c, measurer, tickStyle,
                     )
                 }
@@ -145,7 +145,7 @@ fun LevelScreen(
                 state.frame
                 if (hero != Rect.Zero && edgeAlpha < 1f) {
                     drawFlatLevel(
-                        state.physics, hero, level,
+                        state.physics, hero, level, unit,
                         if (shineOverride >= 0f) shineOverride else shine.value, c, measurer, tickStyle,
                     )
                 }
@@ -172,8 +172,8 @@ fun LevelScreen(
         } else {
             Column(Modifier.fillMaxSize()) {
                 TopRow(reading.mode, onOpenSettings)
-                ReadingBlock(state, unit, level, Modifier.weight(0.85f).fillMaxWidth())
-                Box(heroModifier.weight(1.5f).fillMaxWidth())
+                ReadingBlock(state, unit, level, Modifier.weight(0.8f).fillMaxWidth())
+                Box(heroModifier.weight(1.6f).fillMaxWidth())
                 BottomAction(state, session, onCalibrationDone, haptics)
             }
         }
@@ -253,10 +253,7 @@ private fun ReadingBlock(state: LevelState, unit: AngleUnit, level: Float, modif
         Box(Modifier.weight(1f, fill = false).fillMaxWidth(), contentAlignment = Alignment.Center) {
             BasicText(
                 big,
-                Modifier.semantics {
-                    contentDescription = description
-                    liveRegion = LiveRegionMode.Polite
-                },
+                Modifier.semantics { contentDescription = description },
                 style = Aapps.type.display.copy(color = color, textAlign = TextAlign.Center),
                 maxLines = 1,
                 autoSize = TextAutoSize.StepBased(minFontSize = 28.sp, maxFontSize = 132.sp, stepSize = 2.sp),
@@ -280,22 +277,32 @@ private fun ColumnScope.StatusLine(state: LevelState, secondary: String, level: 
         state.reading.isLevel -> c.accent.copy(alpha = 0.6f + 0.4f * level)
         else -> c.fgMuted
     }
+    // nur Einrasten und Halten ansagen, nicht jeden Messwert
+    val announce = state.held || state.reading.isLevel
     BasicText(
         text,
-        Modifier.align(Alignment.CenterHorizontally),
-        style = if (state.held || state.reading.isLevel) Aapps.type.label.copy(color = color) else Aapps.type.number.copy(color = color, fontSize = 15.sp),
-        maxLines = 2,
+        Modifier
+            .align(Alignment.CenterHorizontally)
+            .semantics { if (announce) liveRegion = LiveRegionMode.Polite },
+        style = if (announce) {
+            Aapps.type.label.copy(color = color)
+        } else {
+            Aapps.type.number.copy(color = color, fontSize = 15.sp, textAlign = TextAlign.Center, lineHeight = 22.sp)
+        },
+        maxLines = 3,
     )
 }
 
-// Flach: beide Achsen; Kante: die beiden anderen Einheiten
+// Flach: beide Achsen; Kante: welche Seite tiefer liegt und die beiden anderen Einheiten
 @Composable
 private fun secondaryLine(r: LevelReading, unit: AngleUnit, locale: Locale): String {
     fun f(a: Float, u: AngleUnit) = formatValue(TiltMath.convert(a, u), locale) + (if (u == AngleUnit.MM_PER_M) " " else "") + unitSuffix(u)
     return if (r.mode == LevelMode.FLAT) {
         stringResource(R.string.flat_axes, f(r.flatX, unit), f(r.flatY, unit))
     } else {
-        AngleUnit.entries.filter { it != unit }.joinToString("  ·  ") { f(kotlin.math.abs(r.edgeAngle), it) }
+        val side = stringResource(if (r.edgeAngle > 0f) R.string.right_lower else R.string.left_lower)
+        val others = AngleUnit.entries.filter { it != unit }.joinToString("  ·  ") { f(kotlin.math.abs(r.edgeAngle), it) }
+        "$side\n$others"
     }
 }
 

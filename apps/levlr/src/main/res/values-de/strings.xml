@@ -8,6 +8,8 @@
     <string name="level">Gerade</string>
     <string name="hold">Halten</string>
     <string name="held">Gehalten</string>
+    <string name="left_lower">↙ links tiefer</string>
+    <string name="right_lower">rechts tiefer ↘</string>
     <string name="flat_axes">X %1$s · Y %2$s</string>
     <string name="no_sensor">Dieses Gerät hat keinen Lagesensor.</string>
 

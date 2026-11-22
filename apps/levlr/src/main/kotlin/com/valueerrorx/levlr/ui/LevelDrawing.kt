@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipPath
+import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.graphics.lerp
@@ -20,17 +21,41 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import com.valueerrorx.aapps.core.ui.AappsColors
 import com.valueerrorx.aapps.core.ui.drawGlow
+import com.valueerrorx.levlr.domain.AngleUnit
 import com.valueerrorx.levlr.domain.LevelPhysics
 import kotlin.math.PI
+import kotlin.math.atan
 import kotlin.math.atan2
 import kotlin.math.hypot
 import kotlin.math.min
 import kotlin.math.sin
 
-private val EDGE_TICKS = floatArrayOf(0.5f, 1f, 2f, 3f, 5f, 10f)
-private val EDGE_LABELS = setOf(2f, 5f, 10f)
-private val FLAT_RINGS = floatArrayOf(1f, 2f, 5f)
-private val FLAT_LABELS = setOf(2f, 5f)
+// Skala in der gewaehlten Einheit: Striche, beschriftete Striche (Werte in der Einheit)
+private class Scale(val ticks: FloatArray, val labels: Set<Float>)
+
+private val EDGE_SCALES = mapOf(
+    AngleUnit.DEGREE to Scale(floatArrayOf(0.5f, 1f, 2f, 3f, 5f, 10f), setOf(2f, 5f, 10f)),
+    AngleUnit.PERCENT to Scale(floatArrayOf(1f, 2f, 5f, 10f, 20f), setOf(2f, 5f, 10f)),
+    AngleUnit.MM_PER_M to Scale(floatArrayOf(10f, 20f, 50f, 100f, 200f), setOf(20f, 50f, 100f)),
+)
+private val FLAT_SCALES = mapOf(
+    AngleUnit.DEGREE to Scale(floatArrayOf(1f, 2f, 5f), setOf(2f, 5f)),
+    AngleUnit.PERCENT to Scale(floatArrayOf(2f, 5f, 10f), setOf(5f, 10f)),
+    AngleUnit.MM_PER_M to Scale(floatArrayOf(20f, 50f, 100f), setOf(50f, 100f)),
+)
+
+// Wert in der Einheit -> Grad
+private fun toDegrees(v: Float, unit: AngleUnit): Float = when (unit) {
+    AngleUnit.DEGREE -> v
+    AngleUnit.PERCENT -> Math.toDegrees(atan(v / 100.0)).toFloat()
+    AngleUnit.MM_PER_M -> Math.toDegrees(atan(v / 1000.0)).toFloat()
+}
+
+private fun label(v: Float, unit: AngleUnit): String = when (unit) {
+    AngleUnit.DEGREE -> "${v.toInt()}°"
+    AngleUnit.PERCENT -> "${v.toInt()}%"
+    AngleUnit.MM_PER_M -> "${v.toInt()}"
+}
 
 // Roehrenlibelle mit Fluessigkeits-"Meer", das waagrecht zur Welt bleibt
 fun DrawScope.drawEdgeLevel(
@@ -38,20 +63,23 @@ fun DrawScope.drawEdgeLevel(
     hero: Rect,
     quadrant: Int,
     level: Float,
+    unit: AngleUnit,
     shine: Float,
     c: AappsColors,
     measurer: TextMeasurer,
     labelStyle: TextStyle,
 ) {
     val dp = density
-    val center = hero.center
+    // Hochformat: Roehre im oberen Teil, darunter bleibt Platz fuer die Fluessigkeit
+    val center = Offset(hero.center.x, hero.top + hero.height * if (hero.height > hero.width) 0.4f else 0.5f)
     val odd = quadrant % 2 == 1
     val span = if (odd) hero.height else hero.width
     val length = min(span - 40f * dp, 560f * dp)
-    val thick = (length * 0.24f).coerceIn(64f * dp, 112f * dp)
+    val thick = (length * 0.3f).coerceIn(64f * dp, 136f * dp)
     val diag = hypot(size.width, size.height)
 
-    // Meer: Oberflaeche durch die Roehrenmitte, immer waagrecht zur Welt
+    // Meer: Oberflaeche durch die Roehrenmitte, immer waagrecht zur Welt; nur im Hero-Bereich
+    clipRect(left = hero.left) {
     rotate(p.surface.value - quadrant * 90f, center) {
         val sea = Path()
         val amp = p.wave * 22f * dp
@@ -81,6 +109,15 @@ fun DrawScope.drawEdgeLevel(
         drawPath(surfaceLine, c.accent.copy(alpha = 0.06f), style = Stroke(24f * dp))
         drawPath(surfaceLine, c.accent.copy(alpha = 0.16f), style = Stroke(8f * dp))
         drawPath(surfaceLine, lerp(c.accent, Color.White, 0.3f).copy(alpha = 0.75f + 0.25f * level), style = Stroke(1.8f * dp))
+    }
+    }
+    // Querformat: weicher Rand zur Textspalte
+    if (hero.left > 0f) {
+        val fade = 40f * dp
+        drawRect(
+            Brush.horizontalGradient(0f to c.bg, 1f to Color.Transparent, startX = hero.left, endX = hero.left + fade),
+            Offset(hero.left, 0f), Size(fade, size.height),
+        )
     }
 
     withTransform({ rotate(-quadrant * 90f, center) }) {
@@ -208,10 +245,12 @@ fun DrawScope.drawEdgeLevel(
             tube.topLeft, tube.size, radius, style = Stroke(1.5f * dp),
         )
 
-        // Skala unter der Roehre: Position der Blasenmitte bei a Grad
+        // Skala unter der Roehre in der gewaehlten Einheit: Position der Blasenmitte beim Wert v
+        val scale = EDGE_SCALES.getValue(unit)
         val scaleTop = tube.bottom + 14f * dp
-        for (a in EDGE_TICKS) {
-            val major = a in EDGE_LABELS || a == 1f
+        for (v in scale.ticks) {
+            val major = v in scale.labels
+            val a = toDegrees(v, unit)
             for (s in floatArrayOf(-1f, 1f)) {
                 val x = center.x + s * LevelPhysics.soft(a, LevelPhysics.EDGE_SCALE) * travel
                 drawLine(
@@ -219,8 +258,8 @@ fun DrawScope.drawEdgeLevel(
                     Offset(x, scaleTop), Offset(x, scaleTop + if (major) 10f * dp else 6f * dp),
                     strokeWidth = 1.2f * dp, cap = StrokeCap.Round,
                 )
-                if (a in EDGE_LABELS) {
-                    val label = measurer.measure(a.toInt().toString(), labelStyle)
+                if (major) {
+                    val label = measurer.measure(label(v, unit), labelStyle)
                     drawText(label, topLeft = Offset(x - label.size.width / 2f, scaleTop + 14f * dp))
                 }
             }
@@ -229,11 +268,12 @@ fun DrawScope.drawEdgeLevel(
     }
 }
 
-// Dosenlibelle: Blase im Kreis, Ringe fuer 1°, 2°, 5°
+// Dosenlibelle: Blase im Kreis, Ringe in der gewaehlten Einheit
 fun DrawScope.drawFlatLevel(
     p: LevelPhysics,
     hero: Rect,
     level: Float,
+    unit: AngleUnit,
     shine: Float,
     c: AappsColors,
     measurer: TextMeasurer,
@@ -277,11 +317,12 @@ fun DrawScope.drawFlatLevel(
     val faint = c.fg.copy(alpha = 0.10f)
     drawLine(faint, Offset(center.x - r * 0.92f, center.y), Offset(center.x + r * 0.92f, center.y), strokeWidth = 1f * dp)
     drawLine(faint, Offset(center.x, center.y - r * 0.92f), Offset(center.x, center.y + r * 0.92f), strokeWidth = 1f * dp)
-    for (a in FLAT_RINGS) {
-        val rr = LevelPhysics.soft(a, LevelPhysics.FLAT_SCALE) * travel
+    val scale = FLAT_SCALES.getValue(unit)
+    for (v in scale.ticks) {
+        val rr = LevelPhysics.soft(toDegrees(v, unit), LevelPhysics.FLAT_SCALE) * travel
         drawCircle(c.fg.copy(alpha = 0.13f), rr, center, style = Stroke(1f * dp))
-        if (a !in FLAT_LABELS) continue
-        val label = measurer.measure("${a.toInt()}°", labelStyle)
+        if (v !in scale.labels) continue
+        val label = measurer.measure(label(v, unit), labelStyle)
         val at = center + Offset(rr * 0.7071f + 4f * dp, -rr * 0.7071f - label.size.height - 2f * dp)
         drawText(label, topLeft = at)
     }
