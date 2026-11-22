@@ -76,7 +76,7 @@ fun HomeScreen(
             Box(m, contentAlignment = Alignment.Center) {
                 Box(Modifier.aspectRatio(1f), contentAlignment = Alignment.Center) {
                     WorkoutRing(timeline, Modifier.fillMaxSize())
-                    RingCenter(workout, timeline, Modifier.fillMaxSize(0.62f))
+                    RingCenter(workout, timeline, Modifier.fillMaxSize(0.56f))
                 }
             }
         }

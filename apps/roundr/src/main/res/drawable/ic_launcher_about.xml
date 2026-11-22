@@ -22,6 +22,7 @@
         android:strokeWidth="1"
         android:strokeColor="#FF26323C" />
     <group android:translateX="-18" android:translateY="-18">
+        <group android:pivotX="54" android:pivotY="54" android:scaleX="0.88" android:scaleY="0.88" android:translateY="1.5">
         <path android:pathData="M20,56a34,34 0 1,0 68,0a34,34 0 1,0 -68,0z">
             <aapt:attr name="android:fillColor">
                 <gradient
@@ -53,5 +54,6 @@
             android:strokeWidth="1.2"
             android:strokeColor="#66FFFFFF"
             android:strokeLineCap="round" />
+        </group>
     </group>
 </vector>

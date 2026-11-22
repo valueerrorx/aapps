@@ -35,8 +35,11 @@ fun phaseColor(p: Phase): Color = when (p) {
 // Geleerter Teil der Flaeche: Phasenfarbe tief abgedunkelt
 fun drained(c: Color): Color = lerp(Bg, c, 0.16f)
 
-// Angehalten: Farbe zurueckgenommen
-fun dimmed(c: Color): Color = lerp(Bg, c, 0.62f)
+// Schein ueber der Fuellkante; hoeher kippt der Textkontrast unter 4,5:1 (ContrastTest)
+const val EDGE_GLOW = 0.09f
+
+// Schraffur im angehaltenen Zustand
+const val HATCH_ALPHA = 0.07f
 
 @Composable
 fun phaseLabel(p: Phase): String = stringResource(

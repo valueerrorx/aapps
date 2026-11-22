@@ -7,6 +7,8 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 import solutions.xapient.aapps.core.ui.AappsColors
 import solutions.xapient.roundr.ui.Amber
+import solutions.xapient.roundr.ui.EDGE_GLOW
+import solutions.xapient.roundr.ui.HATCH_ALPHA
 import solutions.xapient.roundr.ui.Ember
 import solutions.xapient.roundr.ui.Ice
 import solutions.xapient.roundr.ui.Ink
@@ -34,10 +36,10 @@ class ContrastTest {
     @Test fun phaseColourOnDrainedArea() = phases.forEach { aa(it, drained(it), "$it auf geleert") }
 
     // Schein ueber der Fuellkante hellt den geleerten Teil etwas auf
-    @Test fun phaseColourOnGlowBand() = phases.forEach { aa(it, it.copy(alpha = 0.16f).compositeOver(drained(it)), "$it auf Schein") }
+    @Test fun phaseColourOnGlowBand() = phases.forEach { aa(it, it.copy(alpha = EDGE_GLOW).compositeOver(drained(it)), "$it auf Schein") }
 
     // Angehalten: Schraffur aus Tinte ueber der Farbe
-    @Test fun inkOnPausedHatch() = phases.forEach { aa(Ink, Ink.copy(alpha = 0.07f).compositeOver(it), "Tinte auf Schraffur $it") }
+    @Test fun inkOnPausedHatch() = phases.forEach { aa(Ink, Ink.copy(alpha = HATCH_ALPHA).compositeOver(it), "Tinte auf Schraffur $it") }
 
     @Test fun mutedTextAndWarnings() {
         aa(ui.fgMuted, ui.surface, "fgMuted auf surface")

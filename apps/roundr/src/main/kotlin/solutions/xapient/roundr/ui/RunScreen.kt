@@ -157,7 +157,7 @@ fun RunScreen(
             // weicher Schein ueber der Fuellkante
             val band = 96.dp.toPx()
             drawRect(
-                Brush.verticalGradient(listOf(c.copy(alpha = 0f), c.copy(alpha = 0.16f)), startY = top - band, endY = top),
+                Brush.verticalGradient(listOf(c.copy(alpha = 0f), c.copy(alpha = EDGE_GLOW)), startY = top - band, endY = top),
                 topLeft = Offset(0f, top - band), size = Size(size.width, band),
             )
             drawRect(c, topLeft = Offset(0f, top), size = Size(size.width, size.height - top))
@@ -169,7 +169,7 @@ fun RunScreen(
                 val w = 7.dp.toPx()
                 var x = -size.height
                 while (x < size.width) {
-                    drawLine(Ink.copy(alpha = 0.07f), Offset(x, size.height), Offset(x + size.height, 0f), w)
+                    drawLine(Ink.copy(alpha = HATCH_ALPHA), Offset(x, size.height), Offset(x + size.height, 0f), w)
                     x += step
                 }
             }
@@ -237,7 +237,8 @@ private fun RunContent(
         Row(Modifier.fillMaxWidth().heightIn(min = 64.dp), verticalAlignment = Alignment.CenterVertically) {
             StopButton(confirm, onStop)
             Spacer(Modifier.weight(1f))
-            BasicText(
+            // beim Nachfragen braucht der Hinweis den Platz
+            if (!confirm) BasicText(
                 roundText.uppercase(),
                 Modifier.padding(end = 8.dp),
                 style = label.copy(textAlign = TextAlign.End),

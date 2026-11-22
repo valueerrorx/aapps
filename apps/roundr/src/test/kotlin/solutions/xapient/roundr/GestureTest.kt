@@ -7,7 +7,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assert
-import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.activity.compose.setContent
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
@@ -33,13 +35,17 @@ import solutions.xapient.roundr.ui.RunScreen
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
 @Config(qualifiers = "w411dp-h914dp-xxhdpi")
 class GestureTest {
-    @get:Rule val rule = createComposeRule()
+    @get:Rule val rule = createAndroidComposeRule<MainActivity>()
+
+    // Eigener Inhalt statt der App; ComponentActivity ist im Test-Manifest nicht registriert
+    private fun show(content: @Composable () -> Unit) {
+        rule.runOnUiThread { rule.activity.setContent { AappsTheme(RoundrAccent) { content() } } }
+        rule.waitForIdle()
+    }
 
     private fun editor(): () -> Int {
         var w by mutableStateOf(Presets.default)
-        rule.setContent {
-            AappsTheme(RoundrAccent) { EditorScreen(w, 0, null, { w = it }, { true }, {}) }
-        }
+        show { EditorScreen(w, 0, null, { w = it }, { true }, {}) }
         return { w.workSec }
     }
 
@@ -78,15 +84,13 @@ class GestureTest {
         var saved: Run? = null
         val store = RunStore({ null }, { saved = it }, { now })
         store.start(Presets.default)
-        rule.setContent {
+        show {
             val r by store.state.collectAsState()
-            AappsTheme(RoundrAccent) {
-                r?.let {
-                    RunScreen(
-                        it, clock = { now }, haptics = null, onToggle = store::toggle, onSkip = store::skip, onBack = store::back,
-                        onStop = store::clear, onAgain = {}, onClose = store::clear, keepOn = false, animate = false,
-                    )
-                }
+            r?.let {
+                RunScreen(
+                    it, clock = { now }, haptics = null, onToggle = store::toggle, onSkip = store::skip, onBack = store::back,
+                    onStop = store::clear, onAgain = {}, onClose = store::clear, keepOn = false, animate = false,
+                )
             }
         }
         return store
