@@ -55,14 +55,15 @@ object Notifier {
 
     private fun clockText(ctx: Context, at: Long): String = DateFormat.getTimeFormat(ctx).format(Date(at))
 
-    fun showDone(ctx: Context, setMs: Long) {
+    // ranMs: tatsaechlich gelaufene Dauer
+    fun showDone(ctx: Context, ranMs: Long) {
         if (!allowed(ctx)) return
         channels(ctx)
         val n = NotificationCompat.Builder(ctx, CH_DONE)
             .setSmallIcon(R.drawable.ic_stat_focusr)
             .setColor(ACCENT)
             .setContentTitle(ctx.getString(R.string.state_done))
-            .setContentText(ctx.getString(R.string.notif_done_text, TimeText.clock(setMs)))
+            .setContentText(ctx.getString(R.string.notif_done_text, TimeText.clock(ranMs)))
             .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentIntent(openApp(ctx))

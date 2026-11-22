@@ -14,7 +14,7 @@ class EndReceiver : BroadcastReceiver() {
         val t = prefs.timer
         if (t.mode != Mode.RUNNING || t.endAt - SystemClock.elapsedRealtime() > EARLY_MS) return
         Notifier.cancel(context, Notifier.ID_RUNNING)
-        if (!Visibility.visible) Notifier.showDone(context, t.setMs)
+        if (!Visibility.visible) Notifier.showDone(context, t.totalMs)
         if (prefs.vibrate) Alert.vibrate(context)
         if (prefs.sound) {
             val pending = goAsync()

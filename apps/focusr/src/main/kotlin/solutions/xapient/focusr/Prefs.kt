@@ -22,6 +22,7 @@ class Prefs(private val context: Context) {
             mode = Mode.entries.firstOrNull { it.name == sp.getString("mode", null) } ?: Mode.IDLE,
             endAt = sp.getLong("end", 0L),
             leftMs = sp.getLong("left", 0L),
+            totalMs = sp.getLong("total", 0L),
         ).restored(SystemClock.elapsedRealtime(), System.currentTimeMillis(), sp.getLong("endWall", 0L), sp.getInt("boot", -1) == boot())
         set(v) {
             val now = SystemClock.elapsedRealtime()
@@ -31,6 +32,7 @@ class Prefs(private val context: Context) {
                 putString("mode", v.mode.name)
                 putLong("end", v.endAt)
                 putLong("left", v.leftMs)
+                putLong("total", v.totalMs)
                 putLong("endWall", endWall)
                 putInt("boot", boot())
             }

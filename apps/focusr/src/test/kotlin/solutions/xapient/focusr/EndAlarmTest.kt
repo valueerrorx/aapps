@@ -85,7 +85,7 @@ class EndAlarmTest {
         val n = shadowOf(nm).getNotification(Notifier.ID_DONE)
         assertNotNull(n)
         assertEquals("Time's up", n.extras.getString(Notification.EXTRA_TITLE))
-        assertEquals("1:00 are over", n.extras.getCharSequence(Notification.EXTRA_TEXT).toString())
+        assertEquals("1:00 is up", n.extras.getCharSequence(Notification.EXTRA_TEXT).toString())
         // Countdown ist weg
         assertNull(shadowOf(nm).getNotification(Notifier.ID_RUNNING))
     }

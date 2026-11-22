@@ -39,6 +39,6 @@
 
     <string name="channel_done">Time\'s up</string>
     <string name="channel_running">Running timer</string>
-    <string name="notif_done_text">%1$s are over</string>
+    <string name="notif_done_text">%1$s is up</string>
     <string name="notif_running_text">Ends at %1$s</string>
 </resources>

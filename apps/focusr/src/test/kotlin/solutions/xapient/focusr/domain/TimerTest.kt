@@ -136,6 +136,20 @@ class TimerTest {
         assertEquals(Timer(5 * min), Timer(5 * min, Mode.IDLE, 77, 88).sanitized(t0))
     }
 
+    // "Zeit um" nennt die wirklich gelaufene Dauer: Pausen zaehlen nicht, Verstellen schon
+    @Test fun totalCountsRunTimeOnly() {
+        val t = Timer(10 * min).start(t0)
+        assertEquals(10 * min, t.totalMs)
+        // nach 3 min auf 2 min Rest gezogen: 3 + 2
+        val s = t.set(2 * min, t0 + 3 * min)
+        assertEquals(5 * min, s.totalMs)
+        // Pause, dann auf 4 min: 3 + 4
+        val p = Timer(10 * min).start(t0).pause(t0 + 3 * min).set(4 * min, t0 + 50 * min)
+        assertEquals(7 * min, p.start(t0 + 60 * min).totalMs)
+        assertEquals(0L, p.reset().totalMs)
+        assertEquals(10 * min, t.sanitized(t0).totalMs)
+    }
+
     private val wall = 1_700_000_000_000L
 
     // Uhrzeit verstellt (Zeitzone, Sommerzeit, Netzzeit): Lauf haengt nur an der Laufzeituhr
