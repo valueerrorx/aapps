@@ -85,6 +85,10 @@ class CompassScreenshotTest {
 
     @Test fun course_land() = shot("course_land", "+land") { Compass(courseState()) }
 
+    @Test fun course_font200() = shot("course_font200", fontScale = 2f) { Compass(courseState()) }
+
+    @Test fun course_land_font200() = shot("course_land_font200", "+land", fontScale = 2f) { Compass(courseState()) }
+
     @Test fun on_course() = shot("on_course") {
         Compass(
             CompassState().apply {
@@ -101,6 +105,8 @@ class CompassScreenshotTest {
     @Test fun calibrate() = shot("calibrate") { Compass(calibrateState()) }
 
     @Test fun calibrate_de() = shot("calibrate_de", "+de") { Compass(calibrateState()) }
+
+    @Test fun calibrate_land() = shot("calibrate_land", "+land") { Compass(calibrateState()) }
 
     @Test fun interference() = shot("interference") {
         Compass(

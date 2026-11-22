@@ -1,6 +1,7 @@
 package com.valueerrorx.nordr.ui
 
-import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.animateFloatAsState
@@ -8,8 +9,7 @@ import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.Canvas
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -29,6 +29,7 @@ import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -37,6 +38,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
@@ -82,9 +84,11 @@ fun CompassScreen(
     hintPhase: Float = -1f,
 ) {
     val c = Aapps.colors
-    val reading = state.reading
-    val level by animateFloatAsState(if (reading.onCourse && reading.course != null) 1f else 0f, Springs.gentle(), label = "level")
-    val warn by animateFloatAsState(if (reading.accuracy != Accuracy.GOOD) 1f else 0f, Springs.gentle(), label = "warn")
+    // nur abgeleitete Werte lesen, damit nicht jeder Messwert den ganzen Screen neu aufbaut
+    val onCourse by remember(state) { derivedStateOf { state.reading.onCourse && state.reading.course != null } }
+    val accuracy by remember(state) { derivedStateOf { state.reading.accuracy } }
+    val level = animateFloatAsState(if (onCourse) 1f else 0f, Springs.gentle(), label = "level")
+    val warn = animateFloatAsState(if (accuracy != Accuracy.GOOD) 1f else 0f, Springs.gentle(), label = "warn")
     val shine = remember { Animatable(-1f) }
     val measurer = rememberTextMeasurer(cacheSize = 24)
     val points = stringArrayResource(R.array.points)
@@ -127,25 +131,25 @@ fun CompassScreen(
     }
 
     val numberStyle = Aapps.type.number
+    // Teile einmal pro Groesse; Zustand wird erst beim Zeichnen gelesen
+    val dialModifier = remember(state, letters, c, measurer, numberStyle, shineOverride, level, warn) {
+        Modifier.drawWithCache {
+            val parts = DialParts(this, letters, c, measurer, numberStyle)
+            onDrawBehind {
+                state.frame // bei jedem Physik-Schritt neu zeichnen
+                val look = DialLook(
+                    course = state.reading.course,
+                    level = level.value,
+                    warn = warn.value,
+                    shine = if (shineOverride >= 0f) shineOverride else shine.value,
+                )
+                drawCompass(parts, state.physics, look)
+            }
+        }
+    }
 
     AappsScaffold {
         val landscape = LocalWindowInfo.current.containerSize.let { it.width > it.height }
-        val hero: @Composable (Modifier) -> Unit = { modifier ->
-            Canvas(modifier) {
-                state.frame // bei jedem Physik-Schritt neu zeichnen
-                drawCompass(
-                    state.physics,
-                    DialLook(
-                        letters = letters,
-                        course = reading.course,
-                        level = level,
-                        warn = warn,
-                        shine = if (shineOverride >= 0f) shineOverride else shine.value,
-                    ),
-                    c, measurer, numberStyle,
-                )
-            }
-        }
         val action: @Composable () -> Unit = {
             BottomAction(state, haptics, onCourseChanged, hintPhase)
         }
@@ -153,20 +157,20 @@ fun CompassScreen(
         if (landscape) {
             Row(Modifier.fillMaxSize()) {
                 Column(Modifier.weight(0.42f).fillMaxHeight().padding(start = 8.dp)) {
-                    TopRow(northRef, reading.accuracy, null)
+                    TopRow(northRef, accuracy, null)
                     ReadingBlock(state, Modifier.weight(1f).fillMaxWidth())
                     action()
                 }
                 Box(Modifier.weight(0.58f).fillMaxHeight()) {
-                    hero(Modifier.fillMaxSize())
+                    Spacer(dialModifier.fillMaxSize())
                     Box(Modifier.align(Alignment.TopEnd).padding(8.dp)) { GearButton(onOpenSettings) }
                 }
             }
         } else {
             Column(Modifier.fillMaxSize()) {
-                TopRow(northRef, reading.accuracy, onOpenSettings)
+                TopRow(northRef, accuracy, onOpenSettings)
                 ReadingBlock(state, Modifier.weight(0.5f).fillMaxWidth())
-                hero(Modifier.weight(1.7f).fillMaxWidth())
+                Spacer(dialModifier.weight(1.7f).fillMaxWidth())
                 action()
             }
         }
@@ -209,13 +213,14 @@ private fun TopRow(northRef: NorthRef, accuracy: Accuracy, onOpenSettings: (() -
         ) {
             Box(Modifier.size(6.dp).background(dot, CircleShape))
             Spacer(Modifier.width(8.dp))
-            BasicText(label.uppercase(), style = Aapps.type.label.copy(color = c.fgMuted))
+            BasicText(label.uppercase(), style = Aapps.type.label.copy(color = c.fgMuted), maxLines = 1)
         }
         Spacer(Modifier.weight(1f))
         if (onOpenSettings != null) GearButton(onOpenSettings)
     }
 }
 
+// Betrag der Abweichung in ganzen Grad; Kurs selbst ueber Angles.whole
 internal fun formatDegrees(v: Float): String = "${abs(v).roundToInt()}°"
 
 @Composable
@@ -256,66 +261,70 @@ private fun StatusLine(state: CompassState, points: Array<String>) {
     val r = state.reading
     val course = r.course
     if (!r.valid) return
-    if (course != null && r.onCourse) {
+    val muted = Aapps.type.number.copy(color = c.fgMuted, textAlign = TextAlign.Center)
+    if (course == null) {
+        BasicText(points[r.point], style = muted.copy(fontSize = 20.sp, letterSpacing = 0.12.em), maxLines = 1)
+        return
+    }
+    // Kursmodus: Abweichung ist die Hauptbotschaft, Himmelsrichtung und Kurs klein darunter
+    val main = Aapps.type.number.copy(fontSize = 26.sp, textAlign = TextAlign.Center, lineHeight = 30.sp)
+    if (r.onCourse) {
         // nur das Einrasten ansagen, nicht jeden Messwert
         BasicText(
             stringResource(R.string.on_course).uppercase(),
             Modifier.semantics { liveRegion = LiveRegionMode.Polite },
-            style = Aapps.type.label.copy(color = c.accent, fontSize = 13.sp),
+            style = main.copy(color = c.accent, letterSpacing = 0.1.em),
+            maxLines = 1,
         )
-        return
-    }
-    val text = if (course == null) {
-        points[r.point]
     } else {
         val dev = formatDegrees(r.deviation)
-        val side = stringResource(if (r.deviation > 0f) R.string.dev_right else R.string.dev_left, dev)
-        points[r.point] + "  ·  " + stringResource(R.string.course_line, formatDegrees(course)) + "  ·  " + side
+        val text = if (r.deviation > 0f) {
+            stringResource(R.string.dev_right, dev) + "  →"
+        } else {
+            "←  " + stringResource(R.string.dev_left, dev)
+        }
+        BasicText(text, style = main.copy(color = c.fg), maxLines = 2)
     }
-    BasicText(
-        text,
-        style = Aapps.type.number.copy(
-            color = c.fgMuted,
-            fontSize = if (course == null) 20.sp else 15.sp,
-            letterSpacing = if (course == null) 0.12.em else 0.em,
-            textAlign = TextAlign.Center,
-            lineHeight = 22.sp,
-        ),
-        maxLines = 3,
-    )
+    Spacer(Modifier.height(6.dp))
+    val sub = points[r.point] + "  ·  " + stringResource(R.string.course_line, "${Angles.whole(course)}°")
+    BasicText(sub, style = muted.copy(fontSize = 15.sp, lineHeight = 20.sp), maxLines = 2)
 }
 
 @Composable
 private fun BottomAction(state: CompassState, haptics: Haptics?, onCourseChanged: (Float?) -> Unit, hintPhase: Float) {
     val hint = state.hint
-    val hasCourse = state.reading.course != null
-    Box(Modifier.fillMaxWidth().padding(bottom = 20.dp, top = 8.dp), contentAlignment = Alignment.BottomCenter) {
-        AnimatedVisibility(
-            hint == null,
-            enter = fadeIn(Springs.gentle()),
-            exit = fadeOut(Springs.gentle()),
-        ) {
-            AappsPillButton(
-                text = stringResource(if (hasCourse) R.string.clear_course else R.string.set_course),
-                onClick = {
-                    haptics?.press()
-                    onCourseChanged(state.toggleCourse())
-                },
-                icon = AappsIcons.Target,
-                active = hasCourse,
-                enabled = state.reading.valid,
-            )
+    val hasCourse by remember(state) { derivedStateOf { state.reading.course != null } }
+    val valid by remember(state) { derivedStateOf { state.reading.valid } }
+    Column(
+        Modifier.fillMaxWidth().padding(bottom = 20.dp, top = 8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        // Hinweis als Karte ueber der Pille; der letzte bleibt beim Ausblenden stehen
+        AnimatedContent(
+            hint,
+            transitionSpec = {
+                (fadeIn(Springs.gentle()) + slideInVertically(Springs.snappy()) { it / 3 })
+                    .togetherWith(fadeOut(Springs.gentle()))
+                    .using(SizeTransform(clip = false))
+            },
+            label = "hint",
+        ) { h ->
+            if (h != null) {
+                Box(Modifier.padding(bottom = 12.dp)) {
+                    HintCard(h, state.hintIsManual, { state.dismissHint() }, hintPhase)
+                }
+            }
         }
-        AnimatedVisibility(
-            hint != null,
-            enter = fadeIn(Springs.gentle()) + slideInVertically(Springs.snappy()) { it / 3 },
-            exit = fadeOut(Springs.gentle()) + slideOutVertically(Springs.snappy()) { it / 3 },
-        ) {
-            // letzter Hinweis bleibt beim Ausblenden stehen
-            val last = remember { arrayOf(Hint.CALIBRATE) }
-            if (hint != null) last[0] = hint
-            HintCard(last[0], state.hintIsManual, { state.dismissHint() }, hintPhase)
-        }
+        AappsPillButton(
+            text = stringResource(if (hasCourse) R.string.clear_course else R.string.set_course),
+            onClick = {
+                haptics?.press()
+                onCourseChanged(state.toggleCourse())
+            },
+            icon = AappsIcons.Target,
+            active = hasCourse,
+            enabled = valid,
+        )
     }
 }
 

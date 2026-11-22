@@ -39,7 +39,7 @@ Ein Kompass: zeigt ruhig und genau, wohin das Handy zeigt, und hält auf Wunsch 
 | `settings`, `region`, `about` | Einstellungen, Regionsliste, Info |
 | `icon_masks`, `icon_store_512` | App-Icon in Masken, Store-Icon |
 
-Varianten (Standard: Pixel 7, en): `heading_de`, `_360dp`, `_land`, `_font130`, `_font200`; `course_land`; `calibrate_de`; `settings_de`, `settings_font200`; `about_de`.
+Varianten (Standard: Pixel 7, en): `heading_de`, `_360dp`, `_land`, `_font130`, `_font200`; `course_land`, `course_font200`, `course_land_font200`; `calibrate_de`, `calibrate_land`; `settings_de`, `settings_font200`; `about_de`.
 
 ## Abnahmekriterien
 - Domain ohne Android-Imports, Unit-Tests für Winkel-Wraparound, Orientierung (flach, aufrecht, quer, Rotation-Vector = Fallback), Glättung, Genauigkeit/Störung, Kurs, Kardinal-Ticks, Deklination, Federphysik.
