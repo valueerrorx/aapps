@@ -37,7 +37,8 @@ class Needle(private val omega: Float = 7f) {
     }
 
     private companion object {
-        const val EPS = 1e-3f
+        // in Anzeige-Einheiten: ein Hundertstel km/h sieht niemand
+        const val EPS = 1e-2f
     }
 }
 

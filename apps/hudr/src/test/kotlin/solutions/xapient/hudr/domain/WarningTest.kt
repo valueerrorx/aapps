@@ -21,10 +21,11 @@ class WarningTest {
         assertEquals(Alert.OVER, w.state)
     }
 
+    // wie gerundet angezeigt: 44 noch nicht, 45 (ab 44,5) schon
     @Test fun nearFromNinetyPercent() {
-        w.update(44.9f, 50)
+        w.update(44.4f, 50)
         assertEquals(Alert.NONE, w.state)
-        w.update(45f, 50)
+        w.update(44.5f, 50)
         assertEquals(Alert.NEAR, w.state)
     }
 
@@ -41,9 +42,9 @@ class WarningTest {
 
     @Test fun hysteresisNear() {
         w.update(46f, 50)
-        w.update(44.2f, 50)
+        w.update(43.6f, 50)
         assertEquals(Alert.NEAR, w.state)
-        w.update(43.9f, 50)
+        w.update(43.4f, 50)
         assertEquals(Alert.NONE, w.state)
     }
 

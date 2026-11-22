@@ -29,6 +29,7 @@ import solutions.xapient.hudr.domain.Reading
 import solutions.xapient.hudr.domain.SpeedUnit
 import solutions.xapient.hudr.domain.formatDistance
 import solutions.xapient.hudr.domain.formatSpeed
+import solutions.xapient.hudr.ui.HudFont.drawHud
 import kotlin.math.roundToInt
 
 // GPS-Stand oben links: Punkt und Text, nur in der Zeichenphase
@@ -88,12 +89,12 @@ fun Stats(display: SpeedDisplay, update: () -> Unit, unit: SpeedUnit, modifier: 
 private fun Stat(label: String, unit: String, value: () -> String, modifier: Modifier) {
     val c = Aapps.colors
     val measurer = rememberTextMeasurer()
-    // Zahlen wachsen mit der Schrift nur maessig, damit die drei Spalten nebeneinander passen
-    val style = Aapps.type.number.copy(fontSize = cappedSp(28f, 36f), color = c.fg)
+    // Ziffern in der HUD-Strichschrift; wachsen mit der Schrift nur maessig, damit die drei Spalten passen
+    val digitSp = cappedSp(22f, 28f)
     val unitStyle = Aapps.type.label.copy(fontSize = cappedSp(11f, 14f), color = c.fgMuted)
     val labelMax = cappedSp(12f, 16f)
-    // Hoehe einmal aus einer Probe, damit nichts springt
-    val h = with(LocalDensity.current) { measurer.measure("88", style).size.height.toDp() }
+    // feste Hoehe, damit nichts springt
+    val h = with(LocalDensity.current) { digitSp.toDp() * 1.3f }
     Column(modifier.semantics(mergeDescendants = true) { contentDescription = label }, horizontalAlignment = Alignment.CenterHorizontally) {
         BasicText(
             label.uppercase(),
@@ -105,19 +106,19 @@ private fun Stat(label: String, unit: String, value: () -> String, modifier: Mod
         Spacer(
             Modifier.fillMaxWidth().height(h).drawWithCache {
                 val u = measurer.measure(unit, unitStyle)
-                val gap = 4.dp.toPx()
+                val gap = 5.dp.toPx()
+                val dh = digitSp.toPx()
+                val top = (size.height - dh) / 2
                 onDrawBehind {
-                    val l = measurer.measure(value(), style)
+                    val text = value()
+                    val w = HudFont.width(text, dh)
                     // zu breit (grosse Schrift, lange Strecke): Einheit weglassen
-                    val withUnit = l.size.width + gap + u.size.width <= size.width
-                    val total = l.size.width + if (withUnit) gap + u.size.width else 0f
+                    val withUnit = w + gap + u.size.width <= size.width
+                    val total = w + if (withUnit) gap + u.size.width else 0f
                     val x = (size.width - total) / 2f
-                    drawText(l, topLeft = Offset(x, 0f))
-                    if (withUnit) {
-                        // Einheit auf der Grundlinie der Zahl
-                        val base = l.firstBaseline - u.firstBaseline
-                        drawText(u, topLeft = Offset(x + l.size.width + gap, base))
-                    }
+                    drawHud(text, Offset(x, top), dh, c.fg, glow = false, weight = 0.12f)
+                    // Einheit auf der Grundlinie der Ziffern
+                    if (withUnit) drawText(u, topLeft = Offset(x + w + gap, top + dh - u.firstBaseline))
                 }
             },
         )

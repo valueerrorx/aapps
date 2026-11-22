@@ -12,7 +12,7 @@
                 android:centerX="54"
                 android:centerY="50"
                 android:gradientRadius="62"
-                android:startColor="#FF1B2724"
+                android:startColor="#FF16252A"
                 android:endColor="#FF10161B" />
         </aapt:attr>
     </path>

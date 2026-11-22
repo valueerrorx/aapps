@@ -14,8 +14,8 @@
                 android:centerX="71"
                 android:centerY="52"
                 android:gradientRadius="24"
-                android:startColor="#4046F0A8"
-                android:endColor="#0046F0A8" />
+                android:startColor="#402EE6E6"
+                android:endColor="#002EE6E6" />
         </aapt:attr>
     </path>
     <!-- Spur -->
@@ -36,8 +36,8 @@
                 android:startY="74"
                 android:endX="78"
                 android:endY="40"
-                android:startColor="#FF1E8C64"
-                android:endColor="#FF46F0A8" />
+                android:startColor="#FF128A8F"
+                android:endColor="#FF2EE6E6" />
         </aapt:attr>
     </path>
     <!-- Nadel -->

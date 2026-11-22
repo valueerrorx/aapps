@@ -16,6 +16,7 @@
     <string name="reset">Fahrt zurücksetzen</string>
     <string name="hud">HUD</string>
     <string name="hud_exit">HUD beenden</string>
+    <string name="hud_show_exit">Beenden-Knopf zeigen</string>
     <string name="footnote">Richtwert · nicht für Verkehrsrecht</string>
     <string name="speed">Geschwindigkeit</string>
     <string name="speed_state">%1$s %2$s</string>

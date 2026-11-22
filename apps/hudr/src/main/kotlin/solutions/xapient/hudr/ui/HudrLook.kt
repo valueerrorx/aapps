@@ -16,38 +16,28 @@ import androidx.compose.ui.unit.sp
 import java.text.DecimalFormatSymbols
 import kotlin.math.min
 import solutions.xapient.hudr.R
-import solutions.xapient.hudr.domain.Alert
 import solutions.xapient.hudr.domain.SpeedUnit
 
-// HUD-Gruen als Markenfarbe
-val HudrAccent = Color(0xFF46F0A8)
+// Eis-Cyan als Markenfarbe (eigene Farbe, keine andere App)
+val HudrAccent = Color(0xFF2EE6E6)
 val Amber = Color(0xFFF2B84E)
 val Red = Color(0xFFFF5C5C)
 
 // HUD: reines Schwarz, gesaettigte Farben fuer die Spiegelung in der Scheibe
 val HudBg = Color(0xFF000000)
-val HudGreen = Color(0xFF4DFFA6)
+val HudCyan = Color(0xFF3DFFFF)
 val HudAmber = Color(0xFFFFC24D)
 val HudRed = Color(0xFFFF6B6B)
 // Nebentext im HUD (Einheit, Status), >= 4,5:1 auf Schwarz
 const val HUD_MUTED_ALPHA = 0.6f
+// Nebenstriche im HUD, >= 3:1 auf Schwarz
+const val HUD_FAINT_ALPHA = 0.4f
 
-fun alertColor(a: Alert, accent: Color): Color = when (a) {
-    Alert.NONE -> accent
-    Alert.NEAR -> Amber
-    Alert.OVER -> Red
-}
+// Nebenstriche im Tacho: gedaempftes Grau, >= 3:1 (fgFaint reicht nicht)
+const val FAINT_ALPHA = 0.7f
 
-fun hudColor(a: Alert): Color = when (a) {
-    Alert.NONE -> HudGreen
-    Alert.NEAR -> HudAmber
-    Alert.OVER -> HudRed
-}
-
-// Signal weg: Bogen und Zahl gedimmt, aber >= 3:1 zum Grund (ContrastTest)
+// Signal weg: Band gedimmt, aber >= 3:1 zum Grund (ContrastTest)
 const val LOST_ALPHA = 0.72f
-// Lichthof hinter der Zahl, hoechstens so stark (Text bleibt >= 4,5:1)
-const val GLOW_MAX = 0.11f
 
 fun unitRes(u: SpeedUnit): Int = when (u) {
     SpeedUnit.KMH -> R.string.unit_kmh

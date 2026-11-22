@@ -8,18 +8,19 @@ import org.junit.Test
 import solutions.xapient.aapps.core.ui.AappsColors
 import solutions.xapient.hudr.domain.Alert
 import solutions.xapient.hudr.ui.Amber
-import solutions.xapient.hudr.ui.GLOW_MAX
-import solutions.xapient.hudr.ui.HUD_MUTED_ALPHA
-import solutions.xapient.hudr.ui.HudBg
-import solutions.xapient.hudr.ui.HudGreen
+import solutions.xapient.hudr.ui.FAINT_ALPHA
+import solutions.xapient.hudr.ui.HudFont
+import solutions.xapient.hudr.ui.HudPalette
 import solutions.xapient.hudr.ui.HudrAccent
 import solutions.xapient.hudr.ui.LOST_ALPHA
-import solutions.xapient.hudr.ui.alertColor
-import solutions.xapient.hudr.ui.hudColor
+import solutions.xapient.hudr.ui.Palette
+import solutions.xapient.hudr.ui.Red
 
 // WCAG-Kontrast gemessen statt geschaetzt; Text >= 4,5:1, Grafik >= 3:1
 class ContrastTest {
     private val ui = AappsColors(accent = HudrAccent)
+    // wie mainPalette(), ohne Compose
+    private val main = Palette(ui.bg, ui.accent, ui.fgMuted, ui.fgMuted.copy(alpha = FAINT_ALPHA), Amber, Red, glow = true)
 
     private fun ratio(a: Color, b: Color): Double {
         val l1 = a.luminance() + 0.05
@@ -28,35 +29,32 @@ class ContrastTest {
     }
 
     private fun aa(fg: Color, bg: Color, what: String, min: Double = 4.5) {
-        val r = ratio(fg, bg)
+        val r = ratio(fg.compositeOver(bg), bg)
         assertTrue("$what: %.2f < $min".format(r), r >= min)
     }
 
-    // hellster Grund hinter der Zahl: voller Lichthof der Warnfarbe
-    @Test fun numberOnGlow() = Alert.entries.forEach { a ->
-        val glow = alertColor(a, ui.accent).copy(alpha = GLOW_MAX).compositeOver(ui.bg)
-        aa(ui.fg, glow, "Zahl auf Lichthof $a")
-        aa(alertColor(a, ui.accent), glow, "Warnzahl auf Lichthof $a")
-        aa(ui.fgMuted, glow, "Einheit/Skala auf Lichthof $a")
+    // Ziffern auf ihrem eigenen Lichthof, in jedem Warnzustand
+    @Test fun digitsOnGlow() = Alert.entries.forEach { a ->
+        val col = main.alert(a)
+        val glow = col.copy(alpha = HudFont.GLOW_ALPHA).compositeOver(main.bg)
+        aa(col, glow, "Ziffern auf Lichthof $a")
+        aa(main.muted, glow, "Einheit neben Lichthof $a")
     }
 
-    // Bogen und Spitze, auch bei verlorenem Signal gedimmt
-    @Test fun arcInEveryState() = Alert.entries.forEach { a ->
-        val col = alertColor(a, ui.accent)
-        aa(col, ui.bg, "Bogen $a", 3.0)
-        aa(col, ui.surfaceHigh, "Bogen auf Spur $a", 3.0)
-        aa(col.copy(alpha = LOST_ALPHA).compositeOver(ui.bg), ui.bg, "Bogen ohne Signal $a", 3.0)    }
-
-    @Test fun limitMark() {
-        aa(Amber, ui.surfaceHigh, "Schwellenmarke auf Spur", 3.0)
-        aa(Amber, ui.bg, "Schwelle in den Einstellungen", 4.5)
+    // Band: Zahlen und Hauptstriche lesbar, Zeiger und Schwellen-Baender als Grafik
+    @Test fun tape() = listOf(main, HudPalette).forEach { p ->
+        aa(p.muted, p.bg, "Band-Zahlen")
+        aa(p.faint, p.bg, "Nebenstriche, Grundlinie", 3.0)
+        Alert.entries.forEach { a -> aa(p.alert(a), p.bg, "Zeiger $a", 3.0) }
+        aa(p.amber.copy(alpha = LOST_ALPHA), p.bg, "Bernstein-Band ohne Signal", 3.0)
+        aa(p.red.copy(alpha = LOST_ALPHA), p.bg, "Rot-Band ohne Signal", 3.0)
     }
 
     @Test fun mutedText() {
-        aa(ui.fgMuted, ui.bg, "Status, Skala, Hinweis")
-        aa(ui.fgMuted, ui.surface, "Werte-Beschriftung im Glas")
-        aa(ui.fg, ui.surface, "Werte im Glas")
+        aa(ui.fgMuted, ui.bg, "Status, Hinweis")
+        aa(ui.fg, ui.bg, "Werte")
         aa(ui.accent, ui.bg, "Status-Punkt mit Fix", 3.0)
+        aa(Amber, ui.bg, "Schwelle in den Einstellungen")
     }
 
     @Test fun controls() {
@@ -65,9 +63,6 @@ class ContrastTest {
         aa(ui.fgMuted, ui.surface, "Schwellen-Schritt am Anschlag", 3.0)
     }
 
-    // HUD: extrem kontrastreich auf Schwarz, Nebentext noch AA
-    @Test fun hud() {
-        Alert.entries.forEach { aa(hudColor(it), HudBg, "HUD-Zahl $it", 7.0) }
-        aa(HudGreen.copy(alpha = HUD_MUTED_ALPHA).compositeOver(HudBg), HudBg, "HUD-Einheit")
-    }
+    // HUD: extrem kontrastreich auf Schwarz
+    @Test fun hud() = Alert.entries.forEach { aa(HudPalette.alert(it), HudPalette.bg, "HUD-Ziffern $it", 7.0) }
 }

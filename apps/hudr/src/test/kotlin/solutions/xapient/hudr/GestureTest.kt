@@ -1,6 +1,9 @@
 package solutions.xapient.hudr
 
 import android.Manifest
+import android.content.Intent
+import android.content.pm.ActivityInfo
+import android.location.LocationManager
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -9,6 +12,10 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.semantics.SemanticsActions
+import androidx.compose.ui.semantics.getOrNull
+import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
@@ -30,10 +37,12 @@ import solutions.xapient.hudr.domain.Fix
 import solutions.xapient.hudr.domain.GpsPhase
 import solutions.xapient.hudr.domain.Reading
 import solutions.xapient.hudr.domain.SpeedUnit
+import solutions.xapient.hudr.domain.Track
 import solutions.xapient.hudr.ui.HudrAccent
 import solutions.xapient.hudr.ui.HudrSettings
 import solutions.xapient.hudr.ui.LocState
 import solutions.xapient.hudr.ui.SpeedScreen
+import solutions.xapient.hudr.ui.locState
 
 // GPS ohne Geraet
 class FakeGps(var on: Boolean = true) : GpsSource {
@@ -90,7 +99,7 @@ class GestureTest {
 
     private fun screen(loc: LocState) = show {
         SpeedScreen(
-            { Reading.searching(SpeedUnit.KMH) }, remember { mutableIntStateOf(0) }, loc, Settings(), null,
+            { Reading.SEARCHING }, remember { mutableIntStateOf(0) }, loc, Settings(), null,
             onHud = { huds++ }, onReset = { resets++ }, onLoc = { locTaps++ }, onSettings = {}, animate = false,
         )
     }
@@ -122,8 +131,13 @@ class GestureTest {
     @Test fun hudOnAndOff() {
         grant(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
         app()
+        val before = rule.activity.requestedOrientation
         rule.onNodeWithText("HUD", ignoreCase = true).performClick()
         rule.waitForIdle()
+        // HUD flach auf dem Armaturenbrett: Lage festhalten
+        assertEquals(ActivityInfo.SCREEN_ORIENTATION_LOCKED, rule.activity.requestedOrientation)
+        rule.onNodeWithContentDescription("Speed")
+            .assert(SemanticsMatcher("Tipp-Bezeichnung") { it.config.getOrNull(SemanticsActions.OnClick)?.label == "Show exit button" })
         rule.onNodeWithContentDescription("Reset trip").assertDoesNotExist()
         rule.onNodeWithText("Exit HUD", ignoreCase = true).assertDoesNotExist()
         // Tippen zeigt den Ausgang, er verschwindet nach 3 s wieder
@@ -135,6 +149,7 @@ class GestureTest {
         rule.onNodeWithText("Exit HUD", ignoreCase = true).performClick()
         rule.waitForIdle()
         rule.onNodeWithContentDescription("Reset trip").assertExists()
+        assertEquals(before, rule.activity.requestedOrientation)
         assertTrue(gps.running)
     }
 
@@ -144,7 +159,7 @@ class GestureTest {
         var beeps = 0
         app { beeps++ }
         rule.runOnUiThread {
-            for (i in 0..10) gps.onFix?.invoke(Fix(i * 1_000_000_000L, 48.2, 16.3, 4f, 16f))
+            for (i in 0..10) gps.onFix?.invoke(Track.fix(i.toDouble(), meters = i * 16.0, speed = 16f))
         }
         rule.waitForIdle()
         assertEquals(1, beeps)
@@ -156,7 +171,7 @@ class GestureTest {
         var beeps = 0
         app { beeps++ }
         rule.runOnUiThread {
-            for (i in 0..10) gps.onFix?.invoke(Fix(i * 1_000_000_000L, 48.2, 16.3, 4f, 16f))
+            for (i in 0..10) gps.onFix?.invoke(Track.fix(i.toDouble(), meters = i * 16.0, speed = 16f))
         }
         rule.waitForIdle()
         assertEquals(0, beeps)
@@ -222,6 +237,39 @@ class GestureTest {
         rule.onNodeWithText("Use precise location", ignoreCase = true).assertExists()
     }
 
+    // ungefaehr erteilt bleibt ungefaehr, auch nach frueherer Ablehnung; blockiert erst nach sofortiger Absage
+    @Test fun locStates() {
+        assertEquals(LocState.READY, locState(fine = true, coarse = true, gpsOn = true, blocked = false, upgradeRefused = false))
+        assertEquals(LocState.GPS_OFF, locState(fine = true, coarse = true, gpsOn = false, blocked = true, upgradeRefused = false))
+        assertEquals(LocState.COARSE, locState(fine = false, coarse = true, gpsOn = true, blocked = true, upgradeRefused = false))
+        assertEquals(LocState.BLOCKED, locState(fine = false, coarse = true, gpsOn = true, blocked = false, upgradeRefused = true))
+        assertEquals(LocState.BLOCKED, locState(fine = false, coarse = false, gpsOn = true, blocked = true, upgradeRefused = false))
+        assertEquals(LocState.ASK, locState(fine = false, coarse = false, gpsOn = true, blocked = false, upgradeRefused = false))
+    }
+
+    // nur ungefaehr, Begruendung schon gesehen: weiter "genau verwenden", nicht "blockiert"
+    @Test fun coarseAfterRationaleStaysCoarse() {
+        grant(Manifest.permission.ACCESS_COARSE_LOCATION)
+        Prefs(app).rationaleSeen = true
+        rationale(false)
+        app()
+        rule.onNodeWithText("Use precise location", ignoreCase = true).assertExists()
+    }
+
+    // Standort zur Laufzeit wieder an: System-Broadcast startet die Messung
+    @Test fun providersChangedStartsGps() {
+        grant(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+        gps.on = false
+        app()
+        assertFalse(gps.running)
+        rule.runOnUiThread {
+            gps.on = true
+            app.sendBroadcast(Intent(LocationManager.PROVIDERS_CHANGED_ACTION).setPackage(app.packageName))
+        }
+        rule.waitForIdle()
+        assertTrue(gps.running)
+    }
+
     @Test fun gpsOffShowsHint() {
         grant(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
         gps.on = false
@@ -240,7 +288,7 @@ class GestureTest {
     // ohne neuen Fix keine Bilder: nach dem Einschwingen steht die Uhr
     @Test fun idleWithoutFrames() {
         val version = mutableIntStateOf(0)
-        var r = Reading(GpsPhase.FIX, 0f, false, 4f, 8, 12, Float.NaN, Float.NaN, 0.0, solutions.xapient.hudr.domain.Alert.NONE, 80)
+        var r = Reading(GpsPhase.FIX, 0f, false, 4f, 8, 12, Float.NaN, Float.NaN, 0.0, solutions.xapient.hudr.domain.Alert.NONE)
         show {
             SpeedScreen({ r }, version, LocState.READY, Settings(), null, {}, {}, {}, {}, animate = true)
         }

@@ -55,6 +55,11 @@ class Prefs(context: Context, private val locale: () -> Locale = { Locale.getDef
         get() = sp.getBoolean("askedLocation", false)
         set(v) = sp.edit { putBoolean("askedLocation", v) }
 
+    // Upgrade auf genau kam ohne Dialog zurueck: nur noch ueber die Einstellungen
+    var upgradeRefused: Boolean
+        get() = sp.getBoolean("upgradeRefused", false)
+        set(v) = sp.edit { putBoolean("upgradeRefused", v) }
+
     // das System hat schon einmal eine Begruendung verlangt, also wurde wirklich abgelehnt
     var rationaleSeen: Boolean
         get() = sp.getBoolean("rationaleSeen", false)

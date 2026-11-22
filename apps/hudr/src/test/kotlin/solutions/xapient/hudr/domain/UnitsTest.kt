@@ -49,19 +49,22 @@ class UnitsTest {
         assertEquals(300, Limit.convert(300, SpeedUnit.MPH, SpeedUnit.KMH))
     }
 
-    // jede Skala aller Einheiten: runde Schritte, 4-6 Abschnitte
-    @Test fun ticks() {
-        SpeedUnit.entries.flatMap { it.scales }.forEach { s ->
-            val step = Ticks.labelStep(s)
-            assertEquals("Skala $s", 0, s % step)
-            assertTrue("Skala $s: Schritt $step", s / step in 4..6)
-            assertEquals(0, step % 5)
-        }
-        assertEquals(40, Ticks.labelStep(240))
-        assertEquals(5, Ticks.labelStep(30))
-        assertEquals(0.5f, Ticks.fraction(20f, 40), 0f)
-        assertEquals(1f, Ticks.fraction(300f, 240), 0f)
-        assertEquals(0f, Ticks.fraction(Float.NaN, 40), 0f)
+    // Band: Zahlen je 10, wenn genug Platz, sonst je 20; Lage relativ zum Zeiger
+    @Test fun tape() {
+        assertEquals(10, Tape.labelStep(8f, 40f))
+        assertEquals(20, Tape.labelStep(4f, 40f))
+        assertEquals(0f, Tape.offset(50f, 50f, 6f), 0f)
+        assertEquals(-60f, Tape.offset(40f, 50f, 6f), 1e-4f)
+    }
+
+    // Ansage nur bei neuem Zehner oder Warnzustand
+    @Test fun announce() {
+        fun r(v: Float, a: Alert = Alert.NONE, p: GpsPhase = GpsPhase.FIX) = Reading.SEARCHING.copy(phase = p, speed = v, alert = a)
+        assertEquals(announceKey(r(51f)), announceKey(r(58.4f)))
+        assertTrue(announceKey(r(58.4f)) != announceKey(r(60f)))
+        assertTrue(announceKey(r(52f)) != announceKey(r(52f, Alert.OVER)))
+        assertEquals("LOST", announceKey(r(Float.NaN, p = GpsPhase.LOST)))
+        assertEquals("SEARCHING", announceKey(Reading.SEARCHING))
     }
 
     @Test fun haversine() {

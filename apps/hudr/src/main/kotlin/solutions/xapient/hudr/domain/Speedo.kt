@@ -1,8 +1,5 @@
 package solutions.xapient.hudr.domain
 
-import kotlin.math.max
-import kotlin.math.roundToInt
-
 enum class GpsPhase { SEARCHING, FIX, LOST }
 
 // Ein Stand fuer die Anzeige, alles schon in der gewaehlten Einheit
@@ -17,11 +14,11 @@ data class Reading(
     val avg: Float,
     val distance: Double,
     val alert: Alert,
-    val scale: Int,
+    // Vorhersage in 3 s aus der Beschleunigung; NaN ohne Fahrt
+    val trend: Float = Float.NaN,
 ) {
     companion object {
-        fun searching(unit: SpeedUnit, scale: Int = unit.scales.first()) =
-            Reading(GpsPhase.SEARCHING, Float.NaN, false, Float.NaN, 0, 0, Float.NaN, Float.NaN, 0.0, Alert.NONE, scale)
+        val SEARCHING = Reading(GpsPhase.SEARCHING, Float.NaN, false, Float.NaN, 0, 0, Float.NaN, Float.NaN, 0.0, Alert.NONE)
     }
 }
 
@@ -36,23 +33,25 @@ class Speedo {
     private var last: Fix? = null
     private var used = 0
     private var visible = 0
-    // Skala waechst nur; Index in SpeedUnit.scales, gleich fuer alle Einheiten
-    private var scaleIndex = 0
 
     // true = Schwelle gerade ueberschritten (Ton)
     fun onFix(fix: Fix, unit: SpeedUnit, limit: Int?): Boolean {
         val prev = last
         if (prev != null && fix.nanos <= prev.nanos) return false
         val v = filter.update(fix)
-        trip.add(fix, v, filter.moving)
+        trip.add(fix, v, filter.moving, filter.reliable)
         last = fix
-        grow(unit, limit)
         return if (v.isNaN()) false else warning.update(unit.fromMps(v), limit)
     }
 
-    fun onSatellites(used: Int, visible: Int) {
-        this.used = used.coerceAtLeast(0)
-        this.visible = visible.coerceAtLeast(this.used)
+    // true nur bei geaenderter Zahl: sonst kein neues Bild
+    fun onSatellites(used: Int, visible: Int): Boolean {
+        val u = used.coerceAtLeast(0)
+        val v = visible.coerceAtLeast(u)
+        if (u == this.used && v == this.visible) return false
+        this.used = u
+        this.visible = v
+        return true
     }
 
     fun phase(now: Long): GpsPhase {
@@ -61,15 +60,15 @@ class Speedo {
     }
 
     fun reading(now: Long, unit: SpeedUnit, limit: Int?): Reading {
-        grow(unit, limit)
         val phase = phase(now)
         val live = phase == GpsPhase.FIX
         val v = filter.speed
         val maxV = if (trip.maxMps > 0f || trip.movingSeconds > 0) unit.fromMps(trip.maxMps) else Float.NaN
+        val moving = live && filter.moving
         return Reading(
             phase = phase,
             speed = if (live && !v.isNaN()) unit.fromMps(v) else Float.NaN,
-            moving = live && filter.moving,
+            moving = moving,
             accuracy = last?.accuracy ?: Float.NaN,
             used = used,
             visible = visible,
@@ -77,20 +76,14 @@ class Speedo {
             avg = trip.avgMps.let { if (it.isNaN()) it else unit.fromMps(it) },
             distance = unit.distance(trip.meters),
             alert = if (live && limit != null) warning.state else Alert.NONE,
-            scale = unit.scales[scaleIndex],
+            trend = if (moving) unit.fromMps((v + TREND_S * filter.accel).coerceAtLeast(0f)) else Float.NaN,
         )
     }
 
-    private fun grow(unit: SpeedUnit, limit: Int?) {
-        val need = max(unit.fromMps(trip.maxMps), max(unit.fromMps(filter.speed.takeUnless { it.isNaN() } ?: 0f), (limit ?: 0).toFloat()))
-        scaleIndex = max(scaleIndex, fit(unit, need))
-    }
-
-    // Fahrtwerte und Skala neu; GPS-Stand bleibt
+    // Fahrtwerte neu; GPS-Stand bleibt
     fun reset() {
         trip.reset()
         warning.reset()
-        scaleIndex = 0
     }
 
     // GPS neu gestartet (zurueck in den Vordergrund): alte Glaettung verwerfen
@@ -101,21 +94,12 @@ class Speedo {
         visible = 0
     }
 
-    fun save(): DoubleArray = trip.save() + scaleIndex.toDouble()
+    fun save(): DoubleArray = trip.save()
 
-    fun restore(s: DoubleArray) {
-        if (s.size < 4) return
-        trip.restore(s.copyOfRange(0, 3))
-        scaleIndex = s[3].roundToInt().coerceIn(0, SpeedUnit.KMH.scales.lastIndex)
-    }
+    fun restore(s: DoubleArray) = trip.restore(s)
 
     companion object {
         const val STALE_NS = 5_000_000_000L
-
-        // kleinste Skala mit etwas Luft ueber dem Bedarf
-        fun fit(unit: SpeedUnit, need: Float): Int {
-            val i = unit.scales.indexOfFirst { it >= need * 1.05f }
-            return if (i < 0) unit.scales.lastIndex else i
-        }
+        const val TREND_S = 3f
     }
 }

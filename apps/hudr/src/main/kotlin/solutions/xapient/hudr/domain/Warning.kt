@@ -5,7 +5,7 @@ enum class Alert { NONE, NEAR, OVER }
 /**
  * Warnschwelle in der Anzeige-Einheit mit Hysterese.
  * OVER, sobald die angezeigte Zahl die Schwelle uebersteigt; zurueck erst 2 Einheiten darunter.
- * NEAR ab 90 % der Schwelle; zurueck 1 Einheit darunter.
+ * NEAR, sobald die angezeigte Zahl 90 % der Schwelle erreicht; zurueck 1 Einheit darunter.
  */
 class Warning {
     var state = Alert.NONE
@@ -19,7 +19,8 @@ class Warning {
         }
         if (value.isNaN()) return false
         val prev = state
-        val nearOn = limit * NEAR
+        // wie die Anzeige gerundet: angezeigt >= 90 % der Schwelle
+        val nearOn = limit * NEAR - 0.5f
         state = when {
             value >= limit + 0.5f -> Alert.OVER
             prev == Alert.OVER && value >= limit - OVER_HYST + 0.5f -> Alert.OVER

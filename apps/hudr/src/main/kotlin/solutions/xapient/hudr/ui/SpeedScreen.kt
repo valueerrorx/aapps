@@ -2,7 +2,6 @@ package solutions.xapient.hudr.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.text.BasicText
@@ -29,11 +29,6 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawWithCache
-import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.platform.LocalWindowInfo
@@ -46,8 +41,8 @@ import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.conflate
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import solutions.xapient.aapps.core.ui.Aapps
 import solutions.xapient.aapps.core.ui.AappsIcon
 import solutions.xapient.aapps.core.ui.AappsIconButton
@@ -61,11 +56,24 @@ import solutions.xapient.hudr.Settings
 import solutions.xapient.hudr.domain.Alert
 import solutions.xapient.hudr.domain.GpsPhase
 import solutions.xapient.hudr.domain.Reading
+import solutions.xapient.hudr.domain.announceKey
 import solutions.xapient.hudr.domain.formatSpeed
 
 enum class LocState { READY, ASK, COARSE, BLOCKED, GPS_OFF }
 
-// Stand je Bild fuer Tacho und HUD; Bilder nur nach neuem Fix, bis die Feder ruht
+/**
+ * Rechte-Zustand aus den Fakten. Nur ungefaehr erteilt bleibt COARSE (Upgrade erneut fragbar),
+ * gesperrt erst, wenn die Upgrade-Anfrage ohne Dialog sofort zurueckkam.
+ */
+fun locState(fine: Boolean, coarse: Boolean, gpsOn: Boolean, blocked: Boolean, upgradeRefused: Boolean): LocState = when {
+    fine && gpsOn -> LocState.READY
+    fine -> LocState.GPS_OFF
+    coarse -> if (upgradeRefused) LocState.BLOCKED else LocState.COARSE
+    blocked -> LocState.BLOCKED
+    else -> LocState.ASK
+}
+
+// Stand je Bild fuer Tacho und HUD; Bilder nur nach neuem Stand, bis die Feder ruht
 @Composable
 fun rememberSpeedDisplay(reading: () -> Reading, version: IntState, settings: Settings, animate: Boolean): Pair<SpeedDisplay, () -> Unit> {
     val source by rememberUpdatedState(reading)
@@ -88,7 +96,7 @@ fun rememberSpeedDisplay(reading: () -> Reading, version: IntState, settings: Se
     return display to { display.at(frame.longValue, version.intValue * 31 + key, animate) }
 }
 
-// Tacho: Bogen als Hero, darunter Fahrtwerte, eine Hauptaktion (HUD)
+// Tacho: riesige Ziffern, Geschwindigkeitsband, Fahrtwerte im Reticle, eine Hauptaktion (HUD)
 @Composable
 fun SpeedScreen(
     reading: () -> Reading,
@@ -106,21 +114,23 @@ fun SpeedScreen(
     val (display, update) = rememberSpeedDisplay(reading, version, settings, animate && ready)
     if (ready && settings.keepOn) KeepScreenOn()
     val landscape = LocalWindowInfo.current.containerSize.let { it.width > it.height }
-
     val spoken = if (ready) rememberSpoken(reading, version, settings) else ""
+    val palette = mainPalette()
+    val unit = stringResource(unitRes(settings.unit))
+    val desc = stringResource(R.string.speed)
 
-    val dial: @Composable (Modifier) -> Unit = { m ->
-        val desc = stringResource(R.string.speed)
-        Dial(
-            display, update, settings.unit, settings.activeLimit, empty = !ready,
-            modifier = m.semantics {
+    val digits: @Composable (Modifier) -> Unit = { m ->
+        Digits(
+            display, update, unit, palette,
+            m.semantics {
                 contentDescription = desc
                 stateDescription = spoken
                 liveRegion = LiveRegionMode.Polite
             },
-        ) {
-            if (!ready) AappsIcon(HudrIcons.Pin, null, Aapps.colors.fgMuted, size = 56.dp)
-        }
+        )
+    }
+    val tape: @Composable (Modifier, Boolean) -> Unit = { m, vertical ->
+        SpeedTape(display, update, vertical, settings.activeLimit, palette, m)
     }
     val top: @Composable () -> Unit = {
         Row(
@@ -155,90 +165,63 @@ fun SpeedScreen(
             Spacer(Modifier.width(48.dp))
         }
     }
-    val stats: @Composable (Modifier) -> Unit = { m -> Stats(display, update, settings.unit, m) }
+    val stats: @Composable (Modifier) -> Unit = { m ->
+        Stats(display, update, settings.unit, m.brackets(palette.faint).padding(vertical = 12.dp, horizontal = 4.dp))
+    }
 
     AappsScaffold {
-        if (landscape) {
-            Row(Modifier.fillMaxSize()) {
-                Column(Modifier.weight(0.46f).fillMaxHeight(), horizontalAlignment = Alignment.CenterHorizontally) {
-                    top()
-                    Column(
-                        Modifier.weight(1f).fillMaxWidth().padding(horizontal = 20.dp),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        if (ready) {
-                            stats(Modifier.glass().padding(vertical = 18.dp, horizontal = 8.dp).fillMaxWidth())
-                            Spacer(Modifier.height(16.dp))
-                            Footnote()
-                        } else {
-                            // Erklaerung und Aktion als Gruppe, Knopf ueber die ganze Spalte
-                            Prompt(loc)
-                            Spacer(Modifier.height(16.dp))
-                            LocAction(loc, haptics, onLoc, fill = true)
-                        }
-                    }
-                    Spacer(Modifier.height(if (ready) 12.dp else 16.dp))
-                    if (ready) bottom()
-                }
-                dial(Modifier.weight(0.54f).fillMaxHeight())
-            }
-        } else {
-            Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+        when {
+            !ready -> Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
                 top()
-                BoxWithConstraints(Modifier.weight(1f).fillMaxWidth()) {
-                    val dialMax = maxHeight * 0.68f
-                    Column(
-                        Modifier.fillMaxSize(),
-                        // hohe Schirme: Luft gleichmaessig um Bogen und Werte statt eines Lochs
-                        verticalArrangement = if (ready) Arrangement.SpaceEvenly else Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        if (ready) {
-                            dial(Modifier.padding(horizontal = 4.dp).heightIn(max = dialMax).aspectRatio(DIAL_ASPECT))
-                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                stats(Modifier.padding(horizontal = 16.dp).glass().padding(vertical = 18.dp, horizontal = 8.dp).fillMaxWidth())
-                                Spacer(Modifier.height(16.dp))
-                                Footnote()
-                            }
-                        } else {
-                            // ohne Standort: kleinerer Bogen, Erklaerung und Aktion direkt darunter
-                            dial(Modifier.fillMaxWidth(0.75f).heightIn(max = dialMax * 0.8f).aspectRatio(DIAL_ASPECT))
-                            Prompt(loc)
-                            Spacer(Modifier.height(16.dp))
-                            Box(Modifier.padding(horizontal = 24.dp)) { LocAction(loc, haptics, onLoc) }
-                        }
+                Column(
+                    Modifier.weight(1f).fillMaxWidth().padding(horizontal = 24.dp, vertical = 16.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    // Standort fehlt: Pin im Reticle, Erklaerung und Aktion als Gruppe
+                    Box(Modifier.size(112.dp).brackets(palette.muted, 22.dp, 2.dp), contentAlignment = Alignment.Center) {
+                        AappsIcon(HudrIcons.Pin, null, Aapps.colors.fgMuted, size = 48.dp)
                     }
+                    Spacer(Modifier.height(16.dp))
+                    Prompt(loc)
+                    Spacer(Modifier.height(16.dp))
+                    LocAction(loc, haptics, onLoc)
                 }
-                Spacer(Modifier.height(16.dp))
-                if (ready) bottom()
+            }
+            landscape -> Row(Modifier.fillMaxSize()) {
+                // Ziffern links ~60 %, Werte als schmale Zeile darunter, Band rechts senkrecht
+                Column(Modifier.weight(1f).fillMaxHeight(), horizontalAlignment = Alignment.CenterHorizontally) {
+                    top()
+                    digits(Modifier.weight(1f).fillMaxWidth().padding(horizontal = 20.dp))
+                    stats(Modifier.fillMaxWidth().padding(horizontal = 20.dp))
+                    Spacer(Modifier.height(6.dp))
+                    Footnote()
+                    Spacer(Modifier.height(4.dp))
+                    bottom()
+                }
+                tape(Modifier.width(TAPE_WIDTH).fillMaxHeight().padding(vertical = 16.dp).padding(end = 16.dp), true)
+            }
+            else -> Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+                // Ziffern oben (fuellen den Platz), Band waagrecht darunter, dann Werte
+                top()
+                // Ziffern + Band + Werte als Block mittig: Ziffern so hoch, wie die Breite es zulaesst, keine Leerflaeche dazwischen
+                Column(Modifier.weight(1f).fillMaxWidth(), verticalArrangement = Arrangement.Center) {
+                    digits(Modifier.weight(1f, fill = false).fillMaxWidth().padding(horizontal = 20.dp).aspectRatio(DIGITS_RATIO))
+                    tape(Modifier.fillMaxWidth().height(104.dp), false)
+                    Spacer(Modifier.height(16.dp))
+                    stats(Modifier.fillMaxWidth().padding(horizontal = 16.dp))
+                }
+                Spacer(Modifier.height(12.dp))
+                Footnote()
+                Spacer(Modifier.height(12.dp))
+                bottom()
             }
         }
     }
 }
 
-// Glas laut DESIGN.md: dunkle Fuellung, feine Kante, heller Reflexstreifen oben
 @Composable
-private fun Modifier.glass(): Modifier {
-    val c = Aapps.colors
-    return drawWithCache {
-        val radius = CornerRadius(22.dp.toPx())
-        val edge = 1.dp.toPx()
-        val shine = Brush.horizontalGradient(
-            0f to c.fg.copy(alpha = 0f),
-            0.5f to c.fg.copy(alpha = 0.14f),
-            1f to c.fg.copy(alpha = 0f),
-        )
-        onDrawBehind {
-            drawRoundRect(c.surface, cornerRadius = radius)
-            drawRoundRect(c.line, cornerRadius = radius, style = Stroke(edge))
-            drawLine(shine, Offset(radius.x, edge), Offset(size.width - radius.x, edge), edge)
-        }
-    }
-}
-
-@Composable
-private fun LocAction(loc: LocState, haptics: Haptics?, onLoc: () -> Unit, fill: Boolean = false) {
+private fun LocAction(loc: LocState, haptics: Haptics?, onLoc: () -> Unit) {
     // grosse Schrift: Kurztext, damit die Pille einzeilig bleibt
     val short = LocalDensity.current.fontScale > 1.3f
     val text = when (loc) {
@@ -254,7 +237,7 @@ private fun LocAction(loc: LocState, haptics: Haptics?, onLoc: () -> Unit, fill:
             haptics?.confirm()
             onLoc()
         },
-        if (fill) Modifier.fillMaxWidth() else Modifier.widthIn(min = 176.dp),
+        Modifier.widthIn(min = 176.dp),
         icon = HudrIcons.Pin,
         active = true,
     )
@@ -269,7 +252,7 @@ private fun Prompt(loc: LocState) {
         LocState.GPS_OFF -> R.string.gps_off_title to R.string.gps_off_text
         else -> R.string.loc_ask_title to R.string.loc_ask_text
     }
-    Column(Modifier.padding(horizontal = 32.dp, vertical = 8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(Modifier.padding(horizontal = 8.dp, vertical = 8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
         BasicText(stringResource(title), style = Aapps.type.title.copy(color = c.fg, textAlign = TextAlign.Center))
         Spacer(Modifier.height(8.dp))
         BasicText(stringResource(text), style = Aapps.type.body.copy(color = c.fgMuted, textAlign = TextAlign.Center))
@@ -291,17 +274,17 @@ private fun Footnote() {
     )
 }
 
-// Vorlesen: nur nach neuem Stand und hoechstens einmal pro Sekunde; im Leerlauf nichts
+// Vorlesen: nur bei Wechsel von Warnzustand, Zehnerstelle oder GPS-Phase, nicht jede Sekunde
 @Composable
 fun rememberSpoken(reading: () -> Reading, version: IntState, settings: Settings): String {
     val res = LocalResources.current
     val source by rememberUpdatedState(reading)
     var spoken by remember { mutableStateOf("") }
     LaunchedEffect(settings) {
-        snapshotFlow { version.intValue }.conflate().collect {
-            spoken = describe(res, source(), settings)
-            delay(1_000)
-        }
+        snapshotFlow { version.intValue }
+            .map { source() }
+            .distinctUntilChanged { a, b -> announceKey(a) == announceKey(b) }
+            .collect { spoken = describe(res, it, settings) }
     }
     return spoken
 }
@@ -312,3 +295,8 @@ fun describe(res: android.content.res.Resources, r: Reading, s: Settings): Strin
     val v = formatSpeed(r.speed)
     return res.getString(if (r.alert == Alert.OVER) R.string.speed_over else R.string.speed_state, v, unit)
 }
+
+// Breite des senkrechten Bands im Querformat
+val TAPE_WIDTH = 168.dp
+// Breite zu Hoehe der Ziffernflaeche, wenn die Breite begrenzt (Hochformat)
+const val DIGITS_RATIO = 1.35f

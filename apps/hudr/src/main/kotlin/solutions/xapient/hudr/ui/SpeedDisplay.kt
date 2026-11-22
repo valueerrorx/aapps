@@ -2,9 +2,8 @@ package solutions.xapient.hudr.ui
 
 import solutions.xapient.hudr.domain.Needle
 import solutions.xapient.hudr.domain.Reading
-import solutions.xapient.hudr.domain.Ticks
 
-// Stand je Bild, geteilt von Bogen, Werten und HUD; aus Bildschleife und Zeichenphase, je Bild nur einmal gerechnet
+// Stand je Bild, geteilt von Ziffern, Band und Werten; aus Bildschleife und Zeichenphase, je Bild nur einmal gerechnet
 class SpeedDisplay(private val source: () -> Reading) {
     private val needle = Needle()
     private var lastFrame = 0L
@@ -13,8 +12,8 @@ class SpeedDisplay(private val source: () -> Reading) {
     var reading: Reading? = null
         private set
 
-    // Bogen als Anteil 0..1 (Feder); NaN ohne Wert
-    var arc: Float = Float.NaN
+    // Mitte des Bands in Anzeige-Einheiten (Feder); ohne Wert gleitet es auf 0
+    var tape: Float = 0f
         private set
 
     // Feder ruht: kein weiteres Bild noetig
@@ -29,12 +28,8 @@ class SpeedDisplay(private val source: () -> Reading) {
         lastVersion = version
         if (fresh || reading == null) reading = source()
         val r = reading!!
-        val target = if (r.speed.isNaN()) Float.NaN else Ticks.fraction(r.speed, r.scale)
-        arc = when {
-            target.isNaN() -> needle.value.let { if (it.isNaN()) 0f else it }.also { needle.snap(it) }
-            animate && !needle.value.isNaN() -> needle.step(target, dt)
-            else -> needle.snap(target)
-        }
+        val target = if (r.speed.isNaN()) 0f else r.speed
+        tape = if (animate && !needle.value.isNaN()) needle.step(target, dt) else needle.snap(target)
     }
 
     private companion object {

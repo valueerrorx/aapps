@@ -22,6 +22,7 @@
     <string name="reset">Reset trip</string>
     <string name="hud">HUD</string>
     <string name="hud_exit">Exit HUD</string>
+    <string name="hud_show_exit">Show exit button</string>
     <string name="footnote">Estimate · not for legal purposes</string>
     <string name="speed">Speed</string>
     <string name="speed_state">%1$s %2$s</string>

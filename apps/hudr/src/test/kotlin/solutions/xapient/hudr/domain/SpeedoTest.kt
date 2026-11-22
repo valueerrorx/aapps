@@ -9,10 +9,15 @@ import solutions.xapient.hudr.domain.Track.SEC
 class SpeedoTest {
     private val s = Speedo()
     private val kmh = SpeedUnit.KMH
+    private var pos = 0.0
 
+    // Position waechst mit der Geschwindigkeit (Start braucht echte Verschiebung)
     private fun drive(from: Int, to: Int, mps: Float, limit: Int? = null): Int {
         var beeps = 0
-        for (i in from..to) if (s.onFix(Track.fix(i.toDouble(), speed = mps), kmh, limit)) beeps++
+        for (i in from..to) {
+            pos += mps
+            if (s.onFix(Track.fix(i.toDouble(), meters = pos, speed = mps), kmh, limit)) beeps++
+        }
         return beeps
     }
 
@@ -20,7 +25,7 @@ class SpeedoTest {
         val r = s.reading(0, kmh, null)
         assertEquals(GpsPhase.SEARCHING, r.phase)
         assertTrue(r.speed.isNaN())
-        assertEquals(40, r.scale)
+        assertTrue(r.trend.isNaN())
     }
 
     @Test fun readingInUnit() {
@@ -29,13 +34,15 @@ class SpeedoTest {
         assertEquals(GpsPhase.FIX, r.phase)
         assertEquals(90f, r.speed, 0.01f)
         assertEquals(90f, r.max, 0.01f)
-        // erster Fahrt-Fix startet als Trapez aus 0: 12,5 m + 29 x 25 m in 30 s
-        assertEquals(0.7375, r.distance, 1e-6)
-        assertEquals(88.5f, r.avg, 0.01f)
+        // Fahrt bestaetigt nach 2 s, Start als Trapez aus 0: 12,5 m + 28 x 25 m in 29 s
+        assertEquals(0.7125, r.distance, 1e-6)
+        assertEquals(88.45f, r.avg, 0.01f)
         assertTrue(r.moving)
+        // gleichmaessig: Trend = Wert
+        assertEquals(90f, r.trend, 0.01f)
         val mph = s.reading(30 * SEC, SpeedUnit.MPH, null)
         assertEquals(55.9f, mph.speed, 0.1f)
-        assertEquals(0.45826, mph.distance, 1e-4)
+        assertEquals(0.44273, mph.distance, 1e-4)
     }
 
     // nach 5 s ohne Fix: verloren, keine Zahl, Fahrtwerte bleiben
@@ -49,27 +56,35 @@ class SpeedoTest {
         assertEquals(36f, r.max, 0.01f)
     }
 
+    // nur geaenderte Zahlen melden ein neues Bild
     @Test fun satellites() {
-        s.onSatellites(9, 21)
+        assertTrue(s.onSatellites(9, 21))
+        assertFalse(s.onSatellites(9, 21))
         val r = s.reading(0, kmh, null)
         assertEquals(9, r.used)
         assertEquals(21, r.visible)
-        s.onSatellites(5, 3)
+        assertTrue(s.onSatellites(5, 3))
         assertEquals(5, s.reading(0, kmh, null).visible)
     }
 
-    // Skala waechst mit Max und Schwelle, schrumpft nicht, Reset faengt neu an
-    @Test fun scaleGrowsOnly() {
-        assertEquals(80, s.reading(0, kmh, 50).scale)
-        drive(0, 10, 30f)
-        assertEquals(160, s.reading(10 * SEC, kmh, null).scale)
-        drive(11, 20, 5f)
-        assertEquals(160, s.reading(20 * SEC, kmh, null).scale)
-        s.reset()
-        assertEquals(40, s.reading(20 * SEC, kmh, null).scale)
-        // ueber der groessten Skala bleibt die groesste
-        assertEquals(240, s.reading(20 * SEC, kmh, 300).scale)
-        assertEquals(3, Speedo.fit(SpeedUnit.MPH, 170f))
+    // Trend: 3 s voraus aus der geglaetteten Beschleunigung (1 m/s² = 10,8 km/h)
+    @Test fun trendLeadsWhileAccelerating() {
+        var v = 10f
+        for (i in 0..30) {
+            v += 1f
+            pos += v
+            s.onFix(Track.fix(i.toDouble(), meters = pos, speed = v), kmh, null)
+        }
+        val r = s.reading(30 * SEC, kmh, null)
+        assertEquals(10.8f, r.trend - r.speed, 0.6f)
+    }
+
+    // kurze Spitze zaehlt nicht als Max (93,6 km/h); nur der geglaettete Auslauf bleibt knapp ueber 72
+    @Test fun spikeNotMax() {
+        drive(0, 10, 20f)
+        drive(11, 11, 26f)
+        drive(12, 20, 20f)
+        assertEquals(72f, s.reading(20 * SEC, kmh, null).max, 1.5f)
     }
 
     @Test fun beepOnceWhenOver() {
@@ -89,7 +104,6 @@ class SpeedoTest {
         assertEquals(GpsPhase.SEARCHING, r.phase)
         assertEquals(72f, r.max, 0.01f)
         assertEquals(s.reading(20 * SEC, kmh, null).distance, r.distance, 1e-9)
-        assertEquals(80, r.scale)
     }
 
     @Test fun resetKeepsGps() {

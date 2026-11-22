@@ -43,16 +43,17 @@ class HudrScreenshotTest {
         }
     }
 
-    private fun fix(speed: Float, max: Float, avg: Float, dist: Double, scale: Int, alert: Alert = Alert.NONE, phase: GpsPhase = GpsPhase.FIX) =
-        Reading(phase, if (phase == GpsPhase.FIX) speed else Float.NaN, speed > 0f, 4.2f, 11, 24, max, avg, dist, alert, scale)
+    // trend = Vorhersage in 3 s (Pfeil am Band)
+    private fun fix(speed: Float, max: Float, avg: Float, dist: Double, trend: Float = Float.NaN, alert: Alert = Alert.NONE, phase: GpsPhase = GpsPhase.FIX) =
+        Reading(phase, if (phase == GpsPhase.FIX) speed else Float.NaN, speed > 0f, 4.2f, 11, 24, max, avg, dist, alert, trend)
 
-    private val drive = fix(87.4f, 112f, 64f, 23.42, 160)
-    private val near = fix(47f, 52f, 38f, 4.8, 80, Alert.NEAR)
-    private val over = fix(58f, 61f, 41f, 6.1, 80, Alert.OVER)
-    private val stopped = fix(0f, 71f, 43f, 12.7, 80)
-    private val searching = Reading.searching(SpeedUnit.KMH)
-    private val lost = fix(52f, 74f, 49f, 9.3, 80, phase = GpsPhase.LOST)
-    private val mph = fix(54f, 68f, 47f, 18.6, 120)
+    private val drive = fix(87.4f, 112f, 64f, 23.42, trend = 96f)
+    private val near = fix(47f, 52f, 38f, 4.8, trend = 50f, alert = Alert.NEAR)
+    private val over = fix(58f, 61f, 41f, 6.1, trend = 55f, alert = Alert.OVER)
+    private val stopped = fix(0f, 71f, 43f, 12.7)
+    private val searching = Reading.SEARCHING
+    private val lost = fix(52f, 74f, 49f, 9.3, phase = GpsPhase.LOST)
+    private val mph = fix(54f, 68f, 47f, 18.6)
 
     private val limit50 = Settings(limitOn = true, limit = 50)
 
@@ -89,6 +90,8 @@ class HudrScreenshotTest {
     @Test fun hud() = shot("hud") { Hud(drive) }
     @Test fun hud_land() = shot("hud_land", "+land") { Hud(drive) }
     @Test fun hud_over() = shot("hud_over") { Hud(over, limit50) }
+    @Test fun hud_searching() = shot("hud_searching") { Hud(searching) }
+    @Test fun hud_land_font200() = shot("hud_land_font200", "+land", fontScale = 2f) { Hud(drive, limit50) }
     @Test fun hud_unmirrored() = shot("hud_unmirrored", "+land") { Hud(drive, Settings(mirror = false)) }
 
     @Test fun loc_ask() = shot("loc_ask") { Ask() }

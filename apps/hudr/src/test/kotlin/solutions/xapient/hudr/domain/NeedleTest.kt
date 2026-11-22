@@ -13,21 +13,21 @@ class NeedleTest {
         assertTrue(n.settled)
     }
 
-    // kritisch gedaempft: monoton, nie ueber das Ziel, schlaeft ein
+    // kritisch gedaempft: monoton, nie ueber das Ziel, schlaeft ein (Sprung um 50 km/h)
     @Test fun noOvershootAndSettles() {
         val n = Needle()
         n.snap(0f)
         var prev = 0f
         var frames = 0
         do {
-            val v = n.step(1f, 1 / 60f)
-            assertTrue(v >= prev - 1e-6f)
-            assertTrue(v <= 1f)
+            val v = n.step(50f, 1 / 60f)
+            assertTrue(v >= prev - 1e-4f)
+            assertTrue(v <= 50f)
             prev = v
             frames++
         } while (!n.settled && frames < 600)
         assertTrue("Bilder bis Ruhe: $frames", frames in 30..150)
-        assertEquals(1f, n.value, 0f)
+        assertEquals(50f, n.value, 0f)
     }
 
     @Test fun movingIsNotSettled() {
