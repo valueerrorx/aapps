@@ -36,24 +36,28 @@ import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.util.VelocityTracker1D
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalViewConfiguration
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.pluralStringResource
@@ -89,6 +93,22 @@ import kotlinx.coroutines.flow.first
 import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.math.hypot
+import kotlin.math.min
+import kotlin.math.roundToInt
+
+// Haptik und Klick hoechstens ~35 pro Sekunde, gleich fuer Schwung und Hand
+private class TickFeedback {
+    private var last = 0L
+
+    fun ticks(count: Int, haptics: Haptics?, sound: (() -> Unit)?) {
+        if (count <= 0) return
+        val now = System.nanoTime()
+        if (now - last < 28_000_000L) return
+        last = now
+        haptics?.tick()
+        sound?.invoke()
+    }
+}
 
 // Hauptbildschirm: Ergebnis, Rad, eine Hauptaktion
 @Composable
@@ -108,18 +128,22 @@ fun SpinScreen(
 ) {
     val c = Aapps.colors
     val winner = state.winner
-    val pop by animateFloatAsState(
+    // pop wird erst beim Zeichnen gelesen: die Feder kostet keine Neukomposition
+    val pop = animateFloatAsState(
         if (winner != null) 1f else 0f,
         spring(dampingRatio = 0.55f, stiffness = 260f), label = "pop",
     )
     val confettiT = remember { Animatable(-1f) }
     var confettiSeed by remember { mutableIntStateOf(1) }
+    val feedback = remember { TickFeedback() }
+    val currentHaptics by rememberUpdatedState(haptics)
+    val currentTick by rememberUpdatedState(onTick)
+    val tick: (Int) -> Unit = { n -> feedback.ticks(n, currentHaptics, currentTick) }
 
     if (animate) {
         // Physik-Schleife: laeuft nur, solange sich etwas bewegt
         LaunchedEffect(state) {
             var last = 0L
-            var lastFeedback = 0L
             while (true) {
                 val v = state.wake
                 if (!state.isMoving) {
@@ -129,13 +153,7 @@ fun SpinScreen(
                 withFrameNanos { now ->
                     val dt = if (last == 0L) 1.0 / 60 else ((now - last) / 1e9).coerceIn(0.0, 0.05)
                     last = now
-                    val ticks = state.step(dt)
-                    // Haptik und Klick hoechstens ~35 pro Sekunde
-                    if (ticks > 0 && now - lastFeedback > 28_000_000L) {
-                        lastFeedback = now
-                        haptics?.tick()
-                        onTick?.invoke()
-                    }
+                    tick(state.step(dt))
                 }
             }
         }
@@ -153,13 +171,15 @@ fun SpinScreen(
     }
 
     val confetti = remember(confettiSeed) { Confetti(confettiSeed) }
-    val winnerColor = if (winner != null && state.labels.isNotEmpty()) segmentColor(winner, state.labels.size) else c.accent
-    val tint = lerp(c.accent, winnerColor, pop.coerceIn(0f, 1f))
+    val winnerColor = state.colors.getOrNull(winner ?: -1) ?: c.accent
+    val accent = c.accent
+    val tint = { lerp(accent, winnerColor, pop.value.coerceIn(0f, 1f)) }
+    val locked = state.spinning
 
     AappsScaffold {
         val landscape = LocalWindowInfo.current.containerSize.let { it.width > it.height }
         val hero: @Composable (Modifier) -> Unit = { modifier ->
-            WheelHero(state, FaceLook(winner, pop), tint, pop, haptics, modifier) { g ->
+            WheelHero(state, tint, pop, tick, { currentHaptics?.press() }, modifier) { g ->
                 val t = if (confettiAt >= 0f) confettiAt else confettiT.value
                 if (t >= 0f) with(confetti) { draw(g.pointerPivot, t) }
             }
@@ -170,34 +190,47 @@ fun SpinScreen(
         if (landscape) {
             Row(Modifier.fillMaxSize()) {
                 Column(Modifier.weight(0.42f).fillMaxHeight().padding(start = 8.dp)) {
-                    TopRow(wheelName, onOpenWheels, null)
+                    TopRow(wheelName, !locked, onOpenWheels, null)
                     ResultBlock(state, winnerColor, pop, Modifier.weight(1f).fillMaxWidth())
                     actions()
                 }
                 Box(Modifier.weight(0.58f).fillMaxHeight()) {
                     hero(Modifier.fillMaxSize())
-                    Box(Modifier.align(Alignment.TopEnd).padding(8.dp)) { GearButton(onOpenSettings) }
+                    Box(Modifier.align(Alignment.TopEnd).padding(8.dp)) { GearButton(!locked, onOpenSettings) }
                 }
             }
         } else {
             Column(Modifier.fillMaxSize()) {
-                TopRow(wheelName, onOpenWheels, onOpenSettings)
-                ResultBlock(state, winnerColor, pop, Modifier.weight(0.5f).fillMaxWidth())
-                hero(Modifier.weight(1.75f).fillMaxWidth())
+                TopRow(wheelName, !locked, onOpenWheels, onOpenSettings)
+                // Ergebnis und Rad als Gruppe im freien Raum, etwas ueber der Mitte; Ergebnis dicht ueber dem Zeiger
+                Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = BiasAlignment(0f, -0.25f)) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        ResultBlock(state, winnerColor, pop, Modifier.fillMaxWidth().height(140.dp), Alignment.BottomCenter)
+                        hero(Modifier.fillMaxWidth().fitWheelHeight())
+                    }
+                }
                 actions()
             }
         }
     }
 }
 
-// Rad als Ebenen: fest unten, drehend (plus Nachzieh-Kopien bei Tempo), fest oben, Zeiger, Konfetti
+// So hoch, wie das Rad bei voller Breite braucht, hoechstens der verfuegbare Platz
+private fun Modifier.fitWheelHeight(): Modifier = layout { measurable, constraints ->
+    val w = constraints.maxWidth
+    val h = min(wheelHeight(w.toFloat(), density).roundToInt(), constraints.maxHeight)
+    val p = measurable.measure(constraints.copy(minWidth = w, minHeight = h, maxHeight = h))
+    layout(p.width, p.height) { p.place(0, 0) }
+}
+
+// Rad als Ebenen: fest unten, drehend (Farben, Unschaerfe, Schrift, Stifte), fest oben, Zeiger, Konfetti
 @Composable
 private fun WheelHero(
     state: SpinState,
-    look: FaceLook,
-    tint: Color,
-    pop: Float,
-    haptics: Haptics?,
+    tint: () -> Color,
+    pop: State<Float>,
+    tick: (Int) -> Unit,
+    onTapped: () -> Unit,
     modifier: Modifier,
     overlay: DrawScope.(WheelGeometry) -> Unit,
 ) {
@@ -205,6 +238,8 @@ private fun WheelHero(
     val measurer = rememberTextMeasurer(cacheSize = 64)
     val textStyle = Aapps.type.label.copy(fontFamily = Inter, fontWeight = FontWeight.SemiBold, letterSpacing = 0.sp)
     val labels = state.labels
+    val colors = state.colors
+    val winner = state.winner
     val slop = LocalViewConfiguration.current.touchSlop
     val description = if (labels.size >= 2) pluralStringResource(R.plurals.wheel_desc, labels.size, labels.size) else stringResource(R.string.hint_too_few)
     val spinLabel = stringResource(R.string.spin)
@@ -244,13 +279,13 @@ private fun WheelHero(
                         if (!dragging && travel > slop) dragging = true
                         if (dragging) {
                             total += d
-                            if (state.dragBy(d) > 0) haptics?.tick()
+                            tick(state.dragBy(d))
                             ch.consume()
                         }
                         tracker.addDataPoint(ch.uptimeMillis, total)
                     }
                     if (!dragging) {
-                        if (state.tap()) haptics?.press()
+                        if (state.tap()) onTapped()
                     } else {
                         state.fling(tracker.calculateVelocity())
                     }
@@ -258,49 +293,46 @@ private fun WheelHero(
             },
     ) {
         Canvas(Modifier.fillMaxSize()) {
-            drawWheelBase(wheelGeometry(size, density), c, tint, pop)
+            drawWheelBase(wheelGeometry(size, density), c, tint(), pop.value)
         }
         // Drehende Ebenen: pro Frame aendern sich nur Drehung und Deckkraft, gezeichnet wird selten
-        val layer: @Composable (Float, () -> Float, DrawScope.(WheelGeometry) -> Unit) -> Unit = { lag, alpha, draw ->
+        val layer: @Composable (() -> Float, DrawScope.(WheelGeometry) -> Unit) -> Unit = { alpha, draw ->
             Canvas(
                 Modifier.fillMaxSize().graphicsLayer {
                     val g = wheelGeometry(size, density)
                     transformOrigin = TransformOrigin(g.center.x / size.width, g.center.y / size.height)
-                    rotationZ = state.angle - lag * trail(state.speed)
+                    rotationZ = state.angle
                     this.alpha = alpha()
                 },
             ) { draw(wheelGeometry(size, density)) }
         }
-        val n = labels.size
-        layer(0f, { 1f }) { drawWheelColors(it, n, c) }
-        // Bewegungsunschaerfe: nachgezogene Farbflaechen, Schrift verblasst bei Tempo
-        layer(0.5f, { 0.45f * blur(state.speed) }) { drawWheelColors(it, n, c) }
-        layer(1f, { 0.3f * blur(state.speed) }) { drawWheelColors(it, n, c) }
-        layer(0f, { 1f - 0.85f * blur(state.speed) }) { drawWheelLabels(it, labels, measurer, textStyle) }
-        layer(0f, { 1f }) { drawWheelDetails(it, n, look, c) }
+        layer({ 1f }) { drawWheelFace(it, colors, winner, pop.value, c) }
+        // Bewegungsunschaerfe: bei Tempo fliessen die Farben ineinander, die Schrift verblasst
+        layer({ blur(state.speed) }) { drawWheelBlur(it, colors) }
+        layer({ 1f - 0.85f * blur(state.speed) }) { drawWheelLabels(it, labels, measurer, textStyle, winner, pop.value) }
+        layer({ 1f }) { drawWheelDetails(it, colors.size, winner, pop.value) }
         Canvas(Modifier.fillMaxSize()) {
-            drawWheelGlass(wheelGeometry(size, density), c, tint)
+            drawWheelGlass(wheelGeometry(size, density), c, tint())
         }
         Canvas(Modifier.fillMaxSize()) {
             val g = wheelGeometry(size, density)
-            drawPointer(g, c, state.flap, tint, pop)
+            drawPointer(g, c, state.flap, tint(), pop.value)
             overlay(g)
         }
     }
 }
 
-// Nachzieh-Winkel und Sichtbarkeit der Unschaerfe aus der Drehgeschwindigkeit
-private fun trail(speed: Float): Float = (speed * 0.014f).coerceIn(-20f, 20f)
-private fun blur(speed: Float): Float = ((abs(speed) - 240f) / 900f).coerceIn(0f, 1f)
+// Sichtbarkeit der Unschaerfe aus der Drehgeschwindigkeit
+private fun blur(speed: Float): Float = ((abs(speed) - 260f) / 700f).coerceIn(0f, 1f)
 
 @Composable
-private fun GearButton(onClick: () -> Unit) {
-    AappsIconButton(AappsIcons.Gear, stringResource(com.valueerrorx.aapps.core.ui.R.string.aapps_settings), onClick)
+private fun GearButton(enabled: Boolean, onClick: () -> Unit) {
+    AappsIconButton(AappsIcons.Gear, stringResource(com.valueerrorx.aapps.core.ui.R.string.aapps_settings), onClick, enabled = enabled)
 }
 
-// Rad-Name als Chip (oeffnet die Raeder), Zahnrad
+// Rad-Name als Chip (oeffnet die Raeder), Zahnrad; beides gesperrt, solange das Rad dreht
 @Composable
-private fun TopRow(name: String, onOpenWheels: () -> Unit, onOpenSettings: (() -> Unit)?) {
+private fun TopRow(name: String, enabled: Boolean, onOpenWheels: () -> Unit, onOpenSettings: (() -> Unit)?) {
     val c = Aapps.colors
     val source = remember { MutableInteractionSource() }
     val pressed by source.collectIsPressedAsState()
@@ -314,7 +346,7 @@ private fun TopRow(name: String, onOpenWheels: () -> Unit, onOpenSettings: (() -
                 Modifier
                     .pressScale(pressed, 0.96f)
                     .heightIn(min = 48.dp)
-                    .clickable(source, indication = null, role = Role.Button, onClickLabel = choose, onClick = onOpenWheels)
+                    .clickable(source, indication = null, enabled = enabled, role = Role.Button, onClickLabel = choose, onClick = onOpenWheels)
                     .padding(vertical = 6.dp)
                     .background(if (pressed) c.surfaceHigh else Color.Transparent, CircleShape)
                     .border(1.dp, if (pressed) c.fgFaint else c.line, CircleShape)
@@ -324,21 +356,27 @@ private fun TopRow(name: String, onOpenWheels: () -> Unit, onOpenSettings: (() -
                 BasicText(
                     name.ifBlank { "–" },
                     Modifier.weight(1f, fill = false),
-                    style = Aapps.type.body.copy(color = c.fg),
+                    style = Aapps.type.body.copy(color = if (enabled) c.fg else c.fgMuted),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
                 Spacer(Modifier.width(4.dp))
-                AappsIcon(SpinrIcons.ChevronDown, null, c.fgMuted, size = 18.dp)
+                AappsIcon(SpinrIcons.ChevronDown, null, if (enabled) c.fgMuted else c.fgFaint, size = 18.dp)
             }
         }
-        if (onOpenSettings != null) GearButton(onOpenSettings)
+        if (onOpenSettings != null) GearButton(enabled, onOpenSettings)
     }
 }
 
 // Ergebnis gross in der Segmentfarbe, sonst Hinweis bzw. der Eintrag unter dem Zeiger
 @Composable
-private fun ResultBlock(state: SpinState, winnerColor: Color, pop: Float, modifier: Modifier) {
+private fun ResultBlock(
+    state: SpinState,
+    winnerColor: Color,
+    pop: State<Float>,
+    modifier: Modifier,
+    align: Alignment = Alignment.Center,
+) {
     val c = Aapps.colors
     val winner = state.winner
     val labels = state.labels
@@ -348,10 +386,11 @@ private fun ResultBlock(state: SpinState, winnerColor: Color, pop: Float, modifi
         state.spinning -> 1
         else -> 0
     }
-    Box(modifier.padding(horizontal = 24.dp), contentAlignment = Alignment.Center) {
+    Box(modifier.padding(horizontal = 24.dp), contentAlignment = align) {
         AnimatedContent(
             mode,
             transitionSpec = { (fadeIn(Springs.gentle()) + scaleIn(Springs.bouncy(), 0.85f)) togetherWith fadeOut(Springs.gentle()) },
+            contentAlignment = align,
             label = "result",
         ) { m ->
             when (m) {
@@ -372,7 +411,7 @@ private fun ResultBlock(state: SpinState, winnerColor: Color, pop: Float, modifi
                         Spacer(Modifier.height(6.dp))
                         BasicText(
                             text,
-                            Modifier.glow(winnerColor, 120.dp, 0.12f * pop),
+                            Modifier.glow(winnerColor, 120.dp, 0.12f * pop.value),
                             style = Aapps.type.display.copy(color = winnerColor, textAlign = TextAlign.Center, lineHeight = 1.05.em),
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis,
@@ -380,8 +419,10 @@ private fun ResultBlock(state: SpinState, winnerColor: Color, pop: Float, modifi
                         )
                     }
                 }
+                // Eintrag unter dem Zeiger erst, wenn er lesbar langsam vorbeizieht
                 1 -> BasicText(
                     labels.getOrNull(current) ?: "",
+                    Modifier.graphicsLayer { alpha = ((600f - abs(state.speed)) / 200f).coerceIn(0f, 1f) },
                     style = Aapps.type.headline.copy(color = c.fgMuted, textAlign = TextAlign.Center),
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
