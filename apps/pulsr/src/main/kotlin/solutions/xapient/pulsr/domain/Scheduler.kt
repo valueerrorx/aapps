@@ -49,21 +49,24 @@ class Scheduler(private val sampleRate: Int, settings: Settings = Settings()) {
         }
     }
 
+    // Position im Block wie in BeatClock.at gerechnet (start + f * step): Bild und Klick kippen am selben Frame
     fun advance(n: Int, listener: ClickListener) {
-        var f = 0
+        val start = pos
         val d = step
+        // im Block ueberschrittene Schlaggrenzen
+        var wraps = 0
+        var f = 0L
         while (true) {
-            val target = next.toDouble() / sub
-            val need = ceil((target - pos) / d).coerceAtLeast(0.0)
-            if (f + need >= n) {
-                pos += (n - f) * d
-                break
-            }
-            f += need.toInt()
-            pos += need * d
+            val target = next.toDouble() / sub + wraps
+            // erster Frame, an dem die Position das Ziel erreicht; Rundung exakt nachziehen
+            var g = ceil((target - start) / d).toLong().coerceAtLeast(f)
+            while (g > f && start + (g - 1) * d >= target) g--
+            while (start + g * d < target) g++
+            if (g >= n) break
+            f = g
             if (next >= sub) {
                 // Schlaggrenze: in den neuen Schlag wechseln
-                pos = (pos - 1.0).coerceAtLeast(0.0)
+                wraps++
                 next = 0
                 beatInBar = (beatInBar + 1) % beats
             }
@@ -73,8 +76,9 @@ class Scheduler(private val sampleRate: Int, settings: Settings = Settings()) {
                 beatInBar == 0 && accent -> Kind.ACCENT
                 else -> Kind.BEAT
             }
-            listener.onClick(f, kind, beatInBar, i)
+            listener.onClick(f.toInt(), kind, beatInBar, i)
         }
+        pos = start + n * d - wraps
         frame += n
     }
 }

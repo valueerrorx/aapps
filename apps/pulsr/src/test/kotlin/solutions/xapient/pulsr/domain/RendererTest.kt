@@ -72,6 +72,41 @@ class RendererTest {
         assertTrue("$beepLen vs $woodLen", woodLen > beepLen)
     }
 
+    // Vorlauf: Stille, dann die Eins; Uhr kennt erst ab dem Vorlauf einen Schlag
+    @Test fun leadInDelaysFirstClick() {
+        val clock = BeatClock(48_000)
+        val r = Renderer(48_000, Settings(bpm = 120), clock, leadIn = 4_000)
+        val a = FloatArray(30_000)
+        val buf = FloatArray(1_000)
+        for (b in 0 until 30) {
+            r.render(buf, 1_000)
+            System.arraycopy(buf, 0, a, b * 1_000, 1_000)
+        }
+        assertTrue((0 until 4_000).all { a[it] == 0f })
+        assertTrue(firstSound(a, 0) in 4_000..4_002)
+        assertTrue(firstSound(a, 20_000) in 28_000..28_002)
+        assertEquals(null, clock.at(3_999))
+        assertEquals(0, clock.at(4_000)!!.beat)
+        assertEquals(30_000L, r.frame)
+    }
+
+    // Stopp: nichts Neues, Klingendes laeuft linear auf 0 aus
+    @Test fun fadeOutEndsSilent() {
+        val r = Renderer(48_000, Settings(bpm = 120, sound = Sound.WOOD))
+        val buf = FloatArray(240)
+        r.render(buf, 240)
+        r.fadeOut(buf, 240)
+        assertTrue(buf.take(10).any { abs(it) > 0.01f })
+        assertEquals(0f, buf[239], 0.01f)
+        r.render(buf, 240)
+        assertTrue(buf.all { it == 0f })
+    }
+
+    @Test fun clicksCachedPerRate() {
+        assertTrue(Clicks.make(Sound.BEEP, 44_100) === Clicks.make(Sound.BEEP, 44_100))
+        assertTrue(Clicks.make(Sound.BEEP, 44_100) !== Clicks.make(Sound.BEEP, 48_000))
+    }
+
     @Test fun pcmClamps() {
         val src = floatArrayOf(2f, -2f, 0.5f)
         val dst = ShortArray(3)

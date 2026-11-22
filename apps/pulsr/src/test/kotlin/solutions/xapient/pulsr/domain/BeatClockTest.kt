@@ -71,6 +71,49 @@ class BeatClockTest {
         assertEquals(0, clock.at(760)!!.beat)
     }
 
+    // Eigenschaft: am Klick-Frame zeigt die Uhr genau diesen Schlag ab 0, ein Frame davor noch den alten.
+    // Zufaellige Wechsel von Tempo, Schlaegen und Unterteilung mitten im Schlag, krumme Raten und Bloecke.
+    @Test fun clockFlipsExactlyOnClickFrames() {
+        val rnd = kotlin.random.Random(42)
+        for (rate in listOf(44_100, 48_000, 96_000)) {
+            val clicks = ArrayList<Pair<Long, Int>>()
+            val clock = BeatClock(rate, capacity = 64)
+            var s = Settings(bpm = 97, beats = 4, sub = Subdivision.EIGHTH)
+            val r = Renderer(rate, s, clock, leadIn = rate / 15) { f, kind, beat -> if (kind != Kind.SUB) clicks += f to beat }
+            val buf = FloatArray(2_048)
+            val frameMs = 1_000f / rate
+            var checked = 0
+            var prevBeat = -1
+            repeat(6_000) {
+                if (rnd.nextInt(6) == 0) {
+                    s = s.copy(
+                        bpm = rnd.nextInt(Tempo.MIN, Tempo.MAX + 1),
+                        beats = rnd.nextInt(Beats.MIN, Beats.MAX + 1),
+                        sub = Subdivision.entries.random(rnd),
+                    )
+                    r.apply(s)
+                }
+                r.render(buf, rnd.nextInt(32, 2_049))
+                // Uhr sofort pruefen, solange der Block noch im Ringpuffer liegt
+                for ((f, beat) in clicks) {
+                    val p = clock.at(f)!!
+                    assertEquals("Frame $f", beat, p.beat)
+                    assertTrue("seit Schlag ${p.sinceBeatMs} ms", p.sinceBeatMs < frameMs + 1e-3f)
+                    val before = clock.at(f - 1)
+                    if (before != null) {
+                        // noch im alten Schlag, kurz vor seinem Ende
+                        assertTrue("vor $f: ${before.phase}", (1f - before.phase) * before.beatMs < frameMs * 1.01f + 1e-3f)
+                        if (prevBeat >= 0 && before.beats == p.beats && p.beats > 1) assertTrue(before.beat != beat)
+                    }
+                    prevBeat = beat
+                    checked++
+                }
+                clicks.clear()
+            }
+            assertTrue("nur $checked Klicks", checked > 150)
+        }
+    }
+
     @Test fun oldFramesFallBackToOldestKnown() {
         val (clock, _) = played(Settings(bpm = 60), 1_024 * 10, block = 128, capacity = 8)
         // aelter als der Ringpuffer: kein Absturz, sinnvoller Wert

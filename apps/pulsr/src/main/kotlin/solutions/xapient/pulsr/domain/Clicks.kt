@@ -15,7 +15,13 @@ class ClickSet(val accent: FloatArray, val beat: FloatArray, val sub: FloatArray
 }
 
 object Clicks {
-    fun make(sound: Sound, rate: Int): ClickSet = when (sound) {
+    private val cache = HashMap<Pair<Sound, Int>, ClickSet>()
+
+    // je Klang und Abtastrate einmal erzeugt; die Arrays werden nur gelesen
+    @Synchronized
+    fun make(sound: Sound, rate: Int): ClickSet = cache.getOrPut(sound to rate) { build(sound, rate) }
+
+    private fun build(sound: Sound, rate: Int): ClickSet = when (sound) {
         Sound.CLICK -> ClickSet(click(rate, 2400.0, 0.9), click(rate, 1600.0, 0.62), click(rate, 1600.0, 0.34))
         Sound.WOOD -> ClickSet(wood(rate, 1250.0, 0.9), wood(rate, 880.0, 0.62), wood(rate, 880.0, 0.34))
         Sound.BEEP -> ClickSet(beep(rate, 1760.0, 0.7), beep(rate, 1320.0, 0.5), beep(rate, 990.0, 0.28))
