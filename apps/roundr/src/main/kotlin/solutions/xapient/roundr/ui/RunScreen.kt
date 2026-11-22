@@ -33,6 +33,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,16 +41,22 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.withFrameMillis
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.RoundRect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.CompositingStrategy
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.pluralStringResource
@@ -99,22 +106,33 @@ fun RunScreen(
     animate: Boolean = true,
     confirmStop: Boolean = false,
 ) {
-    // Uhr fuer die Zeichenphase: nur waehrend des Laufs jedes Bild, angehalten kein einziges
+    // Uhr fuer die Zeichenphase: nur waehrend des Laufs, angehalten und fertig kein einziges Bild
     val now = remember { mutableLongStateOf(clock()) }
     val running = run.session.running
+    val t = run.timeline
+    // Hoehe der Flaeche: neu gezeichnet wird nur, wenn sich Fuellkante (in Pixeln) oder Sekunde aendern
+    var heightPx by remember { mutableIntStateOf(0) }
     LaunchedEffect(run, animate) {
         now.longValue = clock()
         if (animate && running) {
-            while (true) withFrameMillis { now.longValue = clock() }
+            var shown: Any? = null
+            while (!run.finished(now.longValue)) withFrameMillis {
+                val c = clock()
+                val p = t.at(run.session.elapsed(c))
+                val key = p?.let { Triple(it.index, TimeFormat.ceilSec(it.remainingMs), (it.fraction * heightPx).toInt()) }
+                if (key != shown || p == null) {
+                    shown = key
+                    now.longValue = c
+                }
+            }
         }
     }
-    val t = run.timeline
     val finished by remember(run) { derivedStateOf { run.finished(now.longValue) } }
     if (finished) {
         DoneScreen(run.workout, onAgain, onClose)
         return
     }
-    if (keepOn) KeepScreenOn()
+    if (keepOn && running) KeepScreenOn()
     val elapsed = { run.session.elapsed(now.longValue) }
     // nur bei Abschnitts- bzw. Sekundenwechsel neu zusammensetzen
     val index by remember(run) { derivedStateOf { t.at(elapsed())?.index ?: (t.segments.size - 1) } }
@@ -149,7 +167,7 @@ fun RunScreen(
     // Fuellstand nur in der Zeichenphase lesen
     val level = { (t.at(elapsed())?.fraction ?: 0f) * rise.value }
 
-    Box(Modifier.fillMaxSize()) {
+    Box(Modifier.fillMaxSize().onSizeChanged { heightPx = it.height }) {
         Canvas(Modifier.fillMaxSize()) {
             val c = color
             drawRect(drained(c))
@@ -223,12 +241,14 @@ private fun RunContent(
         stringResource(R.string.round_of, seg.round, t.rounds)
     }
     val next = t.next(index)
+    val phaseText = phaseLabel(seg.phase)
+    // angehalten: Zustand gross in der Phasenzeile, Phase darunter
     val sub = when {
-        !running -> stringResource(R.string.paused)
+        !running -> phaseText
         next != null -> stringResource(R.string.next_is, phaseLabel(next.phase), TimeFormat.clock((next.durationMs / 1000).toInt()))
         else -> stringResource(R.string.last_phase)
     }
-    val phaseText = phaseLabel(seg.phase)
+    val headline = if (running) phaseText else stringResource(R.string.paused)
     val number = TimeFormat.big(sec)
     // Vorlage fuer die Groesse: alle Ziffern als 0, mindestens zwei Stellen -> Zahl springt nicht
     val template = number.map { if (it.isDigit()) '0' else it }.joinToString("").padStart(2, '0')
@@ -253,7 +273,7 @@ private fun RunContent(
     val phase: @Composable () -> Unit = {
         Column(Modifier.semantics(mergeDescendants = true) { liveRegion = LiveRegionMode.Polite }) {
             BasicText(
-                phaseText.uppercase(),
+                headline.uppercase(),
                 style = Aapps.type.headline.copy(color = white, fontSize = 40.sp, letterSpacing = 0.06.em),
                 maxLines = 1,
                 autoSize = TextAutoSize.StepBased(minFontSize = 16.sp, maxFontSize = 40.sp, stepSize = 1.sp),
@@ -264,7 +284,7 @@ private fun RunContent(
     }
     val bigNumber: @Composable (Modifier) -> Unit = { m ->
         val desc = pluralStringResource(R.plurals.seconds_left, sec, sec)
-        BigNumber(number, template, pulse, m.clearAndSetSemantics { contentDescription = desc })
+        BigNumber(number, template, pulse, !running, m.clearAndSetSemantics { contentDescription = desc })
     }
     val controls: @Composable () -> Unit = {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(20.dp)) {
@@ -304,9 +324,9 @@ private fun RunContent(
     }
 }
 
-// Zahl so gross wie der Platz erlaubt; Groesse aus der Vorlage gemessen, damit sie zwischen Sekunden ruhig bleibt
+// Zahl so gross wie der Platz erlaubt; Groesse aus der Vorlage gemessen, damit sie zwischen Sekunden ruhig bleibt; angehalten als Umriss
 @Composable
-private fun BigNumber(text: String, template: String, pulse: () -> Float, modifier: Modifier) {
+private fun BigNumber(text: String, template: String, pulse: () -> Float, outline: Boolean, modifier: Modifier) {
     val measurer = rememberTextMeasurer()
     val density = LocalDensity.current
     val base = Aapps.type.display.copy(
@@ -335,6 +355,7 @@ private fun BigNumber(text: String, template: String, pulse: () -> Float, modifi
             }
             base.copy(fontSize = with(density) { lo.toSp() })
         }
+        val drawn = if (outline) style.copy(drawStyle = Stroke(width = with(density) { style.fontSize.toPx() } * OUTLINE)) else style
         BasicText(
             text,
             Modifier.graphicsLayer {
@@ -342,33 +363,44 @@ private fun BigNumber(text: String, template: String, pulse: () -> Float, modifi
                 scaleX = s
                 scaleY = s
             },
-            style = style,
+            style = drawn,
             maxLines = 1,
             softWrap = false,
         )
     }
 }
 
-// Alle Abschnitte als Leiste: Arbeit hoch, Pausen flach; erledigt voll, kommend blass
+// Strichstaerke des Umrisses relativ zur Schriftgroesse
+private const val OUTLINE = 0.03f
+
+// Alle Abschnitte als Leiste: Arbeit hoch, Pausen flach; erledigt voll, kommend blass; Grundform gecacht
 @Composable
 private fun SegmentBar(t: Timeline, elapsed: () -> Long, modifier: Modifier) {
-    Canvas(modifier) {
-        val n = t.segments.size
-        val gap = (size.width / n * 0.25f).coerceAtMost(3.dp.toPx())
-        val usable = size.width - gap * (n - 1)
-        val e = elapsed().coerceIn(0, t.totalMs)
-        var x = 0f
-        val r = CornerRadius(3.dp.toPx())
-        t.segments.forEach { s ->
-            val w = usable * s.durationMs / t.totalMs
-            val h = if (s.phase == solutions.xapient.roundr.domain.Phase.WORK) size.height else size.height * 0.45f
-            val y = (size.height - h) / 2
-            val done = ((e - s.startMs).toFloat() / s.durationMs).coerceIn(0f, 1f)
-            drawRoundRect(Color.White.copy(alpha = 0.3f), Offset(x, y), Size(w, h), r)
-            if (done > 0f) drawRoundRect(Color.White, Offset(x, y), Size(w * done, h), r)
-            x += w + gap
-        }
-    }
+    Spacer(
+        modifier.drawWithCache {
+            val n = t.segments.size
+            val gap = (size.width / n * 0.25f).coerceAtMost(3.dp.toPx())
+            val usable = size.width - gap * (n - 1)
+            val r = CornerRadius(3.dp.toPx())
+            var x = 0f
+            val rects = t.segments.map { s ->
+                val w = usable * s.durationMs / t.totalMs
+                val h = if (s.phase == solutions.xapient.roundr.domain.Phase.WORK) size.height else size.height * 0.45f
+                Rect(Offset(x, (size.height - h) / 2), Size(w, h)).also { x += w + gap }
+            }
+            val pale = Path().apply { rects.forEach { addRoundRect(RoundRect(it, r)) } }
+            onDrawBehind {
+                drawPath(pale, Color.White.copy(alpha = 0.3f))
+                val e = elapsed().coerceIn(0, t.totalMs)
+                t.segments.forEachIndexed { i, s ->
+                    val done = ((e - s.startMs).toFloat() / s.durationMs).coerceIn(0f, 1f)
+                    if (done <= 0f) return@onDrawBehind
+                    val b = rects[i]
+                    drawRoundRect(Color.White, b.topLeft, Size(b.width * done, b.height), r)
+                }
+            }
+        },
+    )
 }
 
 @Composable

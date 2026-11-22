@@ -26,6 +26,8 @@ import org.robolectric.annotation.GraphicsMode
 import solutions.xapient.aapps.core.ui.AappsTheme
 import solutions.xapient.roundr.domain.Presets
 import solutions.xapient.roundr.domain.Run
+import solutions.xapient.roundr.domain.Session
+import solutions.xapient.roundr.domain.Workout
 import solutions.xapient.roundr.ui.EditorScreen
 import solutions.xapient.roundr.ui.RoundrAccent
 import solutions.xapient.roundr.ui.RunScreen
@@ -116,6 +118,28 @@ class GestureTest {
         rule.onNodeWithContentDescription("Next phase").performClick()
         rule.waitForIdle()
         assertEquals(10_000, store.state.value!!.session.elapsed(now))
+    }
+
+    // Fertig-Ansicht: Frame-Schleife endet, die Uhr wird nicht mehr abgefragt
+    @Test fun noFramesAfterDone() {
+        val w = Workout(prepSec = 0, workSec = 5, restSec = 0, rounds = 1)
+        var calls = 0
+        rule.mainClock.autoAdvance = false
+        show {
+            RunScreen(
+                Run(w, Session.start(0), 1), clock = { calls++; now }, haptics = null, onToggle = {}, onSkip = {}, onBack = {},
+                onStop = {}, onAgain = {}, onClose = {}, keepOn = false, animate = true,
+            )
+        }
+        rule.mainClock.advanceTimeBy(200)
+        val running = calls
+        rule.mainClock.advanceTimeBy(200)
+        assertTrue("laeuft: keine Frames", calls > running)
+        now = 5_000
+        rule.mainClock.advanceTimeBy(200)
+        val done = calls
+        rule.mainClock.advanceTimeBy(1_000)
+        assertEquals(done, calls)
     }
 
     @Test fun stopNeedsSecondTap() {
