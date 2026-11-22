@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -26,6 +27,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -57,6 +59,7 @@ import com.valueerrorx.aapps.core.ui.SettingsGroup
 import com.valueerrorx.aapps.core.ui.Springs
 import com.valueerrorx.spinr.R
 import com.valueerrorx.spinr.domain.Wheel
+import kotlinx.coroutines.delay
 
 // Scrollbare Liste mit eigener Kopfzeile (wie SettingsScreen, aber mit Titel)
 @Composable
@@ -169,6 +172,38 @@ private fun AddRow(text: String, enabled: Boolean, onClick: () -> Unit) {
     }
 }
 
+private val Danger = Color(0xFFFF8A9A)
+
+// Schluessel der Editor-Zeilen (nicht beobachtet, aendert sich nur zusammen mit den Eintraegen)
+private class RowIds {
+    val ids = mutableListOf<Int>()
+    var next = 0
+}
+
+// Zerstoerende Aktion: rot, ohne Chevron
+@Composable
+private fun DangerRow(title: String, subtitle: String, enabled: Boolean, onClick: () -> Unit) {
+    val c = Aapps.colors
+    val source = remember { MutableInteractionSource() }
+    val pressed by source.collectIsPressedAsState()
+    val bg by animateColorAsState(if (pressed) c.surfaceHigh else Color.Transparent, Springs.gentle(), label = "dangerBg")
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .background(bg)
+            .clickable(source, indication = null, enabled = enabled, role = Role.Button, onClick = onClick)
+            .heightIn(min = 60.dp)
+            .padding(horizontal = 18.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(Modifier.weight(1f)) {
+            BasicText(title, style = Aapps.type.body.copy(color = if (enabled) Danger else c.fgFaint))
+            Spacer(Modifier.height(2.dp))
+            BasicText(subtitle, style = Aapps.type.body.copy(color = c.fgMuted, fontSize = Aapps.type.label.fontSize * 1.1f))
+        }
+    }
+}
+
 // Ein Textfeld im Look der Einstellungszeilen
 @Composable
 private fun Field(
@@ -213,8 +248,20 @@ fun EditorScreen(
         entries.map { if (it.isBlank()) -1 else k++ }
     }
     val n = wheel.labels.size
-    var focusLast by remember { mutableIntStateOf(-1) }
+    // stabile Schluessel je Zeile, damit Fokus und Feldzustand beim Loeschen am Eintrag bleiben
+    val rows = remember { RowIds() }
+    val ids = rows.ids
+    while (ids.size > entries.size) ids.removeAt(ids.lastIndex)
+    while (ids.size < entries.size) ids.add(rows.next++)
+    var focusId by remember { mutableIntStateOf(-1) }
     var confirmDelete by remember { mutableStateOf(false) }
+    // Bestaetigung verfaellt nach 3 s
+    LaunchedEffect(confirmDelete) {
+        if (confirmDelete) {
+            delay(3_000)
+            confirmDelete = false
+        }
+    }
 
     ListScreen(stringResource(R.string.edit_wheel), onBack) {
         SettingsGroup(stringResource(R.string.name)) {
@@ -223,46 +270,51 @@ fun EditorScreen(
                 Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 6.dp),
             )
         }
-        SettingsGroup(stringResource(R.string.entries_label, n, Wheel.MAX_ENTRIES)) {
+        // Zaehler wie das Limit: Zeilen im Editor
+        SettingsGroup(stringResource(R.string.entries_label, entries.size, Wheel.MAX_ENTRIES)) {
             entries.forEachIndexed { i, entry ->
                 if (i > 0) SettingsDivider()
-                val focus = remember { FocusRequester() }
-                if (i == focusLast) {
-                    LaunchedEffect(Unit) {
-                        focus.requestFocus()
-                        focusLast = -1
+                key(ids[i]) {
+                    val focus = remember { FocusRequester() }
+                    if (ids[i] == focusId) {
+                        LaunchedEffect(Unit) {
+                            focus.requestFocus()
+                            focusId = -1
+                        }
                     }
-                }
-                Row(
-                    Modifier.fillMaxWidth().padding(start = 18.dp, end = 6.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    val dot = if (labelIndex[i] >= 0) segmentColor(labelIndex[i], n) else c.fgFaint
-                    Box(Modifier.size(12.dp).background(dot, CircleShape))
-                    Spacer(Modifier.width(14.dp))
-                    Field(
-                        entry, stringResource(R.string.entry_hint, i + 1),
-                        { v -> onChange(wheel.copy(entries = entries.toMutableList().also { it[i] = v })) },
-                        Modifier.weight(1f).focusRequester(focus),
-                        if (i == entries.lastIndex) ImeAction.Done else ImeAction.Next,
-                    )
-                    if (entries.size > Wheel.MIN_ENTRIES) {
-                        AappsIconButton(SpinrIcons.Close, stringResource(R.string.delete_entry, i + 1), {
-                            onChange(wheel.copy(entries = entries.toMutableList().also { it.removeAt(i) }))
-                        })
-                    } else {
-                        Spacer(Modifier.width(48.dp))
+                    Row(
+                        Modifier.fillMaxWidth().padding(start = 18.dp, end = 6.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        val dot = if (labelIndex[i] >= 0) segmentColor(labelIndex[i], n) else c.fgFaint
+                        Box(Modifier.size(12.dp).background(dot, CircleShape))
+                        Spacer(Modifier.width(14.dp))
+                        Field(
+                            entry, stringResource(R.string.entry_hint, i + 1),
+                            { v -> onChange(wheel.copy(entries = entries.toMutableList().also { it[i] = v })) },
+                            Modifier.weight(1f).focusRequester(focus),
+                            if (i == entries.lastIndex) ImeAction.Done else ImeAction.Next,
+                        )
+                        if (entries.size > Wheel.MIN_ENTRIES) {
+                            AappsIconButton(SpinrIcons.Close, stringResource(R.string.delete_entry, i + 1), {
+                                ids.removeAt(i)
+                                onChange(wheel.copy(entries = entries.toMutableList().also { it.removeAt(i) }))
+                            })
+                        } else {
+                            Spacer(Modifier.width(48.dp))
+                        }
                     }
                 }
             }
             SettingsDivider()
             AddRow(stringResource(R.string.add_entry), entries.size < Wheel.MAX_ENTRIES) {
+                ids.add(rows.next)
+                focusId = rows.next++
                 onChange(wheel.copy(entries = entries + ""))
-                focusLast = entries.size
             }
         }
         SettingsGroup(null) {
-            SettingsAction(
+            DangerRow(
                 stringResource(if (confirmDelete) R.string.delete_confirm else R.string.delete_wheel),
                 stringResource(if (canDelete) R.string.delete_wheel_sub else R.string.delete_last_sub),
                 enabled = canDelete,

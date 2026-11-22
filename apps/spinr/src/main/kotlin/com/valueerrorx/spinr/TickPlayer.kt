@@ -23,7 +23,12 @@ class TickPlayer(context: Context) {
 
     init {
         val file = File(context.cacheDir, "tick-1.wav")
-        if (!file.exists()) file.writeBytes(TickSound.wav(TickSound.pcm()))
+        // erst fertig schreiben, dann umbenennen: kein halber Klang nach Abbruch
+        if (!file.exists()) {
+            val tmp = File(context.cacheDir, "tick-1.tmp")
+            tmp.writeBytes(TickSound.wav(TickSound.pcm()))
+            tmp.renameTo(file)
+        }
         pool.setOnLoadCompleteListener { _, _, status -> loaded = status == 0 }
         id = pool.load(file.path, 1)
     }

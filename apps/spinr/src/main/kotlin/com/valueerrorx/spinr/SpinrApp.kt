@@ -9,14 +9,18 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import com.valueerrorx.aapps.core.ui.AappsTheme
 import com.valueerrorx.aapps.core.ui.rememberHaptics
+import com.valueerrorx.spinr.domain.Palette
 import com.valueerrorx.spinr.domain.Round
 import com.valueerrorx.spinr.domain.Wheel
 import com.valueerrorx.spinr.ui.EditorScreen
@@ -30,6 +34,12 @@ import com.valueerrorx.spinr.ui.WheelsScreen
 val SpinrAccent = SpinrPalette[0]
 
 private enum class Screen { WHEEL, WHEELS, EDIT, SETTINGS, ABOUT }
+
+// Runde als Groesse + entfernte Indizes
+private val RoundSaver = Saver<Round, IntArray>(
+    save = { intArrayOf(it.size) + it.removed.toIntArray() },
+    restore = { Round(it[0], it.drop(1).toSet()) },
+)
 
 // Vorlagen in der Sprache des Geraets
 fun templates(res: Resources): List<Wheel> = listOf(
@@ -48,6 +58,8 @@ fun SpinrApp() {
     val presets = remember(LocalConfiguration.current) { templates(resources) }
     val newWheelName = stringResource(R.string.new_wheel_name)
     var wheels by remember { mutableStateOf(prefs.wheels.ifEmpty { presets.also { prefs.wheels = it } }) }
+    // Aenderungen im Editor erst beim Verlassen bzw. beim Wegschalten der App schreiben
+    var dirty by remember { mutableStateOf(false) }
     var active by remember { mutableIntStateOf(prefs.active.coerceIn(0, wheels.lastIndex)) }
     var editing by rememberSaveable { mutableIntStateOf(0) }
     var hapticsOn by remember { mutableStateOf(prefs.haptics) }
@@ -56,18 +68,30 @@ fun SpinrApp() {
 
     val wheel = wheels[active]
     val labels = wheel.labels
-    // Runde gilt fuer dieses Rad mit genau diesen Eintraegen
-    var round by remember(active, labels) { mutableStateOf(Round(labels.size)) }
+    // Runde gilt fuer dieses Rad mit genau diesen Eintraegen; ueberlebt Prozess-Neustart
+    var round by rememberSaveable(active, labels, stateSaver = RoundSaver) { mutableStateOf(Round(labels.size)) }
     val shown = round.remaining.map { labels[it] }
-    val state = remember { SpinState(shown) }
-    LaunchedEffect(shown) { state.showLabels(shown) }
+    // jeder Eintrag behaelt seine Farbe aus dem vollen Rad
+    val colors = Palette.colors(round.remaining, labels.size, SpinrPalette.size).map { SpinrPalette[it] }
+    val state = rememberSaveable(saver = Saver<SpinState, Float>({ it.angle }, { a -> SpinState(shown, colors).apply { pose(a) } })) {
+        SpinState(shown, colors)
+    }
+    LaunchedEffect(shown, colors) { state.showLabels(shown, colors) }
+
+    fun flush() {
+        if (!dirty) return
+        prefs.wheels = wheels
+        dirty = false
+    }
 
     fun save(new: List<Wheel>, newActive: Int = active) {
         wheels = new
         active = newActive.coerceIn(0, new.lastIndex)
         prefs.wheels = new
         prefs.active = active
+        dirty = false
     }
+    LifecycleEventEffect(Lifecycle.Event.ON_STOP) { flush() }
 
     // Ton nur, solange eingeschaltet
     val player = remember(soundOn) { if (soundOn) TickPlayer(context) else null }
@@ -85,7 +109,7 @@ fun SpinrApp() {
                 onTick = player?.let { p -> { p.play() } },
                 onOpenWheels = { screen = Screen.WHEELS },
                 onOpenSettings = { screen = Screen.SETTINGS },
-                onRemove = { segment -> round.remaining.getOrNull(segment)?.let { round = round.remove(it) } },
+                onRemove = { segment -> round = round.removeShown(segment) },
                 onRestore = { round = round.restore() },
             )
             Screen.WHEELS -> {
@@ -118,17 +142,20 @@ fun SpinrApp() {
             }
             Screen.EDIT -> {
                 val index = editing.coerceIn(0, wheels.lastIndex)
-                BackHandler { screen = Screen.WHEELS }
+                BackHandler { flush(); screen = Screen.WHEELS }
                 EditorScreen(
                     wheel = wheels[index],
                     canDelete = wheels.size > 1,
-                    onChange = { w -> save(wheels.toMutableList().also { it[index] = w }) },
+                    onChange = { w ->
+                        wheels = wheels.toMutableList().also { it[index] = w }
+                        dirty = true
+                    },
                     onDelete = {
                         val rest = wheels.toMutableList().also { it.removeAt(index) }
                         save(rest, if (active > index) active - 1 else if (active == index) minOf(index, rest.lastIndex) else active)
                         screen = Screen.WHEELS
                     },
-                    onBack = { screen = Screen.WHEELS },
+                    onBack = { flush(); screen = Screen.WHEELS },
                 )
             }
             Screen.SETTINGS -> {
