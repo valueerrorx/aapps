@@ -183,6 +183,22 @@ class SoundMeterTest {
         assertTrue(r.fast.isFinite() && r.fast <= 0f)
     }
 
+    // nach Pause und Neustart markiert NaN die Luecke, nur einmal
+    @Test fun pauseLeavesGapInHistory() {
+        tone(rmsFor(80.0), 1.3)
+        meter.pause()
+        meter.restart(rate)
+        meter.pause()
+        meter.restart(rate)
+        tone(rmsFor(60.0), 0.5)
+        val h = meter.reading().history
+        assertEquals(10 + 1 + 2, h.size)
+        assertTrue(h[10].isNaN())
+        assertEquals(60.0, h.last().toDouble(), 0.5)
+        val back = SoundMeter().apply { restore(meter.save()) }.reading().history
+        assertTrue(back[10].isNaN())
+    }
+
     @Test fun historyRing() {
         val h = History(3)
         listOf(1f, 2f, 3f, 4f, 5f).forEach(h::push)

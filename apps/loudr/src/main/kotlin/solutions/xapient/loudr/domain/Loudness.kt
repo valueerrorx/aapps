@@ -31,11 +31,13 @@ enum class Example(val from: Float) {
     }
 }
 
-// Skala von Bogen und Verlauf
+// Skala von Bogen und Verlauf; der Verlauf zeigt den Alltagsbereich enger
 object Scale {
     const val MIN = 20f
     const val MAX = 120f
-    fun fraction(db: Float): Float = if (db.isNaN()) 0f else ((db - MIN) / (MAX - MIN)).coerceIn(0f, 1f)
+    const val HISTORY_MIN = 30f
+    const val HISTORY_MAX = 110f
+    fun fraction(db: Float, lo: Float = MIN, hi: Float = MAX): Float = if (db.isNaN()) 0f else ((db - lo) / (hi - lo)).coerceIn(0f, 1f)
 }
 
 // Versatz gegen ein Referenzgeraet

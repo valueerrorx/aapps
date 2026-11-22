@@ -17,7 +17,7 @@ class Reading(
     val maxFast: Float,
     val minSlow: Float,
     val maxSlow: Float,
-    // Leq je 100 ms, aeltester zuerst
+    // Leq je 100 ms, aeltester zuerst; NaN = Pause
     val history: FloatArray,
     // misst gerade und ist eingeschwungen
     val live: Boolean,
@@ -49,6 +49,8 @@ class History(val capacity: Int) {
             start = (start + 1) % capacity
         }
     }
+
+    fun last(): Float = if (size == 0) Float.NaN else buf[(start + size - 1) % capacity]
 
     fun toArray(): FloatArray = FloatArray(size) { buf[(start + it) % capacity] }
 
@@ -105,6 +107,11 @@ class SoundMeter {
         sliceLen = sampleRate / 10
         sliceE = 0.0
         sliceN = 0
+        // Luecke im Verlauf: die Zeit dazwischen fehlt
+        if (!history.last().isNaN()) {
+            history.push(Float.NaN)
+            historyCopy = null
+        }
     }
 
     // Messlauf beendet: weitere Bloecke werden ignoriert, letzter Pegel bleibt sichtbar
