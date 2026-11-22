@@ -3,7 +3,6 @@ package solutions.xapient.hertzr
 import android.app.Notification
 import android.app.NotificationManager
 import android.content.Intent
-import android.media.AudioManager
 import android.os.Looper
 import java.time.Duration
 import org.junit.After
@@ -19,7 +18,7 @@ import org.robolectric.Shadows.shadowOf
 import org.robolectric.shadows.ShadowPowerManager
 import solutions.xapient.hertzr.domain.Settings
 
-// Dienst: Vordergrund und Wakelock nur waehrend des Spielens; Stopp aus Benachrichtigung, bei Kopfhoerer ab und Telefonat
+// Dienst: Vordergrund und Wakelock nur waehrend des Spielens; Stopp aus der Benachrichtigung
 @RunWith(RobolectricTestRunner::class)
 class ToneServiceTest {
     private val store = ToneStore({ Settings() }, {}, FakePlayer())
@@ -55,21 +54,7 @@ class ToneServiceTest {
         assertTrue(shadowOf(service).isStoppedBySelf)
     }
 
-    @Test fun headphonesUnpluggedStops() {
-        started()
-        RuntimeEnvironment.getApplication().sendBroadcast(Intent(AudioManager.ACTION_AUDIO_BECOMING_NOISY))
-        idle()
-        assertFalse(store.playing.value)
-    }
-
-    @Test fun callStops() {
-        started()
-        RuntimeEnvironment.getApplication().getSystemService(AudioManager::class.java).mode = AudioManager.MODE_IN_CALL
-        idle()
-        assertFalse(store.playing.value)
-    }
-
-    // Rad drehen: eine Benachrichtigung nach der Ruhe, nicht eine je Schritt
+    // Band ziehen: eine Benachrichtigung nach der Ruhe, nicht eine je Schritt
     @Test fun notificationDebounced() {
         started()
         val nm = shadowOf(RuntimeEnvironment.getApplication().getSystemService(NotificationManager::class.java))

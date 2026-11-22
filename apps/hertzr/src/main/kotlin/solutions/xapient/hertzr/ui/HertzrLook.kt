@@ -14,16 +14,19 @@ import solutions.xapient.hertzr.domain.Freq
 import solutions.xapient.hertzr.domain.Oscillator
 import solutions.xapient.hertzr.domain.Wave
 
-// Violett: Akzent nur fuer Rad, Welle und Hauptaktion
-val HertzrAccent = Color(0xFF9D8CFF)
+// Kobaltblau: Spur, Nadel, Hauptaktion
+val HertzrAccent = Color(0xFF5B8DFF)
 // Bernstein laut DESIGN.md: hoher Pegel
 val Amber = Color(0xFFF2B84E)
+// Schirm des Oszilloskops, dunkler als der Grund
+val ScopeBg = Color(0xFF0A0E12)
+// weisse Taste der Klaviatur-Leiste (schwarze = ScopeBg)
+val KeyWhite = Color(0xFF2E3A45)
 
-// Lichthof hinter dem Rad: gestoppt kaum, spielend etwas mehr; Text bleibt >= 4,5:1 (ContrastTest)
-const val GLOW_IDLE = 0.05f
-const val GLOW_PLAY = 0.14f
-// Welle im Leerlauf gedaempft, beim Spielen voll
-const val WAVE_IDLE_ALPHA = 0.6f
+// Spur im Leerlauf gedaempft, beim Spielen voll
+const val WAVE_IDLE_ALPHA = 0.65f
+// Sweep-Bereich auf dem Band; Beschriftung darin bleibt >= 4,5:1
+const val BAND_ALPHA = 0.12f
 
 @StringRes
 fun waveName(w: Wave): Int = when (w) {

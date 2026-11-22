@@ -111,7 +111,7 @@ class ToneActions(
     val onSettings: () -> Unit = {},
 )
 
-// Generator: Rad als Hero, darunter Bedienfeld fester Hoehe, Welle, Pegel, eine Hauptaktion
+// Generator: Oszilloskop als Hero, darunter Frequenzband, Bedienfeld fester Hoehe, Welle, Pegel, eine Hauptaktion
 @Composable
 fun ToneScreen(
     settings: Settings,
@@ -127,6 +127,10 @@ fun ToneScreen(
     initialText: String = "",
     // je Bild der Spiel-Schleife (Test: Leerlauf ohne Frames)
     onFrame: () -> Unit = {},
+    // Abtastrate der Ausgabe (Oszilloskop zeigt, was klingt)
+    rate: Int = 48_000,
+    // Sweep-Fortschritt 0..1; nur in der Zeichenphase gelesen
+    progress: () -> Float? = { null },
 ) {
     // Bildzeit nur waehrend des Spielens; gestoppt kein einziges Bild
     val frame = remember { mutableLongStateOf(0L) }
@@ -144,19 +148,32 @@ fun ToneScreen(
     val sweep = settings.mode == Mode.SWEEP
     val warning = Level.warning(settings.levelDb, headphones)
 
-    val dial: @Composable (Modifier) -> Unit = { m ->
-        FreqDial(
+    val band = if (sweep) settings.sweepFrom to settings.sweepTo else null
+    val scope: @Composable (Modifier) -> Unit = { m ->
+        Scope(
+            hz = live,
+            shownHz = if (sweep) settings.sweepFrom else settings.hz,
+            wave = settings.wave,
+            playing = playing,
+            rate = rate,
+            frame = { frame.longValue },
+            progress = if (sweep) progress else null,
+            haptics = haptics,
+            onEdit = if (sweep) null else ({ input = InputTarget.HZ }),
+            modifier = m,
+        )
+    }
+    val tape: @Composable (Modifier) -> Unit = { m ->
+        FreqTape(
             hz = live,
             baseHz = settings.hz,
             maxHz = maxHz,
-            wave = settings.wave,
             playing = playing,
             frame = { frame.longValue },
-            band = if (sweep) settings.sweepFrom to settings.sweepTo else null,
+            band = band,
             haptics = haptics,
             onHz = if (sweep) null else actions.onHz,
-            onEdit = if (sweep) null else ({ input = InputTarget.HZ }),
-            modifier = m,
+            modifier = m.height(TAPE_HEIGHT),
         )
     }
     val top: @Composable () -> Unit = {
@@ -174,7 +191,8 @@ fun ToneScreen(
             showFirst = !sweep,
             first = { ToneControls(settings.hz, maxHz, haptics, actions) },
             second = {
-                SweepControls(settings, haptics, { input = InputTarget.FROM }, { input = InputTarget.TO }, actions.onDuration)
+                // waehrend des Sweeps gesperrt: der laufende Sweep bleibt, wie er gestartet wurde
+                SweepControls(settings, !playing, haptics, { input = InputTarget.FROM }, { input = InputTarget.TO }, actions.onDuration)
             },
             modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
         )
@@ -198,8 +216,13 @@ fun ToneScreen(
     AappsScaffold {
         if (landscape) {
             Row(Modifier.fillMaxSize()) {
+                Column(Modifier.weight(0.56f).fillMaxHeight().padding(start = 12.dp, top = 12.dp, bottom = 12.dp)) {
+                    scope(Modifier.weight(1f).fillMaxWidth())
+                    Spacer(Modifier.height(10.dp))
+                    tape(Modifier.fillMaxWidth())
+                }
                 Column(
-                    Modifier.weight(0.5f).fillMaxHeight().padding(bottom = 12.dp),
+                    Modifier.weight(0.44f).fillMaxHeight().padding(bottom = 12.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     top()
@@ -212,14 +235,14 @@ fun ToneScreen(
                     Spacer(Modifier.weight(1f))
                     main()
                 }
-                dial(Modifier.weight(0.5f).fillMaxHeight())
             }
         } else {
             Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
                 top()
-                // Rad passt sich der Hoehe an (Bogen unten offen): kein Leerraum darunter
-                dial(Modifier.weight(1f).fillMaxWidth())
-                Spacer(Modifier.height(8.dp))
+                scope(Modifier.weight(1f).fillMaxWidth().padding(horizontal = 12.dp))
+                Spacer(Modifier.height(10.dp))
+                tape(Modifier.fillMaxWidth().padding(horizontal = 12.dp))
+                Spacer(Modifier.height(14.dp))
                 panel()
                 Spacer(Modifier.height(12.dp))
                 WavePicker(settings.wave, haptics, actions.onWave)
@@ -392,25 +415,26 @@ private fun StepButton(
 
 // VON → BIS · DAUER
 @Composable
-private fun SweepControls(s: Settings, haptics: Haptics?, onFrom: () -> Unit, onTo: () -> Unit, onDuration: () -> Unit) {
+private fun SweepControls(s: Settings, enabled: Boolean, haptics: Haptics?, onFrom: () -> Unit, onTo: () -> Unit, onDuration: () -> Unit) {
     val dec = stringResource(R.string.decimal_sep).first()
-    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        Chip(stringResource(R.string.sweep_from), hzText(s.sweepFrom, dec), stringResource(R.string.sweep_from_title), Modifier.weight(1f)) {
+    val alpha by animateFloatAsState(if (enabled) 1f else 0.45f, Springs.gentle(), label = "sweepLock")
+    Row(Modifier.fillMaxWidth().graphicsLayer { this.alpha = alpha }, verticalAlignment = Alignment.CenterVertically) {
+        Chip(stringResource(R.string.sweep_from), hzText(s.sweepFrom, dec), stringResource(R.string.sweep_from_title), enabled, Modifier.weight(1f)) {
             haptics?.press(); onFrom()
         }
         AappsIcon(HertzrIcons.Arrow, null, Aapps.colors.fgFaint, Modifier.padding(horizontal = 4.dp), size = 18.dp)
-        Chip(stringResource(R.string.sweep_to), hzText(s.sweepTo, dec), stringResource(R.string.sweep_to_title), Modifier.weight(1f)) {
+        Chip(stringResource(R.string.sweep_to), hzText(s.sweepTo, dec), stringResource(R.string.sweep_to_title), enabled, Modifier.weight(1f)) {
             haptics?.press(); onTo()
         }
         Spacer(Modifier.width(10.dp))
-        Chip(stringResource(R.string.sweep_time), stringResource(R.string.seconds, s.sweepSec), stringResource(R.string.sweep_time_desc), Modifier.weight(0.78f)) {
+        Chip(stringResource(R.string.sweep_time), stringResource(R.string.seconds, s.sweepSec), stringResource(R.string.sweep_time_desc), enabled, Modifier.weight(0.78f)) {
             haptics?.tick(); onDuration()
         }
     }
 }
 
 @Composable
-private fun Chip(label: String, value: String, desc: String, modifier: Modifier, onClick: () -> Unit) {
+private fun Chip(label: String, value: String, desc: String, enabled: Boolean, modifier: Modifier, onClick: () -> Unit) {
     val c = Aapps.colors
     val source = remember { MutableInteractionSource() }
     val pressed by source.collectIsPressedAsState()
@@ -421,7 +445,7 @@ private fun Chip(label: String, value: String, desc: String, modifier: Modifier,
             .clip(RoundedCornerShape(20.dp))
             .background(if (pressed) c.surfaceHigh else c.surface)
             .border(1.dp, c.line, RoundedCornerShape(20.dp))
-            .clickable(source, indication = null, role = Role.Button, onClickLabel = desc, onClick = onClick)
+            .clickable(source, indication = null, enabled = enabled, role = Role.Button, onClickLabel = desc, onClick = onClick)
             .semantics { contentDescription = "$desc: $value" }
             .padding(horizontal = 8.dp, vertical = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -489,16 +513,20 @@ private fun LevelSlider(db: Int, warning: Warning, haptics: Haptics?, onLevel: (
     val desc = stringResource(R.string.level)
     val valueText = dbText(db)
     val fs = LocalDensity.current.fontScale.coerceIn(1f, 2f)
-    Row(verticalAlignment = Alignment.CenterVertically) {
+    val label: @Composable () -> Unit = {
+        BasicText(desc.uppercase(), Modifier.widthIn(min = 52.dp), style = Aapps.type.label.copy(color = c.fgMuted), maxLines = 1)
+    }
+    val value: @Composable () -> Unit = {
         BasicText(
-            desc.uppercase(),
-            Modifier.widthIn(min = 52.dp),
-            style = Aapps.type.label.copy(color = c.fgMuted),
+            valueText,
+            Modifier.widthIn(min = 72.dp * fs),
+            style = Aapps.type.number.copy(color = if (loud) Amber else c.fg, fontSize = 18.sp, textAlign = TextAlign.End),
             maxLines = 1,
         )
+    }
+    val track: @Composable (Modifier) -> Unit = { m ->
         Spacer(
-            Modifier
-                .weight(1f)
+            m
                 .height(48.dp)
                 .semantics {
                     contentDescription = desc
@@ -550,12 +578,23 @@ private fun LevelSlider(db: Int, warning: Warning, haptics: Haptics?, onLevel: (
                     }
                 },
         )
-        BasicText(
-            valueText,
-            Modifier.widthIn(min = 72.dp * fs),
-            style = Aapps.type.number.copy(color = if (loud) Amber else c.fg, fontSize = 18.sp, textAlign = TextAlign.End),
-            maxLines = 1,
-        )
+    }
+    // ab 1,5-facher Schrift Beschriftung und Wert ueber der Spur, sonst wird die Spur zu kurz
+    if (fs >= 1.5f) {
+        Column {
+            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                label()
+                Spacer(Modifier.weight(1f))
+                value()
+            }
+            track(Modifier.fillMaxWidth())
+        }
+    } else {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            label()
+            track(Modifier.weight(1f))
+            value()
+        }
     }
 }
 
@@ -581,6 +620,8 @@ private fun WarningLine(w: Warning) {
 }
 
 private fun warnHeight(fs: Float): Dp = 22.dp * fs.coerceAtMost(1.5f)
+
+private val TAPE_HEIGHT = 88.dp
 
 // "−24 dB" mit echtem Minus
 fun dbText(db: Int): String = if (db < 0) "−${-db} dB" else "$db dB"

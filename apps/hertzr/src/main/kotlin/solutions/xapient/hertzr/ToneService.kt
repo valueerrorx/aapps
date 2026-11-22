@@ -5,12 +5,9 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.content.pm.ServiceInfo
-import android.media.AudioManager
 import android.os.Build
 import android.os.IBinder
 import android.os.PowerManager
@@ -28,7 +25,8 @@ import solutions.xapient.hertzr.ui.HertzrAccent
 import solutions.xapient.hertzr.ui.hzText
 import solutions.xapient.hertzr.ui.waveName
 
-// Haelt den Ton bei ausgeschaltetem Bildschirm am Leben: Vordergrund (mediaPlayback), Wakelock, Stopp in der Benachrichtigung
+// Haelt den Ton bei ausgeschaltetem Bildschirm am Leben: Vordergrund (mediaPlayback), Wakelock, Stopp in der Benachrichtigung.
+// Kopfhoerer- und Telefonat-Schutz liegt im AudioGuard.
 class ToneService : Service() {
     private val scope = MainScope()
     private lateinit var store: ToneStore
@@ -36,16 +34,6 @@ class ToneService : Service() {
     private var foreground = false
     private var collecting = false
     private var shown: Settings? = null
-    // AudioManager.OnModeChangedListener ab API 31
-    private var modeListener: Any? = null
-
-    // Kopfhoerer ab: nicht ploetzlich laut aus dem Lautsprecher
-    private val noisy = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            if (intent.action == AudioManager.ACTION_AUDIO_BECOMING_NOISY) store.stop()
-        }
-    }
-    private var noisyRegistered = false
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -68,10 +56,6 @@ class ToneService : Service() {
             return START_NOT_STICKY
         }
         acquireWake()
-        if (!noisyRegistered) {
-            ContextCompat.registerReceiver(this, noisy, IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY), ContextCompat.RECEIVER_NOT_EXPORTED)
-            noisyRegistered = true
-        }
         if (!collecting) {
             collecting = true
             // Stopp sofort, Aenderungen (Rad, Halten) entprellt
@@ -82,45 +66,21 @@ class ToneService : Service() {
                     if (store.playing.value) goForeground(s)
                 }
             }
-            watchCalls()
+            // Wakelock mit kurzer Frist, solange gespielt wird erneuert
+            scope.launch {
+                while (true) {
+                    delay(WAKE_RENEW_MS)
+                    if (store.playing.value) acquireWake()
+                }
+            }
         }
         // nach Prozess-Tod nicht von selbst weiterspielen
         return START_NOT_STICKY
     }
 
-    // Telefonat: Ton aus
-    private fun watchCalls() {
-        val audio = getSystemService(AudioManager::class.java)
-        if (Build.VERSION.SDK_INT >= 31) {
-            val l = AudioManager.OnModeChangedListener { if (inCall(it)) store.stop() }
-            audio.addOnModeChangedListener(mainExecutor, l)
-            modeListener = l
-        } else {
-            // ohne Listener: Modus jede Sekunde pruefen, nur der Wechsel in ein Gespraech stoppt
-            scope.launch {
-                var was = inCall(audio.mode)
-                while (true) {
-                    delay(1_000)
-                    val now = inCall(audio.mode)
-                    if (now && !was) store.stop()
-                    was = now
-                }
-            }
-        }
-    }
-
-    private fun inCall(mode: Int) = mode == AudioManager.MODE_IN_CALL || mode == AudioManager.MODE_IN_COMMUNICATION
-
     override fun onDestroy() {
-        if (Build.VERSION.SDK_INT >= 31) {
-            (modeListener as? AudioManager.OnModeChangedListener)?.let { getSystemService(AudioManager::class.java).removeOnModeChangedListener(it) }
-        }
         scope.cancel()
         releaseWake()
-        if (noisyRegistered) {
-            unregisterReceiver(noisy)
-            noisyRegistered = false
-        }
         super.onDestroy()
     }
 
@@ -198,7 +158,8 @@ class ToneService : Service() {
             .newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "hertzr:play")
             .apply { setReferenceCounted(false) }
             .also { wake = it }
-        if (!w.isHeld) w.acquire(MAX_WAKE_MS)
+        // erneutes acquire verlaengert die Frist
+        w.acquire(WAKE_MS)
     }
 
     private fun releaseWake() {
@@ -208,8 +169,9 @@ class ToneService : Service() {
     companion object {
         private const val CHANNEL = "play"
         private const val ID = 1
-        // Obergrenze fuer eine Messsitzung
-        private const val MAX_WAKE_MS = 4 * 60 * 60 * 1000L
+        // Frist je Anforderung; stirbt der Prozess, faellt der Wakelock bald von selbst
+        const val WAKE_MS = 10 * 60 * 1000L
+        const val WAKE_RENEW_MS = 5 * 60 * 1000L
         private const val NOTIFY_DEBOUNCE_MS = 280L
         const val ACTION_STOP = "solutions.xapient.hertzr.STOP"
 

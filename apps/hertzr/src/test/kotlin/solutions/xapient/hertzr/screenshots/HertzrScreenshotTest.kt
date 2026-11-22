@@ -48,10 +48,11 @@ class HertzrScreenshotTest {
         headphones: Boolean = false,
         input: InputTarget = InputTarget.NONE,
         text: String = "",
+        progress: Float? = null,
     ) {
         ToneScreen(
             s, playing, 22_000.0, { live }, headphones, haptics = null, actions = ToneActions(),
-            animate = false, initialInput = input, initialText = text,
+            animate = false, initialInput = input, initialText = text, progress = { progress },
         )
     }
 
@@ -62,7 +63,7 @@ class HertzrScreenshotTest {
     private val sweepAt = SweepSpec(20.0, 20_000.0, 10).hzAt(0.4)
 
     @Composable private fun Idle() = Screen(idle)
-    @Composable private fun Sweep() = Screen(sweep, playing = true, live = sweepAt)
+    @Composable private fun Sweep() = Screen(sweep, playing = true, live = sweepAt, progress = 0.4f)
 
     @Test fun idle() = shot("idle") { Idle() }
     @Test fun idle_de() = shot("idle_de", "+de") { Idle() }
@@ -80,7 +81,7 @@ class HertzrScreenshotTest {
     @Test fun sweep_font200() = shot("sweep_font200", fontScale = 2f) { Sweep() }
     @Test fun sweep_land_font200() = shot("sweep_land_font200", "+land", fontScale = 2f) { Sweep() }
 
-    @Test fun input() = shot("input") { Screen(idle, input = InputTarget.HZ, text = "1.5k") }
+    @Test fun input() = shot("input") { Screen(idle, input = InputTarget.HZ, text = "1500") }
 
     @Composable private fun Settings_() = HertzrSettings(idle, {}, {}, {}, {})
 

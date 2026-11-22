@@ -1,6 +1,8 @@
 package solutions.xapient.hertzr
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import androidx.core.content.edit
 import solutions.xapient.hertzr.domain.Settings
 
@@ -35,13 +37,26 @@ class Prefs(context: Context) {
             putBoolean("keepOn", v.keepOn)
         }
 
-    // Benachrichtigungs-Recht nur einmal erfragen
-    var askedNotify: Boolean
-        get() = sp.getBoolean("askedNotify", false)
-        set(v) = sp.edit { putBoolean("askedNotify", v) }
+    // Benachrichtigungs-Recht endgueltig abgelehnt: nicht mehr fragen (weggetippt zaehlt nicht)
+    var notifyBlocked: Boolean
+        get() = sp.getBoolean("notifyBlocked", false)
+        set(v) = sp.edit { putBoolean("notifyBlocked", v) }
 
     private companion object {
         inline fun <reified E : Enum<E>> enumOr(name: String?, fallback: E): E =
             enumValues<E>().firstOrNull { it.name == name } ?: fallback
+    }
+}
+
+// Schreibt erst nach einer Ruhepause den letzten Wert (Hauptthread)
+class Debounced<T>(private val delayMs: Long, private val write: (T) -> Unit) {
+    private val handler = Handler(Looper.getMainLooper())
+    private var pending: T? = null
+    private val flush = Runnable { pending?.let(write); pending = null }
+
+    fun post(v: T) {
+        pending = v
+        handler.removeCallbacks(flush)
+        handler.postDelayed(flush, delayMs)
     }
 }

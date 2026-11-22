@@ -45,9 +45,13 @@ class FreqTest {
         assertEquals(880.0, Freq.octave(440.0, true), 0.0)
         assertEquals(220.0, Freq.octave(440.0, false), 0.0)
         assertEquals(1.0, Freq.octave(1.5, false), 0.0)
-        assertEquals(880.0, Freq.rotate(440.0, 360.0), 0.0)
-        assertEquals(466.0, Freq.rotate(440.0, 30.0), 0.0)
-        assertEquals(220.0, Freq.rotate(440.0, -360.0), 0.0)
+        assertEquals(880.0, Freq.shift(440.0, 1.0), 0.0)
+        assertEquals(466.0, Freq.shift(440.0, 1.0 / 12), 0.0)
+        assertEquals(220.0, Freq.shift(440.0, -1.0), 0.0)
+        assertEquals(22_000.0, Freq.shift(20_000.0, 1.0), 0.0)
+        // Band: halbe Breite nach links = eine Oktave hoeher
+        assertEquals(1.0, Freq.tapeOctaves(-200f, 400f), 1e-9)
+        assertEquals(-2.0, Freq.tapeOctaves(400f, 400f), 1e-9)
     }
 
     @Test fun notes() {
@@ -84,6 +88,13 @@ class FreqTest {
         assertEquals(12_000.0, Freq.parse(" 12 kHz ")!!, 0.0)
         assertEquals(2_500.0, Freq.parse("2.5KHZ")!!, 0.0)
         assertEquals(50.5, Freq.parse("50.5 Hz")!!, 0.0)
+        // drei Stellen nach dem Trenner = Tausender, nicht 1,5 Hz
+        assertEquals(1_500.0, Freq.parse("1.500")!!, 0.0)
+        assertEquals(1_500.0, Freq.parse("1,500")!!, 0.0)
+        assertEquals(12_000.0, Freq.parse("12.000 Hz")!!, 0.0)
+        assertEquals(1.25, Freq.parse("1,25")!!, 0.0)
+        // mit k bleibt es ein Komma: 1,500 kHz
+        assertEquals(1_500.0, Freq.parse("1,500k")!!, 0.0)
         assertNull(Freq.parse(""))
         assertNull(Freq.parse("0"))
         assertNull(Freq.parse("abc"))

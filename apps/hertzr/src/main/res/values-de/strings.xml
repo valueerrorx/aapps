@@ -31,6 +31,8 @@
     <string name="octave_up">Eine Oktave höher</string>
     <string name="lower">Tiefer</string>
     <string name="higher">Höher</string>
+    <string name="semitone_up">Halbton höher</string>
+    <string name="semitone_down">Halbton tiefer</string>
     <string name="sweep_from">Von</string>
     <string name="sweep_to">Bis</string>
     <string name="sweep_time">Dauer</string>
@@ -51,7 +53,8 @@
     <string name="cancel">Abbrechen</string>
     <string name="set">Übernehmen</string>
     <string name="input_range">%1$s bis %2$s</string>
-    <string name="input_hint">z. B. 440, 1,5k oder 12 kHz</string>
+    <string name="input_hint">z. B. 440 Hz oder 1,5 kHz</string>
+    <string name="unit">Einheit</string>
 
     <string name="group_output">Ausgang</string>
     <string name="output">Kanäle</string>

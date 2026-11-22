@@ -57,9 +57,9 @@ class IconRenderTest {
         val full = size * 3 / 2
         val off = -size / 4
         if (mono) {
-            canvas.drawColor(0xFFE6E1FF.toInt())
+            canvas.drawColor(0xFFDCE6FF.toInt())
             ctx.getDrawable(R.drawable.ic_launcher_monochrome)!!.apply {
-                setTint(0xFF221A5C.toInt())
+                setTint(0xFF14285C.toInt())
                 setBounds(off, off, off + full, off + full)
                 draw(canvas)
             }

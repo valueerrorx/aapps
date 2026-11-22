@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Statusleiste: Sinus im Bogen -->
+<!-- Statusleiste: Schirm und Sinus -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
     android:height="24dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <group android:pivotX="54" android:pivotY="54" android:scaleX="1.7" android:scaleY="1.7">
-    <path android:pathData="M34.908,73.092A27,27 0 0,1 67.500,30.617" android:strokeWidth="3.2" android:strokeColor="#FFFFFFFF" android:strokeLineCap="round" />
-    <path android:pathData="M67.500,30.617A27,27 0 0,1 73.092,73.092" android:strokeWidth="3.2" android:strokeColor="#80FFFFFF" android:strokeLineCap="round" />
-    <path android:pathData="M38.00,54.00L38.67,52.76L39.33,51.54L40.00,50.36L40.67,49.25L41.33,48.22L42.00,47.28L42.67,46.46L43.33,45.77L44.00,45.22L44.67,44.82L45.33,44.58L46.00,44.50L46.67,44.58L47.33,44.82L48.00,45.22L48.67,45.77L49.33,46.46L50.00,47.28L50.67,48.22L51.33,49.25L52.00,50.36L52.67,51.54L53.33,52.76L54.00,54.00L54.67,55.24L55.33,56.46L56.00,57.64L56.67,58.75L57.33,59.78L58.00,60.72L58.67,61.54L59.33,62.23L60.00,62.78L60.67,63.18L61.33,63.42L62.00,63.50L62.67,63.42L63.33,63.18L64.00,62.78L64.67,62.23L65.33,61.54L66.00,60.72L66.67,59.78L67.33,58.75L68.00,57.64L68.67,56.46L69.33,55.24L70.00,54.00" android:strokeWidth="4.4" android:strokeColor="#FFFFFFFF" android:strokeLineCap="round" android:strokeLineJoin="round" />
-    <path android:pathData="M63.500,30.617a4,4 0 1,0 8,0a4,4 0 1,0 -8,0z" android:fillColor="#FFFFFFFF" />
+    <group android:pivotX="54" android:pivotY="54" android:scaleX="1.75" android:scaleY="1.75">
+    <path android:pathData="M34.00,34.00H74.00A7.0,7.0 0 0 1 81.00,41.00V67.00A7.0,7.0 0 0 1 74.00,74.00H34.00A7.0,7.0 0 0 1 27.00,67.00V41.00A7.0,7.0 0 0 1 34.00,34.00Z" android:strokeWidth="3.4" android:strokeColor="#FFFFFFFF" />
+    <path android:pathData="M31.00,54.00L31.57,52.36L32.15,50.76L32.73,49.23L33.30,47.83L33.88,46.58L34.45,45.51L35.02,44.64L35.60,44.01L36.17,43.63L36.75,43.50L37.33,43.63L37.90,44.01L38.48,44.64L39.05,45.51L39.62,46.58L40.20,47.83L40.77,49.23L41.35,50.76L41.92,52.36L42.50,54.00L43.08,55.64L43.65,57.24L44.23,58.77L44.80,60.17L45.38,61.42L45.95,62.49L46.52,63.36L47.10,63.99L47.67,64.37L48.25,64.50L48.83,64.37L49.40,63.99L49.97,63.36L50.55,62.49L51.12,61.42L51.70,60.17L52.28,58.77L52.85,57.24L53.42,55.64L54.00,54.00L54.58,52.36L55.15,50.76L55.72,49.23L56.30,47.83L56.88,46.58L57.45,45.51L58.03,44.64L58.60,44.01L59.17,43.63L59.75,43.50L60.33,43.63L60.90,44.01L61.47,44.64L62.05,45.51L62.62,46.58L63.20,47.83L63.77,49.23L64.35,50.76L64.93,52.36L65.50,54.00L66.07,55.64L66.65,57.24L67.22,58.77L67.80,60.17L68.38,61.42L68.95,62.49L69.53,63.36L70.10,63.99L70.68,64.37L71.25,64.50L71.82,64.37L72.40,63.99L72.97,63.36L73.55,62.49L74.12,61.42L74.70,60.17L75.28,58.77L75.85,57.24L76.43,55.64L77.00,54.00" android:strokeWidth="4.6" android:strokeColor="#FFFFFFFF" android:strokeLineCap="round" android:strokeLineJoin="round" />
     </group>
 </vector>

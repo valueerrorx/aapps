@@ -19,6 +19,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
@@ -36,12 +38,15 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
@@ -56,7 +61,7 @@ import solutions.xapient.aapps.core.ui.glow
 import solutions.xapient.hertzr.R
 import solutions.xapient.hertzr.domain.Freq
 
-// Direkte Eingabe: "440", "1,5k", "12 kHz"; Werte ausserhalb werden auf den Bereich begrenzt
+// Direkte Eingabe mit Zifferntastatur und Hz/kHz-Umschalter ("k" geht dort nicht); Werte ausserhalb werden begrenzt
 @Composable
 fun FreqInput(
     title: String,
@@ -70,7 +75,10 @@ fun FreqInput(
     val c = Aapps.colors
     val dec = stringResource(R.string.decimal_sep).first()
     var text by rememberSaveable { mutableStateOf(initial) }
-    val parsed = Freq.parse(text)?.let { Freq.quantize(Freq.clamp(it, maxHz)) }
+    var kilo by rememberSaveable { mutableStateOf(false) }
+    // "k" von einer Hardware-Tastatur gilt weiter, sonst entscheidet der Umschalter
+    val withUnit = if (kilo && !text.contains('k', ignoreCase = true)) "${text}k" else text
+    val parsed = Freq.parse(withUnit)?.let { Freq.quantize(Freq.clamp(it, maxHz)) }
     val landscape = LocalWindowInfo.current.containerSize.let { it.width > it.height }
     val requester = remember { FocusRequester() }
     if (focus) LaunchedEffect(Unit) { requester.requestFocus() }
@@ -122,6 +130,8 @@ fun FreqInput(
                 },
             )
             Spacer(Modifier.height(10.dp))
+            UnitSwitch(kilo) { kilo = it }
+            Spacer(Modifier.height(8.dp))
             // Vorschau des Ergebnisses oder der erlaubte Bereich
             BasicText(
                 if (parsed != null) "= ${Freq.short(parsed, dec)}" else stringResource(R.string.input_range, Freq.short(Freq.MIN, dec), Freq.short(maxHz, dec)),
@@ -139,6 +149,38 @@ fun FreqInput(
                 AappsTextButton(stringResource(R.string.cancel), onDismiss)
                 Spacer(Modifier.width(8.dp))
                 AappsPillButton(stringResource(R.string.set), apply, active = parsed != null, enabled = parsed != null)
+            }
+        }
+    }
+}
+
+// Hz | kHz
+@Composable
+private fun UnitSwitch(kilo: Boolean, onKilo: (Boolean) -> Unit) {
+    val c = Aapps.colors
+    val desc = stringResource(R.string.unit)
+    Row(
+        Modifier
+            .background(c.bg, CircleShape)
+            .border(1.dp, c.line, CircleShape)
+            .padding(3.dp)
+            .selectableGroup()
+            .semantics { contentDescription = desc },
+        horizontalArrangement = Arrangement.spacedBy(2.dp),
+    ) {
+        listOf(false to stringResource(R.string.hz), true to stringResource(R.string.khz)).forEach { (k, label) ->
+            val sel = k == kilo
+            Box(
+                Modifier
+                    .heightIn(min = 40.dp)
+                    .widthIn(min = 64.dp)
+                    .clip(CircleShape)
+                    .background(if (sel) c.accent else Color.Transparent)
+                    .selectable(sel, role = Role.RadioButton) { onKilo(k) }
+                    .padding(horizontal = 12.dp, vertical = 8.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                BasicText(label, style = Aapps.type.number.copy(color = if (sel) c.onAccent else c.fgMuted, fontSize = 15.sp), maxLines = 1)
             }
         }
     }

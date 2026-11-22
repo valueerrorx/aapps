@@ -71,6 +71,32 @@ class ToneRendererTest {
         assertTrue("Wechsel $across > $steady", across <= steady * 1.05)
     }
 
+    // zweiter Wechsel 12 ms nach dem ersten (Blende halb fertig): blendet vom Gemisch weiter, kein Klick
+    @Test fun quickSecondWaveChangeDoesNotClick() {
+        val r = ToneRenderer(rate, Params(200.0, Wave.SINE, 1f, Output.BOTH))
+        val a = Signal.render(r, 4_800)
+        r.apply(Params(200.0, Wave.SQUARE, 1f, Output.BOTH))
+        val b = Signal.render(r, rate * 12 / 1_000)
+        r.apply(Params(200.0, Wave.SAW, 1f, Output.BOTH))
+        val c = Signal.render(r, 4_800)
+        val x = Signal.left(a + b + c)
+        // Wechsel bei Phase 0,4: weit weg von den Kanten der Formen (0 und 0,5)
+        val cut = 4_800 + b.size / 2
+        val around = x.copyOfRange(cut - 20, cut + 20)
+        assertTrue("Klick ${Signal.maxStep(around)}", Signal.maxStep(around) < 0.1)
+    }
+
+    // laufender Sweep bleibt beim Start-Stand, auch wenn die Einstellungen sich aendern
+    @Test fun sweepIsFrozenAtStart() {
+        val spec = SweepSpec(100.0, 1_000.0, 5)
+        val r = ToneRenderer(rate, Params(440.0, Wave.SINE, 1f, Output.BOTH, spec))
+        Signal.render(r, rate)
+        r.apply(Params(440.0, Wave.SINE, 1f, Output.BOTH, SweepSpec(5_000.0, 10_000.0, 60)))
+        Signal.render(r, rate)
+        assertEquals(spec.hzAt(0.4), r.currentHz, 1.0)
+        assertEquals(0.4f, assertNotNullF(r.progress), 1e-3f)
+    }
+
     @Test fun outputChangeGlides() {
         val r = sine(300.0)
         val a = Signal.render(r, 4_800)

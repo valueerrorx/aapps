@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.click
 import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -13,6 +13,8 @@ import androidx.compose.ui.test.onAllNodesWithContentDescription
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performCustomAccessibilityActionWithLabel
+import androidx.compose.ui.test.swipeLeft
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTouchInput
 import org.junit.After
@@ -32,9 +34,6 @@ import solutions.xapient.hertzr.domain.Wave
 import solutions.xapient.hertzr.ui.HertzrAccent
 import solutions.xapient.hertzr.ui.ToneActions
 import solutions.xapient.hertzr.ui.ToneScreen
-import solutions.xapient.hertzr.ui.ring
-import kotlin.math.cos
-import kotlin.math.sin
 
 // Gesten auf dem Generator ueber den echten Store, ohne Audio
 @RunWith(RobolectricTestRunner::class)
@@ -71,31 +70,53 @@ class GestureTest {
         return store
     }
 
-    // Viertelkreis im Uhrzeigersinn = Viertel-Oktave hoeher, zurueck = tiefer
-    @Test fun rotateDial() {
+    // halbe Breite nach links = eine Oktave hoeher, zurueck = wieder 440; Finger steht am Ende (kein Schwung)
+    @Test fun dragTape() {
         val store = screen()
-        fun turn(fromDeg: Float, byDeg: Float) = rule.onNodeWithContentDescription("Frequency").performTouchInput {
-            // um die Ringmitte drehen wie der Finger am Bogen
-            val g = ring(Size(width.toFloat(), height.toFloat()))
-            val r = g.r * 0.9f
-            fun at(deg: Float) = g.center + Offset(r * cos(Math.toRadians(deg.toDouble())).toFloat(), r * sin(Math.toRadians(deg.toDouble())).toFloat())
-            down(at(fromDeg))
-            for (d in 1..30) moveTo(at(fromDeg + byDeg * d / 30))
+        fun drag(byFraction: Float) = rule.onNodeWithContentDescription("Frequency").performTouchInput {
+            down(center)
+            for (i in 1..30) moveTo(center + Offset(width * byFraction * i / 30, 0f))
+            advanceEventTime(120)
             up()
         }
-        turn(-90f, 90f)
+        drag(-0.5f)
         rule.waitForIdle()
-        assertEquals(523.0, store.settings.value.hz, 1.5)
-        turn(0f, -180f)
+        assertEquals(880.0, store.settings.value.hz, 2.0)
+        drag(0.5f)
         rule.waitForIdle()
-        assertEquals(370.0, store.settings.value.hz, 1.5)
+        assertEquals(440.0, store.settings.value.hz, 1.0)
     }
 
-    @Test fun tapOnRingChangesNothing() {
+    // Schwung laeuft nach dem Loslassen weiter
+    @Test fun flingKeepsGoing() {
         val store = screen()
-        rule.onNodeWithContentDescription("Frequency").performTouchInput { click(Offset(width / 2f, height * 0.1f)) }
+        rule.onNodeWithContentDescription("Frequency").performTouchInput { swipeLeft(centerX, centerX - width * 0.25f, 60) }
+        rule.waitForIdle()
+        // ohne Schwung waeren es 0,5 Oktaven (622 Hz)
+        assertTrue("nur ${store.settings.value.hz}", store.settings.value.hz > 700)
+    }
+
+    @Test fun tapOnTapeChangesNothing() {
+        val store = screen()
+        rule.onNodeWithContentDescription("Frequency").performTouchInput { click(Offset(width * 0.8f, height / 2f)) }
         rule.waitForIdle()
         assertEquals(440.0, store.settings.value.hz, 0.0)
+    }
+
+    // TalkBack: Schritt, Halbton und Oktave als eigene Aktionen
+    @OptIn(ExperimentalTestApi::class)
+    @Test fun accessibilityActions() {
+        val store = screen()
+        val tape = rule.onNodeWithContentDescription("Frequency")
+        tape.performCustomAccessibilityActionWithLabel("Semitone up")
+        rule.waitForIdle()
+        assertEquals(466.0, store.settings.value.hz, 0.0)
+        tape.performCustomAccessibilityActionWithLabel("Lower")
+        rule.waitForIdle()
+        assertEquals(465.0, store.settings.value.hz, 0.0)
+        tape.performCustomAccessibilityActionWithLabel("One octave down")
+        rule.waitForIdle()
+        assertEquals(233.0, store.settings.value.hz, 0.0)
     }
 
     @Test fun fineStepsAndHold() {
@@ -161,6 +182,32 @@ class GestureTest {
         assertEquals(1_500.0, store.settings.value.hz, 0.0)
         // Overlay ist zu
         assertEquals(1, rule.onAllNodesWithContentDescription("Enter frequency").fetchSemanticsNodes().size)
+    }
+
+    // Zifferntastatur ohne "k": Umschalter auf kHz
+    @Test fun inputInKilohertz() {
+        val store = screen()
+        rule.onNodeWithContentDescription("Enter frequency").performClick()
+        rule.waitForIdle()
+        rule.onNode(hasSetTextAction()).performTextInput("2,5")
+        rule.onNodeWithText("kHz").performClick()
+        rule.onNodeWithText("Set", ignoreCase = true).performClick()
+        rule.waitForIdle()
+        assertEquals(2_500.0, store.settings.value.hz, 0.0)
+    }
+
+    // laufender Sweep: Von/Bis/Dauer gesperrt
+    @Test fun sweepLockedWhilePlaying() {
+        val store = screen(Settings(mode = Mode.SWEEP))
+        // spielt = Bild-Schleife laeuft; Uhr von Hand
+        rule.mainClock.autoAdvance = false
+        rule.runOnUiThread { store.start() }
+        rule.mainClock.advanceTimeBy(300)
+        rule.onNodeWithContentDescription("Sweep end", substring = true).performClick()
+        rule.onNodeWithContentDescription("Sweep duration", substring = true).performClick()
+        rule.mainClock.advanceTimeBy(300)
+        assertEquals(0, rule.onAllNodes(hasSetTextAction()).fetchSemanticsNodes().size)
+        assertEquals(10, store.settings.value.sweepSec)
     }
 
     @Test fun sweepModeAndDuration() {

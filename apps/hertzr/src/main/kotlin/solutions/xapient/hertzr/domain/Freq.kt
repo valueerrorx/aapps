@@ -14,6 +14,7 @@ data class Note(val pitchClass: Int, val octave: Int, val cents: Int)
 
 // Frequenz: Bereich, Log-Skala, Schritte, Anzeige und Eingabe
 object Freq {
+    private val THOUSANDS = Regex("""\d{1,3}([.,]\d{3})+""")
     const val MIN = 1.0
     const val MAX = 22_000.0
     const val A4 = 440.0
@@ -47,9 +48,14 @@ object Freq {
     fun octave(hz: Double, up: Boolean, maxHz: Double = MAX): Double =
         quantize(clamp(if (up) hz * 2 else hz / 2, maxHz))
 
-    // Drehen: eine volle Umdrehung = eine Oktave
-    fun rotate(hz: Double, deg: Double, maxHz: Double = MAX): Double =
-        quantize(clamp(hz * 2.0.pow(deg / 360.0), maxHz))
+    // um Oktaven verschieben (Band ziehen, Halbton = 1/12)
+    fun shift(hz: Double, octaves: Double, maxHz: Double = MAX): Double =
+        quantize(clamp(hz * 2.0.pow(octaves), maxHz))
+
+    // Band: eine Bildschirmbreite = 2 Oktaven; Finger nach links = hoeher
+    const val TAPE_OCTAVES = 2.0
+
+    fun tapeOctaves(dxPx: Float, widthPx: Float): Double = -dxPx / widthPx * TAPE_OCTAVES
 
     // Lage auf der Log-Skala 0..1 (1 Hz .. 22 kHz)
     fun toPos(hz: Double): Float = (ln(hz / MIN) / ln(MAX / MIN)).toFloat().coerceIn(0f, 1f)
@@ -84,15 +90,19 @@ object Freq {
         return if (frac.isEmpty()) "${whole / 1_000} kHz" else "${whole / 1_000}$decimal$frac kHz"
     }
 
-    // "440", "1,5k", "12 kHz", "2.5 khz"; null bei Unsinn oder <= 0
+    // "440", "1,5k", "12 kHz", "2.5 khz", "1.500" = 1500 Hz (Tausenderpunkt); null bei Unsinn oder <= 0
     fun parse(text: String): Double? {
-        var t = text.trim().lowercase().replace(" ", "").replace(',', '.')
+        var t = text.trim().lowercase().replace(" ", "")
         if (t.endsWith("hz")) t = t.dropLast(2)
         var mul = 1.0
         if (t.endsWith("k")) {
             mul = 1_000.0
             t = t.dropLast(1)
+        } else if (THOUSANDS.matches(t)) {
+            // drei Nachkommastellen gibt es im Hz-Raster nicht: Trennzeichen sind Tausender
+            t = t.filter { it.isDigit() }
         }
+        t = t.replace(',', '.')
         if (t.isEmpty() || t.count { it == '.' } > 1 || !t.all { it.isDigit() || it == '.' }) return null
         val v = t.toDoubleOrNull()?.times(mul) ?: return null
         return if (v > 0 && v.isFinite()) v else null

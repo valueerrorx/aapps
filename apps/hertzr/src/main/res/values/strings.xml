@@ -11,6 +11,7 @@
     <string name="frequency">Frequency</string>
     <string name="enter_frequency">Enter frequency</string>
     <string name="hz" translatable="false">Hz</string>
+    <string name="khz" translatable="false">kHz</string>
     <string name="decimal_sep">.</string>
     <string-array name="note_names">
         <item>C</item>
@@ -33,6 +34,8 @@
     <string name="octave_up">One octave up</string>
     <string name="lower">Lower</string>
     <string name="higher">Higher</string>
+    <string name="semitone_up">Semitone up</string>
+    <string name="semitone_down">Semitone down</string>
     <string name="sweep_from">From</string>
     <string name="sweep_to">To</string>
     <string name="sweep_time">Time</string>
@@ -53,7 +56,8 @@
     <string name="cancel">Cancel</string>
     <string name="set">Set</string>
     <string name="input_range">%1$s to %2$s</string>
-    <string name="input_hint">e.g. 440, 1.5k or 12 kHz</string>
+    <string name="input_hint">e.g. 440 Hz or 1.5 kHz</string>
+    <string name="unit">Unit</string>
 
     <string name="group_output">Output</string>
     <string name="output">Channels</string>

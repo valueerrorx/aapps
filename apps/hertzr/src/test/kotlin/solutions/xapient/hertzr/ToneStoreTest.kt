@@ -5,6 +5,7 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import solutions.xapient.hertzr.domain.Level
 import solutions.xapient.hertzr.domain.Mode
 import solutions.xapient.hertzr.domain.Params
 import solutions.xapient.hertzr.domain.Settings
@@ -96,6 +97,27 @@ class ToneStoreTest {
         val s = store(load = Settings(mode = Mode.SWEEP, sweepFrom = 30.0))
         assertEquals(30.0, s.shownHz(), 0.0)
         assertNull(s.progress())
+    }
+
+    // Kopfhoerer kommt waehrend des Spielens: Pegel auf -30 dB; leiser bleibt, gestoppt bleibt
+    @Test fun headphonesAddedWhilePlayingLowerLevel() {
+        val p = FakePlayer()
+        val s = store(p, load = Settings(levelDb = -12))
+        s.setHeadphones(true)
+        assertEquals(-12, s.settings.value.levelDb)
+        s.setHeadphones(false)
+        s.start()
+        s.setHeadphones(true)
+        assertEquals(-30, s.settings.value.levelDb)
+        assertEquals(Level.amp(-30), p.updates.last().amp, 1e-6f)
+        // weiter dran (zweites Geraet): nichts mehr
+        s.setLevel(-20)
+        s.setHeadphones(true)
+        assertEquals(-20, s.settings.value.levelDb)
+        val quiet = store(FakePlayer(), load = Settings(levelDb = -40))
+        quiet.start()
+        quiet.setHeadphones(true)
+        assertEquals(-40, quiet.settings.value.levelDb)
     }
 
     @Test fun startFailureStaysStopped() {

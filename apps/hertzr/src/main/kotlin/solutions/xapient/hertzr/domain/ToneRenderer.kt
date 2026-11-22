@@ -22,7 +22,7 @@ fun Settings.params(): Params = Params(
 )
 
 // Erzeugt Stereo-Bloecke (interleaved L,R) ohne Allokation. Phase laeuft durch (Double), Frequenz gleitet logarithmisch,
-// Pegel und Kanaele gleiten, Wellenwechsel blendet ueber, Start/Stopp blenden linear.
+// Pegel und Kanaele gleiten, Wellenwechsel blendet ueber, Start/Stopp blenden linear. Der Sweep wird beim Start festgelegt.
 class ToneRenderer(private val rate: Int, params: Params) {
     private var p = params
     private var phase = 0.0
@@ -30,7 +30,9 @@ class ToneRenderer(private val rate: Int, params: Params) {
     private var logTarget = logHz
     private var hz = exp(logHz)
     private var wave = params.wave
-    private var prevWave = params.wave
+    // Anteil je Wellenform; Wechsel blendet vom aktuellen Gemisch linear zur neuen Form (auch mitten in einer Blende)
+    private val weight = DoubleArray(Wave.entries.size).also { it[params.wave.ordinal] = 1.0 }
+    private val from = DoubleArray(Wave.entries.size)
     // 1 = Ueberblendung fertig
     private var mix = 1.0
     private var gainL = 0f
@@ -58,12 +60,13 @@ class ToneRenderer(private val rate: Int, params: Params) {
 
     fun apply(next: Params) {
         if (next.wave != wave) {
-            prevWave = if (mix >= 1.0) wave else prevWave
+            weight.copyInto(from)
             wave = next.wave
             mix = 0.0
         }
         logTarget = ln(next.hz)
-        p = next
+        // laufender Sweep bleibt, wie er gestartet wurde
+        p = next.copy(sweep = p.sweep)
     }
 
     // Ausblenden beginnen; render liefert danach Stille und setzt done
@@ -86,10 +89,16 @@ class ToneRenderer(private val rate: Int, params: Params) {
                 hz = exp(logHz)
             }
             val dt = hz / rate
-            var s = Oscillator.sample(wave, phase, dt)
+            var s: Double
             if (mix < 1.0) {
-                s = mix * s + (1 - mix) * Oscillator.sample(prevWave, phase, dt)
                 mix = (mix + xfadeStep).coerceAtMost(1.0)
+                s = 0.0
+                for (k in weight.indices) {
+                    weight[k] = from[k] * (1 - mix) + (if (k == wave.ordinal) mix else 0.0)
+                    if (weight[k] > 0.0) s += weight[k] * Oscillator.sample(Wave.entries[k], phase, dt)
+                }
+            } else {
+                s = Oscillator.sample(wave, phase, dt)
             }
             phase += dt
             if (phase >= 1.0) phase -= 1.0

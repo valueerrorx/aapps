@@ -38,6 +38,9 @@ class ToneStore(
     val settings: StateFlow<Settings> = _settings
     private val _playing = MutableStateFlow(false)
     val playing: StateFlow<Boolean> = _playing
+    // Kopfhoerer am Ausgang (AudioGuard)
+    private val _headphones = MutableStateFlow(false)
+    val headphones: StateFlow<Boolean> = _headphones
 
     init {
         player.onEnd = { _playing.value = false }
@@ -63,6 +66,13 @@ class ToneStore(
     fun nextDuration() { update { it.copy(sweepSec = Sweep.nextDuration(it.sweepSec)) } }
     fun setOutput(o: Output) { update { it.copy(output = o) } }
     fun setKeepOn(on: Boolean) { update { it.copy(keepOn = on) } }
+
+    // Kopfhoerer neu dran waehrend des Spielens: Pegel gleitet auf die Kopfhoerer-Grenze
+    fun setHeadphones(on: Boolean) {
+        val added = on && !_headphones.value
+        _headphones.value = on
+        if (added && _playing.value && _settings.value.levelDb > Level.HEADPHONE_DB) setLevel(Level.HEADPHONE_DB)
+    }
 
     // Moduswechsel beendet das Spielen: Ton und Sweep sind verschiedene Ablaeufe
     fun setMode(m: Mode) {
@@ -98,11 +108,19 @@ class ToneStore(
     companion object {
         @Volatile private var instance: ToneStore? = null
 
+        // Schutz (Kopfhoerer, Telefonat) haengt am Store, nicht am Dienst: wirkt auch ohne Vordergrund
         fun get(context: Context): ToneStore = instance ?: synchronized(this) {
             instance ?: Prefs(context).let { p ->
-                ToneStore({ p.settings }, { p.settings = it }, AudioEngine(), Freq.maxFor(AudioEngine.nativeRate()))
-            }.also { instance = it }
+                val save = Debounced(SAVE_DELAY_MS) { s: Settings -> p.settings = s }
+                ToneStore({ p.settings }, save::post, AudioEngine(), Freq.maxFor(AudioEngine.nativeRate()))
+            }.also {
+                instance = it
+                AudioGuard(context, it)
+            }
         }
+
+        // Ziehen am Band schreibt nicht je Bild
+        private const val SAVE_DELAY_MS = 400L
 
         @VisibleForTesting
         fun install(store: ToneStore?) {
