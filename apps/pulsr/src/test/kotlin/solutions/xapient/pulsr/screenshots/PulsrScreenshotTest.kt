@@ -53,7 +53,7 @@ class PulsrScreenshotTest {
     private fun Screen(s: Settings, p: Pulse? = null) {
         PulseScreen(
             s, playing = p != null, pulse = { p }, haptics = null,
-            onNudge = {}, onBpm = {}, onTap = {}, onBeats = {}, onSub = {}, onToggle = {}, onSettings = {}, animate = false,
+            onNudge = { false }, onBpm = {}, onTap = {}, onBeats = {}, onSub = {}, onToggle = {}, onSettings = {}, animate = false,
         )
     }
 

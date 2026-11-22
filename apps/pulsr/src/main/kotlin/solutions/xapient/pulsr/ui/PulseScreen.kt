@@ -9,6 +9,7 @@ import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -35,6 +36,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.withFrameNanos
+import android.os.Build
+import android.os.SystemClock
+import android.view.HapticFeedbackConstants
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -49,6 +53,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -89,9 +94,11 @@ fun PulseScreen(
     playing: Boolean,
     pulse: (Long) -> Pulse?,
     haptics: Haptics?,
-    onNudge: (Int) -> Unit,
+    // true = Tempo hat sich geaendert
+    onNudge: (Int) -> Boolean,
     onBpm: (Int) -> Unit,
-    onTap: () -> Unit,
+    // Zeit des Aufsetzens in uptimeMillis
+    onTap: (Long) -> Unit,
     onBeats: (Int) -> Unit,
     onSub: (Subdivision) -> Unit,
     onToggle: () -> Unit,
@@ -104,13 +111,27 @@ fun PulseScreen(
         if (playing && animate) while (true) withFrameNanos { frame.longValue = it }
     }
     if (playing && settings.keepOn) KeepScreenOn()
-    val current = { pulse(frame.longValue) }
+    // Bild erscheint etwa ein Frame nach seiner Bildzeit: Puls fuer diesen Moment, einmal je Bild
+    val view = LocalView.current
+    val ahead = remember(view) { (1e9f / (view.display?.refreshRate?.takeIf { it > 0f } ?: 60f)).toLong() }
+    val memo = remember(playing) { PulseMemo() }
+    val current = { memo.at(frame.longValue) { pulse(it + ahead) } }
     val landscape = LocalWindowInfo.current.containerSize.let { it.width > it.height }
 
+    // Haptik nur, wenn sich das Tempo wirklich aendert; am Rand einmal Ablehnung
+    var atLimit by remember { mutableStateOf(false) }
     val dial: @Composable (Modifier) -> Unit = { m ->
         Dial(
-            bpm = settings.bpm, beats = settings.beats, sub = settings.sub.count, playing = playing, pulse = current,
-            onRotate = { haptics?.tick(); onNudge(it) },
+            bpm = settings.bpm, beats = settings.beats, sub = settings.sub.count, accent = settings.accent, playing = playing, pulse = current,
+            onRotate = {
+                if (onNudge(it)) {
+                    atLimit = false
+                    haptics?.tick()
+                } else if (!atLimit) {
+                    atLimit = true
+                    if (haptics != null) view.performHapticFeedback(if (Build.VERSION.SDK_INT >= 30) HapticFeedbackConstants.REJECT else HapticFeedbackConstants.LONG_PRESS)
+                }
+            },
             onSet = onBpm,
             modifier = m,
         )
@@ -155,8 +176,15 @@ fun PulseScreen(
                     Spacer(Modifier.weight(1f))
                     gear()
                 }
-                dial(Modifier.weight(1f).fillMaxWidth())
-                BeatCounter(settings.beats, settings.accent, playing, current, Modifier.fillMaxWidth().padding(horizontal = 24.dp))
+                // Rad quadratisch, mit dem Zaehler als Gruppe mittig im freien Raum: Zaehler sitzt direkt am Ring
+                val counterH = counterHeight(LocalDensity.current.fontScale)
+                BoxWithConstraints(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
+                    val side = minOf(maxWidth, maxHeight - counterH).coerceAtLeast(0.dp)
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        dial(Modifier.size(side))
+                        BeatCounter(settings.beats, settings.accent, playing, current, Modifier.fillMaxWidth().padding(horizontal = 24.dp))
+                    }
+                }
                 Spacer(Modifier.height(14.dp))
                 TempoRow(settings.bpm, haptics, onNudge, onTap)
                 Spacer(Modifier.height(14.dp))
@@ -170,7 +198,7 @@ fun PulseScreen(
 
 // − TAP +
 @Composable
-private fun TempoRow(bpm: Int, haptics: Haptics?, onNudge: (Int) -> Unit, onTap: () -> Unit) {
+private fun TempoRow(bpm: Int, haptics: Haptics?, onNudge: (Int) -> Boolean, onTap: (Long) -> Unit) {
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(20.dp)) {
         StepButton(PulsrIcons.Minus, stringResource(R.string.slower), bpm > Tempo.MIN, haptics, big = true) { onNudge(-1) }
         TapButton(haptics, onTap)
@@ -180,7 +208,7 @@ private fun TempoRow(bpm: Int, haptics: Haptics?, onNudge: (Int) -> Unit, onTap:
 
 // Tippen im Takt; jeder Tipp leuchtet kurz auf
 @Composable
-private fun TapButton(haptics: Haptics?, onTap: () -> Unit) {
+private fun TapButton(haptics: Haptics?, onTap: (Long) -> Unit) {
     val c = Aapps.colors
     val tap by rememberUpdatedState(onTap)
     var pressed by remember { mutableStateOf(false) }
@@ -200,14 +228,15 @@ private fun TapButton(haptics: Haptics?, onTap: () -> Unit) {
             .semantics {
                 role = Role.Button
                 contentDescription = desc
-                onClick { tap(); true }
+                onClick { tap(SystemClock.uptimeMillis()); true }
             }
             // Anschlag zaehlt beim Aufsetzen, nicht beim Loslassen
             .pointerInput(Unit) {
                 awaitEachGesture {
-                    awaitFirstDown()
+                    val down = awaitFirstDown()
                     pressed = true
-                    tap()
+                    // Zeit des Aufsetzens, nicht der Auswertung: Tempo haengt nicht an Verzoegerungen im UI-Thread
+                    tap(down.uptimeMillis)
                     haptics?.press()
                     waitForUpOrCancellation()
                     pressed = false
@@ -346,6 +375,22 @@ private fun SubPicker(current: Subdivision, haptics: Haptics?, onSub: (Subdivisi
     }
 }
 
+private fun counterHeight(fontScale: Float) = 60.dp * fontScale.coerceIn(1f, 1.4f)
+
+// Puls einmal je Bild berechnen; Rad, Zahl und Zaehler lesen denselben Wert
+private class PulseMemo {
+    private var time = Long.MIN_VALUE
+    private var value: Pulse? = null
+
+    fun at(t: Long, compute: (Long) -> Pulse?): Pulse? {
+        if (t != time) {
+            time = t
+            value = compute(t)
+        }
+        return value
+    }
+}
+
 // Zaehler 1..n: laufender Schlag als Akzent-Kreis, Punkt unter der betonten Eins; Puls nur in der Zeichenphase
 @Composable
 private fun BeatCounter(beats: Int, accent: Boolean, playing: Boolean, pulse: () -> Pulse?, modifier: Modifier = Modifier) {
@@ -355,7 +400,7 @@ private fun BeatCounter(beats: Int, accent: Boolean, playing: Boolean, pulse: ()
     val fs = LocalDensity.current.fontScale.coerceIn(1f, 2f)
     Spacer(
         modifier
-            .height(60.dp * fs.coerceAtMost(1.4f))
+            .height(counterHeight(fs))
             .drawWithCache {
                 val slot = min(size.width / beats, 64.dp.toPx())
                 val r = min(slot * 0.42f, size.height * 0.4f)

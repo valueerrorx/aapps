@@ -10,7 +10,10 @@ import solutions.xapient.pulsr.ui.GLOW_BASE
 import solutions.xapient.pulsr.ui.GLOW_FLASH
 import solutions.xapient.pulsr.ui.PulsrAccent
 import solutions.xapient.pulsr.ui.RING_GLOW
-import solutions.xapient.pulsr.ui.dimSegment
+import solutions.xapient.pulsr.ui.LIT_HOLD
+import solutions.xapient.pulsr.ui.idleSegment
+import solutions.xapient.pulsr.ui.restSegment
+import androidx.compose.ui.graphics.lerp
 
 // WCAG-Kontrast gemessen statt geschaetzt; Text >= 4,5:1, Grafik >= 3:1
 class ContrastTest {
@@ -37,17 +40,22 @@ class ContrastTest {
 
     // Schlag-Segmente zeigen die Taktart, auch gestoppt: Grafik-Kontrast >= 3:1
     @Test fun idleSegmentsVisible() {
-        aa(dimSegment(), ui.bg, "Segment gedimmt", 3.0)
-        // am Ring: Grundschein dauerhaft, das Aufblitzen nur Sekundenbruchteile
+        aa(idleSegment(ui), ui.bg, "Segment im Leerlauf", 3.0)
+        // am Ring: Grundschein dauerhaft
         val ring = ui.accent.copy(alpha = GLOW_BASE * RING_GLOW).compositeOver(ui.bg)
-        aa(dimSegment(), ring, "Segment gedimmt am Ring", 3.0)
-        val flashRing = ui.accent.copy(alpha = (GLOW_BASE + GLOW_FLASH) * RING_GLOW).compositeOver(ui.bg)
-        aa(dimSegment(), flashRing, "Segment gedimmt beim Aufblitzen", 3.0)
+        aa(idleSegment(ui), ring, "Segment im Leerlauf am Ring", 3.0)
         aa(ui.fgMuted, ui.bg, "Unterteilungs-Punkt", 3.0)
     }
 
-    // aktiver Schlag hebt sich vom gedimmten ab
-    @Test fun litSegmentStandsOut() = assertTrue(ratio(ui.accent, dimSegment()) > 1.5)
+    // Spielen: laufender Schlag (auch zwischen den Anschlaegen) klar vor den ruhenden, auch beim Aufblitzen des Lichthofs.
+    // Ruhende Schlaege bewusst unter 3:1: die Taktart steht im Stepper, der Ring zeigt hier den Schlag.
+    @Test fun litSegmentStandsOut() {
+        val lit = lerp(restSegment(ui), ui.accent, LIT_HOLD)
+        aa(lit, restSegment(ui), "laufend zu ruhend", 2.5)
+        aa(lit, ui.bg, "laufend auf Grund", 3.0)
+        val flashRing = ui.accent.copy(alpha = (GLOW_BASE + GLOW_FLASH) * RING_GLOW).compositeOver(ui.bg)
+        aa(restSegment(ui), flashRing, "ruhend sichtbar", 1.6)
+    }
 
     @Test fun controls() {
         aa(ui.onAccent, ui.accent, "Tinte auf Akzent (Start, gewaehlte Unterteilung, Tap)")

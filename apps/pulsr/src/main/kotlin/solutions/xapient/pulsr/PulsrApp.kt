@@ -66,7 +66,7 @@ fun PulsrApp() {
                 haptics = haptics,
                 onNudge = store::nudge,
                 onBpm = store::setBpm,
-                onTap = { store.tap() },
+                onTap = { store.tap(it) },
                 onBeats = store::setBeats,
                 onSub = { store.set(settings.copy(sub = it)) },
                 onToggle = ::toggle,

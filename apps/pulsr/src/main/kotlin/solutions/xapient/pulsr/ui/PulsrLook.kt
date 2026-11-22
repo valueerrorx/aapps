@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.vector.PathBuilder
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import solutions.xapient.aapps.core.ui.AappsColors
 import solutions.xapient.pulsr.R
 import solutions.xapient.pulsr.domain.Subdivision
 
@@ -19,9 +20,16 @@ val Magenta = Color(0xFFFF4FA0)
 val PulsrAccent = Magenta
 val Bg = Color(0xFF10161B)
 
-// Schlag-Segmente im Ruhezustand: deutlich gedimmt, aber >= 3:1 zum Grund (ContrastTest)
-const val SEGMENT_DIM = 0.72f
-fun dimSegment(): Color = lerp(Bg, Magenta, SEGMENT_DIM)
+// Leerlauf: Segmente gedaempft und leicht entsaettigt (ruhig, nicht "an"), aber >= 3:1 zum Grund (ContrastTest)
+fun idleSegment(ui: AappsColors): Color = lerp(lerp(ui.bg, ui.accent, 0.55f), ui.fgMuted, 0.35f)
+
+// Beim Spielen: ruhende Schlaege weit zurueck, der laufende leuchtet voll (>= 2,5:1 dazu)
+const val SEGMENT_REST = 0.4f
+fun restSegment(ui: AappsColors): Color = lerp(ui.bg, ui.accent, SEGMENT_REST)
+
+// Helligkeit des laufenden Schlags: nie unter LIT_HOLD, Anschlag voll
+const val LIT_HOLD = 0.8f
+fun litLevel(flash: Float): Float = LIT_HOLD + (1f - LIT_HOLD) * flash
 
 // Lichthof hinter dem Rad: Grundhelligkeit und Aufblitzen je Schlag; Summe haelt Text >= 4,5:1
 const val GLOW_BASE = 0.06f

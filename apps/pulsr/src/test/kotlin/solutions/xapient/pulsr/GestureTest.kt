@@ -53,7 +53,7 @@ class GestureTest {
             val p by store.playing.collectAsState()
             PulseScreen(
                 s, p, { pulseCalls++; store.pulse(it) }, null,
-                onNudge = store::nudge, onBpm = store::setBpm, onTap = { store.tap() }, onBeats = store::setBeats,
+                onNudge = store::nudge, onBpm = store::setBpm, onTap = { store.tap(it) }, onBeats = store::setBeats,
                 onSub = { store.set(store.settings.value.copy(sub = it)) }, onToggle = store::toggle, onSettings = {},
             )
         }

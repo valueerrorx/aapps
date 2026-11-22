@@ -69,6 +69,7 @@ fun Dial(
     bpm: Int,
     beats: Int,
     sub: Int,
+    accent: Boolean,
     playing: Boolean,
     pulse: () -> Pulse?,
     onRotate: (Int) -> Unit,
@@ -80,7 +81,8 @@ fun Dial(
     val marking = Tempo.marking(bpm)
     val desc = stringResource(R.string.tempo)
     val state = stringResource(R.string.tempo_state, bpm, marking)
-    val dim = dimSegment()
+    val idle = idleSegment(c)
+    val rest = restSegment(c)
     BoxWithConstraints(
         modifier
             .semantics {
@@ -116,6 +118,7 @@ fun Dial(
             }
             .drawWithCache {
                 val r = ringRadius(size)
+                val marked = accent && beats > 1
                 val stroke = (r * 0.07f).coerceIn(8.dp.toPx(), 16.dp.toPx())
                 val seg = 360f / beats
                 // Luecke zwischen den Segmenten inkl. runder Enden
@@ -156,14 +159,15 @@ fun Dial(
                     // Skala dreht mit dem Tempo, 6 Grad je BPM
                     rotate(bpm * Wheel.DEG_PER_BPM) { drawPath(ticks, c.fgFaint, style = tickStroke) }
                     drawCircle(c.line, r, center, style = Stroke(1.dp.toPx()))
+                    // gestoppt ruhig; beim Spielen treten die ruhenden Schlaege zurueck, der laufende leuchtet voll
+                    val base = if (p != null) rest else idle
                     for (i in 0 until beats) {
                         val current = p != null && p.beat == i
-                        // laufender Schlag bleibt sichtbar hell, Anschlag blitzt auf
-                        val lit = if (current) 0.45f + 0.55f * f else 0f
-                        val col = lerp(dim, c.accent, lit)
+                        val lit = if (current) litLevel(f) else 0f
+                        val col = lerp(base, c.accent, lit)
                         val start = -90f + i * seg + gap / 2
                         val sweep = (seg - gap).coerceAtLeast(0.5f)
-                        val w = if (i == 0 && beats > 1) stroke * 1.25f else stroke
+                        val w = if (i == 0 && marked) stroke * 1.25f else stroke
                         if (lit > 0f) {
                             // weicher Schein in zwei Lagen statt einem harten Band
                             drawArc(c.accent.copy(alpha = 0.07f * lit), start, sweep, false, Offset(center.x - r, center.y - r), Size(2 * r, 2 * r), style = Stroke(w * 3.2f, cap = StrokeCap.Round))
@@ -175,6 +179,8 @@ fun Dial(
                             drawArc(Color.White.copy(alpha = 0.35f * f), start, sweep, false, Offset(center.x - r, center.y - r), Size(2 * r, 2 * r), style = Stroke(w * 0.3f, cap = StrokeCap.Round))
                         }
                     }
+                    // betonte Eins: Punkt innen am Ringanfang, wie unter der 1 im Zaehler
+                    if (marked) drawCircle(c.accent, 3.dp.toPx(), Offset(center.x, center.y - subR))
                     // Unterteilungen als Punkte innen am Ring
                     if (sub > 1) {
                         for (i in 0 until beats) for (j in 1 until sub) {
