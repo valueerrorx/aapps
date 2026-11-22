@@ -7,7 +7,9 @@ source ~/android-env.sh
 ./gradlew :apps:<app>:recordRoborazziDebug                # Screenshots neu aufnehmen
 ./gradlew :apps:<app>:verifyRoborazziDebug                # gegen apps/<app>/screenshots prüfen
 ```
-Läufe über 8 min per `xapient-job` starten. Speicher am NAS ist knapp: Gradle-Heap 2 GB, Test-Heap 1,5 GB, 2 Worker.
+Läufe über 8 min per `xapient-job` starten. Speicher am NAS ist knapp: Gradle-Heap 1,5 GB, Test-Heap 1 GB, ein Test-Fork, 2 Worker.
+Beim Feinschliff nur einzelne Zustände aufnehmen: `recordRoborazziDebug --tests '*LevelScreenshotTest.edge_tilted'`. Volle Matrix nur am Schluss.
+Robolectric läuft mit SDK 34 (`src/test/resources/robolectric.properties`), weil SDK 35+ Java 21 braucht.
 
 ## Neue App
 1. `apps/<name>/` mit `SPEC.md` (zuerst), `version.txt`, `build.gradle.kts` (`aapps.app` + Roborazzi), Eintrag in `settings.gradle.kts`.

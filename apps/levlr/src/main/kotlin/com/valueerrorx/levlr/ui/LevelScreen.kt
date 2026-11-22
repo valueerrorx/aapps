@@ -47,6 +47,7 @@ import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.liveRegion
@@ -151,7 +152,7 @@ fun LevelScreen(
             }
         },
     ) {
-        val landscape = LocalConfiguration.current.let { it.screenWidthDp > it.screenHeightDp }
+        val landscape = LocalWindowInfo.current.containerSize.let { it.width > it.height }
         val heroModifier = Modifier.onGloballyPositioned { hero = it.boundsInRoot() }
         val session = state.calibration
         state.calibrationTick // Overlay bei Kalibrier-Fortschritt neu zeichnen

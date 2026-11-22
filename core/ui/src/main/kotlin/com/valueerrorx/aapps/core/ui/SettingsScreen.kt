@@ -38,6 +38,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 
 // Grundgeruest fuer Einstellungen: Kopfzeile, scrollbare Gruppen
@@ -142,7 +143,7 @@ private fun AappsSwitch(checked: Boolean) {
     ) {
         Box(
             Modifier
-                .offset(x = 20.dp * t)
+                .offset { IntOffset((20.dp * t).roundToPx(), 0) }
                 .size(20.dp)
                 .glow(c.accent, 22.dp, 0.5f * t)
                 .background(thumb, CircleShape),

@@ -35,7 +35,10 @@ internal fun Project.configureAndroidCommon(android: CommonExtension) {
         testOptions.unitTests.isIncludeAndroidResources = true
     }
     tasks.withType<Test>().configureEach {
-        maxHeapSize = "1536m"
+        // ein Fork, kleiner Heap, Serial-GC: am NAS ist RAM knapp, Swap bremst sonst massiv
+        maxParallelForks = 1
+        maxHeapSize = "1g"
+        jvmArgs("-XX:+UseSerialGC")
         systemProperty("robolectric.pixelCopyRenderMode", "hardware")
     }
     val bom = libs.findLibrary("compose-bom").get()
