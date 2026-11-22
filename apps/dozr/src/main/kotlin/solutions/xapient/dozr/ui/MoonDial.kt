@@ -66,9 +66,10 @@ import kotlin.random.Random
 class DialGeo(width: Float, height: Float, density: Float) {
     val center = Offset(width / 2f, height / 2f)
     val r = min(width, height) / 2f - 6f * density
-    val horizonY = center.y + 0.22f * r
+    // Horizont tief: Himmel ist die Buehne, der See nur ein Streifen fuer die Spiegelung
+    val horizonY = center.y + 0.36f * r
     val pivot = Offset(center.x, horizonY)
-    val path = 0.74f * r
+    val path = 0.82f * r
     val moonR = 0.105f * r
 
     fun moonAt(frac: Float): Offset {
@@ -209,8 +210,8 @@ class MoonParts(scope: CacheDrawScope, val c: AappsColors, measurer: TextMeasure
 
     fun DrawScope.drawMoon(look: MoonLook, moon: Offset) {
         if (look.dragging) drawCircle(DozrAccent.copy(alpha = 0.7f), g.moonR * 1.45f, moon, style = Stroke(1.6f * dp))
-        // aschgraues Licht: ganze Scheibe zart sichtbar, Griff bleibt erkennbar
-        drawCircle(MoonLight.copy(alpha = 0.12f + 0.06f * look.glow), g.moonR, moon)
+        // aschgraues Licht: ganze Scheibe zart sichtbar und deckend (keine Sterne durch den Mond)
+        drawCircle(lerp(SkyLow, MoonLight, 0.13f + 0.07f * look.glow), g.moonR, moon)
         translate(moon.x, moon.y) {
             drawPath(crescent, moonBrush, alpha = 0.35f + 0.65f * look.glow)
         }

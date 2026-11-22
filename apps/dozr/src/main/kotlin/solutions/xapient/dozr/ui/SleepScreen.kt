@@ -142,6 +142,8 @@ fun SleepScreen(
     }
 
     val running = sleep.mode == Mode.RUNNING
+    // Beim Ziehen zeigen Endzeit und Kurve schon den neuen Wert (neu komponiert nur pro Raste)
+    val idleMin = drag.value ?: sleep.setMin
     val shownMs = remember(sleep) {
         {
             val d = drag.value
@@ -152,12 +154,12 @@ fun SleepScreen(
         phase == Phase.DONE -> stringResource(R.string.state_done, wallText(sleep.endAt))
         phase == Phase.FADING || phase == Phase.ENDED -> stringResource(R.string.state_fading)
         running -> stringResource(R.string.state_stops, wallText(sleep.endAt))
-        else -> stringResource(R.string.state_stops, wallText(clock() + sleep.setMin * Sleep.MINUTE))
+        else -> stringResource(R.string.state_stops, wallText(clock() + idleMin * Sleep.MINUTE))
     }
 
     // Kurve: Zeiten fuer Beginn und Ende des Ausblendens
-    val endAt = if (running) sleep.endAt else clock() + sleep.setMin * Sleep.MINUTE
-    val fadeFrom = if (running) sleep.fadeStart(fadeMs) else endAt - min(fadeMs, sleep.setMin * Sleep.MINUTE)
+    val endAt = if (running) sleep.endAt else clock() + idleMin * Sleep.MINUTE
+    val fadeFrom = if (running) sleep.fadeStart(fadeMs) else endAt - min(fadeMs, idleMin * Sleep.MINUTE)
     val fadeMin = (fadeMs / 1000).toInt()
     val fadeTitle = if (fadeMs < Sleep.MINUTE) {
         stringResource(R.string.fade_title_s, fadeMin)

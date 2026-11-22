@@ -1,5 +1,6 @@
 package solutions.xapient.dozr
 
+import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.Context
@@ -36,6 +37,8 @@ class DozrTile : TileService() {
         update()
     }
 
+    // Intent-Variante nur vor Android 14, dort ist sie die einzige
+    @SuppressLint("StartActivityAndCollapseDeprecated")
     private fun openApp() {
         val intent = Intent(this, MainActivity::class.java)
             .setAction(MainActivity.ACTION_START)

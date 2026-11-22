@@ -58,7 +58,7 @@ class GestureTest {
     // Punkt auf der Mondbahn: Grad ab rechtem Horizont, gegen den Uhrzeigersinn
     private fun TouchInjectionScope.at(deg: Double): Offset {
         val r = min(width, height) / 2f * 0.97f
-        val pivotY = centerY + 0.22f * r
+        val pivotY = centerY + 0.36f * r
         val a = Math.toRadians(deg)
         return Offset(centerX + (cos(a) * r * 0.6f).toFloat(), pivotY - (sin(a) * r * 0.6f).toFloat())
     }

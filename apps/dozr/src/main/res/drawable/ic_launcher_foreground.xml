@@ -28,7 +28,7 @@
         android:pathData="M73.78,54a1,1 0 1,0 2,0a1,1 0 1,0 -2,0zM53,42a1,1 0 1,0 2,0a1,1 0 1,0 -2,0zM41,45.22a1,1 0 1,0 2,0a1,1 0 1,0 -2,0zM32.22,54a1,1 0 1,0 2,0a1,1 0 1,0 -2,0z" />
     <!-- leuchtender Bogen bis zum Mond -->
     <path
-        android:pathData="M78,66A24,24 0 0,0 69.43,47.62"
+        android:pathData="M78,66A24,24 0 0,0 75.19,54.73"
         android:strokeWidth="2.2"
         android:strokeColor="#E6FF9EC7"
         android:strokeLineCap="round" />
