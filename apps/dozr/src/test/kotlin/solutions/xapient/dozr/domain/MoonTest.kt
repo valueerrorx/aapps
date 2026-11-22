@@ -35,6 +35,13 @@ class MoonTest {
         assertEquals(0.75, d.move(x2, y2), 1e-6)
     }
 
+    // Erster Punkt greift dort, wo der Finger ist, auch weit vom Mond weg
+    @Test fun firstTouchGrabsAbsolutely() {
+        val d = MoonDrag(0.25)
+        val (x, y) = at(150.0)
+        assertEquals(150.0 / 180.0, d.move(x, y), 1e-6)
+    }
+
     // Unter dem Horizont am naechsten Ende stehen bleiben
     @Test fun belowHorizonPinsToNearestEnd() {
         val low = MoonDrag(0.1)

@@ -110,15 +110,23 @@ class SleepTest {
         assertEquals(s, Sleep.restored(s, sameBoot = true, now = t0 + MINUTE))
     }
 
-    // Geraete-Neustart: Laufzeituhr neu, Lauf ist vorbei
-    @Test fun restoredAfterRebootIsDone() {
-        val s = Sleep(30).start(t0)
-        assertEquals(Mode.DONE, Sleep.restored(s, sameBoot = false, now = 5_000L).mode)
+    // Geraete-Neustart: Laufzeituhr neu, Lauf ist vorbei, Wert bleibt
+    @Test fun restoredAfterRebootIsIdle() {
+        val s = Sleep(45).start(t0)
+        val r = Sleep.restored(s, sameBoot = false, now = 5_000L)
+        assertEquals(Mode.IDLE, r.mode)
+        assertEquals(45, r.setMin)
+        assertEquals(Mode.IDLE, Sleep.restored(s.finish(), sameBoot = false, now = 5_000L).mode)
+    }
+
+    @Test fun restoredDoneSameBootStaysDone() {
+        val s = Sleep(30).start(t0).finish()
+        assertEquals(s, Sleep.restored(s, true, t0 + 40 * MINUTE))
     }
 
     @Test fun restoredBrokenDataIsSane() {
-        assertEquals(Mode.DONE, Sleep.restored(Sleep(30, Mode.RUNNING, 10, 5), true, 20).mode)
-        assertEquals(Mode.DONE, Sleep.restored(Sleep(30, Mode.RUNNING, 500, 900), true, 20).mode)
+        assertEquals(Mode.IDLE, Sleep.restored(Sleep(30, Mode.RUNNING, 10, 5), true, 20).mode)
+        assertEquals(Mode.IDLE, Sleep.restored(Sleep(30, Mode.RUNNING, 500, 900), true, 20).mode)
         assertEquals(120, Sleep.restored(Sleep(9999), true, 0).setMin)
         assertEquals(5, Sleep.restored(Sleep(-3), true, 0).setMin)
     }
