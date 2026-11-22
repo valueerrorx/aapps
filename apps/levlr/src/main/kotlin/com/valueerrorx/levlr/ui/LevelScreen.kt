@@ -98,7 +98,7 @@ fun LevelScreen(
     var hero by remember { mutableStateOf(Rect.Zero) }
     val measurer = rememberTextMeasurer()
     // Skalenbeschriftung ist Teil der Grafik, waechst nicht mit der Schriftgroesse
-    val tickStyle = Aapps.type.number.copy(fontSize = (11f / LocalDensity.current.fontScale).sp, color = c.fgFaint)
+    val tickStyle = Aapps.type.number.copy(fontSize = (11f / LocalDensity.current.fontScale).sp, color = c.fgMuted)
 
     // Physik-Schleife: laeuft nur, solange sich etwas bewegt
     if (animate) {

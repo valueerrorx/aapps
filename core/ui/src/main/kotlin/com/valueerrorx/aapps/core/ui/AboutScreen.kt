@@ -77,7 +77,7 @@ fun AboutScreen(
                     }
                 }
                 Spacer(Modifier.height(28.dp))
-                val small = Aapps.type.body.copy(color = c.fgFaint, fontSize = Aapps.type.label.fontSize * 1.1f)
+                val small = Aapps.type.body.copy(color = c.fgMuted, fontSize = Aapps.type.label.fontSize * 1.1f)
                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                     notes.forEach { BasicText(it, style = small) }
                     BasicText(stringResource(R.string.aapps_license), style = small)

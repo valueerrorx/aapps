@@ -38,8 +38,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 // Grundgeruest fuer Einstellungen: Kopfzeile, scrollbare Gruppen
 @Composable
@@ -67,7 +69,7 @@ fun SettingsGroup(label: String?, content: @Composable ColumnScope.() -> Unit) {
             BasicText(
                 label.uppercase(),
                 Modifier.padding(start = 12.dp, bottom = 8.dp),
-                style = Aapps.type.label.copy(color = c.fgFaint),
+                style = Aapps.type.label.copy(color = c.fgMuted),
             )
         }
         Column(
@@ -88,7 +90,7 @@ private fun RowTexts(title: String, subtitle: String?, enabled: Boolean, modifie
         BasicText(title, style = Aapps.type.body.copy(color = if (enabled) c.fg else c.fgFaint))
         if (subtitle != null) {
             Spacer(Modifier.height(2.dp))
-            BasicText(subtitle, style = Aapps.type.body.copy(color = c.fgFaint, fontSize = Aapps.type.label.fontSize * 1.1f))
+            BasicText(subtitle, style = Aapps.type.body.copy(color = c.fgMuted, fontSize = Aapps.type.label.fontSize * 1.1f))
         }
     }
 }
@@ -170,16 +172,19 @@ fun <T> SettingsChoice(title: String, options: List<Pair<T, String>>, selected: 
                     Modifier
                         .weight(1f)
                         .widthIn(min = 48.dp)
-                        .heightIn(min = 44.dp)
+                        .heightIn(min = 48.dp)
                         .clip(CircleShape)
                         .background(bg)
                         .selectable(isSel, indication = null, interactionSource = null, role = Role.RadioButton) { onSelect(value) },
                     contentAlignment = Alignment.Center,
                 ) {
+                    // einzeilig, bei grosser Schrift kleiner statt Umbruch mitten im Wort
                     BasicText(
                         label,
                         Modifier.padding(horizontal = 6.dp, vertical = 8.dp),
                         style = Aapps.type.number.copy(color = fg, fontSize = Aapps.type.body.fontSize, textAlign = TextAlign.Center),
+                        maxLines = 1,
+                        autoSize = TextAutoSize.StepBased(minFontSize = 9.sp, maxFontSize = Aapps.type.body.fontSize, stepSize = 0.5.sp),
                     )
                 }
             }

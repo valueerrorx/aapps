@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -141,10 +142,12 @@ fun AappsPillButton(
         horizontalArrangement = Arrangement.Center,
     ) {
         if (icon != null) {
-            AappsIcon(icon, null, fg, size = 20.dp)
+            // Icon waechst mit der Schriftgroesse mit
+            AappsIcon(icon, null, fg, size = 20.dp * LocalDensity.current.fontScale.coerceAtMost(2f))
             Spacer(Modifier.width(10.dp))
         }
-        BasicText(text, style = Aapps.type.label.copy(color = fg, fontSize = Aapps.type.label.fontSize * 1.15f))
+        // Labels in Versalien laut DESIGN.md
+        BasicText(text.uppercase(), style = Aapps.type.label.copy(color = fg, fontSize = Aapps.type.label.fontSize * 1.15f))
     }
 }
 
@@ -154,7 +157,7 @@ fun AappsTextButton(text: String, onClick: () -> Unit, modifier: Modifier = Modi
     val source = remember { MutableInteractionSource() }
     val pressed by source.collectIsPressedAsState()
     BasicText(
-        text,
+        text.uppercase(),
         modifier
             .pressScale(pressed)
             .clickable(source, indication = null, role = Role.Button, onClick = onClick)
