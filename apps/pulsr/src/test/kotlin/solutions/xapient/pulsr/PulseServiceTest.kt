@@ -1,9 +1,13 @@
 package solutions.xapient.pulsr
 
+import android.app.Notification
+import android.app.NotificationManager
 import android.content.Intent
 import android.media.AudioManager
 import android.os.Looper
+import java.time.Duration
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -56,6 +60,26 @@ class PulseServiceTest {
         RuntimeEnvironment.getApplication().sendBroadcast(Intent(AudioManager.ACTION_AUDIO_BECOMING_NOISY))
         idle()
         assertFalse(store.playing.value)
+    }
+
+    @Test fun callStops() {
+        started()
+        RuntimeEnvironment.getApplication().getSystemService(AudioManager::class.java).mode = AudioManager.MODE_IN_CALL
+        idle()
+        assertFalse(store.playing.value)
+    }
+
+    // Rad drehen: eine Benachrichtigung nach der Ruhe, nicht eine je BPM
+    @Test fun notificationDebounced() {
+        started()
+        val nm = shadowOf(RuntimeEnvironment.getApplication().getSystemService(NotificationManager::class.java))
+        fun title() = nm.allNotifications.single().extras.getString(Notification.EXTRA_TITLE)
+        val before = title()
+        repeat(5) { store.nudge(1) }
+        shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(100))
+        assertEquals(before, title())
+        shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(300))
+        assertTrue(title()!!.contains("125"))
     }
 
     @Test fun notPlayingDoesNotStay() {

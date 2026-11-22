@@ -19,7 +19,8 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import solutions.xapient.pulsr.domain.Settings
 import solutions.xapient.pulsr.domain.Tempo
@@ -33,6 +34,8 @@ class PulseService : Service() {
     private var foreground = false
     private var collecting = false
     private var shown: Settings? = null
+    // AudioManager.OnModeChangedListener ab API 31
+    private var modeListener: Any? = null
 
     // Kopfhoerer ab: nicht ploetzlich laut aus dem Lautsprecher
     private val noisy = object : BroadcastReceiver() {
@@ -69,17 +72,47 @@ class PulseService : Service() {
         }
         if (!collecting) {
             collecting = true
+            // Stopp sofort, Tempo-Aenderungen (Rad, Halten) entprellt: nicht jede BPM eine neue Benachrichtigung
+            scope.launch { store.playing.collect { if (!it) finish() } }
             scope.launch {
-                store.settings.combine(store.playing) { s, p -> s to p }.collect { (s, p) ->
-                    if (p) goForeground(s) else finish()
+                store.settings.collectLatest { s ->
+                    delay(NOTIFY_DEBOUNCE_MS)
+                    if (store.playing.value) goForeground(s)
                 }
             }
+            watchCalls()
         }
         // nach Prozess-Tod nicht von selbst weiterspielen
         return START_NOT_STICKY
     }
 
+    // Telefonat: Metronom aus, sonst klickt es ins Gespraech
+    private fun watchCalls() {
+        val audio = getSystemService(AudioManager::class.java)
+        if (Build.VERSION.SDK_INT >= 31) {
+            val l = AudioManager.OnModeChangedListener { if (inCall(it)) store.stop() }
+            audio.addOnModeChangedListener(mainExecutor, l)
+            modeListener = l
+        } else {
+            // ohne Listener: Modus jede Sekunde pruefen, nur der Wechsel in ein Gespraech stoppt
+            scope.launch {
+                var was = inCall(audio.mode)
+                while (true) {
+                    delay(1_000)
+                    val now = inCall(audio.mode)
+                    if (now && !was) store.stop()
+                    was = now
+                }
+            }
+        }
+    }
+
+    private fun inCall(mode: Int) = mode == AudioManager.MODE_IN_CALL || mode == AudioManager.MODE_IN_COMMUNICATION
+
     override fun onDestroy() {
+        if (Build.VERSION.SDK_INT >= 31) {
+            (modeListener as? AudioManager.OnModeChangedListener)?.let { getSystemService(AudioManager::class.java).removeOnModeChangedListener(it) }
+        }
         scope.cancel()
         releaseWake()
         if (noisyRegistered) {
@@ -167,6 +200,7 @@ class PulseService : Service() {
         private const val ID = 1
         // Obergrenze fuer eine Uebungssitzung
         private const val MAX_WAKE_MS = 6 * 60 * 60 * 1000L
+        private const val NOTIFY_DEBOUNCE_MS = 280L
         const val ACTION_STOP = "solutions.xapient.pulsr.STOP"
 
         fun start(context: Context) {

@@ -37,22 +37,24 @@ class PulseStore(
         player.onFailure = { _playing.value = false }
     }
 
-    private fun update(f: (Settings) -> Settings) {
+    // false = nichts geaendert (z. B. am Rand des Bereichs)
+    private fun update(f: (Settings) -> Settings): Boolean {
         val s = f(_settings.value).sane()
-        if (s == _settings.value) return
+        if (s == _settings.value) return false
         _settings.value = s
         save(s)
         if (_playing.value) player.update(s)
+        return true
     }
 
-    fun setBpm(bpm: Int) = update { it.copy(bpm = bpm) }
-    fun nudge(by: Int) = update { it.copy(bpm = it.bpm + by) }
-    fun setBeats(n: Int) = update { it.copy(beats = n) }
-    fun set(s: Settings) = update { s }
+    fun setBpm(bpm: Int) { update { it.copy(bpm = bpm) } }
+    fun nudge(by: Int): Boolean = update { it.copy(bpm = it.bpm + by) }
+    fun setBeats(n: Int) { update { it.copy(beats = n) } }
+    fun set(s: Settings) { update { s } }
 
-    // true, sobald ein Tempo feststeht
-    fun tap(): Boolean {
-        val bpm = tapper.tap(clockMs()) ?: return false
+    // true, sobald ein Tempo feststeht; atMs = Zeit des Aufsetzens (uptimeMillis), nicht der Auswertung
+    fun tap(atMs: Long = clockMs()): Boolean {
+        val bpm = tapper.tap(atMs) ?: return false
         setBpm(bpm)
         return true
     }

@@ -96,6 +96,23 @@ class PulseStoreTest {
         assertEquals(150, saved!!.bpm)
     }
 
+    // Rad meldet nur echte Aenderungen (Haptik), am Rand false
+    @Test fun nudgeReportsChange() {
+        val s = store(load = Settings(bpm = 299))
+        assertTrue(s.nudge(1))
+        assertFalse(s.nudge(1))
+        assertEquals(300, s.settings.value.bpm)
+    }
+
+    // Tap mit Zeit des Aufsetzens, nicht der Auswertung
+    @Test fun tapUsesEventTime() {
+        val s = store()
+        now = 99_999
+        s.tap(1_000)
+        assertTrue(s.tap(1_400))
+        assertEquals(150, s.settings.value.bpm)
+    }
+
     @Test fun stopIsIdempotent() {
         val p = FakePlayer()
         val s = store(p)
