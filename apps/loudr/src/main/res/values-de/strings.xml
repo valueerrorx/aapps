@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tagline">Ein Schallpegelmesser, der zeigt, wie laut es ist – mit Vergleichen aus dem Alltag.</string>
+    <string name="note_mic">Misst nur, solange loudr offen ist. Nichts wird aufgenommen, gespeichert oder gesendet.</string>
+    <string name="note_estimate">Handy-Mikrofone sind keine geeichten Messgeräte. Die Werte sind Schätzungen und können um einige Dezibel abweichen. Mit der Kalibrierung gleichst du an ein Referenzgerät an.</string>
+
+    <string name="status_live">Misst</string>
+    <string name="status_paused">Pausiert</string>
+    <string name="pause">Pause</string>
+    <string name="resume">Weiter</string>
+    <string name="reset">Min, Max und Mittel zurücksetzen</string>
+    <string name="fast">Fast</string>
+    <string name="slow">Slow</string>
+    <string name="stat_min">Min</string>
+    <string name="stat_avg">Mittel</string>
+    <string name="stat_max">Max</string>
+    <string name="stat_state">%1$s %2$s dB</string>
+    <string name="history">Letzte 60 s</string>
+    <string name="footnote">Schätzwert · Handy-Mikros sind nicht geeicht</string>
+    <string name="footnote_cal">Schätzwert · kalibriert %1$s dB</string>
+    <string name="level">Schallpegel</string>
+    <string name="level_state">%1$s Dezibel A, %2$s</string>
+    <string name="level_none">Noch kein Wert</string>
+
+    <string name="ex_silence">Fast still</string>
+    <string name="ex_whisper">Flüstern</string>
+    <string name="ex_quiet_room">Ruhiges Zimmer</string>
+    <string name="ex_office">Ruhiges Büro</string>
+    <string name="ex_conversation">Gespräch</string>
+    <string name="ex_vacuum">Staubsauger</string>
+    <string name="ex_traffic">Straßenverkehr</string>
+    <string name="ex_mower">Rasenmäher</string>
+    <string name="ex_motorbike">Motorrad</string>
+    <string name="ex_concert">Rockkonzert</string>
+    <string name="ex_siren">Sirene aus der Nähe</string>
+
+    <string name="mic_ask_title">Mikrofon nötig</string>
+    <string name="mic_ask_text">loudr hört zu, um den Pegel zu messen. Nichts wird aufgenommen oder gespeichert.</string>
+    <string name="mic_allow">Mikrofon erlauben</string>
+    <string name="mic_blocked_title">Mikrofon gesperrt</string>
+    <string name="mic_blocked_text">Erlaube loudr das Mikrofon in den App-Einstellungen unter Berechtigungen.</string>
+    <string name="mic_settings">Einstellungen öffnen</string>
+    <string name="mic_failed_title">Mikrofon nicht verfügbar</string>
+    <string name="mic_failed_text">Vielleicht nutzt es gerade eine andere App. Schließe sie und versuch es noch einmal.</string>
+    <string name="mic_retry">Erneut versuchen</string>
+
+    <string name="group_measure">Messung</string>
+    <string name="weighting">Zeitbewertung</string>
+    <string name="weighting_fast">Fast · 125 ms</string>
+    <string name="weighting_slow">Slow · 1 s</string>
+    <string name="calibration">Kalibrierung</string>
+    <string name="calibration_sub">Leg das Handy neben ein Referenzgerät und stell den Versatz ein, bis beide gleich zeigen.</string>
+    <string name="calibration_now">Jetzt: %1$s dB(A)</string>
+    <string name="calibration_value">%1$s dB</string>
+    <string name="raise">Versatz erhöhen</string>
+    <string name="lower">Versatz senken</string>
+    <string name="calibration_reset">Kalibrierung zurücksetzen</string>
+    <string name="group_display">Anzeige</string>
+    <string name="keep_on">Bildschirm an lassen</string>
+    <string name="keep_on_sub">Während der Messung</string>
+    <string name="group_note">Hinweis</string>
+</resources>
