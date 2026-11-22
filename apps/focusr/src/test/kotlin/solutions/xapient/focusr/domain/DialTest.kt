@@ -1,6 +1,8 @@
 package solutions.xapient.focusr.domain
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class DialTest {
@@ -19,37 +21,72 @@ class DialTest {
         assert(f > 0.99 && f < 1.0) { "f=$f" }
     }
 
-    @Test fun followTracksSmallMoves() {
-        assertEquals(0.31, Dial.follow(0.3, 0.31), eps)
-        assertEquals(0.29, Dial.follow(0.3, 0.29), eps)
+    // Finger von a nach b (Anteile, auch > 1 bzw. < 0) in kleinen Schritten
+    private fun DialDrag.sweep(from: Double, to: Double): Double {
+        val n = (kotlin.math.abs(to - from) * 100).toInt().coerceAtLeast(1)
+        for (i in 0..n) move(((from + (to - from) * i / n) % 1.0 + 1.0) % 1.0)
+        return value
     }
 
     @Test fun firstMoveJumpsToFinger() {
-        assertEquals(0.75, Dial.follow(0.1, 0.75, first = true), eps)
+        assertEquals(0.75, DialDrag().move(0.75), eps)
+    }
+
+    @Test fun followTracksSmallMoves() {
+        val d = DialDrag()
+        d.move(0.3)
+        assertEquals(0.31, d.move(0.31), eps)
+        assertEquals(0.29, d.move(0.29), eps)
     }
 
     @Test fun pinsFullWhenCrossingTwelveClockwise() {
-        var v = 0.98
-        v = Dial.follow(v, 0.02)
-        assertEquals(1.0, v, eps)
-        // weiter im Uhrzeigersinn: bleibt voll
-        v = Dial.follow(v, 0.2)
-        assertEquals(1.0, v, eps)
-        v = Dial.follow(v, 0.45)
-        assertEquals(1.0, v, eps)
+        val d = DialDrag()
+        d.move(0.98)
+        assertEquals(1.0, d.move(0.02), eps)
+        assertEquals(1.0, d.sweep(0.02, 0.45), eps)
         // zurueck ueber 12 Uhr: folgt wieder
-        v = Dial.follow(v, 0.97)
-        assertEquals(0.97, v, eps)
+        d.sweep(0.45, 0.0)
+        assertEquals(0.97, d.move(0.97), eps)
     }
 
     @Test fun pinsEmptyWhenCrossingTwelveCounterClockwise() {
-        var v = 0.02
-        v = Dial.follow(v, 0.98)
-        assertEquals(0.0, v, eps)
-        v = Dial.follow(v, 0.7)
-        assertEquals(0.0, v, eps)
-        v = Dial.follow(v, 0.03)
-        assertEquals(0.03, v, eps)
+        val d = DialDrag()
+        d.move(0.02)
+        assertEquals(0.0, d.move(0.98), eps)
+        assertEquals(0.0, d.sweep(0.98, 0.7), eps)
+        d.sweep(0.7, 1.0)
+        assertEquals(0.03, d.move(0.03), eps)
+    }
+
+    // Ueberdrehen springt nicht (frueher: voll, weiter bis 6 Uhr -> halb); 1,5 und 2 Umdrehungen
+    @Test fun overdriveClockwiseStaysFullUntilBackOverTwelve() {
+        for (turns in listOf(1.5, 2.0)) {
+            val d = DialDrag()
+            d.move(0.0)
+            assertEquals(0.75, d.sweep(0.0, 0.75), eps)
+            assertEquals(1.0, d.sweep(0.75, turns), eps)
+            // zurueck ueber 12 Uhr: greift wieder
+            assertEquals("bei $turns", 0.9, d.sweep(turns, kotlin.math.floor(turns) - 0.1), 0.011)
+        }
+    }
+
+    @Test fun overdriveCounterClockwiseStaysEmptyUntilBackOverTwelve() {
+        for (turns in listOf(1.5, 2.0)) {
+            val d = DialDrag()
+            d.move(0.25)
+            assertEquals(0.0, d.sweep(0.25, -turns), eps)
+            assertEquals("bei $turns", 0.1, d.sweep(-turns, -kotlin.math.floor(turns) + 0.1), 0.011)
+        }
+    }
+
+    @Test fun edgeGrab() {
+        assertTrue(Dial.nearEdge(0.3, 0.3f))
+        assertTrue(Dial.nearEdge(0.3 + 19.0 / 360, 0.3f))
+        assertFalse(Dial.nearEdge(0.3 + 25.0 / 360, 0.3f))
+        // ueber 12 Uhr hinweg
+        assertTrue(Dial.nearEdge(0.99, 0.02f))
+        assertTrue(Dial.nearEdge(0.01, 1f))
+        assertFalse(Dial.nearEdge(0.5, 1f))
     }
 
     @Test fun snapToSteps() {

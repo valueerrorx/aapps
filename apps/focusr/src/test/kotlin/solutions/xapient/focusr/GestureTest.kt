@@ -98,10 +98,20 @@ class GestureTest {
 
     @Test fun dragWhileRunningKeepsRunning() {
         rule.onNodeWithText("START").performClick()
-        dial().performTouchInput { arc(0.0, 180.0) }
+        // Kante steht bei 25 min = 150 Grad
+        dial().performTouchInput { arc(150.0, 180.0) }
         rule.onNodeWithText("PAUSE").assertExists()
         val t = Prefs(rule.activity).timer
         assertEquals(Mode.RUNNING, t.mode)
         assertEquals(30 * 60_000L, t.setMs)
+    }
+
+    // Beim Lauf greift nur die Kante, sonst verstellt ein Streifen die Restzeit
+    @Test fun dragAwayFromEdgeWhileRunningIsIgnored() {
+        rule.onNodeWithText("START").performClick()
+        dial().performTouchInput { arc(0.0, 90.0) }
+        val t = Prefs(rule.activity).timer
+        assertEquals(Mode.RUNNING, t.mode)
+        assertEquals(25 * 60_000L, t.setMs)
     }
 }

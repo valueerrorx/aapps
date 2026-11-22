@@ -75,6 +75,7 @@ import solutions.xapient.aapps.core.ui.KeepScreenOn
 import solutions.xapient.aapps.core.ui.Springs
 import solutions.xapient.focusr.R
 import solutions.xapient.focusr.domain.Dial
+import solutions.xapient.focusr.domain.DialDrag
 import solutions.xapient.focusr.domain.Phase
 import solutions.xapient.focusr.domain.Scale
 import solutions.xapient.focusr.domain.TimeText
@@ -323,18 +324,22 @@ private fun TimerDial(look: DialInputs, haptics: Haptics?, onCommit: (Long) -> U
                     if ((down.position - c).getDistance() > r) return@awaitEachGesture
                     val sc = look.scale.value
                     val startMs = look.shownMs()
+                    // Beim Lauf nur an der Kante greifen
+                    val d0 = down.position - c
+                    if (look.timer.value.phase(look.now.longValue) == Phase.RUNNING &&
+                        !Dial.nearEdge(Dial.fraction(d0.x, d0.y), look.fill())
+                    ) {
+                        return@awaitEachGesture
+                    }
                     // Tippen aendert nichts, erst echtes Ziehen
                     val slop = awaitTouchSlopOrCancellation(down.id) { ch, _ -> ch.consume() } ?: return@awaitEachGesture
-                    var v = Dial.fill(startMs, sc).toDouble()
-                    var last = if (startMs <= sc.ms) Dial.snap(v, sc) else -1L
-                    var first = true
+                    val drag = DialDrag()
+                    var last = if (startMs <= sc.ms) Dial.snap(Dial.fill(startMs, sc).toDouble(), sc) else -1L
                     fun follow(p: Offset) {
                         val d = p - c
                         // nahe der Mitte ist der Winkel unruhig
                         if (d.getDistance() < r * 0.12f) return
-                        v = Dial.follow(v, Dial.fraction(d.x, d.y), first)
-                        first = false
-                        val ms = Dial.snap(v, sc)
+                        val ms = Dial.snap(drag.move(Dial.fraction(d.x, d.y)), sc)
                         if (ms != last) {
                             haptics?.tick()
                             last = ms
