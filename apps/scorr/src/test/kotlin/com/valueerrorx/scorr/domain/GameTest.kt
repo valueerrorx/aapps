@@ -55,6 +55,13 @@ class GameTest {
         assertEquals(listOf(0, 2), g.scores)
     }
 
+    @Test fun enteredNumberIsItsOwnMove() {
+        val g = two().score(0, 1, 0).enter(0, 37, 100)
+        assertEquals(listOf(Action.Score(0, 1), Action.Score(0, 37)), g.actions)
+        assertEquals(37, g.burst(0, 200))
+        assertEquals(1, g.undo().scores[0])
+    }
+
     @Test fun zeroAndUnknownPlayerAreIgnored() {
         val g = two()
         assertSame(g, g.score(0, 0, 0))

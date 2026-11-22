@@ -78,6 +78,9 @@ data class Game(
         return copy(actions = actions + Action.Score(player, clamp(delta.toLong())), lastAt = now)
     }
 
+    // Eingetippte Zahl: immer ein eigener Zug
+    fun enter(player: Int, delta: Int, now: Long): Game = copy(lastAt = Long.MIN_VALUE).score(player, delta, now)
+
     fun endRound(): Game = copy(actions = actions + Action.EndRound, lastAt = Long.MIN_VALUE)
 
     fun undo(): Game = copy(actions = actions.dropLast(1), lastAt = Long.MIN_VALUE)

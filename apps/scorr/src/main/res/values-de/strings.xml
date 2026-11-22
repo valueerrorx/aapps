@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tagline">Punktezähler für Spieleabend, Karten und Tischtennis. Große Farben, ein Tipp pro Punkt.</string>
+    <string name="note_gestures">Obere Hälfte tippen zählt plus eins, untere minus eins. Nach oben oder unten ziehen zählt in Schritten, lange drücken öffnet die Zahleneingabe.</string>
+
+    <string name="player_n">Spieler %1$d</string>
+    <string name="round_n">Runde %1$d</string>
+    <string name="history">Verlauf</string>
+    <string name="undo">Rückgängig</string>
+    <string name="next_round">Nächste Runde</string>
+    <string name="new_game">Neues Spiel</string>
+    <string name="winner">Sieg</string>
+    <string name="winners">Gleichstand</string>
+    <string name="leader">Führt</string>
+    <string name="target_short">bis %1$s</string>
+
+    <string name="tile_desc">%1$s, %2$s Punkte</string>
+    <string name="tile_desc_winner">%1$s, %2$s Punkte, gewinnt</string>
+    <string name="action_plus">Plus eins</string>
+    <string name="action_minus">Minus eins</string>
+    <string name="action_enter">Punkte eingeben</string>
+    <string name="announce_winner">%1$s gewinnt</string>
+
+    <string name="entry_hint">Punkte</string>
+    <string name="subtract">Abziehen</string>
+    <string name="add">Addieren</string>
+    <string name="cancel">Abbrechen</string>
+
+    <string name="total">Summe</string>
+    <string name="running">läuft</string>
+    <string name="rounds_title">Runden</string>
+    <string name="no_points">Noch keine Punkte. Tipp auf eine Kachel zum Zählen.</string>
+
+    <string name="players">Spieler</string>
+    <string name="add_player">Spieler hinzufügen</string>
+    <string name="players_label">Spieler · %1$d von %2$d</string>
+    <string name="name_hint">Name</string>
+    <string name="color_named">Farbe von %1$s</string>
+    <string name="color_n">Farbe %1$d</string>
+    <string name="remove_named">%1$s entfernen</string>
+    <string name="remove_confirm">Nochmal tippen: %1$s und die Punkte werden entfernt</string>
+
+    <string name="group_game">Spiel</string>
+    <string name="group_device">Gerät</string>
+    <string name="target">Zielpunktzahl</string>
+    <string name="target_sub">Das Spiel endet, sobald jemand sie erreicht</string>
+    <string name="target_off">Aus</string>
+    <string name="rule">Es gewinnen</string>
+    <string name="rule_most">Meiste Punkte</string>
+    <string name="rule_fewest">Wenigste Punkte</string>
+    <string name="rounds">Runden zählen</string>
+    <string name="rounds_sub">Zeigt „Nächste Runde“ und eine Tabelle je Runde</string>
+    <string name="haptics">Vibrieren bei jedem Punkt</string>
+    <string name="keep_on">Bildschirm an lassen</string>
+    <string name="new_game_sub">Punkte und Verlauf werden gelöscht, die Spieler bleiben</string>
+    <string name="new_game_confirm">Nochmal tippen zum Löschen</string>
+</resources>

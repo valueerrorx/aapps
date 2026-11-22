@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">scorr</string>
+    <string name="tagline">A scoreboard for game night, cards and table tennis. Big colours, one tap per point.</string>
+    <string name="note_gestures">Tap the top half for plus one, the bottom half for minus one. Drag up or down to count in steps, long-press to type a number.</string>
+
+    <string name="player_n">Player %1$d</string>
+    <string name="round_n">Round %1$d</string>
+    <string name="history">History</string>
+    <string name="undo">Undo</string>
+    <string name="next_round">Next round</string>
+    <string name="new_game">New game</string>
+    <string name="winner">Winner</string>
+    <string name="winners">Draw</string>
+    <string name="leader">Leading</string>
+    <string name="target_short">to %1$s</string>
+
+    <string name="tile_desc">%1$s, %2$s points</string>
+    <string name="tile_desc_winner">%1$s, %2$s points, winner</string>
+    <string name="action_plus">Plus one</string>
+    <string name="action_minus">Minus one</string>
+    <string name="action_enter">Enter points</string>
+    <string name="announce_winner">%1$s wins</string>
+
+    <string name="entry_hint">Points</string>
+    <string name="subtract">Subtract</string>
+    <string name="add">Add</string>
+    <string name="cancel">Cancel</string>
+
+    <string name="total">Total</string>
+    <string name="running">now</string>
+    <string name="round_short" translatable="false">R%1$d</string>
+    <string name="rounds_title">Rounds</string>
+    <string name="no_points">No points yet. Tap a tile to count.</string>
+
+    <string name="players">Players</string>
+    <string name="add_player">Add player</string>
+    <string name="players_label">Players · %1$d of %2$d</string>
+    <string name="name_hint">Name</string>
+    <string name="color_named">Colour of %1$s</string>
+    <string name="color_n">Colour %1$d</string>
+    <string name="remove_named">Remove %1$s</string>
+    <string name="remove_confirm">Tap again: %1$s and their points will be removed</string>
+
+    <string name="group_game">Game</string>
+    <string name="group_device">Device</string>
+    <string name="target">Target score</string>
+    <string name="target_sub">The game ends when someone reaches it</string>
+    <string name="target_off">Off</string>
+    <string name="rule">Winner has</string>
+    <string name="rule_most">Most points</string>
+    <string name="rule_fewest">Fewest points</string>
+    <string name="rounds">Count rounds</string>
+    <string name="rounds_sub">Shows “Next round” and a table per round</string>
+    <string name="haptics">Vibrate on every point</string>
+    <string name="keep_on">Keep screen on</string>
+    <string name="new_game_sub">Scores and history are cleared, players stay</string>
+    <string name="new_game_confirm">Tap again to clear</string>
+</resources>
