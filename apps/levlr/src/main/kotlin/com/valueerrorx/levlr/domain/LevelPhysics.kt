@@ -1,6 +1,5 @@
 package com.valueerrorx.levlr.domain
 
-import com.valueerrorx.aapps.core.ui.SpringValue
 import kotlin.math.abs
 import kotlin.math.hypot
 import kotlin.math.tanh
