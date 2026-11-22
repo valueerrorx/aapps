@@ -29,7 +29,7 @@ Kein INTERNET, kein VIBRATE (Haptik über die View).
 - Keine Presets/Setlists, kein Trainer (Tempo-Rampen), keine Pendel-Physik, kein Blitz-Modus, keine Betonung pro Schlag, keine ungeraden Nenner (x/8).
 
 ## Screens
-1. **Metronom**: Zahnrad; Hero = Rad mit Schlag-Segmenten, Skala, Komet und großer BPM-Zahl mit Tempobezeichnung (Largo … Prestissimo); darunter −, TAP, +; Taktart-Stepper und Unterteilung; Hauptaktion Start/Stopp.
+1. **Metronom**: oben Taktart-Stepper und Zahnrad; Hero = Rad mit Schlag-Segmenten, Skala, Komet und großer BPM-Zahl mit Tempobezeichnung (Largo … Prestissimo); darunter Schlagzähler 1…n (laufender Schlag als Akzent-Kreis, Punkt unter der betonten Eins), −, TAP, +, Unterteilung; Hauptaktion Start/Stopp. Querformat: Bedienung links, Rad rechts (ohne Zähler).
 2. **Einstellungen**: Klang, Betonung, Bildschirm an, Info.
 3. **Info**: wie alle aapps.
 

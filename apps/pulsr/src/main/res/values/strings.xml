@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">pulsr</string>
+    <string name="tagline">A metronome that keeps perfect time. Turn the wheel, tap the tempo, play.</string>
+    <string name="note_background">Keeps clicking with the screen locked. The notification lets you stop it.</string>
+
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+    <string name="tap">Tap</string>
+    <string name="tap_desc">Tap tempo</string>
+    <string name="bpm" translatable="false">BPM</string>
+    <string name="tempo">Tempo</string>
+    <string name="tempo_state">%1$d BPM, %2$s</string>
+    <string name="slower">Slower</string>
+    <string name="faster">Faster</string>
+    <string name="meter">Time signature</string>
+    <string name="fewer_beats">Fewer beats</string>
+    <string name="more_beats">More beats</string>
+    <plurals name="beats_state">
+        <item quantity="one">%1$d beat per bar</item>
+        <item quantity="other">%1$d beats per bar</item>
+    </plurals>
+    <string name="subdivision">Subdivision</string>
+    <string name="sub_quarter">Quarter notes</string>
+    <string name="sub_eighth">Eighth notes</string>
+    <string name="sub_triplet">Triplets</string>
+    <string name="sub_sixteenth">Sixteenth notes</string>
+
+    <string name="group_sound">Sound</string>
+    <string name="sound">Click sound</string>
+    <string name="sound_click">Click</string>
+    <string name="sound_wood">Wood</string>
+    <string name="sound_beep">Beep</string>
+    <string name="accent">Accent the first beat</string>
+    <string name="accent_sub">Higher, louder click on the one</string>
+    <string name="group_display">Display</string>
+    <string name="keep_on">Keep screen on</string>
+    <string name="keep_on_sub">While the metronome plays</string>
+
+    <string name="notify_channel">Metronome</string>
+    <string name="notify_title">%1$d BPM · %2$d/4</string>
+</resources>

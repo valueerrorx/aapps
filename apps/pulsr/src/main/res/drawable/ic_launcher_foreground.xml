@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Metronom-Dreieck, Pendel nach rechts; die Spitze leuchtet als Punkt nach -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- kleiner: Fuss und Spitze bleiben in jeder Maske sichtbar -->
+    <group android:pivotX="54" android:pivotY="57" android:scaleX="0.8" android:scaleY="0.8">
+    <!-- Lichthof hinter dem Koerper -->
+    <path android:pathData="M22,62a32,32 0 1,0 64,0a32,32 0 1,0 -64,0z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="radial"
+                android:centerX="54"
+                android:centerY="62"
+                android:gradientRadius="32"
+                android:startColor="#30FF4FA0"
+                android:endColor="#00FF4FA0" />
+        </aapt:attr>
+    </path>
+    <!-- Koerper -->
+    <path
+        android:pathData="M50,36L58,36L76,84L32,84Z"
+        android:strokeWidth="4.5"
+        android:strokeColor="#FFFF4FA0"
+        android:strokeLineJoin="round" />
+    <!-- Nachleuchten der Spitze, nach links ausblendend -->
+    <path
+        android:pathData="M69.73,30.77A46,46 0 0,0 63.56,29.0"
+        android:strokeWidth="3"
+        android:strokeColor="#8CFF4FA0"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M63.56,29.0A46,46 0 0,0 57.21,28.11"
+        android:strokeWidth="2.6"
+        android:strokeColor="#4DFF4FA0"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M57.21,28.11A46,46 0 0,0 50.79,28.11"
+        android:strokeWidth="2.2"
+        android:strokeColor="#24FF4FA0"
+        android:strokeLineCap="round" />
+    <!-- Pendel -->
+    <path
+        android:pathData="M54,74L69.73,30.77"
+        android:strokeWidth="3.2"
+        android:strokeColor="#FFDCE3E8"
+        android:strokeLineCap="round" />
+    <!-- Glut an der Spitze -->
+    <path android:pathData="M57.73,30.77a12,12 0 1,0 24,0a12,12 0 1,0 -24,0z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="radial"
+                android:centerX="69.73"
+                android:centerY="30.77"
+                android:gradientRadius="12"
+                android:startColor="#88FF4FA0"
+                android:endColor="#00FF4FA0" />
+        </aapt:attr>
+    </path>
+    <path
+        android:pathData="M64.73,30.77a5,5 0 1,0 10,0a5,5 0 1,0 -10,0z"
+        android:fillColor="#FFFF4FA0" />
+    <path
+        android:pathData="M67.73,30.77a2,2 0 1,0 4,0a2,2 0 1,0 -4,0z"
+        android:fillColor="#FFFFE3F0" />
+    <!-- Drehpunkt -->
+    <path
+        android:pathData="M51.6,74a2.4,2.4 0 1,0 4.8,0a2.4,2.4 0 1,0 -4.8,0z"
+        android:fillColor="#FFDCE3E8" />
+    </group>
+</vector>
