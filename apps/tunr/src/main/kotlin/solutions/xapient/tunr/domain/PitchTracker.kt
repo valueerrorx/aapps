@@ -85,7 +85,13 @@ class PitchTracker(a4: Int = Notes.A4_DEFAULT, instrument: Instrument = Instrume
         quiet = 0
         val c = Notes.centsFromA4(f.hz, a4.toFloat())
         when {
-            !tracking -> begin(c)
+            // erster Wert nach Stille zaehlt erst mit einem passenden zweiten (Anschlag, Stoergeraeusch)
+            !tracking -> if (!pending.isNaN() && abs(c - pending) <= JUMP) {
+                begin(c)
+            } else {
+                pending = c
+                return publish()
+            }
             abs(c - smooth) > JUMP -> {
                 // Sprung zaehlt erst, wenn der naechste Wert ihn bestaetigt
                 if (!pending.isNaN() && abs(c - pending) <= JUMP) {

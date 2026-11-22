@@ -65,6 +65,7 @@ class PitchTrackerTest {
         // Pegel-Tor: -53 dB oeffnet nicht, haelt aber offen
         val q = PitchTracker()
         assertFalse(q.push(Frame(hz(64), -53f)).active)
+        q.push(Frame(hz(64), -45f))
         assertTrue(q.push(Frame(hz(64), -45f)).active)
         assertTrue(q.push(Frame(hz(64), -53f)).active)
     }
@@ -132,6 +133,50 @@ class PitchTrackerTest {
         assertFalse(t.reading.active)
         repeat(8) { t.push(Frame(440f, -30f)) }
         assertEquals(0f, t.reading.cents, 0.01f)
+    }
+
+    // erster Wert nach Stille: erst mit Bestaetigung aktiv, kein Einrasten (Haptik, Glanz) durch Einzelwerte
+    @Test fun firstFrameAfterSilenceNeedsConfirmation() {
+        val t = PitchTracker()
+        val first = t.push(tone(69, 1f))
+        assertFalse(first.active)
+        assertFalse(first.heard)
+        assertEquals(0, first.locks)
+        // einzelner Ausreisser, dann Stille: nichts angezeigt
+        t.push(silence)
+        assertFalse(t.push(tone(69, 1f)).active)
+        assertFalse(t.push(tone(57, 1f)).active)
+        val ok = t.push(tone(57, 2f))
+        assertTrue(ok.active)
+        assertEquals(57, ok.target)
+        assertEquals(2f, ok.cents, 0.01f)
+        // nach Stille wieder von vorn
+        repeat(PitchTracker.QUIET_FRAMES + 1) { t.push(silence) }
+        val again = t.push(tone(64))
+        assertFalse(again.active)
+        assertEquals("alte Note bleibt gedimmt", 57, again.target)
+        assertTrue(t.push(tone(64)).active)
+    }
+
+    @Test fun instrumentsPickStrings() {
+        fun settle(i: Instrument, midi: Int, cents: Float): Reading {
+            val t = PitchTracker(instrument = i)
+            repeat(8) { t.push(tone(midi, cents)) }
+            return t.reading
+        }
+        // Drop D: tiefe Saite auf D2; noch auf E2 gestimmt = 200 Cent zu hoch
+        settle(Instrument.GUITAR_DROP_D, 38, 8f).let { assertEquals(0, it.string); assertEquals(38, it.target); assertEquals(8f, it.cents, 0.01f) }
+        settle(Instrument.GUITAR_DROP_D, 40, 0f).let { assertEquals(0, it.string); assertEquals(200f, it.cents, 0.01f) }
+        // Bass: E1 bis G2
+        settle(Instrument.BASS, 28, -12f).let { assertEquals(0, it.string); assertEquals(-12f, it.cents, 0.01f) }
+        settle(Instrument.BASS, 43, 3f).let { assertEquals(3, it.string); assertTrue(it.inTune) }
+        // Ukulele rueckwaerts gestimmt: G4 ist Saite 1, C4 Saite 2
+        settle(Instrument.UKULELE, 67, 0f).let { assertEquals(0, it.string); assertEquals(67, it.target) }
+        settle(Instrument.UKULELE, 60, -20f).let { assertEquals(1, it.string); assertEquals(-20f, it.cents, 0.01f) }
+        settle(Instrument.UKULELE, 69, 2f).let { assertEquals(3, it.string) }
+        // Violine G3 D4 A4 E5
+        settle(Instrument.VIOLIN, 55, -30f).let { assertEquals(0, it.string) }
+        settle(Instrument.VIOLIN, 76, 3f).let { assertEquals(3, it.string); assertTrue(it.inTune) }
     }
 
     @Test fun stopKeepsLastNoteInactive() {
