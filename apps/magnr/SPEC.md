@@ -8,11 +8,11 @@ Metalldetektor und Magnetfeld-Messer: Schrauben, Nägel, Stahlträger und Magnet
   - Warum nicht `UNCALIBRATED`: dort steckt der Hart-Eisen-Versatz des Handys selbst (Lautsprecher, Kamera, oft 20–200 µT) im Wert. Der Betrag ändert sich dann schon beim Drehen des Handys, jeder Schwenk wäre ein Fehlalarm. Kalibriert ist der Betrag lageunabhängig, nur Metall in der Nähe ändert ihn. Nachteil: Die Online-Kalibrierung des Systems springt gelegentlich. Das fangen Nullen und der automatische Grundwert ab.
 - Messgröße ist der Betrag |B| (lageunabhängig), geglättet exponentiell mit τ = 0,12 s.
 - Grundwert (Erdfeld am Ort):
-  - automatisch: Mittel der ersten 0,5 s nach dem Start bzw. Weiter.
+  - automatisch: Mittel der ersten 0,5 s nach dem Start. Nach Pause oder Rückkehr bleibt er (sonst würde ein gerade gehaltener Fund zum Grundwert).
   - „Nullen“ (Hauptaktion): Grundwert = aktueller Betrag, mit Haptik.
   - Driftausgleich (abschaltbar, Standard an): Liegt die Abweichung unter 2 µT, folgt der Grundwert langsam (τ = 30 s). Ein gehaltener Fund verschwindet so nicht.
 - Abweichung Δ = Betrag − Grundwert (mit Vorzeichen). Ausschlag 0…1 = (|Δ| − Rauschen) / (Vollausschlag − Rauschen).
-- Empfindlichkeit: Vollausschlag 100 / 30 / 10 µT (niedrig / mittel / hoch), Rauschschwelle 3 / 0,9 / 0,6 µT.
+- Empfindlichkeit: Vollausschlag 100 / 40 / 12 µT (niedrig / mittel / hoch, durch 4 teilbar für runde Skalenwerte), Rauschschwelle 3 / 0,9 / 0,6 µT.
 - Stufen mit Hysterese (0,04): ruhig < 0,12 ≤ schwach < 0,45 ≤ nah < 0,8 ≤ sehr nah. Haptik-Tick beim Steigen der Stufe, „sehr nah“ mit Bestätigungs-Haptik. Abschaltbar.
 - Spitze: größte |Δ| bleibt 2 s stehen, dann folgt sie dem aktuellen Wert.
 - Verlauf der letzten 20 s: Ausschlag je 100 ms, Pausen als Lücke.
@@ -54,7 +54,7 @@ Keine. Haptik über die View, Ton über AudioTrack. Kein INTERNET, kein Dienst.
 ## Screenshot-Zustände (Roborazzi, `apps/magnr/screenshots/`)
 | Name | Inhalt |
 |---|---|
-| `near` | Betrag 63,1 µT, Δ +15,2, mittel, Stufe nah, Spitze +18,4 |
+| `near` | Betrag 69,2 µT, Δ +21,3, mittel, Stufe nah, Spitze +24,6 |
 | `quiet` | 48,2 µT, Δ +0,3, ruhig |
 | `strong` | hoch, sehr nah, Ton an |
 | `saturated` | Sensor am Anschlag |
