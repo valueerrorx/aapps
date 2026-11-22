@@ -44,6 +44,8 @@
     <string name="mic_failed_title">Microphone unavailable</string>
     <string name="mic_failed_text">Another app may be using it. Close it and try again.</string>
     <string name="mic_retry">Try again</string>
+    <string name="mic_silenced_title">Microphone muted</string>
+    <string name="mic_silenced_text">Microphone access is off in quick settings, or another app is using it. Turn it back on and loudr continues by itself.</string>
 
     <string name="group_measure">Measurement</string>
     <string name="weighting">Time weighting</string>

@@ -42,6 +42,8 @@
     <string name="mic_failed_title">Mikrofon nicht verfügbar</string>
     <string name="mic_failed_text">Vielleicht nutzt es gerade eine andere App. Schließe sie und versuch es noch einmal.</string>
     <string name="mic_retry">Erneut versuchen</string>
+    <string name="mic_silenced_title">Mikrofon stummgeschaltet</string>
+    <string name="mic_silenced_text">Der Mikrofonzugriff ist in den Schnelleinstellungen aus oder eine andere App nutzt das Mikrofon. Schalte es wieder ein, dann misst loudr von selbst weiter.</string>
 
     <string name="group_measure">Messung</string>
     <string name="weighting">Zeitbewertung</string>

@@ -49,6 +49,7 @@ fun LoudrApp(newMeter: (Context) -> LevelMeter = ::MicMeter) {
     var paused by rememberSaveable { mutableStateOf(false) }
     var failed by remember { mutableStateOf(false) }
     var measuring by remember { mutableStateOf(false) }
+    var silenced by remember { mutableStateOf(false) }
     // Min/Max/Leq/Verlauf ueberstehen Prozess-Tod
     val meter = rememberSaveable(
         saver = Saver<LevelMeter, DoubleArray>({ it.save() }, { s -> newMeter(context).apply { restore(s) } }),
@@ -80,19 +81,25 @@ fun LoudrApp(newMeter: (Context) -> LevelMeter = ::MicMeter) {
         onPauseOrDispose { }
     }
 
-    // Fehler kommen vom Audio-Thread
+    // Fehler und Stummschaltung kommen vom Audio-Thread
     DisposableEffect(meter) {
         val main = Handler(Looper.getMainLooper())
         meter.onFailure = { main.post { failed = true } }
-        onDispose { meter.onFailure = null }
+        meter.onSilenced = { s -> main.post { silenced = s } }
+        onDispose {
+            meter.onFailure = null
+            meter.onSilenced = null
+        }
     }
     // Mikrofon nur zwischen ON_START und ON_STOP, nie im Hintergrund
     LifecycleStartEffect(meter, hasMic, paused, failed) {
+        silenced = false
         measuring = hasMic && !paused && !failed && meter.start()
         if (hasMic && !paused && !failed && !measuring) failed = true
         onStopOrDispose {
             meter.stop()
             measuring = false
+            silenced = false
         }
     }
 
@@ -100,6 +107,7 @@ fun LoudrApp(newMeter: (Context) -> LevelMeter = ::MicMeter) {
         !hasMic && blocked -> MicState.BLOCKED
         !hasMic -> MicState.ASK
         failed -> MicState.FAILED
+        silenced && measuring -> MicState.SILENCED
         else -> MicState.READY
     }
     fun onMic() {
@@ -114,7 +122,7 @@ fun LoudrApp(newMeter: (Context) -> LevelMeter = ::MicMeter) {
                 // keine Einstellungs-App: nichts zu tun
             }
             MicState.FAILED -> failed = false
-            MicState.READY -> Unit
+            MicState.READY, MicState.SILENCED -> Unit
         }
     }
     fun change(s: Settings) {

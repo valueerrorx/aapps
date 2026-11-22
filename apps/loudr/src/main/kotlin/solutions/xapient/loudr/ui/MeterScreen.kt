@@ -57,7 +57,7 @@ import solutions.xapient.loudr.domain.Example
 import solutions.xapient.loudr.domain.Reading
 import solutions.xapient.loudr.domain.formatDb
 
-enum class MicState { READY, ASK, BLOCKED, FAILED }
+enum class MicState { READY, ASK, BLOCKED, FAILED, SILENCED }
 
 // Messer: Bogen als Hero, darunter Werte und Verlauf, eine Hauptaktion
 @Composable
@@ -222,6 +222,8 @@ private fun Status(live: Boolean) {
 @Composable
 private fun MainAction(mic: MicState, live: Boolean, haptics: Haptics?, onToggle: () -> Unit, onMic: () -> Unit) {
     val (text, icon) = when (mic) {
+        // nichts zu tun: das System schaltet frei
+        MicState.SILENCED -> return
         MicState.READY -> if (live) R.string.pause to LoudrIcons.Pause else R.string.resume to LoudrIcons.Play
         MicState.ASK -> R.string.mic_allow to LoudrIcons.Mic
         MicState.BLOCKED -> R.string.mic_settings to LoudrIcons.Mic
@@ -245,6 +247,7 @@ private fun Prompt(mic: MicState) {
     val (title, text) = when (mic) {
         MicState.BLOCKED -> R.string.mic_blocked_title to R.string.mic_blocked_text
         MicState.FAILED -> R.string.mic_failed_title to R.string.mic_failed_text
+        MicState.SILENCED -> R.string.mic_silenced_title to R.string.mic_silenced_text
         else -> R.string.mic_ask_title to R.string.mic_ask_text
     }
     Column(Modifier.padding(horizontal = 32.dp, vertical = 8.dp), horizontalAlignment = Alignment.CenterHorizontally) {

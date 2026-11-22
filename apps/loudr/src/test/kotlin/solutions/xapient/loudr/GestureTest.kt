@@ -40,6 +40,7 @@ class FakeMeter : LevelMeter {
     var resets = 0
     var reads = 0
     override var onFailure: (() -> Unit)? = null
+    override var onSilenced: ((Boolean) -> Unit)? = null
     override fun start(): Boolean {
         running = true
         starts++
