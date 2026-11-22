@@ -116,8 +116,11 @@ fun TunerScreen(
         else -> null
     }
     val dial: @Composable (Modifier) -> Unit = { m -> TunerDial(state, settings.notation, hint, m) }
+    // Platz fuer die Saiten immer reserviert, damit Ring und Zustand beim Moduswechsel nicht springen
     val strings: @Composable () -> Unit = {
-        if (!settings.instrument.chromatic) StringRow(settings.instrument, settings.notation, state.coarse, locked, haptics, onLock)
+        Box(Modifier.height(StringSlot), contentAlignment = Alignment.TopCenter) {
+            if (!settings.instrument.chromatic) StringRow(settings.instrument, settings.notation, state.coarse, locked, haptics, onLock)
+        }
     }
     val top: @Composable (Modifier) -> Unit = { m ->
         Row(m.heightIn(min = 56.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -166,7 +169,7 @@ fun TunerScreen(
                 ) {
                     StatusLine(state.coarse, Modifier.padding(horizontal = 16.dp))
                     dial(Modifier.weight(1f, fill = false).fillMaxWidth().aspectRatio(1f, matchHeightConstraintsFirst = true))
-                    if (!settings.instrument.chromatic) Spacer(Modifier.height(8.dp))
+                    Spacer(Modifier.height(8.dp))
                     strings()
                 }
                 Spacer(Modifier.height(20.dp))
@@ -175,6 +178,9 @@ fun TunerScreen(
         }
     }
 }
+
+// Hoehe der Saitenreihe: Kreis 52 + Abstand 5 + Punkt 5
+private val StringSlot = 62.dp
 
 // freier Platz 30 % oben, 70 % unten
 private object UpperBias : Arrangement.Vertical {
@@ -202,7 +208,8 @@ private fun StatusLine(coarse: Coarse, modifier: Modifier = Modifier) {
     val size = with(LocalDensity.current) { (26.dp * grow).toSp() }
     Row(
         // Ansage steckt schon im Hero (stateDescription)
-        modifier.clearAndSetSemantics { },
+        // feste Mindesthoehe, damit der Haken die Zeile nicht hoeher macht
+        modifier.heightIn(min = 28.dp * grow).clearAndSetSemantics { },
         verticalAlignment = Alignment.CenterVertically,
     ) {
         BasicText(

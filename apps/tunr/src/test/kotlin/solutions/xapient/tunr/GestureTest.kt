@@ -29,6 +29,7 @@ import solutions.xapient.aapps.core.ui.AappsTheme
 import solutions.xapient.tunr.audio.Mic
 import solutions.xapient.tunr.domain.Frame
 import solutions.xapient.tunr.domain.Instrument
+import solutions.xapient.tunr.domain.Reading
 import solutions.xapient.tunr.domain.Settings
 import solutions.xapient.tunr.ui.InstrumentScreen
 import solutions.xapient.tunr.ui.MicUi
@@ -181,6 +182,24 @@ class GestureTest {
         rule.waitForIdle()
         assertEquals(2, mic.stops)
     }
+
+    // Ring sitzt in jedem Modus an derselben Stelle (hoch und quer, auch mit 200 % Schrift)
+    private fun assertDialStaysPut() {
+        fun dialBounds(instrument: Instrument, r: Reading): androidx.compose.ui.geometry.Rect {
+            val s = Settings(instrument = instrument)
+            val state = TunerState(s.a4, s.instrument).apply { show(r, 0f, 1f) }
+            show { TunerScreen(state, s, MicUi.ON, -1, null, {}, {}, {}, {}, animate = false) }
+            return rule.onNodeWithContentDescription("Tuner").fetchSemanticsNode().boundsInRoot
+        }
+        val inTune = Reading(active = true, heard = true, hz = hz(69, 1f), target = 69, cents = 1f, inTune = true, locks = 1)
+        val flat = Reading(active = true, heard = true, hz = hz(45, -23f), target = 45, cents = -23f, string = 1, locks = 1)
+        assertEquals(dialBounds(Instrument.CHROMATIC, inTune), dialBounds(Instrument.GUITAR, flat))
+    }
+
+    @Test fun dialStaysPut() = assertDialStaysPut()
+    @Test @Config(qualifiers = "+land") fun dialStaysPutLand() = assertDialStaysPut()
+    @Test @Config(fontScale = 2f) fun dialStaysPutFont200() = assertDialStaysPut()
+    @Test @Config(qualifiers = "+land", fontScale = 2f) fun dialStaysPutLandFont200() = assertDialStaysPut()
 
     private fun androidx.compose.ui.test.SemanticsNodeInteraction.assertExistsWithState(expected: String) {
         val node = fetchSemanticsNode()
