@@ -54,7 +54,7 @@ class FakeMeter : LevelMeter {
     }
     override fun reading(): Reading {
         reads++
-        return Reading(62f, 61f, 60f, 45f, 75f, 50f, 70f, 12f, FloatArray(40) { 55f + it % 7 }, running)
+        return Reading(62f, 61f, 60f, 45f, 75f, 50f, 70f, FloatArray(40) { 55f + it % 7 }, running)
     }
     override fun save() = DoubleArray(0)
     override fun restore(state: DoubleArray) = Unit

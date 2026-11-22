@@ -4,6 +4,7 @@ import kotlin.math.exp
 import kotlin.math.log10
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.pow
 
 enum class TimeWeighting(val seconds: Double) { FAST(0.125), SLOW(1.0) }
 
@@ -16,18 +17,19 @@ class Reading(
     val maxFast: Float,
     val minSlow: Float,
     val maxSlow: Float,
-    val seconds: Float,
     // Leq je 100 ms, aeltester zuerst
     val history: FloatArray,
     // misst gerade und ist eingeschwungen
     val live: Boolean,
+    // Mikrofon uebersteuert (in der letzten Sekunde Vollausschlag): Pegel ist nur Untergrenze
+    val overload: Boolean = false,
 ) {
     fun level(w: TimeWeighting) = if (w == TimeWeighting.FAST) fast else slow
     fun min(w: TimeWeighting) = if (w == TimeWeighting.FAST) minFast else minSlow
     fun max(w: TimeWeighting) = if (w == TimeWeighting.FAST) maxFast else maxSlow
 
     companion object {
-        val EMPTY = Reading(Float.NaN, Float.NaN, Float.NaN, Float.NaN, Float.NaN, Float.NaN, Float.NaN, 0f, FloatArray(0), false)
+        val EMPTY = Reading(Float.NaN, Float.NaN, Float.NaN, Float.NaN, Float.NaN, Float.NaN, Float.NaN, FloatArray(0), false)
     }
 }
 
@@ -60,6 +62,9 @@ class History(val capacity: Int) {
 class SoundMeter {
     private var filter: AWeighting? = null
     private var rate = 0
+    // mittleres Quadrat (Vollausschlag = 1) -> Bezug der Quelle
+    private var gain = 0.0
+    private var overHold = 0
     private var alphaFast = 0.0
     private var alphaSlow = 0.0
     private var msFast = 0.0
@@ -73,7 +78,6 @@ class SoundMeter {
 
     private var energy = 0.0
     private var count = 0L
-    private var seconds = 0.0
     private var minFast = Float.NaN
     private var maxFast = Float.NaN
     private var minSlow = Float.NaN
@@ -85,10 +89,12 @@ class SoundMeter {
     private val history = History(HISTORY_SLICES)
     private var historyCopy: FloatArray? = null
 
-    // Neuer Messlauf: Filter frisch, Einschwingen abwarten; Statistik bleibt
-    fun restart(sampleRate: Int) {
+    // Neuer Messlauf: Filter frisch, Einschwingen abwarten; Statistik bleibt. refDb = dB SPL bei RMS = Vollausschlag (je Quelle)
+    fun restart(sampleRate: Int, refDb: Double = REF_VOICE) {
         filter = AWeighting(sampleRate)
         rate = sampleRate
+        gain = 10.0.pow(refDb / 10)
+        overHold = 0
         alphaFast = 1 - exp(-1.0 / (sampleRate * TimeWeighting.FAST.seconds))
         alphaSlow = 1 - exp(-1.0 / (sampleRate * TimeWeighting.SLOW.seconds))
         settle = (sampleRate * SETTLE_S).toInt()
@@ -110,9 +116,12 @@ class SoundMeter {
     fun feed(pcm: ShortArray, n: Int) {
         val f = filter ?: return
         var used = 0
+        var clipped = 0
         for (i in 0 until n) {
-            val w = f.process(pcm[i] / FULL_SCALE)
-            val e = w * w
+            val x = pcm[i].toInt()
+            if (x >= CLIP || x <= -CLIP) clipped++
+            val w = f.process(x / FULL_SCALE)
+            val e = w * w * gain
             if (settle > 0) {
                 // Filter schwingt ein; das Ende setzt den Startwert der Zeitbewertung
                 if (settle <= primeLen) {
@@ -141,8 +150,8 @@ class SoundMeter {
                 sliceN = 0
             }
         }
+        overHold = if (clipped > 0) rate else max(0, overHold - n)
         if (used > 0) {
-            seconds += used.toDouble() / rate
             val lf = db(msFast)
             val ls = db(msSlow)
             minFast = minOf(minFast, lf)
@@ -156,7 +165,6 @@ class SoundMeter {
     fun reset() {
         energy = 0.0
         count = 0
-        seconds = 0.0
         minFast = Float.NaN
         maxFast = Float.NaN
         minSlow = Float.NaN
@@ -175,9 +183,9 @@ class SoundMeter {
             slow = if (hasLevel) db(msSlow) else Float.NaN,
             leq = if (count > 0) db(energy / count) else Float.NaN,
             minFast = minFast, maxFast = maxFast, minSlow = minSlow, maxSlow = maxSlow,
-            seconds = seconds.toFloat(),
             history = h,
             live = primed,
+            overload = overHold > 0 && hasLevel,
         )
     }
 
@@ -185,7 +193,7 @@ class SoundMeter {
     fun save(): DoubleArray {
         val h = history.toArray()
         val head = doubleArrayOf(
-            energy, count.toDouble(), seconds,
+            energy, count.toDouble(),
             minFast.toDouble(), maxFast.toDouble(), minSlow.toDouble(), maxSlow.toDouble(),
             if (hasLevel) msFast else -1.0, if (hasLevel) msSlow else -1.0,
         )
@@ -196,14 +204,13 @@ class SoundMeter {
         if (d.size < HEAD) return
         energy = d[0]
         count = d[1].toLong()
-        seconds = d[2]
-        minFast = d[3].toFloat()
-        maxFast = d[4].toFloat()
-        minSlow = d[5].toFloat()
-        maxSlow = d[6].toFloat()
-        hasLevel = d[7] >= 0 && d[8] >= 0
-        msFast = max(d[7], 0.0)
-        msSlow = max(d[8], 0.0)
+        minFast = d[2].toFloat()
+        maxFast = d[3].toFloat()
+        minSlow = d[4].toFloat()
+        maxSlow = d[5].toFloat()
+        hasLevel = d[6] >= 0 && d[7] >= 0
+        msFast = max(d[6], 0.0)
+        msSlow = max(d[7], 0.0)
         history.clear()
         for (i in HEAD until d.size) history.push(d[i].toFloat())
         historyCopy = null
@@ -211,15 +218,19 @@ class SoundMeter {
 
     companion object {
         const val FULL_SCALE = 32768.0
-        // CDD: 90 dB SPL bei 1 kHz ergeben RMS 2500 (16 bit)
-        val REF_DB: Double = 90.0 + 20 * log10(FULL_SCALE / 2500.0)
+        // ab hier zaehlt ein Sample als Vollausschlag
+        const val CLIP = 32700
+        // CDD 5.4.2 VOICE_RECOGNITION: 90 dB SPL bei 1 kHz ergeben RMS 2500 (16 bit)
+        val REF_VOICE: Double = 90.0 + 20 * log10(FULL_SCALE / 2500.0)
+        // CDD 5.11 UNPROCESSED: 94 dB SPL bei 1 kHz ergeben RMS 520 (-36 dBFS)
+        val REF_UNPROCESSED: Double = 94.0 + 20 * log10(FULL_SCALE / 520.0)
         const val SETTLE_S = 0.3
         const val PRIME_S = 0.1
         const val HISTORY_SLICES = 600
-        private const val HEAD = 9
+        private const val HEAD = 8
 
-        // mittleres Quadrat (Vollausschlag = 1) -> dB
-        fun db(meanSquare: Double): Float = (10 * log10(max(meanSquare, 1e-12)) + REF_DB).toFloat()
+        // mittleres Quadrat im absoluten Bezug -> dB, Untergrenze 0 dB
+        fun db(meanSquare: Double): Float = (10 * log10(max(meanSquare, 1.0))).toFloat()
 
         private fun minOf(a: Float, b: Float) = if (a.isNaN()) b else min(a, b)
         private fun maxOf(a: Float, b: Float) = if (a.isNaN()) b else max(a, b)

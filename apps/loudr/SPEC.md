@@ -6,7 +6,8 @@ Lautstärke-Messer: App öffnen, sofort sehen, wie laut es ist, mit Alltagsvergl
 ## Muss
 - Mikrofon über `AudioRecord` (PCM 16 bit mono, 48 kHz, sonst 44,1 kHz) auf eigenem Thread. Quelle `UNPROCESSED`, wenn das Gerät sie meldet (`PROPERTY_SUPPORT_AUDIO_SOURCE_UNPROCESSED`), sonst `VOICE_RECOGNITION`. Beide Quellen sind laut CDD ohne AGC/Rauschunterdrückung.
 - A-Bewertung als IIR (drei Biquads, bilineare Transformation der Pole aus IEC 61672-1), bei 1 kHz auf 0 dB normiert. Abweichung zur Sollkurve: ≤ 0,1 dB von 10 Hz bis 4 kHz, darüber innerhalb Klasse-1-Toleranz (44,1 und 48 kHz).
-- Pegel: dB = 10·log10(mittleres Quadrat) + 112,35. Bezug laut Android-CDD: 90 dB SPL bei 1 kHz ergeben RMS 2500 (16 bit). Dazu der Kalibrier-Offset.
+- Pegel: dB = 10·log10(mittleres Quadrat, Vollausschlag = 1) + Bezug der Quelle. Bezug laut Android-CDD bei 1 kHz: `VOICE_RECOGNITION` 90 dB SPL ≙ RMS 2500 (16 bit) → 112,35; `UNPROCESSED` (CDD 5.11) 94 dB SPL ≙ RMS 520 (−36 dBFS) → 129,99. Dazu der Kalibrier-Offset.
+- Übersteuerung: ein Sample mit |x| ≥ 32700 markiert den Pegel eine Sekunde lang als Untergrenze („≥“ vor der Zahl, „Übersteuert“ statt Alltagsvergleich).
 - Zeitbewertung Fast (125 ms) und Slow (1 s), exponentiell pro Sample; Wahl in den Einstellungen.
 - Anzeige: aktueller Pegel, Min und Max (der gewählten Zeitbewertung), Mittelwert als Leq (energetisch über die Messzeit). Beim Start 0,3 s Einschwingen, die letzten 0,1 davon setzen den Startwert der Zeitbewertung.
 - Verlauf der letzten 60 s: Leq je 100 ms.

@@ -47,11 +47,11 @@ class LoudrScreenshotTest {
     }
 
     private fun reading(level: Float, min: Float, max: Float, leq: Float, h: FloatArray, live: Boolean = true) =
-        Reading(level, level - 1f, leq, min, max, min + 2f, max - 3f, 75f, h, live)
+        Reading(level, level - 1f, leq, min, max, min + 2f, max - 3f, h, live)
 
     private val talk = reading(63.4f, 41f, 74f, 60.8f, history(58f, 9f))
     private val quiet = reading(33f, 29f, 41f, 34f, history(33f, 4f))
-    private val loud = Reading(93f, 90f, 88f, 80f, 102f, 84f, 99f, 40f, history(86f, 7f, 400), true)
+    private val loud = Reading(93f, 90f, 88f, 80f, 102f, 84f, 99f, history(86f, 7f, 400), true)
     private val paused = reading(71f, 44f, 83f, 66f, history(66f, 10f), live = false)
 
     @Composable

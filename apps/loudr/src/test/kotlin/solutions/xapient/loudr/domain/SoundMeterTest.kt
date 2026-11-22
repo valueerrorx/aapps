@@ -41,7 +41,27 @@ class SoundMeterTest {
 
     @Test fun fullScaleSine() {
         tone(32767 / sqrt(2.0), 1.0)
-        assertEquals(SoundMeter.REF_DB - 10 * log10(2.0), meter.reading().fast.toDouble(), 0.1)
+        assertEquals(SoundMeter.REF_VOICE - 10 * log10(2.0), meter.reading().fast.toDouble(), 0.1)
+    }
+
+    // UNPROCESSED: 94 dB SPL bei RMS 520
+    @Test fun unprocessedReference() {
+        val m = SoundMeter().apply { restart(rate, SoundMeter.REF_UNPROCESSED) }
+        tone(520.0, 1.5, m)
+        assertEquals(94.0, m.reading().fast.toDouble(), 0.1)
+        assertEquals(129.99, SoundMeter.REF_UNPROCESSED, 0.01)
+    }
+
+    // Vollausschlag: Pegel nur Untergrenze, Hinweis haelt etwa eine Sekunde
+    @Test fun overloadFlagsAndHolds() {
+        tone(rmsFor(80.0), 1.0)
+        assertFalse(meter.reading().overload)
+        tone(32767 / sqrt(2.0), 0.2)
+        assertTrue(meter.reading().overload)
+        tone(rmsFor(80.0), 0.5)
+        assertTrue(meter.reading().overload)
+        tone(rmsFor(80.0), 0.6)
+        assertFalse(meter.reading().overload)
     }
 
     @Test fun works44k() {
@@ -57,7 +77,6 @@ class SoundMeterTest {
         tone(2500.0, 0.52)
         val r = meter.reading()
         assertTrue(r.live)
-        assertEquals(0.5, r.seconds.toDouble(), 0.001)
         assertEquals(90.0, r.fast.toDouble(), 0.3)
     }
 
@@ -80,7 +99,6 @@ class SoundMeterTest {
         tone(rmsFor(70.0), 1.0)
         val r = meter.reading()
         assertEquals(90 + 10 * log10((1 + 0.01) / 2), r.leq.toDouble(), 0.1)
-        assertEquals(2.0, r.seconds.toDouble(), 0.001)
     }
 
     @Test fun minAndMax() {
@@ -117,19 +135,18 @@ class SoundMeterTest {
         assertFalse(before.live)
         assertEquals(90.0, before.fast.toDouble(), 0.2)
         tone(rmsFor(40.0), 1.0)
-        assertEquals(before.seconds, meter.reading().seconds)
+        assertEquals(before.leq, meter.reading().leq)
         meter.reset()
         assertTrue(meter.reading().fast.isNaN())
     }
 
     @Test fun restartKeepsStatistics() {
-        tone(2500.0, 1.3)
+        tone(rmsFor(90.0), 1.3)
         meter.pause()
         meter.restart(rate)
-        tone(2500.0, 1.3)
-        val r = meter.reading()
-        assertEquals(2.0, r.seconds.toDouble(), 0.001)
-        assertEquals(90.0, r.leq.toDouble(), 0.1)
+        tone(rmsFor(70.0), 1.3)
+        // je 1 s nach dem Einschwingen
+        assertEquals(90 + 10 * log10((1 + 0.01) / 2), meter.reading().leq.toDouble(), 0.1)
     }
 
     @Test fun historyHoldsTenthSecondsForOneMinute() {
@@ -153,7 +170,6 @@ class SoundMeterTest {
         assertEquals(a.maxFast, b.maxFast, 0.001f)
         assertEquals(a.minSlow, b.minSlow, 0.001f)
         assertEquals(a.fast, b.fast, 0.001f)
-        assertEquals(a.seconds, b.seconds, 0.001f)
         assertEquals(a.history.toList(), b.history.toList())
         assertFalse(b.live)
         // ohne Messung danach: Pegel leer, Statistik bleibt
@@ -164,7 +180,7 @@ class SoundMeterTest {
     @Test fun silenceStaysFinite() {
         meter.feed(ShortArray(rate), rate)
         val r = meter.reading()
-        assertTrue(r.fast.isFinite() && r.fast < 0f)
+        assertTrue(r.fast.isFinite() && r.fast <= 0f)
     }
 
     @Test fun historyRing() {

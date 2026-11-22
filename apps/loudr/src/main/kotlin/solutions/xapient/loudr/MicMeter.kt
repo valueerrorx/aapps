@@ -28,7 +28,7 @@ interface LevelMeter {
 class MicMeter(context: Context, private val core: SoundMeter = SoundMeter()) : LevelMeter {
     private val app = context.applicationContext
 
-    private class Session(val record: AudioRecord, val rate: Int) {
+    private class Session(val record: AudioRecord, val rate: Int, val refDb: Double) {
         @Volatile var running = true
         var thread: Thread? = null
     }
@@ -39,9 +39,8 @@ class MicMeter(context: Context, private val core: SoundMeter = SoundMeter()) : 
 
     override fun start(): Boolean {
         if (session != null) return true
-        val record = open() ?: return false
-        val run = Session(record, record.sampleRate)
-        publish { core.restart(run.rate) }
+        val run = open() ?: return false
+        publish { core.restart(run.rate, run.refDb) }
         session = run
         val t = Thread({ loop(run) }, "loudr-mic")
         run.thread = t
@@ -79,7 +78,7 @@ class MicMeter(context: Context, private val core: SoundMeter = SoundMeter()) : 
 
     // UNPROCESSED wenn gemeldet, sonst VOICE_RECOGNITION: beide ohne AGC/Rauschunterdrueckung
     @SuppressLint("MissingPermission")
-    private fun open(): AudioRecord? {
+    private fun open(): Session? {
         if (app.checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) return null
         val am = app.getSystemService(AudioManager::class.java)
         val unprocessed = am?.getProperty(AudioManager.PROPERTY_SUPPORT_AUDIO_SOURCE_UNPROCESSED) == "true"
@@ -96,7 +95,7 @@ class MicMeter(context: Context, private val core: SoundMeter = SoundMeter()) : 
             } catch (_: Exception) {
                 continue
             }
-            if (rec.state == AudioRecord.STATE_INITIALIZED) return rec
+            if (rec.state == AudioRecord.STATE_INITIALIZED) return Session(rec, rec.sampleRate, refDb(source))
             rec.release()
         }
         return null
@@ -138,6 +137,10 @@ class MicMeter(context: Context, private val core: SoundMeter = SoundMeter()) : 
     }
 
     private companion object {
+        // Bezugspegel laut CDD je Quelle
+        fun refDb(source: Int) =
+            if (source == MediaRecorder.AudioSource.UNPROCESSED) SoundMeter.REF_UNPROCESSED else SoundMeter.REF_VOICE
+
         val RATES = intArrayOf(48_000, 44_100)
         const val JOIN_MS = 500L
     }
