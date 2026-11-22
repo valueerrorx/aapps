@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Stimmgabel im gestrichelten Ring -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:pathData="M56.02,25.07A29,29 0 0,1 66.71,27.93 M70.22,29.96A29,29 0 0,1 78.04,37.78 M80.07,41.29A29,29 0 0,1 82.93,51.98 M82.93,56.02A29,29 0 0,1 80.07,66.71 M78.04,70.22A29,29 0 0,1 70.22,78.04 M66.71,80.07A29,29 0 0,1 56.02,82.93 M51.98,82.93A29,29 0 0,1 41.29,80.07 M37.78,78.04A29,29 0 0,1 29.96,70.22 M27.93,66.71A29,29 0 0,1 25.07,56.02 M25.07,51.98A29,29 0 0,1 27.93,41.29 M29.96,37.78A29,29 0 0,1 37.78,29.96 M41.29,27.93A29,29 0 0,1 51.98,25.07"
+        android:strokeWidth="3.2"
+        android:strokeColor="#99000000"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M47.5,33L47.5,51.5A6.5,6.5 0 0,0 60.5,51.5L60.5,33 M54,58L54,76"
+        android:strokeWidth="4"
+        android:strokeColor="#FF000000"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+</vector>
