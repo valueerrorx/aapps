@@ -16,9 +16,9 @@ data class Settings(
 
 enum class MicAccess { GRANTED, ASK, BLOCKED }
 
-// Nie gefragt oder Begruendung erlaubt: fragen; sonst dauerhaft abgelehnt (nur App-Info hilft)
-fun micAccess(granted: Boolean, askedBefore: Boolean, showRationale: Boolean): MicAccess = when {
+// Gesperrt nur mit Beleg (Anfrage kam ohne Dialog sofort abgelehnt zurueck); Wegtippen des Dialogs zaehlt nicht
+fun micAccess(granted: Boolean, deniedWithoutDialog: Boolean, showRationale: Boolean): MicAccess = when {
     granted -> MicAccess.GRANTED
-    !askedBefore || showRationale -> MicAccess.ASK
+    showRationale || !deniedWithoutDialog -> MicAccess.ASK
     else -> MicAccess.BLOCKED
 }

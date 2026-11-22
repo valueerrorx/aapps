@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.SystemClock
 import android.provider.Settings as AndroidSettings
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalActivity
@@ -21,6 +22,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.LifecycleStartEffect
 import solutions.xapient.aapps.core.ui.AappsTheme
 import solutions.xapient.aapps.core.ui.KeepScreenOn
@@ -40,11 +42,25 @@ import solutions.xapient.tunr.ui.TunrSettings
 
 private enum class Screen { TUNER, INSTRUMENT, SETTINGS, ABOUT }
 
-private fun accessOf(context: Context, activity: Activity?, prefs: Prefs): MicAccess = micAccess(
-    granted = ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED,
-    askedBefore = prefs.askedMic,
-    showRationale = activity?.shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO) == true,
-)
+private fun accessOf(context: Context, activity: Activity?, prefs: Prefs): MicAccess {
+    val granted = ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
+    // in den App-Infos erlaubt: Sperre vergessen
+    if (granted && prefs.micBlocked) prefs.micBlocked = false
+    return micAccess(
+        granted = granted,
+        deniedWithoutDialog = prefs.micBlocked,
+        showRationale = activity?.shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO) == true,
+    )
+}
+
+// laufende Anfrage: zeigt das System einen Dialog, pausiert die Activity; ohne Dialog kommt das Nein sofort
+private class Ask {
+    var dialog = false
+    var byTap = false
+    var at = 0L
+}
+
+private const val INSTANT_MS = 500L
 
 @Composable
 fun TunrApp(micFactory: (Context) -> Mic = ::AudioRecordMic) {
@@ -69,9 +85,24 @@ fun TunrApp(micFactory: (Context) -> Mic = ::AudioRecordMic) {
     LaunchedEffect(locked, settings.instrument) { state.lock(locked) }
 
     var access by remember { mutableStateOf(accessOf(context, activity, prefs)) }
-    val ask = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
+    val asking = remember { Ask() }
+    val ask = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
         prefs.askedMic = true
+        // ohne Dialog abgelehnt = dauerhaft gesperrt; nach Tippen gleich zu den App-Infos
+        if (!granted && !asking.dialog && SystemClock.uptimeMillis() - asking.at < INSTANT_MS) {
+            prefs.micBlocked = true
+            if (asking.byTap) openAppInfo(context)
+        }
         access = accessOf(context, activity, prefs)
+    }
+    fun request(byTap: Boolean) {
+        asking.dialog = false
+        asking.byTap = byTap
+        asking.at = SystemClock.uptimeMillis()
+        ask.launch(Manifest.permission.RECORD_AUDIO)
+    }
+    LifecycleResumeEffect(Unit) {
+        onPauseOrDispose { asking.dialog = true }
     }
     // zurueck aus den App-Infos: neu pruefen
     LifecycleStartEffect(Unit) {
@@ -80,7 +111,7 @@ fun TunrApp(micFactory: (Context) -> Mic = ::AudioRecordMic) {
     }
     // beim ersten Oeffnen einmal fragen; das Werkzeug kann ohne Mikrofon nichts
     LaunchedEffect(Unit) {
-        if (!prefs.askedMic && access == MicAccess.ASK) ask.launch(Manifest.permission.RECORD_AUDIO)
+        if (!prefs.askedMic && access == MicAccess.ASK) request(byTap = false)
     }
     var micError by remember { mutableStateOf(false) }
 
@@ -115,9 +146,9 @@ fun TunrApp(micFactory: (Context) -> Mic = ::AudioRecordMic) {
                     onInstrument = { screen = Screen.INSTRUMENT },
                     onSettings = { screen = Screen.SETTINGS },
                     onMicAction = {
+                        // auch gesperrt erst fragen: kommt sofort ein Nein, oeffnen sich die App-Infos
                         when (access) {
-                            MicAccess.ASK -> ask.launch(Manifest.permission.RECORD_AUDIO)
-                            MicAccess.BLOCKED -> openAppInfo(context)
+                            MicAccess.ASK, MicAccess.BLOCKED -> request(byTap = true)
                             MicAccess.GRANTED -> micError = false
                         }
                     },

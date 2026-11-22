@@ -23,8 +23,11 @@ class PrefsTest {
         val s = Settings(a4 = 442, notation = Notation.GERMAN, instrument = Instrument.UKULELE, haptics = false)
         Prefs(ctx).settings = s
         Prefs(ctx).askedMic = true
+        assertFalse(Prefs(ctx).micBlocked)
+        Prefs(ctx).micBlocked = true
         assertEquals(s, Prefs(ctx).settings)
         assertTrue(Prefs(ctx).askedMic)
+        assertTrue(Prefs(ctx).micBlocked)
     }
 
     @Test fun brokenValuesFallBack() {

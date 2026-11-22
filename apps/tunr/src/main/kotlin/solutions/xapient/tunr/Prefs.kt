@@ -25,10 +25,15 @@ class Prefs(context: Context) {
             putBoolean("haptics", v.haptics)
         }
 
-    // Mikrofon schon einmal erfragt (fuer "dauerhaft abgelehnt")
+    // Mikrofon schon einmal erfragt (nur einmal von selbst fragen)
     var askedMic: Boolean
         get() = sp.getBoolean("askedMic", false)
         set(v) = sp.edit { putBoolean("askedMic", v) }
+
+    // Anfrage kam ohne Dialog abgelehnt zurueck: dauerhaft gesperrt
+    var micBlocked: Boolean
+        get() = sp.getBoolean("micBlocked", false)
+        set(v) = sp.edit { putBoolean("micBlocked", v) }
 
     private companion object {
         inline fun <reified E : Enum<E>> enumOr(name: String?, fallback: E): E =

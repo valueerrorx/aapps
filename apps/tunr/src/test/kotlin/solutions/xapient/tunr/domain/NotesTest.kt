@@ -49,9 +49,11 @@ class NotesTest {
     @Test fun settingsAndMicAccess() {
         assertEquals(415, Settings(a4 = 300).sane().a4)
         assertEquals(466, Settings(a4 = 500).sane().a4)
-        assertEquals(MicAccess.GRANTED, micAccess(granted = true, askedBefore = true, showRationale = false))
-        assertEquals(MicAccess.ASK, micAccess(granted = false, askedBefore = false, showRationale = false))
-        assertEquals(MicAccess.ASK, micAccess(granted = false, askedBefore = true, showRationale = true))
-        assertEquals(MicAccess.BLOCKED, micAccess(granted = false, askedBefore = true, showRationale = false))
+        assertEquals(MicAccess.GRANTED, micAccess(granted = true, deniedWithoutDialog = true, showRationale = false))
+        // nie gefragt oder Dialog nur weggetippt: weiter fragen
+        assertEquals(MicAccess.ASK, micAccess(granted = false, deniedWithoutDialog = false, showRationale = false))
+        // einmal abgelehnt: System zeigt den Dialog noch
+        assertEquals(MicAccess.ASK, micAccess(granted = false, deniedWithoutDialog = true, showRationale = true))
+        assertEquals(MicAccess.BLOCKED, micAccess(granted = false, deniedWithoutDialog = true, showRationale = false))
     }
 }
