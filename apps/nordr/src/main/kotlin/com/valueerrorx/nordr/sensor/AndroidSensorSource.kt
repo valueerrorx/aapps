@@ -45,9 +45,11 @@ class AndroidSensorSource(private val manager: SensorManager?) : SensorSource {
             override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) = Unit
         }
         this.listener = l
-        listOfNotNull(rotation, magnetic, accel).forEach {
-            manager?.registerListener(l, it, SensorManager.SENSOR_DELAY_GAME)
-        }
+        // mit Rotation-Vector liefert das Magnetometer nur die Genauigkeit, dafuer reicht UI-Rate
+        val magneticDelay = if (rotation != null) SensorManager.SENSOR_DELAY_UI else SensorManager.SENSOR_DELAY_GAME
+        rotation?.let { manager?.registerListener(l, it, SensorManager.SENSOR_DELAY_GAME) }
+        accel?.let { manager?.registerListener(l, it, SensorManager.SENSOR_DELAY_GAME) }
+        magnetic?.let { manager?.registerListener(l, it, magneticDelay) }
     }
 
     override fun stop() {
