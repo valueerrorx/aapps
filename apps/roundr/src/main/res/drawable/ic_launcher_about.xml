@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- App-Icon fuer die Info-Seite (adaptive Icons kann Compose nicht direkt zeichnen); erzeugt aus ic_launcher_foreground -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="72dp"
+    android:height="72dp"
+    android:viewportWidth="72"
+    android:viewportHeight="72">
+    <path android:pathData="M20,0h32a20,20 0 0 1 20,20v32a20,20 0 0 1 -20,20h-32a20,20 0 0 1 -20,-20v-32a20,20 0 0 1 20,-20z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="radial"
+                android:centerX="36"
+                android:centerY="32"
+                android:gradientRadius="44"
+                android:startColor="#FF22252B"
+                android:endColor="#FF10161B" />
+        </aapt:attr>
+    </path>
+    <path
+        android:pathData="M20,0.5h32a19.5,19.5 0 0 1 19.5,19.5v32a19.5,19.5 0 0 1 -19.5,19.5h-32a19.5,19.5 0 0 1 -19.5,-19.5v-32a19.5,19.5 0 0 1 19.5,-19.5z"
+        android:strokeWidth="1"
+        android:strokeColor="#FF26323C" />
+    <group android:translateX="-18" android:translateY="-18">
+        <path android:pathData="M20,56a34,34 0 1,0 68,0a34,34 0 1,0 -68,0z">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:type="radial"
+                    android:centerX="54"
+                    android:centerY="56"
+                    android:gradientRadius="34"
+                    android:startColor="#40FF6B3D"
+                    android:endColor="#00FF6B3D" />
+            </aapt:attr>
+        </path>
+        <path
+            android:pathData="M54,24.5L54,28.5M50,22.5L58,22.5"
+            android:strokeWidth="3.2"
+            android:strokeColor="#FFDCE3E8"
+            android:strokeLineCap="round" />
+        <path
+            android:pathData="M59.32,34.65A22,22 0 0,1 59.32,77.35"
+            android:strokeWidth="8"
+            android:strokeColor="#FFFF6B3D"
+            android:strokeLineCap="round" />
+        <path
+            android:pathData="M48.68,77.35A22,22 0 0,1 48.68,34.65"
+            android:strokeWidth="8"
+            android:strokeColor="#FF4FC3F7"
+            android:strokeLineCap="round" />
+        <path
+            android:pathData="M62.5,38.5A17.5,17.5 0 0,1 70.5,48"
+            android:strokeWidth="1.2"
+            android:strokeColor="#66FFFFFF"
+            android:strokeLineCap="round" />
+    </group>
+</vector>
