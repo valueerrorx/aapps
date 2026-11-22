@@ -88,20 +88,27 @@ fun Modifier.pressScale(pressed: Boolean, scale: Float = 0.94f): Modifier = grap
 }
 
 @Composable
-fun AappsIconButton(icon: ImageVector, contentDescription: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
+fun AappsIconButton(
+    icon: ImageVector,
+    contentDescription: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+) {
     val source = remember { MutableInteractionSource() }
     val pressed by source.collectIsPressedAsState()
     val scale by animateFloatAsState(if (pressed) 0.88f else 1f, Springs.bouncy(), label = "iconScale")
     val c = Aapps.colors
+    val tint by animateColorAsState(if (enabled) c.fgMuted else c.fgFaint, Springs.gentle(), label = "iconTint")
     Box(
         modifier
             .size(48.dp)
             .graphicsLayer { scaleX = scale; scaleY = scale }
             .background(if (pressed) c.surfaceHigh else Color.Transparent, CircleShape)
-            .clickable(source, indication = null, role = Role.Button, onClick = onClick),
+            .clickable(source, indication = null, enabled = enabled, role = Role.Button, onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
-        AappsIcon(icon, contentDescription, c.fgMuted, size = 24.dp)
+        AappsIcon(icon, contentDescription, tint, size = 24.dp)
     }
 }
 
