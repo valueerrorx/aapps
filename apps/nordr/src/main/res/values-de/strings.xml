@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tagline">Ein Kompass, der sich dreht wie ein echter und deinen Kurs hält. Eine Aufgabe, schön gelöst.</string>
+    <string name="note_navigation">Nicht für die Navigation in kritischen Situationen. Handy-Sensoren sind keine geeichten Instrumente und reagieren auf Magnete und Metall.</string>
+    <string name="no_sensor">Dieses Gerät hat keinen Kompass-Sensor.</string>
+
+    <string name="north_magnetic">Magnetisch</string>
+    <string name="north_true">Geografisch</string>
+    <string name="heading_desc">%1$d Grad, %2$s</string>
+    <string name="accuracy_low">geringe Genauigkeit</string>
+    <string name="set_course">Kurs setzen</string>
+    <string name="clear_course">Kurs löschen</string>
+    <string name="on_course">Auf Kurs</string>
+    <string name="course_line">Kurs %1$s</string>
+    <string name="dev_right">%1$s rechts</string>
+    <string name="dev_left">%1$s links</string>
+
+    <string-array name="points">
+        <item>N</item><item>NNO</item><item>NO</item><item>ONO</item>
+        <item>O</item><item>OSO</item><item>SO</item><item>SSO</item>
+        <item>S</item><item>SSW</item><item>SW</item><item>WSW</item>
+        <item>W</item><item>WNW</item><item>NW</item><item>NNW</item>
+    </string-array>
+
+    <string name="cal_title">Kalibrieren</string>
+    <string name="cal_body">Beweg das Handy ein paar Mal in Form einer Acht und kipp es dabei.</string>
+    <string name="interference_title">Magnetische Störung</string>
+    <string name="interference_body">Etwas in der Nähe verbiegt das Magnetfeld. Abstand zu Magneten, Metall und Laptops halten.</string>
+    <string name="hint_hide">Ausblenden</string>
+    <string name="hint_done">Fertig</string>
+
+    <string name="group_north">Norden</string>
+    <string name="group_compass">Kompass</string>
+    <string name="group_debug">Diagnose</string>
+    <string name="reference">Bezug</string>
+    <string name="region">Region</string>
+    <string name="region_sub">%1$s · Deklination %2$s</string>
+    <string name="region_note">Eine Stadt in der Nähe reicht: Die Deklination ändert sich innerhalb einer Region nur langsam.</string>
+    <string name="decl_east">%1$s O</string>
+    <string name="decl_west">%1$s W</string>
+    <string name="haptics">Vibrieren bei N, O, S, W und auf Kurs</string>
+    <string name="show_calibration">Kalibrierhilfe</string>
+    <string name="show_calibration_sub">Acht-Bewegung, wenn die Richtung abweicht</string>
+    <string name="record_sensor">Sensoren aufzeichnen (10 s)</string>
+    <string name="record_sub">CSV über das Teilen-Menü</string>
+    <string name="recording">Zeichne auf … %1$d s</string>
+
+    <string name="region_vienna">Wien</string>
+    <string name="region_cologne">Köln</string>
+    <string name="region_munich">München</string>
+    <string name="region_zurich">Zürich</string>
+    <string name="region_rome">Rom</string>
+    <string name="region_prague">Prag</string>
+    <string name="region_warsaw">Warschau</string>
+    <string name="region_copenhagen">Kopenhagen</string>
+    <string name="region_athens">Athen</string>
+    <string name="region_mexico_city">Mexiko-Stadt</string>
+    <string name="region_cape_town">Kapstadt</string>
+    <string name="region_delhi">Neu-Delhi</string>
+    <string name="region_beijing">Peking</string>
+    <string name="region_tokyo">Tokio</string>
+</resources>
