@@ -13,6 +13,7 @@ import android.os.Process
 import androidx.core.content.ContextCompat
 import solutions.xapient.tunr.domain.Frame
 import solutions.xapient.tunr.domain.PitchDetector
+import solutions.xapient.tunr.domain.SlidingWindow
 
 // Mikrofon; im Test ersetzt. start/stop nur vom Main-Thread, Rueckrufe kommen auf dem Main-Thread
 interface Mic {
@@ -82,7 +83,7 @@ class AudioRecordMic(context: Context) : Mic {
         try {
             val det = PitchDetector(run.rate)
             val hop = hop(run.rate)
-            val win = FloatArray(det.size)
+            val win = SlidingWindow(det.size, hop)
             val pcm = ShortArray(hop)
             rec.startRecording()
             if (rec.recordingState != AudioRecord.RECORDSTATE_RECORDING) throw IllegalStateException("nicht aufnahmebereit")
@@ -94,13 +95,10 @@ class AudioRecordMic(context: Context) : Mic {
                     off += n
                 }
                 if (!run.running) break
-                // Fenster um einen Hop weiterschieben
-                System.arraycopy(win, hop, win, 0, win.size - hop)
-                val base = win.size - hop
-                for (i in 0 until hop) win[base + i] = pcm[i] / 32768f
-                // Pegel ueber das juengste Fenster
-                val db = PitchDetector.rmsDb(win, win.size - det.window, det.window)
-                val p = if (db >= LEVEL_FLOOR) det.detect(win) else null
+                win.push(pcm)
+                // Pegel ueber dasselbe juengste Fenster, das der Detektor auswertet
+                val db = win.levelDb(det.window)
+                val p = if (db >= LEVEL_FLOOR) det.detect(win.data) else null
                 val f = Frame(p?.hz ?: 0f, db)
                 main.post { if (session === run) sink(f) }
             }

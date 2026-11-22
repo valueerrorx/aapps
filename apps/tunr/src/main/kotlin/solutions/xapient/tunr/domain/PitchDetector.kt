@@ -4,8 +4,8 @@ import kotlin.math.ceil
 import kotlin.math.log10
 import kotlin.math.sqrt
 
-// Grundfrequenz und Klarheit (1 - normierte Differenz am Minimum)
-data class Pitch(val hz: Float, val clarity: Float)
+// Grundfrequenz; die YIN-Schwelle ist schon das Klarheits-Tor
+data class Pitch(val hz: Float)
 
 // YIN mit Differenzfunktion ueber FFT; nicht threadsicher, ein Objekt je Audio-Thread
 class PitchDetector(
@@ -31,7 +31,7 @@ class PitchDetector(
     private val d = DoubleArray(tauMax + 2)
     private val cm = DoubleArray(tauMax + 2)
 
-    // x: mindestens size Samples, die aeltesten zuerst; null = kein Ton
+    // x: mindestens size Samples, die aeltesten zuerst, ausgewertet werden die juengsten; null = kein Ton
     fun detect(x: FloatArray): Pitch? {
         require(x.size >= size)
         difference(x)
@@ -40,16 +40,16 @@ class PitchDetector(
         tau = octaveCheck(tau)
         val est = tau + parabola(tau)
         if (est <= 0.0) return null
-        val hz = sampleRate / est
-        return Pitch(hz.toFloat(), (1.0 - cm[tau]).toFloat().coerceIn(0f, 1f))
+        return Pitch((sampleRate / est).toFloat())
     }
 
-    // d(tau) = E(0..W) + E(tau..tau+W) - 2 * Kreuzkorrelation(tau)
+    // d(tau) = E(0..W) + E(tau..tau+W) - 2 * Kreuzkorrelation(tau); rueckwaerts gelesen: Bezug = juengste W Samples
     private fun difference(x: FloatArray) {
         aRe.fill(0.0); aIm.fill(0.0); bRe.fill(0.0); bIm.fill(0.0)
         energy[0] = 0.0
+        val end = x.size - 1
         for (i in 0 until size) {
-            val v = x[i].toDouble()
+            val v = x[end - i].toDouble()
             bRe[i] = v
             if (i < window) aRe[i] = v
             energy[i + 1] = energy[i] + v * v

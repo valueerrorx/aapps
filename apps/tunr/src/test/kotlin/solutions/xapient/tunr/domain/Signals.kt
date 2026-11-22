@@ -1,6 +1,7 @@
 package solutions.xapient.tunr.domain
 
 import kotlin.math.PI
+import kotlin.math.exp
 import kotlin.math.sin
 import kotlin.random.Random
 
@@ -27,4 +28,25 @@ object Signals {
     }
 
     fun add(a: FloatArray, b: FloatArray) = FloatArray(a.size) { a[it] + b[it] }
+
+    // gezupfte Saite: lead s Stille, dann Anschlag (kurzes Rauschen) und abklingende Obertoene, hoehere schneller
+    fun pluck(hz: Double, rate: Int, seconds: Double, amps: List<Double>, lead: Double = 0.1, decayS: Double = 0.8, seed: Int = 5): FloatArray {
+        val r = Random(seed)
+        val n = (seconds * rate).toInt()
+        val start = (lead * rate).toInt()
+        val attack = (0.008 * rate).toInt()
+        return FloatArray(n) { j ->
+            if (j < start) return@FloatArray 0f
+            val t = (j - start).toDouble() / rate
+            var v = 0.0
+            amps.forEachIndexed { i, a ->
+                val k = i + 1
+                if (k * hz < rate / 2.0) v += a * exp(-t * (1 + 0.5 * i) / decayS) * sin(2 * PI * k * hz * t + 0.3 * k)
+            }
+            val click = if (j - start < attack) (r.nextDouble() * 2 - 1) * 0.6 * (1 - (j - start).toDouble() / attack) else 0.0
+            (0.4 * v + click).toFloat().coerceIn(-1f, 1f)
+        }
+    }
+
+    fun toPcm(x: FloatArray) = ShortArray(x.size) { (x[it] * 32767f).toInt().toShort() }
 }

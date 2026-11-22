@@ -112,6 +112,58 @@ class PitchDetectorTest {
         assertPitch(d48, y, 329.63, 3.0, "Saegezahn mit Rauschen")
     }
 
+    // Bezug sind die juengsten Samples: frischer Ton nach Stille bzw. nach anderem Ton zaehlt sofort
+    @Test fun newestSamplesCount() {
+        val fresh = 600 + d48.window
+        val x = Signals.sine(220.0, 48_000, d48.size)
+        for (i in 0 until d48.size - fresh) x[i] = 0f
+        assertPitch(d48, x, 220.0, 1.0, "Ton nach Stille")
+        val old = Signals.sine(330.0, 48_000, d48.size)
+        val y = FloatArray(d48.size) { if (it < d48.size - fresh) old[it] else x[it] }
+        assertPitch(d48, y, 220.0, 3.0, "neuer Ton nach altem")
+        // laengerer Puffer: nur das Ende zaehlt
+        val z = Signals.sine(98.0, 48_000, d48.size + 5000)
+        assertPitch(d48, z, 98.0, 1.0, "langer Puffer")
+    }
+
+    // gezupft mit Anschlag, ueber Fenster, Detektor und Tracker wie im Mikrofon-Thread
+    @Test fun pluckedStringThroughPipeline() {
+        val cases = listOf(
+            Triple(28, 48_000, listOf(0.4, 1.0, 0.6, 0.4)),
+            Triple(40, 48_000, listOf(1.0, 0.7, 0.5, 0.3, 0.2)),
+            Triple(55, 44_100, listOf(1.0, 0.5, 0.3)),
+            Triple(67, 48_000, listOf(1.0, 0.3)),
+            Triple(76, 44_100, listOf(1.0, 0.6, 0.5, 0.4)),
+        )
+        for ((midi, rate, amps) in cases) {
+            val hz = midiHz(midi)
+            val det = PitchDetector(rate)
+            val hop = rate / 40
+            val win = SlidingWindow(det.size, hop)
+            val pcm = Signals.toPcm(Signals.pluck(hz, rate, 1.4, amps))
+            val tracker = PitchTracker()
+            var firstActive = -1
+            var frames = 0
+            var off = 0
+            while (off + hop <= pcm.size) {
+                win.push(pcm.copyOfRange(off, off + hop))
+                off += hop
+                val db = win.levelDb(det.window)
+                val r = tracker.push(Frame(det.detect(win.data)?.hz ?: 0f, db))
+                if (r.active) {
+                    assertEquals("MIDI $midi Frame $frames: falsche Note", midi, r.target)
+                    if (firstActive < 0) firstActive = frames
+                }
+                frames++
+            }
+            val r = tracker.reading
+            assertTrue("MIDI $midi aktiv am Ende", r.active)
+            assertEquals("MIDI $midi Cent", 0f, r.cents, 3f)
+            // Stille 0,1 s + Anschlag: spaetestens nach 0,3 s angezeigt
+            assertTrue("MIDI $midi zu spaet: Frame $firstActive", firstActive in 0..12)
+        }
+    }
+
     @Test fun levelInDbfs() {
         // Sinus mit Spitze 1,0 = -3,01 dBFS
         assertEquals(-3.01f, PitchDetector.rmsDb(Signals.sine(440.0, 48_000, 4800, 1.0)), 0.05f)
