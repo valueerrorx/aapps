@@ -74,7 +74,7 @@ fun CalibrationCard(
     val problem = when (session.problem) {
         Problem.NONE -> null
         Problem.WRONG_MODE -> stringResource(if (mode == LevelMode.EDGE) R.string.cal_wrong_mode_edge else R.string.cal_wrong_mode_flat)
-        Problem.NOT_ROTATED -> stringResource(R.string.cal_not_rotated)
+        Problem.NOT_ROTATED -> stringResource(if (mode == LevelMode.EDGE) R.string.cal_not_rotated else R.string.cal_not_turned)
         Problem.IMPLAUSIBLE -> stringResource(R.string.cal_implausible)
     }
 

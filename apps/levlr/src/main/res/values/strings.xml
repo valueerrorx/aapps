@@ -42,5 +42,6 @@
     <string name="cal_wrong_mode_flat">Lay it flat to continue.</string>
     <string name="cal_wrong_mode_edge">Stand it on an edge to continue.</string>
     <string name="cal_not_rotated">That was the same edge. Flip it onto the opposite one.</string>
+    <string name="cal_not_turned">Same reading as before. Turn it 180° on the same spot.</string>
     <string name="cal_implausible">The readings are too far apart. Same spot, try again.</string>
 </resources>

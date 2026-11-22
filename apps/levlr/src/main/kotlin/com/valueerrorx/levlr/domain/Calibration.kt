@@ -101,6 +101,11 @@ class CalibrationSession {
             problem = Problem.NOT_ROTATED
             return
         }
+        // Flach: deutlich schief gemessen, aber zweimal gleich -> nicht gedreht
+        if (mode == LevelMode.FLAT && hypot(a.x, a.y) > FLAT_TILTED && hypot(a.x - b.x, a.y - b.y) < FLAT_SAME) {
+            problem = Problem.NOT_ROTATED
+            return
+        }
         val bias = Bias((a.x + b.x) / 2f, (a.y + b.y) / 2f)
         if (hypot(bias.x, bias.y) > MAX_BIAS) {
             problem = Problem.IMPLAUSIBLE
@@ -111,7 +116,9 @@ class CalibrationSession {
     }
 
     private companion object {
-        // ~6° bei 9,81 m/s²; mehr ist kein Sensorfehler, sondern eine falsche Drehung
-        const val MAX_BIAS = 1.0f
+        // ~3,5° bei 9,81 m/s²; mehr ist kein Sensorfehler (inkl. Kamerabuckel), sondern eine falsche Drehung
+        const val MAX_BIAS = 0.6f
+        const val FLAT_TILTED = 0.3f
+        const val FLAT_SAME = 0.1f
     }
 }

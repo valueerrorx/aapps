@@ -56,11 +56,31 @@ class CalibrationTest {
     }
 
     @Test
-    fun implausibleBiasIsRejected() {
+    fun flatNotTurnedIsRejected() {
         val s = CalibrationSession()
-        s.measure(flatSample(8f, 0f), LevelMode.FLAT)
-        s.measure(flatSample(8f, 0f), LevelMode.FLAT)
+        s.measure(flatSample(3f, 0f), LevelMode.FLAT)
+        s.measure(flatSample(3f, 0f), LevelMode.FLAT)
+        assertEquals(Problem.NOT_ROTATED, s.problem)
+        assertEquals(Step.SECOND, s.step)
+    }
+
+    @Test
+    fun implausibleBiasIsRejected() {
+        val bias = Vec3(0.8f, 0f, 0f) // ~4,7°: kein Sensorfehler mehr
+        val surface = flatSample(1f, 0f)
+        val s = CalibrationSession()
+        s.measure(surface + bias, LevelMode.FLAT)
+        s.measure(rotate180(surface) + bias, LevelMode.FLAT)
         assertEquals(Problem.IMPLAUSIBLE, s.problem)
+    }
+
+    @Test
+    fun levelSurfaceWithSmallBiasIsAccepted() {
+        val bias = Vec3(0.2f, 0.1f, 0f)
+        val s = CalibrationSession()
+        s.measure(flatSample(0f, 0f) + bias, LevelMode.FLAT)
+        s.measure(flatSample(0f, 0f) + bias, LevelMode.FLAT)
+        assertEquals(Step.DONE, s.step)
     }
 
     @Test

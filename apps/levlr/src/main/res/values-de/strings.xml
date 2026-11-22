@@ -41,5 +41,6 @@
     <string name="cal_wrong_mode_flat">Zum Weitermachen flach hinlegen.</string>
     <string name="cal_wrong_mode_edge">Zum Weitermachen auf eine Kante stellen.</string>
     <string name="cal_not_rotated">Das war dieselbe Kante. Stell es auf die gegenüberliegende.</string>
+    <string name="cal_not_turned">Gleicher Wert wie vorher. Dreh es an derselben Stelle um 180°.</string>
     <string name="cal_implausible">Die Messungen liegen zu weit auseinander. Gleiche Stelle, noch einmal.</string>
 </resources>
