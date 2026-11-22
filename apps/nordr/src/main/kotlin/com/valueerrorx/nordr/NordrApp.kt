@@ -49,7 +49,10 @@ fun NordrApp() {
     val sensor = remember {
         AndroidSensorSource(context.getSystemService(Context.SENSOR_SERVICE) as? SensorManager)
     }
-    val regionDeclination = remember(region) { declinationOf(region) }
+    // Deklination je Region einmal rechnen, ueber Bildschirmwechsel hinweg
+    val declinations = remember { mutableMapOf<String, Float>() }
+    val cachedDeclination = { r: Region -> declinations.getOrPut(r.id) { declinationOf(r) } }
+    val regionDeclination = remember(region) { cachedDeclination(region) }
 
     // rechtweisend = magnetisch + Deklination der Region
     LaunchedEffect(northRef, regionDeclination) {
@@ -114,10 +117,9 @@ fun NordrApp() {
             }
             Screen.REGION -> {
                 BackHandler { screen = Screen.SETTINGS }
-                val declinations = remember { mutableMapOf<String, Float>() }
                 RegionPicker(
                     selected = region,
-                    declinationOf = { r -> declinations.getOrPut(r.id) { declinationOf(r) } },
+                    declinationOf = cachedDeclination,
                     onSelect = {
                         region = it
                         prefs.region = it
