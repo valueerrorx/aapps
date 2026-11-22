@@ -22,6 +22,8 @@
     <string name="level">Sound level</string>
     <string name="level_state">%1$s decibels A, %2$s</string>
     <string name="level_none">No value yet</string>
+    <string name="level_over">At least %1$s decibels A, microphone overloaded</string>
+    <string name="overload">Overload</string>
 
     <string name="ex_silence">Near silence</string>
     <string name="ex_whisper">Whisper</string>
@@ -38,9 +40,11 @@
     <string name="mic_ask_title">Microphone needed</string>
     <string name="mic_ask_text">loudr listens to measure the sound level. Nothing is recorded or stored.</string>
     <string name="mic_allow">Allow microphone</string>
+    <string name="mic_allow_short">Allow</string>
     <string name="mic_blocked_title">Microphone blocked</string>
     <string name="mic_blocked_text">Allow the microphone for loudr under Permissions in the app settings.</string>
     <string name="mic_settings">Open settings</string>
+    <string name="mic_settings_short">Settings</string>
     <string name="mic_failed_title">Microphone unavailable</string>
     <string name="mic_failed_text">Another app may be using it. Close it and try again.</string>
     <string name="mic_retry">Try again</string>

@@ -3,6 +3,7 @@ package solutions.xapient.loudr.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -30,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
@@ -126,15 +128,11 @@ fun MeterScreen(
             Modifier.fillMaxWidth().padding(start = 12.dp, end = 12.dp, bottom = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Box(Modifier.size(48.dp)) {
-                if (ready) {
-                    AappsIconButton(LoudrIcons.Reset, stringResource(R.string.reset), {
-                        haptics?.confirm()
-                        onReset()
-                        version.intValue++
-                    })
-                }
-            }
+            AappsIconButton(LoudrIcons.Reset, stringResource(R.string.reset), {
+                haptics?.confirm()
+                onReset()
+                version.intValue++
+            })
             Spacer(Modifier.weight(1f))
             MainAction(mic, live, haptics, onToggle, onMic)
             Spacer(Modifier.weight(1f))
@@ -170,36 +168,47 @@ fun MeterScreen(
                             Spacer(Modifier.height(10.dp))
                             Footnote(settings.offset)
                         } else {
+                            // Erklaerung und Aktion als Gruppe, Knopf ueber die ganze Spalte
                             Prompt(mic)
+                            Spacer(Modifier.height(16.dp))
+                            MainAction(mic, live, haptics, onToggle, onMic, fill = true)
                         }
                     }
-                    Spacer(Modifier.height(12.dp))
-                    bottom()
+                    Spacer(Modifier.height(if (ready) 12.dp else 16.dp))
+                    if (ready) bottom()
                 }
                 gauge(Modifier.weight(0.54f).fillMaxHeight())
             }
         } else {
             Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
                 top()
-                // Bogen und Werte als Gruppe mittig: kein Leerraum zwischen Hero und Ablesewert
-                Column(
-                    Modifier.weight(1f).fillMaxWidth(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    gauge(Modifier.weight(1f, fill = false).aspectRatio(GAUGE_ASPECT))
-                    if (ready) {
-                        stats(Modifier.fillMaxWidth().padding(horizontal = 24.dp))
-                        Spacer(Modifier.height(24.dp))
-                        chart(Modifier.fillMaxWidth().padding(horizontal = 24.dp).height(150.dp))
-                        Spacer(Modifier.height(10.dp))
-                        Footnote(settings.offset)
-                    } else {
-                        Prompt(mic)
+                BoxWithConstraints(Modifier.weight(1f).fillMaxWidth()) {
+                    // Bogen hoechstens gut die halbe Hoehe; der Verlauf nimmt, was bleibt
+                    val gaugeMax = maxHeight * 0.55f
+                    // Bogen und Werte als Gruppe mittig: kein Leerraum zwischen Hero und Ablesewert
+                    Column(
+                        Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        if (ready) {
+                            gauge(Modifier.padding(horizontal = 8.dp).heightIn(max = gaugeMax).aspectRatio(GAUGE_ASPECT))
+                            stats(Modifier.fillMaxWidth().padding(horizontal = 24.dp))
+                            Spacer(Modifier.height(24.dp))
+                            chart(Modifier.fillMaxWidth().padding(horizontal = 24.dp).weight(1f).heightIn(max = 200.dp))
+                            Spacer(Modifier.height(10.dp))
+                            Footnote(settings.offset)
+                        } else {
+                            // ohne Mikrofon: kleinerer Bogen, Erklaerung und Aktion direkt darunter
+                            gauge(Modifier.fillMaxWidth(0.75f).heightIn(max = gaugeMax).aspectRatio(GAUGE_ASPECT))
+                            Prompt(mic)
+                            Spacer(Modifier.height(16.dp))
+                            Box(Modifier.padding(horizontal = 24.dp)) { MainAction(mic, live, haptics, onToggle, onMic) }
+                        }
                     }
                 }
                 Spacer(Modifier.height(16.dp))
-                bottom()
+                if (ready) bottom()
             }
         }
     }
@@ -220,13 +229,22 @@ private fun Status(live: Boolean) {
 }
 
 @Composable
-private fun MainAction(mic: MicState, live: Boolean, haptics: Haptics?, onToggle: () -> Unit, onMic: () -> Unit) {
+private fun MainAction(
+    mic: MicState,
+    live: Boolean,
+    haptics: Haptics?,
+    onToggle: () -> Unit,
+    onMic: () -> Unit,
+    fill: Boolean = false,
+) {
+    // grosse Schrift: Kurztext, damit die Pille einzeilig bleibt
+    val short = LocalDensity.current.fontScale > 1.3f
     val (text, icon) = when (mic) {
         // nichts zu tun: das System schaltet frei
         MicState.SILENCED -> return
         MicState.READY -> if (live) R.string.pause to LoudrIcons.Pause else R.string.resume to LoudrIcons.Play
-        MicState.ASK -> R.string.mic_allow to LoudrIcons.Mic
-        MicState.BLOCKED -> R.string.mic_settings to LoudrIcons.Mic
+        MicState.ASK -> (if (short) R.string.mic_allow_short else R.string.mic_allow) to LoudrIcons.Mic
+        MicState.BLOCKED -> (if (short) R.string.mic_settings_short else R.string.mic_settings) to LoudrIcons.Mic
         MicState.FAILED -> R.string.mic_retry to LoudrIcons.Reset
     }
     AappsPillButton(
@@ -235,7 +253,7 @@ private fun MainAction(mic: MicState, live: Boolean, haptics: Haptics?, onToggle
             haptics?.confirm()
             if (mic == MicState.READY) onToggle() else onMic()
         },
-        Modifier.widthIn(min = 176.dp),
+        if (fill) Modifier.fillMaxWidth() else Modifier.widthIn(min = 176.dp),
         icon = icon,
         active = !(mic == MicState.READY && live),
     )
@@ -280,5 +298,6 @@ private fun Footnote(offset: Float) {
 private fun describe(res: android.content.res.Resources, r: Reading, s: Settings): String {
     val level = Calibration.apply(r.level(s.weighting), s.offset)
     val ex = Example.of(level) ?: return res.getString(R.string.level_none)
+    if (r.overload) return res.getString(R.string.level_over, formatDb(level))
     return res.getString(R.string.level_state, formatDb(level), res.getString(exampleRes(ex)))
 }

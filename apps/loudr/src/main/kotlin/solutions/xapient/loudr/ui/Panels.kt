@@ -33,6 +33,8 @@ import solutions.xapient.aapps.core.ui.Aapps
 import solutions.xapient.loudr.R
 import solutions.xapient.loudr.domain.Calibration
 import solutions.xapient.loudr.domain.Reading
+import solutions.xapient.loudr.domain.Scale
+import solutions.xapient.loudr.domain.SoundMeter
 import solutions.xapient.loudr.domain.TimeWeighting
 import solutions.xapient.loudr.domain.Zone
 import solutions.xapient.loudr.domain.formatDb
@@ -87,7 +89,7 @@ private fun Stat(label: String, value: () -> String, modifier: Modifier) {
     }
 }
 
-// Verlauf der letzten 60 s als Flaeche in Zonenfarben, 30–110 dB
+// Verlauf der letzten 60 s als Flaeche in Zonenfarben, 30–110 dB; Pausen als Luecke
 @Composable
 fun HistoryChart(
     display: MeterDisplay,
@@ -101,9 +103,7 @@ fun HistoryChart(
     val gridStyle = TextStyle(fontFamily = Aapps.type.number.fontFamily, fontSize = cappedSp(10f, 14f), color = c.fgMuted)
     Spacer(
         modifier.drawWithCache {
-            val lo = 30f
-            val hi = 110f
-            fun y(db: Float) = size.height * (1 - ((db - lo) / (hi - lo)).coerceIn(0f, 1f))
+            fun y(db: Float) = size.height * (1 - Scale.fraction(db, Scale.HISTORY_MIN, Scale.HISTORY_MAX))
             val all = listOf(40, 60, 80, 100).map { db -> db to measurer.measure(db.toString(), gridStyle) }
             // bei wenig Hoehe oder grosser Schrift nur jede zweite Zahl
             val gap = y(40f) - y(60f)
@@ -122,9 +122,11 @@ fun HistoryChart(
             val brush = Brush.verticalGradient(*stops.toTypedArray(), startY = 0f, endY = size.height)
             val line = Stroke(2.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
             val gridW = 1.dp.toPx()
-            val fade = Brush.verticalGradient(0f to c.bg.copy(alpha = 0f), 1f to c.bg.copy(alpha = 0.9f), startY = y(110f), endY = size.height)
+            val fade = Brush.verticalGradient(0f to c.bg.copy(alpha = 0f), 1f to c.bg.copy(alpha = 0.9f), startY = y(Scale.HISTORY_MAX), endY = size.height)
             val path = Path()
             val area = Path()
+            // Pfad nur bei neuem Verlauf neu bauen; das Array wechselt alle 100 ms
+            var built: FloatArray? = null
             onDrawBehind {
                 update()
                 all.forEach { (db, _) ->
@@ -134,24 +136,39 @@ fun HistoryChart(
                 grid.forEach { (db, l) -> drawText(l, topLeft = Offset(0f, y(db.toFloat()) - l.size.height / 2f)) }
                 val h = display.raw.history
                 if (h.size < 2) return@onDrawBehind
-                val step = w / (SLICES - 1)
-                path.reset()
-                area.reset()
-                val first = size.width - (h.size - 1) * step
-                h.forEachIndexed { i, v ->
-                    val px = first + i * step
-                    val py = y(Calibration.apply(v, offset))
-                    if (i == 0) {
-                        path.moveTo(px, py)
-                        area.moveTo(px, size.height)
-                        area.lineTo(px, py)
-                    } else {
-                        path.lineTo(px, py)
-                        area.lineTo(px, py)
+                if (h !== built) {
+                    built = h
+                    val step = w / (SLICES - 1)
+                    path.reset()
+                    area.reset()
+                    val first = size.width - (h.size - 1) * step
+                    var lastX = Float.NaN
+                    fun closeArea() {
+                        if (!lastX.isNaN()) {
+                            area.lineTo(lastX, size.height)
+                            area.close()
+                        }
+                        lastX = Float.NaN
                     }
+                    h.forEachIndexed { i, v ->
+                        if (v.isNaN()) {
+                            closeArea()
+                            return@forEachIndexed
+                        }
+                        val px = first + i * step
+                        val py = y(Calibration.apply(v, offset))
+                        if (lastX.isNaN()) {
+                            path.moveTo(px, py)
+                            area.moveTo(px, size.height)
+                            area.lineTo(px, py)
+                        } else {
+                            path.lineTo(px, py)
+                            area.lineTo(px, py)
+                        }
+                        lastX = px
+                    }
+                    closeArea()
                 }
-                area.lineTo(size.width, size.height)
-                area.close()
                 val a = if (measuring) 1f else PAUSED_ALPHA
                 // Flaeche in Zonenfarben, nach unten ausblendend statt in Streifen
                 drawPath(area, brush, alpha = 0.28f * a)
@@ -162,4 +179,4 @@ fun HistoryChart(
     )
 }
 
-private const val SLICES = 600
+private const val SLICES = SoundMeter.HISTORY_SLICES

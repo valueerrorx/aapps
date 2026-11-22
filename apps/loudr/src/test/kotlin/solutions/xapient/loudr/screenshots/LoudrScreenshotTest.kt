@@ -46,13 +46,15 @@ class LoudrScreenshotTest {
             if (i % 97 in 40..55) swing * 0.8f else 0f
     }
 
-    private fun reading(level: Float, min: Float, max: Float, leq: Float, h: FloatArray, live: Boolean = true) =
-        Reading(level, level - 1f, leq, min, max, min + 2f, max - 3f, h, live)
+    private fun reading(level: Float, min: Float, max: Float, leq: Float, h: FloatArray, live: Boolean = true, over: Boolean = false) =
+        Reading(level, level - 1f, leq, min, max, min + 2f, max - 3f, h, live, over)
 
     private val talk = reading(63.4f, 41f, 74f, 60.8f, history(58f, 9f))
     private val quiet = reading(33f, 29f, 41f, 34f, history(33f, 4f))
     private val loud = Reading(93f, 90f, 88f, 80f, 102f, 84f, 99f, history(86f, 7f, 400), true)
-    private val paused = reading(71f, 44f, 83f, 66f, history(66f, 10f), live = false)
+    // mit Luecke einer frueheren Pause
+    private val paused = reading(71f, 44f, 83f, 66f, history(66f, 10f).also { it[380] = Float.NaN }, live = false)
+    private val overload = reading(109f, 78f, 112f, 101f, history(100f, 6f), over = true)
 
     @Composable
     private fun Screen(r: Reading?, mic: MicState = MicState.READY, measuring: Boolean = true, s: Settings = Settings()) {
@@ -76,6 +78,7 @@ class LoudrScreenshotTest {
     @Test fun loud() = shot("loud") { Screen(loud, s = Settings(TimeWeighting.SLOW, 2f)) }
     @Test fun loud_land() = shot("loud_land", "+land") { Screen(loud, s = Settings(TimeWeighting.SLOW, 2f)) }
     @Test fun paused() = shot("paused") { Screen(paused, measuring = false) }
+    @Test fun overload() = shot("overload") { Screen(overload) }
 
     @Test fun mic_ask() = shot("mic_ask") { Ask() }
     @Test fun mic_ask_de() = shot("mic_ask_de", "+de") { Ask() }
@@ -84,6 +87,8 @@ class LoudrScreenshotTest {
     @Test fun mic_ask_land_font200() = shot("mic_ask_land_font200", "+land", fontScale = 2f) { Ask() }
     @Test fun mic_blocked() = shot("mic_blocked") { Screen(null, MicState.BLOCKED, measuring = false) }
     @Test fun mic_failed() = shot("mic_failed") { Screen(null, MicState.FAILED, measuring = false) }
+    @Test fun mic_silenced() = shot("mic_silenced") { Screen(talk, MicState.SILENCED) }
+    @Test fun mic_blocked_de_land_font200() = shot("mic_blocked_de_land_font200", "+de-land", fontScale = 2f) { Screen(null, MicState.BLOCKED, measuring = false) }
 
     @Composable private fun Settings_() = LoudrSettings(Settings(offset = 1.5f), {}, { 64.5f }, null, {}, {})
 

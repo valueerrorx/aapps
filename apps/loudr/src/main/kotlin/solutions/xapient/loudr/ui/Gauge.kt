@@ -53,10 +53,10 @@ private fun Offset.polar(r: Float, deg: Float): Offset {
 
 private class Geo(val center: Offset, val r: Float, val stroke: Float)
 
-// Bogen mittig in der Flaeche, Rand fuer Zonen und Schein
+// Bogen mittig in der Flaeche; Rand fasst Schein (1,5 Strich), Zonen-Rand und Max-Marke
 private fun Density.geo(size: Size): Geo {
     val stroke = (min(size.width, size.height) * 0.055f).coerceIn(10.dp.toPx(), 22.dp.toPx())
-    val m = stroke / 2 + 16.dp.toPx()
+    val m = maxOf(1.5f * stroke, stroke / 2 + 12.dp.toPx()) + 12.dp.toPx()
     val r = min((size.width - 2 * m) / 2, (size.height - 2 * m) / (1 + SIN45)).coerceAtLeast(40.dp.toPx())
     val cy = (size.height - r * (1 + SIN45)) / 2 + r
     return Geo(Offset(size.width / 2, cy), r, stroke)
@@ -104,6 +104,7 @@ fun Gauge(
     val exampleSp = cappedSp(13f, 17f)
     val unit = "${stringResource(R.string.unit)} · ${stringResource(if (weighting == TimeWeighting.FAST) R.string.fast else R.string.slow)}".uppercase()
     val examples = Example.entries.map { stringResource(exampleRes(it)).uppercase() }
+    val overload = stringResource(R.string.overload).uppercase()
     Box(
         modifier.drawWithCache {
             val g = geo(size)
@@ -153,12 +154,14 @@ fun Gauge(
             val unitStyle = type.label.copy(fontSize = unitSp)
             val unitLayout = measurer.measure(unit, unitStyle.copy(color = c.fgMuted))
             // zwischen den Bogenenden, Punkt und Abstand eingerechnet
-            val exMax = r * 1.05f
-            val exLayouts = examples.map { t ->
+            val exMax = r * 0.9f
+            val fit = { t: String ->
                 val base = type.label.copy(fontSize = exampleSp)
                 val l = measurer.measure(t, base)
                 if (l.size.width <= exMax) l else measurer.measure(t, base.copy(fontSize = base.fontSize * (exMax / l.size.width)))
             }
+            val exLayouts = examples.map(fit)
+            val overLayout = fit(overload)
             val trackStroke = Stroke(w, cap = StrokeCap.Round)
             val markW = 2.dp.toPx()
             onDrawBehind {
@@ -178,7 +181,7 @@ fun Gauge(
                 if (!level.isNaN()) {
                     val frac = Scale.fraction(level)
                     val zc = zoneColor(Zone.of(level))
-                    if (measuring) drawGlow(zc, center, r * 1.15f, GLOW_MAX * (0.3f + 0.7f * frac))
+                    if (measuring) drawGlow(zc, center, r * 1.05f, GLOW_MAX * (0.3f + 0.7f * frac))
                     val sweep = SWEEP * frac
                     if (sweep > 0.3f) {
                         rotate(START, center) {
@@ -198,7 +201,8 @@ fun Gauge(
                     val a = angleOf(max)
                     drawLine(c.fg.copy(alpha = alpha), center.polar(r - w / 2 - 2.dp.toPx(), a), center.polar(rimR + 5.dp.toPx(), a), markW, StrokeCap.Round)
                 }
-                drawReadout(center, r, display.shown.level(weighting).let { Calibration.apply(it, offset) }, numStyle, unitLayout, exLayouts, measurer, alpha, c.fg)
+                val readout = Readout(numStyle, unitLayout, exLayouts, overLayout)
+                drawReadout(center, r, display.shown.level(weighting).let { Calibration.apply(it, offset) }, display.shown.overload, readout, measurer, alpha, c.fg)
             }
         },
         contentAlignment = Alignment.Center,
@@ -206,30 +210,52 @@ fun Gauge(
     )
 }
 
-// Zahl, Einheit und Alltagsvergleich in der Mitte
+private class Readout(
+    val numStyle: TextStyle,
+    val unit: TextLayoutResult,
+    val examples: List<TextLayoutResult>,
+    val overload: TextLayoutResult,
+)
+
+// Zahl, Einheit und Alltagsvergleich in der Mitte; uebersteuert: "≥" vor der Zahl und Hinweis statt Vergleich
 private fun DrawScope.drawReadout(
     center: Offset,
     r: Float,
     level: Float,
-    numStyle: TextStyle,
-    unit: TextLayoutResult,
-    examples: List<TextLayoutResult>,
+    over: Boolean,
+    o: Readout,
     measurer: androidx.compose.ui.text.TextMeasurer,
     alpha: Float,
     fg: Color,
 ) {
-    val num = measurer.measure(formatDb(level), numStyle)
+    val num = measurer.measure(formatDb(level), o.numStyle)
     val numTop = center.y - num.size.height * 0.56f
-    drawText(num, fg, Offset(center.x - num.size.width / 2f, numTop))
+    val numLeft = center.x - num.size.width / 2f
+    drawText(num, fg, Offset(numLeft, numTop))
+    val ex = Example.of(level)
+    val showOver = over && ex != null
+    if (showOver) {
+        // "≥" gezeichnet statt gesetzt: nicht jede Schrift hat das Zeichen
+        val s = num.size.height * 0.2f
+        val x1 = numLeft - s * 0.4f
+        val x0 = x1 - s
+        val cy = numTop + num.size.height * 0.5f
+        val sw = maxOf(s * 0.16f, 2.dp.toPx())
+        val col = fg.copy(alpha = alpha)
+        drawLine(col, Offset(x0, cy - s * 0.6f), Offset(x1, cy - s * 0.15f), sw, StrokeCap.Round)
+        drawLine(col, Offset(x1, cy - s * 0.15f), Offset(x0, cy + s * 0.3f), sw, StrokeCap.Round)
+        drawLine(col, Offset(x0, cy + s * 0.65f), Offset(x1, cy + s * 0.65f), sw, StrokeCap.Round)
+    }
     val unitTop = numTop + num.size.height * 0.9f
-    drawText(unit, topLeft = Offset(center.x - unit.size.width / 2f, unitTop))
-    val ex = Example.of(level) ?: return
-    val l = examples[ex.ordinal]
+    drawText(o.unit, topLeft = Offset(center.x - o.unit.size.width / 2f, unitTop))
+    if (ex == null) return
+    val l = if (showOver) o.overload else o.examples[ex.ordinal]
     val dot = 4.dp.toPx()
     val gap = 8.dp.toPx()
     val total = dot * 2 + gap + l.size.width
-    val cy = maxOf(center.y + r * 0.58f, unitTop + unit.size.height + l.size.height * 0.9f)
+    val cy = maxOf(center.y + r * 0.58f, unitTop + o.unit.size.height + l.size.height * 0.9f)
     val x0 = center.x - total / 2
-    drawCircle(zoneColor(Zone.of(level)).copy(alpha = alpha), dot, Offset(x0 + dot, cy))
+    val dotColor = zoneColor(if (showOver) Zone.VERY_LOUD else Zone.of(level))
+    drawCircle(dotColor.copy(alpha = alpha), dot, Offset(x0 + dot, cy))
     drawText(l, fg, Offset(x0 + dot * 2 + gap, cy - l.size.height / 2f))
 }

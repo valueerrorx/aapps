@@ -20,6 +20,8 @@
     <string name="level">Schallpegel</string>
     <string name="level_state">%1$s Dezibel A, %2$s</string>
     <string name="level_none">Noch kein Wert</string>
+    <string name="level_over">Mindestens %1$s Dezibel A, Mikrofon übersteuert</string>
+    <string name="overload">Übersteuert</string>
 
     <string name="ex_silence">Fast still</string>
     <string name="ex_whisper">Flüstern</string>
@@ -36,9 +38,11 @@
     <string name="mic_ask_title">Mikrofon nötig</string>
     <string name="mic_ask_text">loudr hört zu, um den Pegel zu messen. Nichts wird aufgenommen oder gespeichert.</string>
     <string name="mic_allow">Mikrofon erlauben</string>
+    <string name="mic_allow_short">Erlauben</string>
     <string name="mic_blocked_title">Mikrofon gesperrt</string>
     <string name="mic_blocked_text">Erlaube loudr das Mikrofon in den App-Einstellungen unter Berechtigungen.</string>
     <string name="mic_settings">Einstellungen öffnen</string>
+    <string name="mic_settings_short">Einstellungen</string>
     <string name="mic_failed_title">Mikrofon nicht verfügbar</string>
     <string name="mic_failed_text">Vielleicht nutzt es gerade eine andere App. Schließe sie und versuch es noch einmal.</string>
     <string name="mic_retry">Erneut versuchen</string>
