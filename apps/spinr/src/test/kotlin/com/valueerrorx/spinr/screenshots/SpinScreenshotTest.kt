@@ -6,15 +6,18 @@ import com.github.takahirom.roborazzi.RoborazziOptions
 import com.github.takahirom.roborazzi.captureRoboImage
 import com.valueerrorx.aapps.core.ui.AappsTheme
 import com.valueerrorx.spinr.SpinrAccent
+import com.valueerrorx.spinr.domain.Palette
 import com.valueerrorx.spinr.domain.Wheel
 import com.valueerrorx.spinr.domain.WheelMath
 import com.valueerrorx.spinr.templates
 import com.valueerrorx.spinr.ui.EditorScreen
 import com.valueerrorx.spinr.ui.SpinScreen
 import com.valueerrorx.spinr.ui.SpinState
+import com.valueerrorx.spinr.ui.SpinrPalette
 import com.valueerrorx.spinr.ui.SpinrAbout
 import com.valueerrorx.spinr.ui.SpinrSettings
 import com.valueerrorx.spinr.ui.WheelsScreen
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -90,16 +93,35 @@ class SpinScreenshotTest {
 
     @Test fun result_land() = shot("result_land", "+land") { Result() }
 
+    // Gewinner genau unter dem Zeiger: das hervorgehobene Segment muss oben stehen
     @Test fun many() = shot("many") {
         val labels = (1..30).map { "$it" }
-        val angle = WheelMath.angleFor(16, 30).toFloat() - 2f
-        Spin(SpinState(labels).apply { pose(angle, winner = 16) }, "1 – 30")
+        val state = SpinState(labels).apply { pose(WheelMath.angleFor(16, 30).toFloat(), winner = 16) }
+        assertEquals(16, state.current)
+        Spin(state, "1 – 30")
+    }
+
+    // 50 Eintraege, Ruhe: kleinste Schrift
+    @Test fun many50() = shot("many50") {
+        val labels = (1..50).map { "Option $it" }
+        Spin(SpinState(labels).apply { pose(3f) }, "1 – 50")
+    }
+
+    @Test fun many_360dp() = shot("many_360dp", "w360dp-h740dp-normal-long-notround-any-xhdpi-keyshidden-nonav") {
+        val labels = (1..30).map { "$it" }
+        Spin(SpinState(labels).apply { pose(3f) }, "1 – 30")
+    }
+
+    @Test fun many50_font200() = shot("many50_font200", fontScale = 2f) {
+        val labels = (1..50).map { "Option $it" }
+        Spin(SpinState(labels).apply { pose(3f) }, "1 – 50")
     }
 
     @Test fun removed() = shot("removed") {
         val w = food()
-        val left = w.labels.filterIndexed { i, _ -> i != 1 && i != 5 }
-        Spin(SpinState(left).apply { pose(40f) }, w.name, removed = 2)
+        val ids = w.labels.indices.filter { it != 1 && it != 5 }
+        val colors = Palette.colors(ids, w.labels.size, SpinrPalette.size).map { SpinrPalette[it] }
+        Spin(SpinState(ids.map { w.labels[it] }, colors).apply { pose(40f) }, w.name, removed = 2)
     }
 
     @Composable
