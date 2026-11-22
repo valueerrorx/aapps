@@ -4,10 +4,10 @@
 Chromatisches Stimmgerät: App öffnen, Ton spielen, Note und Abweichung sofort ablesen. Hübsch, ruhig, ohne Werbung, ohne Internet.
 
 ## Muss
-- Mikrofon über `AudioRecord` (Mono, PCM 16 bit, 48 kHz, sonst 44,1 kHz). Quelle `UNPROCESSED`, wenn das Gerät es meldet (`PROPERTY_SUPPORT_AUDIO_SOURCE_UNPROCESSED`), sonst `VOICE_RECOGNITION` (ohne AGC/Rauschfilter).
+- Mikrofon über `AudioRecord` (Mono, PCM 16 bit, 48 kHz, sonst 44,1 kHz). Quelle `UNPROCESSED`, wenn das Gerät es meldet (`PROPERTY_SUPPORT_AUDIO_SOURCE_UNPROCESSED`), dann `VOICE_RECOGNITION` (ohne AGC/Rauschfilter), zuletzt `MIC`. Je Quelle beide Raten; ein Versuch gilt erst, wenn `startRecording` läuft.
 - Tonhöhe per YIN: Differenzfunktion über FFT (Kreuzkorrelation + laufende Energiesummen), kumulativ normiert, absolute Schwelle 0,15, lokales Minimum, parabolische Interpolation auf der Differenzfunktion. Fenster ≈ 43 ms, Analyse alle 25 ms. Bereich 38 Hz (unter E1) bis 4,5 kHz (über C8).
 - Oktavsicherheit: Liegt bei 2τ bzw. 3τ ein deutlich tieferes Minimum (< 20 % des gewählten), gilt die längere Periode (schwacher Grundton, schwache ungerade Obertöne).
-- Stille: Pegel-Tor mit Hysterese (auf ab −50 dBFS, zu unter −56 dBFS); ohne Ton über 150 ms gilt „kein Ton“, die letzte Note bleibt gedimmt stehen.
+- Stille: Pegel-Tor mit Hysterese (auf ab −50 dBFS, zu unter −56 dBFS; bei `UNPROCESSED` ohne Vorverstärkung 10 dB tiefer, −60/−66 dBFS – konservative Annahme, **am Gerät prüfen**), gemessen über dasselbe jüngste Fenster, das YIN auswertet; ohne Ton über 150 ms gilt „kein Ton“, die letzte Note bleibt gedimmt stehen.
 - Glättung in Cent: Median der letzten 5 Werte, dann exponentiell (α 0,4). Ausreißer (> 60 Cent Sprung) zählen erst, wenn der nächste Wert sie bestätigt; dann rastet die Anzeige sofort auf den neuen Ton ein (kein Nachziehen). Ebenso gilt der erste Wert nach Stille erst mit einem passenden zweiten (kein falsches Einrasten durch Anschlag oder Geräusch).
 - Anzeige: Notenname groß mit Vorzeichen und Oktave (wissenschaftlich, C4 = eingestrichenes c), Abweichung ±50 Cent auf einer Bogenskala mit Federzeiger, Frequenz in Hz (0,1), Cent als Zahl. Zone „gestimmt“ ±5 Cent (raus erst über 7 Cent): Zone leuchtet grün, einmaliger Glanz, Haptik `confirm`.
 - Strobe-Ring wie bei Hardware-Stimmern: dreht mit der Abweichung (zu hoch im Uhrzeigersinn), steht bei 0 Cent still. Tempo nahe 0 linear (6°/s je Cent), darüber gestaucht auf höchstens 120°/s, damit je Bild (60 Hz) unter 0,4 Strichabstand: kein scheinbares Rückwärtsdrehen. Farbe stufenlos grün (±5) → bernstein → koralle (≥ 35 Cent).
@@ -15,7 +15,7 @@ Chromatisches Stimmgerät: App öffnen, Ton spielen, Note und Abweichung sofort 
 - Schreibweise: C♯ (Kreuze), D♭ (Bes), deutsch (H, B = B♭).
 - Instrumente: Chromatisch (Standard), Gitarre Standard (E2 A2 D3 G3 B3 E4), Gitarre Drop D (D2 …), Bass 4 (E1 A1 D2 G2), Ukulele (G4 C4 E4 A4), Violine (G3 D4 A4 E5). Mit Instrument zeigt eine Saitenreihe die nächste Saite; Cent beziehen sich auf diese Saite (auch > 50, der Zeiger schlägt dann am Rand an). Saitenwechsel erst, wenn eine andere Saite um 30 Cent näher liegt. Tippen auf eine Saite hält sie fest, erneutes Tippen gibt sie frei.
 - RECORD_AUDIO zur Laufzeit: beim ersten Öffnen einmal fragen. Abgelehnt: Hinweis + „Mikrofon erlauben“. Dauerhaft abgelehnt: „Einstellungen öffnen“ (App-Info). Beim Zurückkehren neu prüfen.
-- Mikrofon nur im Vordergrund und nur am Stimm-Bildschirm (ON_START … ON_STOP), kein Dienst. Bildschirm bleibt an, solange gehört wird. Fehler beim Öffnen: Hinweis + „Erneut versuchen“.
+- Mikrofon nur im Vordergrund und nur am Stimm-Bildschirm (ON_START … ON_STOP), kein Dienst. Bildschirm bleibt an, solange gehört wird. Fehler beim Öffnen: Hinweis + „Erneut versuchen“. Liefert das Mikrofon 2 s lang nur Nullen (systemweit gesperrt oder belegt), steht mittig ein Hinweis.
 - Einstellungen und Instrument sofort gespeichert; festgehaltene Saite und Bildschirm überstehen Drehung und Prozess-Tod (`rememberSaveable`).
 - Leerlauf (kein Ton, Zeiger in Ruhe): keine Frames. Frames nur, solange ein Ton klingt oder eine Feder schwingt.
 - Hoch- und Querformat, Englisch und Deutsch, lesbar bei 200 % Schrift.
@@ -44,6 +44,7 @@ Kein INTERNET, kein VIBRATE (Haptik über die View), kein Dienst.
 | `flat_guitar` | Gitarre, A-Saite (A2) −23 Cent |
 | `sharp` | chromatisch, F♯3 +38 Cent |
 | `mic_ask`, `mic_blocked` | Mikrofon fehlt / dauerhaft abgelehnt |
+| `mic_silent` | Mikrofon liefert nur Nullen |
 | `instruments`, `settings`, `about` | |
 | `icon_masks`, `icon_store_512` | App-Icon in Masken, Store-Icon |
 

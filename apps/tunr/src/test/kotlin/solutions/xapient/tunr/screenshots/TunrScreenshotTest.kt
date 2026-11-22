@@ -11,6 +11,7 @@ import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
 import solutions.xapient.aapps.core.ui.AappsTheme
+import solutions.xapient.tunr.domain.Frame
 import solutions.xapient.tunr.domain.Instrument
 import solutions.xapient.tunr.domain.Notation
 import solutions.xapient.tunr.domain.Notes
@@ -81,6 +82,10 @@ class TunrScreenshotTest {
 
     @Test fun mic_ask() = shot("mic_ask") { Screen(chromatic, mic = MicUi.ASK) }
     @Test fun mic_blocked() = shot("mic_blocked") { Screen(chromatic, mic = MicUi.BLOCKED) }
+    @Test fun mic_silent() = shot("mic_silent") {
+        val state = TunerState().apply { push(Frame(0f, -120f, dead = true)) }
+        TunerScreen(state, chromatic, MicUi.ON, -1, null, {}, {}, {}, {}, animate = false)
+    }
 
     @Test fun instruments() = shot("instruments") { InstrumentScreen(Instrument.GUITAR, Notation.SHARP, {}, {}) }
     @Test fun instruments_de() = shot("instruments_de", "+de") { InstrumentScreen(Instrument.GUITAR, Notation.GERMAN, {}, {}) }

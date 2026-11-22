@@ -26,7 +26,7 @@ class AudioRecordMic(context: Context) : Mic {
     private val app = context.applicationContext
     private val main = Handler(Looper.getMainLooper())
 
-    private class Session(val record: AudioRecord, val rate: Int) {
+    private class Session(val record: AudioRecord, val rate: Int, val boostDb: Float) {
         @Volatile var running = true
         var thread: Thread? = null
     }
@@ -37,27 +37,51 @@ class AudioRecordMic(context: Context) : Mic {
     override fun start(sink: (Frame) -> Unit, onError: () -> Unit): Boolean {
         stop()
         if (ContextCompat.checkSelfPermission(app, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) return false
-        val source = if (unprocessed()) MediaRecorder.AudioSource.UNPROCESSED else MediaRecorder.AudioSource.VOICE_RECOGNITION
-        for (rate in RATES) {
-            val min = AudioRecord.getMinBufferSize(rate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT)
-            if (min <= 0) continue
-            val record = try {
-                AudioRecord(source, rate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, maxOf(min, hop(rate) * 2 * 4))
-            } catch (_: Exception) {
-                continue
+        val sources = buildList {
+            if (unprocessed()) add(MediaRecorder.AudioSource.UNPROCESSED)
+            add(MediaRecorder.AudioSource.VOICE_RECOGNITION)
+            add(MediaRecorder.AudioSource.MIC)
+        }
+        // erste Quelle/Rate, die sich oeffnen und starten laesst
+        for (source in sources) {
+            for (rate in RATES) {
+                val record = open(source, rate) ?: continue
+                val boost = if (source == MediaRecorder.AudioSource.UNPROCESSED) UNPROCESSED_BOOST_DB else 0f
+                val run = Session(record, rate, boost)
+                session = run
+                val t = Thread({ loop(run, sink, onError) }, "tunr-mic")
+                run.thread = t
+                t.start()
+                return true
             }
-            if (record.state != AudioRecord.STATE_INITIALIZED) {
-                record.release()
-                continue
-            }
-            val run = Session(record, rate)
-            session = run
-            val t = Thread({ loop(run, sink, onError) }, "tunr-mic")
-            run.thread = t
-            t.start()
-            return true
         }
         return false
+    }
+
+    // geoeffnet und aufnehmend, sonst null (Geraet gibt es frei)
+    private fun open(source: Int, rate: Int): AudioRecord? {
+        val min = AudioRecord.getMinBufferSize(rate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT)
+        if (min <= 0) return null
+        val record = try {
+            AudioRecord(source, rate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, maxOf(min, hop(rate) * 2 * 4))
+        } catch (_: Exception) {
+            return null
+        }
+        try {
+            if (record.state == AudioRecord.STATE_INITIALIZED) {
+                record.startRecording()
+                if (record.recordingState == AudioRecord.RECORDSTATE_RECORDING) return record
+            }
+        } catch (_: Exception) {
+            // naechster Versuch
+        }
+        try {
+            record.stop()
+        } catch (_: IllegalStateException) {
+            // nie gestartet
+        }
+        record.release()
+        return null
     }
 
     override fun stop() {
@@ -85,8 +109,7 @@ class AudioRecordMic(context: Context) : Mic {
             val hop = hop(run.rate)
             val win = SlidingWindow(det.size, hop)
             val pcm = ShortArray(hop)
-            rec.startRecording()
-            if (rec.recordingState != AudioRecord.RECORDSTATE_RECORDING) throw IllegalStateException("nicht aufnahmebereit")
+            val deadAfter = DEAD_S * run.rate
             while (run.running) {
                 var off = 0
                 while (off < hop && run.running) {
@@ -97,9 +120,9 @@ class AudioRecordMic(context: Context) : Mic {
                 if (!run.running) break
                 win.push(pcm)
                 // Pegel ueber dasselbe juengste Fenster, das der Detektor auswertet
-                val db = win.levelDb(det.window)
+                val db = win.levelDb(det.window) + run.boostDb
                 val p = if (db >= LEVEL_FLOOR) det.detect(win.data) else null
-                val f = Frame(p?.hz ?: 0f, db)
+                val f = Frame(p?.hz ?: 0f, db, dead = win.zeroRun >= deadAfter)
                 main.post { if (session === run) sink(f) }
             }
         } catch (_: Exception) {
@@ -134,6 +157,10 @@ class AudioRecordMic(context: Context) : Mic {
         const val JOIN_MS = 300L
         // darunter lohnt keine Analyse (Pegel-Tor liegt hoeher)
         const val LEVEL_FLOOR = -70f
+        // UNPROCESSED ohne Vorverstaerkung: Tor 10 dB tiefer (-60 dBFS); Annahme, am Geraet pruefen
+        const val UNPROCESSED_BOOST_DB = 10f
+        // so lange nur Nullen: Mikrofon gesperrt oder belegt
+        const val DEAD_S = 2L
         // 25 ms je Analyse
         fun hop(rate: Int) = rate / 40
     }

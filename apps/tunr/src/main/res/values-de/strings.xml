@@ -6,6 +6,7 @@
     <string name="tuner">Stimmgerät</string>
     <string name="play_a_note">Spiel einen Ton</string>
     <string name="mic_off">Mikrofon aus</string>
+    <string name="mic_silent">Kein Ton vom Mikrofon. Gesperrt oder von einer anderen App belegt?</string>
     <string name="cent">Cent</string>
     <string name="a4_label">A4 · %1$d Hz</string>
     <string name="state_listening">Hört zu</string>

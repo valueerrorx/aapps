@@ -43,9 +43,17 @@ class TunerState(a4: Int = Notes.A4_DEFAULT, instrument: Instrument = Instrument
     var coarse by mutableStateOf(Coarse())
         private set
 
-    fun push(f: Frame) = update(tracker.push(f))
+    // Mikrofon liefert nur Nullen (systemweit gesperrt oder von anderer App belegt)
+    var micSilent by mutableStateOf(false)
+        private set
+
+    fun push(f: Frame) {
+        if (f.dead != micSilent) micSilent = f.dead
+        update(tracker.push(f))
+    }
 
     fun stop() {
+        micSilent = false
         tracker.stop()
         update(tracker.reading)
     }

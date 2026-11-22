@@ -104,7 +104,11 @@ fun TunerScreen(
     }
 
     val landscape = LocalWindowInfo.current.containerSize.let { it.width > it.height }
-    val hint = if (mic == MicUi.ON) null else stringResource(R.string.mic_off)
+    val hint = when {
+        mic != MicUi.ON -> stringResource(R.string.mic_off)
+        state.micSilent -> stringResource(R.string.mic_silent)
+        else -> null
+    }
     val dial: @Composable (Modifier) -> Unit = { m -> TunerDial(state, settings.notation, hint, m) }
     val strings: @Composable () -> Unit = {
         if (!settings.instrument.chromatic) StringRow(settings.instrument, settings.notation, state.coarse, locked, haptics, onLock)

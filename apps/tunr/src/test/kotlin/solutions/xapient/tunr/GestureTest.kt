@@ -121,6 +121,18 @@ class GestureTest {
         assertEquals(3, taps)
     }
 
+    // nur Nullen vom Mikrofon: Hinweis, verschwindet mit echtem Signal
+    @Test fun silentMicHint() {
+        val state = TunerState()
+        tuner(state, Settings())
+        rule.runOnUiThread { state.push(Frame(0f, -120f, dead = true)) }
+        rule.waitForIdle()
+        rule.onNodeWithContentDescription("Tuner").assertExistsWithState("No sound from the microphone. Blocked or used by another app?")
+        rule.runOnUiThread { state.push(Frame(0f, -80f)) }
+        rule.waitForIdle()
+        rule.onNodeWithContentDescription("Tuner").assertExistsWithState("Listening")
+    }
+
     @Test fun pickInstrument() {
         var picked: Instrument? = null
         show { InstrumentScreen(Instrument.CHROMATIC, solutions.xapient.tunr.domain.Notation.SHARP, { picked = it }, {}) }

@@ -4,8 +4,8 @@ import kotlin.math.abs
 import kotlin.math.pow
 import kotlin.math.roundToInt
 
-// Ein Analyse-Ergebnis vom Audio-Thread; hz <= 0 = kein Ton erkannt
-data class Frame(val hz: Float, val rmsDb: Float)
+// Ein Analyse-Ergebnis vom Audio-Thread; hz <= 0 = kein Ton erkannt, dead = seit Sekunden nur Nullen
+data class Frame(val hz: Float, val rmsDb: Float, val dead: Boolean = false)
 
 // Was die Anzeige braucht; cents relativ zur Zielnote (Saite oder naechster Halbton)
 data class Reading(
