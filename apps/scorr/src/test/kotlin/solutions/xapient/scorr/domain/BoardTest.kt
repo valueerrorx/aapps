@@ -1,4 +1,4 @@
-package com.valueerrorx.scorr.domain
+package solutions.xapient.scorr.domain
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull

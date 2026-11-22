@@ -1,4 +1,4 @@
-package com.valueerrorx.scorr
+package solutions.xapient.scorr
 
 import android.os.Build
 import android.view.HapticFeedbackConstants
@@ -12,20 +12,20 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
-import com.valueerrorx.aapps.core.ui.AappsTheme
-import com.valueerrorx.aapps.core.ui.KeepScreenOn
-import com.valueerrorx.aapps.core.ui.rememberHaptics
-import com.valueerrorx.scorr.domain.Game
-import com.valueerrorx.scorr.domain.Session
-import com.valueerrorx.scorr.ui.EntryOverlay
-import com.valueerrorx.scorr.ui.HistoryScreen
-import com.valueerrorx.scorr.ui.PlayersScreen
-import com.valueerrorx.scorr.ui.ScoreScreen
-import com.valueerrorx.scorr.ui.ScorrAbout
-import com.valueerrorx.scorr.ui.ScorrAccent
-import com.valueerrorx.scorr.ui.ScorrSettings
-import com.valueerrorx.scorr.ui.displayName
-import com.valueerrorx.scorr.ui.playerColor
+import solutions.xapient.aapps.core.ui.AappsTheme
+import solutions.xapient.aapps.core.ui.KeepScreenOn
+import solutions.xapient.aapps.core.ui.rememberHaptics
+import solutions.xapient.scorr.domain.Game
+import solutions.xapient.scorr.domain.Session
+import solutions.xapient.scorr.ui.EntryOverlay
+import solutions.xapient.scorr.ui.HistoryScreen
+import solutions.xapient.scorr.ui.PlayersScreen
+import solutions.xapient.scorr.ui.ScoreScreen
+import solutions.xapient.scorr.ui.ScorrAbout
+import solutions.xapient.scorr.ui.ScorrAccent
+import solutions.xapient.scorr.ui.ScorrSettings
+import solutions.xapient.scorr.ui.displayName
+import solutions.xapient.scorr.ui.playerColor
 
 private enum class Screen { BOARD, HISTORY, PLAYERS, SETTINGS, ABOUT }
 

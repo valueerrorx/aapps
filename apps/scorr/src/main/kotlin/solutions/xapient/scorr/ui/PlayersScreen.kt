@@ -1,4 +1,4 @@
-package com.valueerrorx.scorr.ui
+package solutions.xapient.scorr.ui
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
@@ -45,13 +45,13 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
-import com.valueerrorx.aapps.core.ui.Aapps
-import com.valueerrorx.aapps.core.ui.AappsIcon
-import com.valueerrorx.aapps.core.ui.SettingsDivider
-import com.valueerrorx.aapps.core.ui.SettingsGroup
-import com.valueerrorx.aapps.core.ui.Springs
-import com.valueerrorx.scorr.R
-import com.valueerrorx.scorr.domain.Game
+import solutions.xapient.aapps.core.ui.Aapps
+import solutions.xapient.aapps.core.ui.AappsIcon
+import solutions.xapient.aapps.core.ui.SettingsDivider
+import solutions.xapient.aapps.core.ui.SettingsGroup
+import solutions.xapient.aapps.core.ui.Springs
+import solutions.xapient.scorr.R
+import solutions.xapient.scorr.domain.Game
 
 private val Warn = Color(0xFFF2B84E)
 

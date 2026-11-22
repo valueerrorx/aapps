@@ -1,4 +1,4 @@
-package com.valueerrorx.scorr.domain
+package solutions.xapient.scorr.domain
 
 // Spiel plus Zuege vor „Neues Spiel", damit Rueckgaengig auch das zuruecknimmt
 data class Session(val game: Game, val before: List<Action>? = null) {

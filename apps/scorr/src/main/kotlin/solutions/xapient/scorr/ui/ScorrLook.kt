@@ -1,4 +1,4 @@
-package com.valueerrorx.scorr.ui
+package solutions.xapient.scorr.ui
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor

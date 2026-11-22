@@ -1,4 +1,4 @@
-package com.valueerrorx.scorr.screenshots
+package solutions.xapient.scorr.screenshots
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -8,7 +8,7 @@ import android.graphics.Path
 import android.graphics.Shader
 import com.github.takahirom.roborazzi.RoborazziOptions
 import com.github.takahirom.roborazzi.captureRoboImage
-import com.valueerrorx.scorr.R
+import solutions.xapient.scorr.R
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner

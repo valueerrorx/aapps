@@ -1,9 +1,9 @@
-package com.valueerrorx.scorr
+package solutions.xapient.scorr
 
 import android.content.Context
 import androidx.core.content.edit
-import com.valueerrorx.scorr.domain.GameCodec
-import com.valueerrorx.scorr.domain.Session
+import solutions.xapient.scorr.domain.GameCodec
+import solutions.xapient.scorr.domain.Session
 
 // Spielstand und Einstellungen; Backup ist aus
 class Prefs(context: Context) {

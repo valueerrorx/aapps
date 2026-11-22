@@ -1,4 +1,4 @@
-package com.valueerrorx.scorr.ui
+package solutions.xapient.scorr.ui
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
@@ -85,18 +85,18 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
-import com.valueerrorx.aapps.core.ui.Aapps
-import com.valueerrorx.aapps.core.ui.AappsIcon
-import com.valueerrorx.aapps.core.ui.AappsIconButton
-import com.valueerrorx.aapps.core.ui.AappsIcons
-import com.valueerrorx.aapps.core.ui.AappsPillButton
-import com.valueerrorx.aapps.core.ui.AappsScaffold
-import com.valueerrorx.aapps.core.ui.Haptics
-import com.valueerrorx.aapps.core.ui.Springs
-import com.valueerrorx.aapps.core.ui.pressScale
-import com.valueerrorx.scorr.R
-import com.valueerrorx.scorr.domain.Board
-import com.valueerrorx.scorr.domain.Game
+import solutions.xapient.aapps.core.ui.Aapps
+import solutions.xapient.aapps.core.ui.AappsIcon
+import solutions.xapient.aapps.core.ui.AappsIconButton
+import solutions.xapient.aapps.core.ui.AappsIcons
+import solutions.xapient.aapps.core.ui.AappsPillButton
+import solutions.xapient.aapps.core.ui.AappsScaffold
+import solutions.xapient.aapps.core.ui.Haptics
+import solutions.xapient.aapps.core.ui.Springs
+import solutions.xapient.aapps.core.ui.pressScale
+import solutions.xapient.scorr.R
+import solutions.xapient.scorr.domain.Board
+import solutions.xapient.scorr.domain.Game
 import kotlinx.coroutines.delay
 import kotlin.math.abs
 import kotlin.math.min
@@ -240,7 +240,7 @@ fun ScoreScreen(
 
 @Composable
 private fun GearButton(onClick: () -> Unit) {
-    AappsIconButton(AappsIcons.Gear, stringResource(com.valueerrorx.aapps.core.ui.R.string.aapps_settings), onClick)
+    AappsIconButton(AappsIcons.Gear, stringResource(solutions.xapient.aapps.core.ui.R.string.aapps_settings), onClick)
 }
 
 // Rueckgaengig bleibt an seinem Platz, ist ohne Verlauf aber unsichtbar

@@ -1,4 +1,4 @@
-package com.valueerrorx.scorr.domain
+package solutions.xapient.scorr.domain
 
 import kotlin.math.abs
 

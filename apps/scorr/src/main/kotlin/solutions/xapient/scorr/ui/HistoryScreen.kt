@@ -1,4 +1,4 @@
-package com.valueerrorx.scorr.ui
+package solutions.xapient.scorr.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
@@ -28,23 +28,23 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.valueerrorx.aapps.core.ui.Aapps
-import com.valueerrorx.aapps.core.ui.AappsIcon
-import com.valueerrorx.aapps.core.ui.AappsScaffold
-import com.valueerrorx.aapps.core.ui.AappsTopBar
-import com.valueerrorx.aapps.core.ui.SettingsDivider
-import com.valueerrorx.aapps.core.ui.SettingsGroup
-import com.valueerrorx.scorr.R
-import com.valueerrorx.scorr.domain.Board
-import com.valueerrorx.scorr.domain.Game
-import com.valueerrorx.scorr.domain.WinRule
+import solutions.xapient.aapps.core.ui.Aapps
+import solutions.xapient.aapps.core.ui.AappsIcon
+import solutions.xapient.aapps.core.ui.AappsScaffold
+import solutions.xapient.aapps.core.ui.AappsTopBar
+import solutions.xapient.aapps.core.ui.SettingsDivider
+import solutions.xapient.aapps.core.ui.SettingsGroup
+import solutions.xapient.scorr.R
+import solutions.xapient.scorr.domain.Board
+import solutions.xapient.scorr.domain.Game
+import solutions.xapient.scorr.domain.WinRule
 
 // Scrollbare Seite mit eigener Kopfzeile (wie SettingsScreen, aber mit Titel)
 @Composable
 fun ListScreen(title: String, onBack: () -> Unit, content: @Composable ColumnScope.() -> Unit) {
     AappsScaffold {
         Column(Modifier.fillMaxWidth()) {
-            AappsTopBar(title, onBack, stringResource(com.valueerrorx.aapps.core.ui.R.string.aapps_back))
+            AappsTopBar(title, onBack, stringResource(solutions.xapient.aapps.core.ui.R.string.aapps_back))
             Column(
                 Modifier
                     .fillMaxWidth()

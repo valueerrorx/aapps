@@ -1,4 +1,4 @@
-package com.valueerrorx.scorr
+package solutions.xapient.scorr
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.semantics.SemanticsProperties
@@ -11,7 +11,7 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.unit.dp
-import com.valueerrorx.scorr.domain.Board
+import solutions.xapient.scorr.domain.Board
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith

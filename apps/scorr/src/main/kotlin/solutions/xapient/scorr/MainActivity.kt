@@ -1,4 +1,4 @@
-package com.valueerrorx.scorr
+package solutions.xapient.scorr
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

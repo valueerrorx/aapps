@@ -1,4 +1,4 @@
-package com.valueerrorx.scorr.ui
+package solutions.xapient.scorr.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -51,14 +51,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.valueerrorx.aapps.core.ui.Aapps
-import com.valueerrorx.aapps.core.ui.AappsIconButton
-import com.valueerrorx.aapps.core.ui.AappsPillButton
-import com.valueerrorx.aapps.core.ui.AappsTextButton
-import com.valueerrorx.aapps.core.ui.AappsTheme
-import com.valueerrorx.aapps.core.ui.glow
-import com.valueerrorx.scorr.R
-import com.valueerrorx.scorr.domain.Board
+import solutions.xapient.aapps.core.ui.Aapps
+import solutions.xapient.aapps.core.ui.AappsIconButton
+import solutions.xapient.aapps.core.ui.AappsPillButton
+import solutions.xapient.aapps.core.ui.AappsTextButton
+import solutions.xapient.aapps.core.ui.AappsTheme
+import solutions.xapient.aapps.core.ui.glow
+import solutions.xapient.scorr.R
+import solutions.xapient.scorr.domain.Board
 
 // Zahleneingabe ueber der Tafel; Akzent = Spielerfarbe
 @Composable

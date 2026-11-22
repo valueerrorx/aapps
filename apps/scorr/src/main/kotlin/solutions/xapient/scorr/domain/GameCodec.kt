@@ -1,4 +1,4 @@
-package com.valueerrorx.scorr.domain
+package solutions.xapient.scorr.domain
 
 // Speicherformat: eine Zeile je Eintrag, Felder mit '|' (Name zuletzt, darf '|' enthalten)
 object GameCodec {

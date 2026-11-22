@@ -1,4 +1,4 @@
-package com.valueerrorx.scorr.ui
+package solutions.xapient.scorr.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -39,17 +39,17 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.valueerrorx.aapps.core.ui.Aapps
-import com.valueerrorx.aapps.core.ui.AboutScreen
-import com.valueerrorx.aapps.core.ui.SettingsAction
-import com.valueerrorx.aapps.core.ui.SettingsChoice
-import com.valueerrorx.aapps.core.ui.SettingsDivider
-import com.valueerrorx.aapps.core.ui.SettingsGroup
-import com.valueerrorx.aapps.core.ui.SettingsScreen
-import com.valueerrorx.aapps.core.ui.SettingsToggle
-import com.valueerrorx.scorr.R
-import com.valueerrorx.scorr.domain.Board
-import com.valueerrorx.scorr.domain.WinRule
+import solutions.xapient.aapps.core.ui.Aapps
+import solutions.xapient.aapps.core.ui.AboutScreen
+import solutions.xapient.aapps.core.ui.SettingsAction
+import solutions.xapient.aapps.core.ui.SettingsChoice
+import solutions.xapient.aapps.core.ui.SettingsDivider
+import solutions.xapient.aapps.core.ui.SettingsGroup
+import solutions.xapient.aapps.core.ui.SettingsScreen
+import solutions.xapient.aapps.core.ui.SettingsToggle
+import solutions.xapient.scorr.R
+import solutions.xapient.scorr.domain.Board
+import solutions.xapient.scorr.domain.WinRule
 import kotlinx.coroutines.delay
 
 @Composable
@@ -105,7 +105,7 @@ fun ScorrSettings(
                 }
             }
             SettingsDivider()
-            SettingsAction(stringResource(com.valueerrorx.aapps.core.ui.R.string.aapps_about), onClick = onAbout)
+            SettingsAction(stringResource(solutions.xapient.aapps.core.ui.R.string.aapps_about), onClick = onAbout)
         }
     }
 }

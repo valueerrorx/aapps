@@ -1,4 +1,4 @@
-package com.valueerrorx.scorr.domain
+package solutions.xapient.scorr.domain
 
 // Ein Spieler bzw. Team; color = Index in die Palette
 data class Player(val name: String, val color: Int)
