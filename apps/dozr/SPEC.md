@@ -5,6 +5,7 @@ Einschlaf-Timer für jede App: Musik, Podcast, Hörbuch oder YouTube laufen lass
 
 ## Muss
 - **Hero: Mond-Dial.** Ein runder Nachthimmel mit Horizont und See. Der Mond liegt auf einem Halbbogen über dem Horizont: rechts am Horizont = 0, im Zenit = 60 min, links am Horizont = 120 min. Ziehen am Himmel zieht den Mond hoch (mehr Zeit) oder runter, in Rasten zu 5 min (5–120 min), jede Raste mit Haptik (`tick`). Unter dem Horizont bleibt er am nächsten Ende stehen und springt nicht auf die andere Seite. Tippen ändert nichts. Einstellen nur, wenn der Timer nicht läuft.
+- **Eigenes Motiv, kein Fortschrittsring:** Nachthimmel im runden Fenster mit Sternen, Hügeln, See und Spiegelung; die Zeit liest man an der Höhe des Monds. Akzent „Mondrose“ `#FF9EC7` (Rosa nutzt keine andere aapps-App), Mond Elfenbein, Himmel Tiefblau.
 - **Untergehen:** Läuft der Timer, sinkt der Mond mit der Restzeit nach rechts zum Horizont, der Bogen vom Horizont zum Mond leuchtet. Die eingestellte Zeit bleibt als blasser Mond-Schatten stehen. Beim Ausblenden taucht er ins Wasser, sein Schein wird schwächer. Danach ist er untergegangen, nur die Sterne bleiben.
 - **Anzeige:** große Restzeit `m:ss` bzw. `h:mm:ss`, darunter der Zustand: STOPPT UM 23:45 (auch im Leerlauf als Vorschau), BLENDET AUS, GESTOPPT UM 23:45.
 - **Ausblend-Kurve:** Unter dem Hero eine flache Kurve: Plateau, dann eine weiche Cosinus-Kurve auf 0. Beschriftet mit Beginn und Ende des Ausblendens (Uhrzeit). Ein Punkt zeigt beim Ausblenden die aktuelle Stelle.

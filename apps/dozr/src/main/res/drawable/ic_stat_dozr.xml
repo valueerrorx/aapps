@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Statusleiste und Kachel: Sichelmond, einfarbig -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M11.36,4.5A8,8 0 1,0 18.59,16.2A6.88,6.88 0 1,1 11.36,4.5Z" />
+</vector>

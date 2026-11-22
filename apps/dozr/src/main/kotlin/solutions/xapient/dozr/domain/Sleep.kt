@@ -75,11 +75,11 @@ data class Sleep(
 
         fun clampMin(m: Int): Int = m.coerceIn(MIN_MIN, MAX_MIN)
 
-        // Nach Laden: Neustart des Geraets = Laufzeituhr neu, Lauf ist vorbei
+        // Nach Laden: Neustart des Geraets = Laufzeituhr neu, alte Zeitpunkte wertlos -> Leerlauf
         fun restored(s: Sleep, sameBoot: Boolean, now: Long): Sleep {
             val clean = s.copy(setMin = clampMin(s.setMin))
-            if (clean.mode != Mode.RUNNING) return clean
-            if (!sameBoot || clean.endAt <= clean.startAt || clean.startAt > now) return clean.finish()
+            if (clean.mode == Mode.IDLE) return clean
+            if (!sameBoot || clean.endAt <= clean.startAt || clean.startAt > now) return clean.stop()
             return clean
         }
     }

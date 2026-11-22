@@ -1,4 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name" translatable="false">dozr</string>
+    <string name="tagline">A sleep timer for every app. Music, podcasts or videos fade out gently and stop, and your volume is back where it was.</string>
+    <string name="note_how">Drag the moon up to set the time. While it runs, the moon slowly sets. At the end dozr lowers the media volume along the curve, asks other players to pause and then restores your volume. If you change the volume yourself while it fades, dozr leaves it alone.</string>
+
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+    <string name="extend">+10 min</string>
+
+    <string name="state_stops">Stops at %1$s</string>
+    <string name="state_fading">Fading out</string>
+    <string name="state_done">Stopped at %1$s</string>
+
+    <string name="dial_desc">Sleep timer</string>
+    <plurals name="minutes_n">
+        <item quantity="one">%1$d minute</item>
+        <item quantity="other">%1$d minutes</item>
+    </plurals>
+
+    <string name="fade_title_s">Fade out · %1$d s</string>
+    <string name="fade_title_m">Fade out · %1$d min</string>
+    <string name="fade_desc">Volume fades out from %1$s to %2$s</string>
+
+    <string name="group_end">Fade out</string>
+    <string name="group_timer">Timer</string>
+    <string name="fade_length">Length of the fade</string>
+    <string name="len_30s">30 s</string>
+    <string name="len_1m">1 min</string>
+    <string name="len_3m">3 min</string>
+    <string name="len_5m">5 min</string>
+    <string name="shake">Shake for 10 more minutes</string>
+    <string name="shake_sub">Only while the timer runs, confirmed by a short buzz</string>
+    <string name="haptics">Haptics while setting</string>
+    <string name="notifications">Allow notifications</string>
+    <string name="notifications_sub">Shows the time left with +10 min and Stop while dozr runs</string>
+    <string name="add_tile">Add Quick Settings tile</string>
+    <string name="add_tile_sub">Starts with the last time in one tap</string>
+
+    <string name="channel_run">Running timer</string>
+    <string name="channel_info">Notes</string>
+    <string name="notif_stops_at">Stops at %1$s</string>
+    <string name="notif_fade_from">Fades out from %1$s</string>
+    <string name="notif_fading">Fading out …</string>
+    <string name="notif_muted_title">Playback did not stop</string>
+    <string name="notif_muted_text">Media volume stays off for the night. Open dozr to restore it.</string>
+
+    <string name="tile_minutes">%1$d min</string>
+    <string name="tile_until">Until %1$s</string>
 </resources>

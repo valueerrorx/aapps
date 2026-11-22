@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Sichel, Bogen, Horizont und Spiegelung einfarbig -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:pathData="M78,66A24,24 0 0,0 69.43,47.62"
+        android:strokeWidth="2.2"
+        android:strokeColor="#FF000000"
+        android:strokeLineCap="round" />
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M69.24,38.6A9,9 0 1,0 77.38,51.76A7.74,7.74 0 1,1 69.24,38.6Z" />
+    <path
+        android:pathData="M28,66L80,66M64,71L75,71M66,75.5L73,75.5"
+        android:strokeWidth="1.8"
+        android:strokeColor="#FF000000"
+        android:strokeLineCap="round" />
+</vector>

@@ -32,8 +32,9 @@ object Moon {
 class MoonDrag(start: Double) {
     var last: Double = start
         private set
+    private var fresh = true
 
-    // dx nach rechts, up nach oben positiv
+    // dx nach rechts, up nach oben positiv; der erste Punkt greift absolut
     fun move(dx: Float, up: Float): Double {
         val next = if (up < 0f) {
             if (last >= 0.5) 1.0 else 0.0
@@ -41,7 +42,8 @@ class MoonDrag(start: Double) {
             atan2(up.toDouble(), dx.toDouble()) / PI
         }
         // Halbe Bahn in einem Schritt = Finger ging unten herum: ignorieren
-        if (abs(next - last) <= 0.5) last = next
+        if (fresh || abs(next - last) <= 0.5) last = next
+        fresh = false
         return last
     }
 }
