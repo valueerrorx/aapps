@@ -2,6 +2,7 @@ package solutions.xapient.focusr
 
 import android.content.Context
 import android.media.AudioAttributes
+import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.os.Build
@@ -15,27 +16,34 @@ import android.os.VibratorManager
 // Ende: sanfter Glockenton als Alarm-Audio und kurze Vibration, auch bei gesperrtem Bildschirm
 object Alert {
     private val PATTERN = longArrayOf(0, 380, 200, 380, 200, 760)
-    private const val SAFETY_MS = 8000L
+    const val SAFETY_MS = 8000L
 
     private val audio: AudioAttributes = AudioAttributes.Builder()
         .setUsage(AudioAttributes.USAGE_ALARM)
         .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
         .build()
 
+    // Andere Wiedergabe (Musik, Video) nur leiser stellen, solange die Glocke klingt
+    private val focus: AudioFocusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK)
+        .setAudioAttributes(audio)
+        .build()
+
     // done wird genau einmal gerufen: nach dem Ton, bei Fehler oder spaetestens nach SAFETY_MS
     fun chime(ctx: Context, done: () -> Unit) {
         var finished = false
         val handler = Handler(Looper.getMainLooper())
+        val am = ctx.getSystemService(AudioManager::class.java)
         var player: MediaPlayer? = null
         val finish = {
             if (!finished) {
                 finished = true
+                handler.removeCallbacksAndMessages(null)
                 player?.release()
+                am?.abandonAudioFocusRequest(focus)
                 done()
             }
         }
         try {
-            val am = ctx.getSystemService(AudioManager::class.java)
             val session = am?.generateAudioSessionId() ?: AudioManager.AUDIO_SESSION_ID_GENERATE
             player = MediaPlayer.create(ctx, R.raw.chime, audio, session)
         } catch (_: RuntimeException) {
@@ -48,6 +56,7 @@ object Alert {
             true
         }
         handler.postDelayed({ finish() }, SAFETY_MS)
+        am?.requestAudioFocus(focus)
         p.start()
     }
 

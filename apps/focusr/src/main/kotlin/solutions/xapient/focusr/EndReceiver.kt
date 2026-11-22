@@ -17,8 +17,9 @@ class EndReceiver : BroadcastReceiver() {
         if (!Visibility.visible) Notifier.showDone(context, t.totalMs)
         if (prefs.vibrate) Alert.vibrate(context)
         if (prefs.sound) {
-            val pending = goAsync()
-            Alert.chime(context) { pending.finish() }
+            // ohne Broadcast-Zustellung (direkter Aufruf) gibt es kein PendingResult
+            val pending: PendingResult? = goAsync()
+            Alert.chime(context) { pending?.finish() }
         }
     }
 
