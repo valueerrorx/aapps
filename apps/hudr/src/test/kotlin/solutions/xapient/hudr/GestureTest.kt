@@ -7,6 +7,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -89,7 +90,7 @@ class GestureTest {
 
     private fun screen(loc: LocState) = show {
         SpeedScreen(
-            { Reading.searching(SpeedUnit.KMH) }, mutableIntStateOf(0), loc, Settings(), null,
+            { Reading.searching(SpeedUnit.KMH) }, remember { mutableIntStateOf(0) }, loc, Settings(), null,
             onHud = { huds++ }, onReset = { resets++ }, onLoc = { locTaps++ }, onSettings = {}, animate = false,
         )
     }

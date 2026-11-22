@@ -2,6 +2,7 @@ package solutions.xapient.hudr.screenshots
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
 import com.github.takahirom.roborazzi.RobolectricDeviceQualifiers
 import com.github.takahirom.roborazzi.RoborazziOptions
 import com.github.takahirom.roborazzi.captureRoboImage
@@ -58,14 +59,14 @@ class HudrScreenshotTest {
     @Composable
     private fun Main(r: Reading, s: Settings = Settings(), loc: LocState = LocState.READY) {
         SpeedScreen(
-            { r }, mutableIntStateOf(0), loc, s, null,
+            { r }, remember { mutableIntStateOf(0) }, loc, s, null,
             onHud = {}, onReset = {}, onLoc = {}, onSettings = {}, animate = false,
         )
     }
 
     @Composable
     private fun Hud(r: Reading, s: Settings = Settings()) {
-        HudScreen({ r }, mutableIntStateOf(0), s, null, onExit = {}, animate = false)
+        HudScreen({ r }, remember { mutableIntStateOf(0) }, s, null, onExit = {}, animate = false)
     }
 
     @Composable private fun Drive() = Main(drive)
