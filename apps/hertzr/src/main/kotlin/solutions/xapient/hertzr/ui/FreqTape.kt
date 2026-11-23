@@ -126,7 +126,7 @@ fun FreqTape(
                             val target = Freq.quantize(2.0.pow(oct))
                             if (set?.invoke(target) == true) {
                                 val s = Freq.semitone(target)
-                                if (s != semi) haptics?.tick()
+                                if (s != semi) haptics?.step()
                                 semi = s
                             }
                             if (want != oct) {

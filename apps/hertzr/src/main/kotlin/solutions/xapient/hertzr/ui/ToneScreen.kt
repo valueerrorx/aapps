@@ -206,7 +206,7 @@ fun ToneScreen(
     val main: @Composable () -> Unit = {
         AappsPillButton(
             stringResource(if (playing) R.string.stop else if (sweep) R.string.start_sweep else R.string.start),
-            { haptics?.confirm(); actions.onToggle() },
+            { haptics?.press(); actions.onToggle() },
             Modifier.widthIn(min = 176.dp),
             icon = if (playing) HertzrIcons.Stop else HertzrIcons.Play,
             active = !playing,
@@ -272,7 +272,7 @@ fun ToneScreen(
                 initial = initialText,
                 focus = animate,
                 onApply = { hz ->
-                    haptics?.confirm()
+                    haptics?.press()
                     when (target) {
                         InputTarget.FROM -> actions.onSweepFrom(hz)
                         InputTarget.TO -> actions.onSweepTo(hz)
@@ -322,7 +322,7 @@ private fun ModeSwitch(mode: Mode, haptics: Haptics?, onMode: (Mode) -> Unit) {
                     .then(if (sel) Modifier.border(1.dp, c.accent.copy(alpha = 0.55f), CircleShape) else Modifier)
                     .selectable(sel, indication = null, interactionSource = null, role = Role.RadioButton) {
                         if (!sel) {
-                            haptics?.tick()
+                            haptics?.step()
                             onMode(m)
                         }
                     }
@@ -387,13 +387,13 @@ private fun StepButton(
                         awaitFirstDown()
                         if (!on) return@awaitEachGesture
                         pressed = true
-                        if (step()) haptics?.tick()
+                        if (step()) haptics?.press()
                         val job = if (repeat) {
                             launch {
                                 delay(420)
                                 var gap = 110L
                                 while (on) {
-                                    if (step()) haptics?.tick()
+                                    if (step()) haptics?.step()
                                     delay(gap)
                                     gap = (gap * 0.9).toLong().coerceAtLeast(30)
                                 }
@@ -428,7 +428,7 @@ private fun SweepControls(s: Settings, enabled: Boolean, haptics: Haptics?, onFr
         }
         Spacer(Modifier.width(10.dp))
         Chip(stringResource(R.string.sweep_time), stringResource(R.string.seconds, s.sweepSec), stringResource(R.string.sweep_time_desc), enabled, Modifier.weight(0.78f)) {
-            haptics?.tick(); onDuration()
+            haptics?.press(); onDuration()
         }
     }
 }
@@ -490,7 +490,7 @@ private fun WavePicker(current: Wave, haptics: Haptics?, onWave: (Wave) -> Unit)
                     .background(bg)
                     .selectable(sel, indication = null, interactionSource = null, role = Role.RadioButton) {
                         if (!sel) {
-                            haptics?.tick()
+                            haptics?.step()
                             onWave(w)
                         }
                     }
@@ -546,7 +546,7 @@ private fun LevelSlider(db: Int, warning: Warning, haptics: Haptics?, onLevel: (
                         } ?: return@awaitEachGesture
                         fun follow() {
                             val target = (startDb + dx / usable * (Level.MAX_DB - Level.MIN_DB)).roundToInt().coerceIn(Level.MIN_DB, Level.MAX_DB)
-                            if (set(target)) haptics?.tick()
+                            if (set(target)) haptics?.step()
                         }
                         follow()
                         horizontalDrag(slop.id) { ch ->

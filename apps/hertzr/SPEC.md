@@ -32,7 +32,7 @@ Sauberer Tongenerator ohne Esoterik: einen reinen Ton mit genau einstellbarer Fr
 | `POST_NOTIFICATIONS` | Stopp in der Benachrichtigung (Android 13+, vor dem Start gefragt; weggetippt = beim nächsten Start wieder, nur endgültige Ablehnung beendet das Fragen; abgelehnt spielt es trotzdem). |
 | `WAKE_LOCK` | CPU bleibt wach, damit der Audio-Thread den Puffer füllt. Nur während des Spielens. |
 
-Kein INTERNET, kein VIBRATE.
+Kein INTERNET. VIBRATE kommt aus `core/ui` (normal, ohne Rückfrage), hertzr nutzt nur Touch-Haptik über die View (`step` für Raster, Band, Pegel, Segmente und Halten von −/+, `press` für Tasten und Chips).
 
 ## Nicht
 - Keine „Heilfrequenzen", Solfeggio, binaurale Beats, Mückenschutz- oder „Speaker Cleaner"-Presets, keine Gesundheitsversprechen.
@@ -60,4 +60,4 @@ Varianten (Standard Pixel 7, en): `_de`, `_land`, `_font200`, `_land_font200` f�
 ## Abnahmekriterien
 - Domain ohne Android-Imports. Unit-Tests: Frequenzgenauigkeit (gemessen über Nulldurchgänge, 1 Hz bis 20 kHz), kein Phasendrift über 10 min, Phasenkontinuität bei Frequenz-, Wellen- und Kanalwechsel (größter Sample-Sprung begrenzt), Sweep-Kurve (gemessene Frequenz entlang der Zeit = Exponentialkurve), Aliasing (gemessen per DFT, Grenzwerte in den Tests), Pegel (RMS in dB), Ein-/Ausblenden, Kanäle, Log-Skala, Schritte, Eingabe-Parser, Notenname, Speicher, Kontrast (WCAG gemessen).
 - Gesten (Robolectric): Band ziehen und Schwung, Tippen aufs Band ändert nichts, TalkBack-Aktionen, −/+ und Halten, Oktave, Wellenform, Pegel ziehen, Eingabe (auch kHz-Umschalter), Modus, Sweep-Sperre im Lauf, Start/Stopp. Schutz (Robolectric): Kopfhörer ab und Telefonat stoppen ohne Dienst, Speichern entprellt. Im Leerlauf keine Animations-Frames.
-- `:apps:hertzr:check`, `verifyRoborazziDebug`, `assembleRelease` grün; nur die 4 Berechtigungen oben; Release-APK < 4 MB.
+- `:apps:hertzr:check`, `verifyRoborazziDebug`, `assembleRelease` grün; nur die 4 Berechtigungen oben plus VIBRATE aus `core/ui`; Release-APK < 4 MB.
