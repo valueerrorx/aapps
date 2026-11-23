@@ -8,6 +8,7 @@
     <string name="note_swarm">Schwarm: Irgendwo am Schirm taucht ein Schwarm Kometen auf. Wische dorthin, wohin der mittlere mit dem Ring zeigt, egal was die anderen tun. Ab Stufe 10 fliegt der Schwarm auch: Ist der mittlere hohl, wische stattdessen dorthin, wohin der Schwarm fliegt.</string>
     <string name="note_bounce">Bande: Glas-Prismen leuchten kurz auf dem Feld auf und verschwinden. Dann erscheint am Rand ein Licht. Tippe den Rand an, an dem es austritt: Jedes Prisma lenkt es um 90 Grad ab. Eine richtige Antwort bringt eine Stufe hinauf, zwei falsche in Folge eine hinunter.</string>
     <string name="note_drops">Tropfen: Rechnungen fallen ins Wasser. Tippe das Ergebnis ins Ziffernfeld, der Tropfen platzt. Tropfen mit gleichem Ergebnis platzen gemeinsam, ein goldener Tropfen räumt den ganzen Himmel ab. Drei Tropfen im Wasser füllen das Becken und beenden die Runde, eine Uhr gibt es nicht. Gelöste Tropfen machen es schneller, Aufschläge langsamer.</string>
+    <string name="note_glance">Rundblick: Schau aufs Kreuz in der Mitte. Für einen Augenblick blitzt dort eine Form auf und irgendwo auf den Ringen ein Stern. Wähle die Form mit den zwei Tasten und tippe an, wo der Stern war, in beliebiger Reihenfolge. Nur beides richtig zählt. Zwei richtige Antworten machen den Blitz kürzer, eine falsche länger. Kurze Blitze hängen am Bildschirm: Stand ein Blitz merklich zu lang oder zu kurz, zählt die Aufgabe nicht. Auf Tablets und quer ist das Feld größer und wirkt anders.</string>
     <string name="note_daily">Jeden Tag stellt thinkr bis zu drei Spiele zusammen. Ein Spiel zählt, sobald du heute eine Runde davon gespielt hast. Ein verpasster Tag pro Woche unterbricht die Serie nicht.</string>
     <string name="note_relaxed">Gemächlich gibt dir die Hälfte mehr Zeit, mit langsameren Karten und Perlen, und führt eigene Stufen und Bestwerte.</string>
     <string name="note_access">Die Spiele laufen auf Zeit und sind mit einem Screenreader kaum spielbar.</string>
@@ -19,6 +20,7 @@
     <string name="game_swarm">Schwarm</string>
     <string name="game_bounce">Bande</string>
     <string name="game_drops">Tropfen</string>
+    <string name="game_glance">Rundblick</string>
 
     <string name="date_pattern">EEEE, d. MMMM</string>
     <string name="games">Spiele</string>
@@ -93,6 +95,13 @@
     <string name="drops_board">%1$d Tropfen fallen, im Becken ist noch Platz für %2$d</string>
     <string name="drops_delete">Löschen</string>
     <string name="drops_enter">Eingabe</string>
+
+    <string name="glance_prompt">Schau in die Mitte. Welche Form war dort, und wo war der Stern?</string>
+    <string name="glance_ask_both">Form und Stern?</string>
+    <string name="glance_ask_center">Welche Form?</string>
+    <string name="glance_ask_spot">Wo war der Stern?</string>
+    <string name="glance_void">Blitz war ungenau, zählt nicht</string>
+    <string name="glance_board">Feld mit %1$d Stellen um die Mitte</string>
 
     <string name="accuracy">Treffer</string>
     <string name="tally_desc">%1$d von %2$d im Ziel</string>

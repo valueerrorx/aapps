@@ -138,6 +138,8 @@ class GameHostTest {
 
     @Test fun bouncePausesAndEndsOnce() = pauseThenFinish(Games.Bounce)
 
+    @Test fun glancePausesAndEndsOnce() = pauseThenFinish(Games.Glance)
+
     // Tropfen: keine Uhr, die Runde endet beim dritten Aufschlag; Pause haelt die Tropfen an
     @Test fun dropsEndsWhenBasinIsFull() {
         launch(Games.Drops)

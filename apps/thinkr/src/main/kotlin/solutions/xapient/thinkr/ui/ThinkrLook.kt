@@ -212,6 +212,16 @@ object ThinkrIcons {
         }
     }
 
+    // Rundblick: Ring um einen Punkt, am Ring ein Funke
+    val Glance: ImageVector by lazy {
+        line("glance") {
+            moveTo(12f, 4f); arcTo(8f, 8f, 0f, true, false, 20f, 12f)
+            dot(12f, 12f, 1.6f)
+            moveTo(18.5f, 2.8f); lineTo(19.2f, 4.8f); lineTo(21.2f, 5.5f); lineTo(19.2f, 6.2f)
+            lineTo(18.5f, 8.2f); lineTo(17.8f, 6.2f); lineTo(15.8f, 5.5f); lineTo(17.8f, 4.8f); close()
+        }
+    }
+
     // Loeschen: Taste mit Pfeil nach links
     val Erase: ImageVector by lazy {
         line("erase") {

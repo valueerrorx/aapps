@@ -12,6 +12,9 @@ import solutions.xapient.thinkr.domain.bounce.BounceState
 import solutions.xapient.thinkr.domain.bounce.Port
 import solutions.xapient.thinkr.domain.drops.DropsGame
 import solutions.xapient.thinkr.domain.drops.DropsState
+import solutions.xapient.thinkr.domain.glance.GlanceGame
+import solutions.xapient.thinkr.domain.glance.GlanceInput
+import solutions.xapient.thinkr.domain.glance.GlanceState
 import solutions.xapient.thinkr.domain.echo.EchoGame
 import solutions.xapient.thinkr.domain.echo.EchoState
 import solutions.xapient.thinkr.domain.ink.InkGame
@@ -28,6 +31,7 @@ import solutions.xapient.thinkr.ui.Phase
 import solutions.xapient.thinkr.ui.ThinkrIcons
 import solutions.xapient.thinkr.ui.bounce.BounceBoard
 import solutions.xapient.thinkr.ui.drops.DropsBoard
+import solutions.xapient.thinkr.ui.glance.GlanceBoard
 import solutions.xapient.thinkr.ui.echo.EchoBoard
 import solutions.xapient.thinkr.ui.ink.InkBoard
 import solutions.xapient.thinkr.ui.stars.StarsBoard
@@ -108,8 +112,14 @@ object Games {
         DropsBoard(s, live, count, input)
     }
 
+    val Glance = GameDef<GlanceState, GlanceInput>(
+        GameId.GLANCE, R.string.game_glance, ThinkrIcons.Glance, GlanceGame, tickOnHit = true,
+    ) { s, live, count, input ->
+        GlanceBoard(s, live, count, input)
+    }
+
     // Reihenfolge = Anzeige; neue Spiele hier eintragen
-    val all: List<GameDef<*, *>> = listOf(Echo, Switches, Stars, Ink, Swarm, Bounce, Drops)
+    val all: List<GameDef<*, *>> = listOf(Echo, Switches, Stars, Ink, Swarm, Bounce, Drops, Glance)
 
     val ids: List<GameId> get() = all.map { it.id }
 
