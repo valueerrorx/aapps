@@ -90,14 +90,14 @@ fun RoundrApp() {
                 onLibrary = { screen = Screen.LIBRARY },
                 onEdit = { screen = Screen.EDITOR },
                 onSettings = { screen = Screen.SETTINGS },
-                onStart = { haptics.confirm(); start(workout) },
+                onStart = { haptics.press(); start(workout) },
             )
             Screen.LIBRARY -> {
                 BackHandler { screen = Screen.HOME }
                 LibraryScreen(
                     current = workout,
                     saved = saved,
-                    onPick = { choose(it); haptics.tick(); screen = Screen.HOME },
+                    onPick = { choose(it); haptics.press(); screen = Screen.HOME },
                     onDelete = { w ->
                         saved = saved - w
                         prefs.saved = saved

@@ -210,7 +210,7 @@ fun RunScreen(
                     onStop = {
                         if (confirm) {
                             confirm = false
-                            haptics?.confirm()
+                            haptics?.press()
                             onStop()
                         } else {
                             haptics?.press()
@@ -293,7 +293,7 @@ private fun RunContent(
                 if (running) RoundrIcons.Pause else RoundrIcons.Play,
                 stringResource(if (running) R.string.pause else R.string.resume),
                 88.dp, 38.dp, true,
-            ) { haptics?.confirm(); onToggle() }
+            ) { haptics?.press(); onToggle() }
             RoundButton(RoundrIcons.Next, stringResource(R.string.skip), 60.dp, 30.dp, false) { haptics?.press(); onSkip() }
         }
     }

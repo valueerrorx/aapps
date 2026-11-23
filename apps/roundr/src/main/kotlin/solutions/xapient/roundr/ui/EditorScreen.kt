@@ -202,13 +202,13 @@ private fun StepButton(icon: ImageVector, desc: String, enabled: Boolean, haptic
                         if (!on) return@awaitEachGesture
                         pressed = true
                         step()
-                        haptics?.tick()
+                        haptics?.press()
                         val repeat = launch {
                             delay(420)
                             var gap = 140L
                             while (on) {
                                 step()
-                                haptics?.tick()
+                                haptics?.step()
                                 delay(gap)
                                 gap = (gap * 0.88).toLong().coerceAtLeast(45)
                             }
@@ -236,7 +236,7 @@ private fun SaveGroup(workout: Workout, savedCount: Int, haptics: Haptics?, onSa
         if (name.isNotBlank()) {
             if (onSave(name)) {
                 full = false
-                haptics?.confirm()
+                haptics?.press()
                 focus.clearFocus()
             } else {
                 full = true
