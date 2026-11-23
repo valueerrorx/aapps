@@ -100,7 +100,7 @@ fun NordrApp() {
                 BackHandler { screen = Screen.COMPASS }
                 NordrSettings(
                     northRef = northRef,
-                    onNorthRef = { northRef = it; prefs.northRef = it; haptics.tick() },
+                    onNorthRef = { northRef = it; prefs.northRef = it; haptics.step() },
                     region = region,
                     declination = regionDeclination,
                     onRegion = { screen = Screen.REGION },
@@ -123,7 +123,7 @@ fun NordrApp() {
                     onSelect = {
                         region = it
                         prefs.region = it
-                        haptics.tick()
+                        haptics.press()
                         screen = Screen.SETTINGS
                     },
                     onBack = { screen = Screen.SETTINGS },

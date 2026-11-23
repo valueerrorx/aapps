@@ -12,9 +12,10 @@ Ein Kompass: zeigt ruhig und genau, wohin das Handy zeigt, und hält auf Wunsch 
 - Kalibrierungshinweis (Acht-Bewegung), wenn das Magnetometer niedrige Genauigkeit meldet. Eigener Hinweis bei magnetischer Störung (Feldstärke außerhalb 20–70 µT). Ausblendbar, kommt bei der nächsten Verschlechterung wieder; manuell über die Einstellungen.
 - Kurs setzen (Hauptaktion): Marke auf der Rose, Abweichung „12° rechts", Haptik und Glanz beim Zurückkommen auf Kurs (Hysterese 2°/4°). Kurs bleibt gespeichert.
 - Haptik-Tick beim Überstreichen von N/O/S/W (mit Hysterese), abschaltbar.
+- Haptik: Auf-Kurs und N/O/S/W sind Ereignisse (`confirm`/`tick` über den Vibrator, Usage Alarm), Nordbezug und Region sind Touch-Feedback (`step`/`press`).
 - Missweisend (magnetisch) oder rechtweisend (geografisch). Deklination über `GeomagneticField` für eine manuell gewählte Region, ohne Standort-Berechtigung. Startwert: Region passend zur Zeitzone, sonst magnetisch.
 - Bildschirm bleibt an. Sensoren nur zwischen onResume und onPause. Kein Magnetometer: Hinweis statt Absturz.
-- Englisch und Deutsch. Keine Berechtigungen.
+- Englisch und Deutsch. Nur VIBRATE (normal, ohne Rückfrage, kommt aus `core/ui`).
 
 ## Nicht
 - Kein Standort, keine Karte, keine Wegpunkte, kein Kamera-/AR-Modus, keine Neigungsmessung (das ist levlr), kein INTERNET.
@@ -44,5 +45,5 @@ Varianten (Standard: Pixel 7, en): `heading_de`, `_360dp`, `_land`, `_font130`, 
 ## Abnahmekriterien
 - Domain ohne Android-Imports, Unit-Tests für Winkel-Wraparound, Orientierung (flach, aufrecht, quer, Rotation-Vector = Fallback), Glättung, Genauigkeit/Störung, Kurs, Kardinal-Ticks, Deklination, Federphysik.
 - Liegt das Handy still, laufen keine Animations-Frames mehr.
-- `:apps:nordr:check`, `verifyRoborazziDebug`, `assembleRelease` grün, Manifest ohne Berechtigungen, Release-APK < 4 MB.
+- `:apps:nordr:check`, `verifyRoborazziDebug`, `assembleRelease` grün, Manifest nur mit VIBRATE, Release-APK < 4 MB.
 - Lesbar bei Schriftgröße 200 %.
