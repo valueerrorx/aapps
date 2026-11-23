@@ -94,9 +94,15 @@ fun <S : Play, I> GameHost(
     fun update(next: S) {
         val a = state.round
         val b = next.round
-        val cheer = next.cheers > state.cheers
+        val prev = state
+        val cheer = next.cheers > prev.cheers
         state = next
-        if (cheer || b.combo.mult > a.combo.mult || (def.tickOnHit && b.correct > a.correct)) haptics?.tick()
+        if (next.jolts > prev.jolts) {
+            haptics?.confirm()
+        } else if (cheer || b.combo.mult > a.combo.mult || (def.tickOnHit && b.correct > a.correct)) {
+            haptics?.tick()
+        }
+        if (next.steps > prev.steps) haptics?.step()
         if (b.correct > a.correct) tones?.play(Tones.Kind.HIT) else if (b.wrong > a.wrong) tones?.play(Tones.Kind.MISS)
         if (b.isOver && phase == Phase.PLAYING) phase = Phase.OVER
     }
@@ -156,7 +162,8 @@ fun <S : Play, I> GameHost(
     AappsScaffold {
         Column(Modifier.fillMaxSize()) {
             Hud(state, onPause = { haptics?.press(); pause() })
-            TimeBar(state.round.remainingMs.toFloat() / state.round.durationMs)
+            // Spiele ohne feste Zeit (Tropfen) zeigen ihren Stand selbst
+            if (def.timed) TimeBar(state.round.remainingMs.toFloat() / state.round.durationMs) else Spacer(Modifier.height(10.dp))
             Box(Modifier.weight(1f).fillMaxWidth()) {
                 def.board(state, phase == Phase.PLAYING, if (phase == Phase.COUNTDOWN) count else 0, onInput)
             }

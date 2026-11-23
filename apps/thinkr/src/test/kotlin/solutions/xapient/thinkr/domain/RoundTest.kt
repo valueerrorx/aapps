@@ -72,4 +72,12 @@ class RoundTest {
         assertTrue(end.isOver)
         assertEquals(0, end.remainingMs)
     }
+
+    @Test fun endStopsTheRoundNow() {
+        val r = Round().at(12_000).end()
+        assertTrue(r.isOver)
+        assertEquals(12_000, r.now)
+        // spaetere Zeit aendert nichts mehr
+        assertEquals(12_000, r.at(30_000).now)
+    }
 }

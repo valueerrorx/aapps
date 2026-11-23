@@ -61,6 +61,9 @@ data class Round(
     // Zusatzpunkte mit dem aktuellen Multiplikator, zaehlt nicht als Antwort
     fun bonus(points: Int): Round = copy(score = score + points * combo.mult)
 
+    // Ende vor der Zeit (Becken voll, Leben weg): die Runde ist jetzt aus
+    fun end(): Round = copy(durationMs = now)
+
     companion object {
         const val DURATION_MS = 60_000L
     }
@@ -76,6 +79,12 @@ interface Play {
 
     // Zaehler fuer Spiel-Ereignisse mit Haptik (z. B. perfekter Durchgang); steigt er, gibt der Rahmen tick()
     val cheers: Int get() = 0
+
+    // Raster-Zaehler (z. B. Abprall in der Aufloesung); steigt er, gibt der Rahmen step()
+    val steps: Int get() = 0
+
+    // Zaehler fuer harte Ereignisse (z. B. Zusammenstoss); steigt er, gibt der Rahmen confirm()
+    val jolts: Int get() = 0
 }
 
 // Ein Spiel: rein, deterministisch per Seed, Zeit nur ueber t (Spielzeit in ms)
