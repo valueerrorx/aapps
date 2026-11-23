@@ -149,7 +149,7 @@ class ThinkrScreenshotTest {
 
     @Composable
     private fun Settings() = ThinkrSettings(
-        relaxed = false, onRelaxed = {}, haptics = true, onHaptics = {}, sound = false, onSound = {},
+        relaxed = false, onRelaxed = {}, safeColors = false, onSafeColors = {}, haptics = true, onHaptics = {}, sound = false, onSound = {},
         levels = listOf(LevelItem(GameId.ECHO, "Echo", 6), LevelItem(GameId.SWITCHES, "Switches", 3)), onReset = {}, onAbout = {}, onBack = {},
     )
 

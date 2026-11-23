@@ -29,6 +29,8 @@ data class LevelItem(val id: GameId, val name: String, val level: Int)
 fun ThinkrSettings(
     relaxed: Boolean,
     onRelaxed: (Boolean) -> Unit,
+    safeColors: Boolean,
+    onSafeColors: (Boolean) -> Unit,
     haptics: Boolean,
     onHaptics: (Boolean) -> Unit,
     sound: Boolean,
@@ -45,6 +47,8 @@ fun ThinkrSettings(
     SettingsScreen(onBack) {
         SettingsGroup(stringResource(R.string.group_play)) {
             SettingsToggle(stringResource(R.string.relaxed), relaxed, onRelaxed, stringResource(R.string.relaxed_sub))
+            SettingsDivider()
+            SettingsToggle(stringResource(R.string.safe_colors), safeColors, onSafeColors, stringResource(R.string.safe_colors_sub))
         }
         SettingsGroup(stringResource(R.string.group_device)) {
             SettingsToggle(stringResource(R.string.haptics), haptics, onHaptics)
@@ -86,6 +90,7 @@ fun ThinkrAbout(versionName: String, onBack: () -> Unit) {
             stringResource(R.string.note_echo),
             stringResource(R.string.note_switches),
             stringResource(R.string.note_stars),
+            stringResource(R.string.note_ink),
             stringResource(R.string.note_daily),
             stringResource(R.string.note_relaxed),
             stringResource(R.string.note_access),

@@ -24,4 +24,9 @@ class Prefs(context: Context) {
     var relaxed: Boolean
         get() = sp.getBoolean("relaxed", false)
         set(v) = sp.edit { putBoolean("relaxed", v) }
+
+    // Farbenblind-Modus: Tinte nur mit den vier sicheren Farben
+    var safeColors: Boolean
+        get() = sp.getBoolean("safe_colors", false)
+        set(v) = sp.edit { putBoolean("safe_colors", v) }
 }

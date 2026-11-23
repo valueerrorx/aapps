@@ -1,6 +1,7 @@
 package solutions.xapient.thinkr.ui
 
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
@@ -25,6 +26,7 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
@@ -56,6 +58,21 @@ fun CountOverlay(prompt: String, count: Int) {
             Spacer(Modifier.height(12.dp))
             BasicText(count.toString(), style = Aapps.type.display.copy(color = c.accent, fontSize = Aapps.type.display.fontSize * 0.8f))
         }
+    }
+}
+
+// Frist als Linie, die zur Mitte schrumpft; knapp wird sie Bernstein. fraction = verbleibender Anteil
+@Composable
+fun DeadlineBar(fraction: Float, visible: Boolean, modifier: Modifier) {
+    val c = Aapps.colors
+    val f = if (visible) fraction.coerceIn(0f, 1f) else 0f
+    val alpha by animateFloatAsState(if (visible) 1f else 0f, Springs.gentle(), label = "deadline")
+    Canvas(modifier.height(6.dp).graphicsLayer { this.alpha = alpha }) {
+        val y = size.height / 2
+        val w = size.width * f
+        val x0 = (size.width - w) / 2
+        drawLine(c.line, Offset(0f, y), Offset(size.width, y), 3.dp.toPx(), StrokeCap.Round)
+        if (w > 0f) drawLine(if (f < 0.3f) Amber else c.accent, Offset(x0, y), Offset(x0 + w, y), 3.dp.toPx(), StrokeCap.Round)
     }
 }
 

@@ -9,6 +9,8 @@ import solutions.xapient.thinkr.domain.MiniGame
 import solutions.xapient.thinkr.domain.Play
 import solutions.xapient.thinkr.domain.echo.EchoGame
 import solutions.xapient.thinkr.domain.echo.EchoState
+import solutions.xapient.thinkr.domain.ink.InkGame
+import solutions.xapient.thinkr.domain.ink.InkState
 import solutions.xapient.thinkr.domain.stars.StarsGame
 import solutions.xapient.thinkr.domain.stars.StarsState
 import solutions.xapient.thinkr.domain.switches.SwitchesGame
@@ -17,6 +19,7 @@ import solutions.xapient.thinkr.ui.GameHost
 import solutions.xapient.thinkr.ui.Phase
 import solutions.xapient.thinkr.ui.ThinkrIcons
 import solutions.xapient.thinkr.ui.echo.EchoBoard
+import solutions.xapient.thinkr.ui.ink.InkBoard
 import solutions.xapient.thinkr.ui.stars.StarsBoard
 import solutions.xapient.thinkr.ui.switches.SwitchesBoard
 
@@ -73,8 +76,12 @@ object Games {
         StarsBoard(s, live, count, input)
     }
 
+    val Ink = GameDef<InkState, Boolean>(GameId.INK, R.string.game_ink, ThinkrIcons.Ink, InkGame) { s, live, count, input ->
+        InkBoard(s, live, count, input)
+    }
+
     // Reihenfolge = Anzeige; neue Spiele hier eintragen
-    val all: List<GameDef<*, *>> = listOf(Echo, Switches, Stars)
+    val all: List<GameDef<*, *>> = listOf(Echo, Switches, Stars, Ink)
 
     val ids: List<GameId> get() = all.map { it.id }
 

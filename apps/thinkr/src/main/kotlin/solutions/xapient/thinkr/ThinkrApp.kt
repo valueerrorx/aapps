@@ -45,6 +45,7 @@ private data class Session(
     val seed: Long,
     val level: Int,
     val relaxed: Boolean,
+    val safeColors: Boolean,
     val day: Int,
     val back: Screen,
 )
@@ -57,6 +58,7 @@ fun ThinkrApp(clock: () -> LocalDate = LocalDate::now) {
     var hapticsOn by remember { mutableStateOf(prefs.haptics) }
     var soundOn by remember { mutableStateOf(prefs.sound) }
     var relaxed by remember { mutableStateOf(prefs.relaxed) }
+    var safeColors by remember { mutableStateOf(prefs.safeColors) }
     var screen by rememberSaveable { mutableStateOf(Screen.HOME) }
     // Tageswechsel erst beim naechsten Oeffnen, nie mitten im Spiel
     var today by remember { mutableIntStateOf(Days.of(clock())) }
@@ -76,7 +78,7 @@ fun ThinkrApp(clock: () -> LocalDate = LocalDate::now) {
     fun start(id: GameId, fromDaily: Boolean, back: Screen) {
         val def = Games.of(id) ?: return
         val saved = journal.progress(id, relaxed).level
-        session = Session(id, fromDaily, Random.nextLong(), def.startLevel(saved), relaxed, today, back)
+        session = Session(id, fromDaily, Random.nextLong(), def.startLevel(saved), relaxed, safeColors, today, back)
         screen = Screen.PLAY
     }
 
@@ -150,6 +152,7 @@ fun ThinkrApp(clock: () -> LocalDate = LocalDate::now) {
                         haptics = haptics, tones = tones,
                         onFinish = { finish(s, it) },
                         onQuit = { back() },
+                        safeColors = s.safeColors,
                     )
                 }
             }
@@ -173,6 +176,8 @@ fun ThinkrApp(clock: () -> LocalDate = LocalDate::now) {
                 ThinkrSettings(
                     relaxed = relaxed,
                     onRelaxed = { relaxed = it; prefs.relaxed = it },
+                    safeColors = safeColors,
+                    onSafeColors = { safeColors = it; prefs.safeColors = it },
                     haptics = hapticsOn,
                     onHaptics = { hapticsOn = it; prefs.haptics = it },
                     sound = soundOn,
