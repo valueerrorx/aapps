@@ -1,11 +1,9 @@
 name: Android
 
+# Nur manuell (Actions > Android > Run workflow), bis die Signing-Secrets gesetzt sind.
+# Ohne push-Event wird debug-signiert gebaut und kein Release erstellt.
+# Automatik wieder an: push (branches: [main], tags: ['*-v*'], paths-ignore wie gehabt) + pull_request ergaenzen.
 on:
-  push:
-    branches: [main]
-    tags: ['*-v*']
-    paths-ignore: ['research/**', 'docs/**', '**.md', 'LICENSE']
-  pull_request:
   workflow_dispatch:
 
 permissions:
