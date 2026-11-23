@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height" />
+    <title>clumsy cow</title>
+    <style>html,body{margin:0;overflow:hidden;width:100%;height:100%;background:#000;}</style>
+    <script type="text/javascript">
+        //------------------------------------------------------//
+        //      copyright | 2015 | thomas michael weissel       //
+        //------------------------------------------------------//
+        // adjust these vars to setup the game environment
+        var loader = false;  // display a preload bar or not
+        var fps = false;
+        var initialWorldScale = 1;  // sets the default game play scale factor
+        var physicsFPS = 50;  // physics should be calculated independent from actual fps - set here desiredFps for all states
+        var worldwidth = 768;   // keep it 16:10 !!
+        var worldheight = 480;
+        //------------------------------------------------------//
+    </script>
+    <script src="phaser.min.js"></script>
+    <script src="Gray.js"></script>
+    <script src="game.js"></script>
+    <script src="moovr.js"></script>
+</head>
+<body>
+<script>
+window.addEventListener("resize", function(){ game && game.scale && game.scale.setScreenSize(true); });
+window.addEventListener("orientationchange", function(){ game && game.scale && game.scale.setScreenSize(true); });
+</script>
+</body>
+</html>
