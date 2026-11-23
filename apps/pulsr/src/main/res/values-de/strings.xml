@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tagline">Ein Metronom, das exakt im Takt bleibt. Rad drehen, Tempo tippen, spielen.</string>
+    <string name="note_background">Klickt bei gesperrtem Bildschirm weiter. In der Benachrichtigung lässt es sich stoppen.</string>
+
+    <string name="start">Start</string>
+    <string name="stop">Stopp</string>
+    <string name="tap">Tap</string>
+    <string name="tap_desc">Tempo tippen</string>
+    <string name="tempo">Tempo</string>
+    <string name="tempo_state">%1$d BPM, %2$s</string>
+    <string name="slower">Langsamer</string>
+    <string name="faster">Schneller</string>
+    <string name="meter">Taktart</string>
+    <string name="fewer_beats">Weniger Schläge</string>
+    <string name="more_beats">Mehr Schläge</string>
+    <plurals name="beats_state">
+        <item quantity="one">%1$d Schlag pro Takt</item>
+        <item quantity="other">%1$d Schläge pro Takt</item>
+    </plurals>
+    <string name="subdivision">Unterteilung</string>
+    <string name="sub_quarter">Viertel</string>
+    <string name="sub_eighth">Achtel</string>
+    <string name="sub_triplet">Triolen</string>
+    <string name="sub_sixteenth">Sechzehntel</string>
+
+    <string name="group_sound">Klang</string>
+    <string name="sound">Klickton</string>
+    <string name="sound_click">Klick</string>
+    <string name="sound_wood">Holz</string>
+    <string name="sound_beep">Piep</string>
+    <string name="accent">Ersten Schlag betonen</string>
+    <string name="accent_sub">Höherer, lauterer Klick auf der Eins</string>
+    <string name="group_display">Anzeige</string>
+    <string name="keep_on">Bildschirm anlassen</string>
+    <string name="keep_on_sub">Solange das Metronom spielt</string>
+
+    <string name="notify_channel">Metronom</string>
+    <string name="notify_title">%1$d BPM · %2$d/4</string>
+</resources>
