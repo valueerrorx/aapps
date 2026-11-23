@@ -7,16 +7,17 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 import solutions.xapient.thinkr.domain.Round
 
-// Perfekter Spieler: stellt jede Weiche fuer die Perle, die als naechste dort ankommt
+// Perfekter Spieler: stellt jede Weiche fuer die Perle, die als naechste dort ankommt; Perlen in wrong lenkt er absichtlich falsch
 object Pilot {
-    fun steer(s: SwitchesState, t: Long): SwitchesState {
+    fun steer(s: SwitchesState, t: Long, wrong: Set<Int> = emptySet()): SwitchesState {
         var x = SwitchesGame.tick(s, t)
         val want = HashMap<Int, Pair<Double, Boolean>>()
         for (b in x.beads) {
             val node = x.net.nodes[x.net.edges[b.edge].to]
             if (node.kind != Kind.SWITCH) continue
             val left = x.net.edges[b.edge].track.length - x.progress(b)
-            val need = x.net.route(b.target).getValue(node.slot)
+            val goal = if (b.id in wrong) (b.target + 1) % x.net.gateCount else b.target
+            val need = x.net.route(goal)[node.slot] ?: continue
             val cur = want[node.slot]
             if (cur == null || left < cur.first) want[node.slot] = left to need
         }
@@ -24,12 +25,12 @@ object Pilot {
         return x
     }
 
-    fun play(s: SwitchesState, until: Long, step: Long = 16): SwitchesState {
+    fun play(s: SwitchesState, until: Long, step: Long = 16, wrong: Set<Int> = emptySet()): SwitchesState {
         var x = s
         var t = x.round.now
         while (t < until) {
             t = minOf(t + step, until)
-            x = steer(x, t)
+            x = steer(x, t, wrong)
         }
         return x
     }

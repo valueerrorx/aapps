@@ -9,10 +9,13 @@ import solutions.xapient.thinkr.domain.MiniGame
 import solutions.xapient.thinkr.domain.Play
 import solutions.xapient.thinkr.domain.echo.EchoGame
 import solutions.xapient.thinkr.domain.echo.EchoState
+import solutions.xapient.thinkr.domain.switches.SwitchesGame
+import solutions.xapient.thinkr.domain.switches.SwitchesState
 import solutions.xapient.thinkr.ui.GameHost
 import solutions.xapient.thinkr.ui.Phase
 import solutions.xapient.thinkr.ui.ThinkrIcons
 import solutions.xapient.thinkr.ui.echo.EchoBoard
+import solutions.xapient.thinkr.ui.switches.SwitchesBoard
 
 // Brett eines Spiels: zeichnet den Stand, live = Spielzeit laeuft, count = Einzaehlen (0 = aus)
 typealias Board<S, I> = @Composable (state: S, live: Boolean, count: Int, onInput: (I) -> Unit) -> Unit
@@ -23,6 +26,10 @@ class GameDef<S : Play, I>(
     @param:StringRes val name: Int,
     val icon: ImageVector,
     val game: MiniGame<S, I>,
+    // jede richtige Antwort ist ein Ereignis (tick), nicht nur der Kettenaufstieg
+    val tickOnHit: Boolean = false,
+    // Ergebnis als „27/31" statt in Prozent
+    val tally: Boolean = false,
     val board: Board<S, I>,
 ) {
     fun startLevel(saved: Int): Int = game.startLevel(saved)
@@ -52,8 +59,14 @@ object Games {
         EchoBoard(s, live, count, input)
     }
 
+    val Switches = GameDef<SwitchesState, Int>(
+        GameId.SWITCHES, R.string.game_switches, ThinkrIcons.Switches, SwitchesGame, tickOnHit = true, tally = true,
+    ) { s, live, count, input ->
+        SwitchesBoard(s, live, count, input)
+    }
+
     // Reihenfolge = Anzeige; neue Spiele hier eintragen
-    val all: List<GameDef<*, *>> = listOf(Echo)
+    val all: List<GameDef<*, *>> = listOf(Echo, Switches)
 
     val ids: List<GameId> get() = all.map { it.id }
 

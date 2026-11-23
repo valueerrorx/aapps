@@ -62,6 +62,10 @@ data class ResultView(
     val newBest: Boolean,
     val dailyComplete: Boolean,
     val hasNext: Boolean,
+    // „im Ziel / gesamt" statt Prozent
+    val tally: Boolean = false,
+    val hits: Int = 0,
+    val total: Int = 0,
 )
 
 // Ergebnis: Punkte als Hero, darunter Stufe, Treffer, Bestwert; Weiter bzw. Nochmal
@@ -127,7 +131,11 @@ fun ResultScreen(
                 else -> stringResource(R.string.level_same)
             }
             Stat(stringResource(R.string.level), r.level.toString(), arrow, "${stringResource(R.string.level)} ${r.level}, $change")
-            Stat(stringResource(R.string.accuracy), stringResource(R.string.percent, r.accuracy), null, null)
+            if (r.tally) {
+                Stat(stringResource(R.string.accuracy), "${r.hits}/${r.total}", null, stringResource(R.string.tally_desc, r.hits, r.total))
+            } else {
+                Stat(stringResource(R.string.accuracy), stringResource(R.string.percent, r.accuracy), null, null)
+            }
             Stat(stringResource(R.string.best), formatPoints(r.best), null, null)
         }
     }

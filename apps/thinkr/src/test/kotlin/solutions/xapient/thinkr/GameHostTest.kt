@@ -18,6 +18,7 @@ import org.robolectric.annotation.GraphicsMode
 import solutions.xapient.aapps.core.ui.AappsTheme
 import solutions.xapient.thinkr.domain.Play
 import solutions.xapient.thinkr.domain.Round
+import solutions.xapient.thinkr.domain.switches.SwitchesRules
 import solutions.xapient.thinkr.ui.ThinkrAccent
 
 // Rahmen einer Runde: Pause bei ON_STOP, Zurueck pausiert bzw. beendet, Rundenende meldet genau einmal
@@ -37,11 +38,11 @@ class GameHostTest {
         }
     }
 
-    private fun launch() {
+    private fun launch(def: GameDef<*, *> = Games.Echo) {
         rule.runOnUiThread {
             rule.activity.setContent {
                 AappsTheme(ThinkrAccent) {
-                    Games.Echo.Host(42, 3, false, null, null, onFinish = { finished += it }, onQuit = { quits++ })
+                    def.Host(42, 3, false, null, null, onFinish = { finished += it }, onQuit = { quits++ })
                 }
             }
         }
@@ -106,5 +107,26 @@ class GameHostTest {
         // keine Antworten: nur Fehler, keine Punkte
         assertEquals(0, finished[0].round.score)
         assertTrue(finished[0].round.wrong > 10)
+    }
+
+    // Weichen: 90 s Spielzeit, Pause haelt auch die Perlen an
+    @Test fun switchesRoundLastsNinetySeconds() {
+        launch(Games.Switches)
+        countIn()
+        rule.mainClock.advanceTimeBy(Round.DURATION_MS + 1_000)
+        settle()
+        assertTrue(finished.isEmpty())
+        rule.onNodeWithContentDescription("Pause").performClick()
+        settle()
+        rule.mainClock.advanceTimeBy(60_000)
+        settle()
+        assertTrue(finished.isEmpty())
+        rule.onNodeWithText("RESUME").performClick()
+        settle()
+        countIn()
+        rule.mainClock.advanceTimeBy(30_000)
+        settle()
+        assertEquals(1, finished.size)
+        assertEquals(SwitchesRules.DURATION_MS, finished[0].round.now)
     }
 }

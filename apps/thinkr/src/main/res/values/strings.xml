@@ -3,12 +3,14 @@
     <string name="app_name" translatable="false">thinkr</string>
     <string name="tagline">Short brain games for a quick break, about a minute each. Offline, no ads, no subscription.</string>
     <string name="note_echo">Echo: is the shape the same as the one before? Tap Yes or No, or swipe right for yes and left for no. The first card is just to remember. From level 10 you compare with the card two back.</string>
+    <string name="note_switches">Switches: lights roll out of the portal one after another. Tap a junction to flip it, so every light reaches the gate with its colour and shape. A round lasts 90 seconds, and the better you route, the closer the lights follow each other. 90% or more on target moves you up a level, below 70% down. Higher levels have more gates.</string>
     <string name="note_daily">Every day thinkr picks up to three games for you. A game counts as soon as you have played a round of it today. One missed day per week does not break your streak.</string>
-    <string name="note_relaxed">Relaxed gives you half again as much time per card and keeps its own levels and best scores.</string>
+    <string name="note_relaxed">Relaxed gives you half again as much time, with slower cards and lights, and keeps its own levels and best scores.</string>
     <string name="note_access">The games run against the clock and are hardly playable with a screen reader.</string>
     <string name="note_health">For fun. Not a medical device, no health claims.</string>
 
     <string name="game_echo" translatable="false">Echo</string>
+    <string name="game_switches">Switches</string>
 
     <string name="date_pattern">EEEE, MMMM d</string>
     <string name="games">Games</string>
@@ -49,7 +51,11 @@
     <string name="glyph_wave">Wave</string>
     <string name="glyph_ring">Ring</string>
 
+    <string name="switches_prompt">Guide every light to the gate of its shape</string>
+    <string name="switches_board">Track network with %1$d gates</string>
+
     <string name="accuracy">Hits</string>
+    <string name="tally_desc">%1$d of %2$d on target</string>
     <string name="percent">%1$d%%</string>
     <string name="level_up">up</string>
     <string name="level_down">down</string>
@@ -61,7 +67,7 @@
 
     <string name="group_play">Play</string>
     <string name="relaxed">Relaxed</string>
-    <string name="relaxed_sub">50% more time per card, own levels and best scores</string>
+    <string name="relaxed_sub">50% more time, own levels and best scores</string>
     <string name="group_device">Device</string>
     <string name="haptics">Vibration</string>
     <string name="sound">Sounds</string>

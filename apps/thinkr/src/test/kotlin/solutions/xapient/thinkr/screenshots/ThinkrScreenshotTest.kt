@@ -74,7 +74,7 @@ class ThinkrScreenshotTest {
         today = today,
         items = listOf(
             DailyItem(GameId.ECHO, "Echo", ThinkrIcons.Echo, 6, true),
-            DailyItem(GameId.SWITCHES, "Echo", ThinkrIcons.Echo, 3, false),
+            DailyItem(GameId.SWITCHES, "Switches", ThinkrIcons.Switches, 3, false),
             DailyItem(GameId.STARS, "Echo", ThinkrIcons.Echo, 1, false),
         ),
         streak = 0, week = List(7) { false }, haptics = null, onPlay = {}, onGames = {}, onSettings = {},
@@ -85,7 +85,10 @@ class ThinkrScreenshotTest {
 
     @Composable
     private fun GamesList() = GamesScreen(
-        listOf(GameItem(GameId.ECHO, "Echo", ThinkrIcons.Echo, 6, 4280, daily = true, doneToday = false)),
+        listOf(
+            GameItem(GameId.ECHO, "Echo", ThinkrIcons.Echo, 6, 4280, daily = true, doneToday = false),
+            GameItem(GameId.SWITCHES, "Switches", ThinkrIcons.Switches, 3, 1840, daily = true, doneToday = true),
+        ),
         onPlay = {}, onBack = {},
     )
 
@@ -147,7 +150,7 @@ class ThinkrScreenshotTest {
     @Composable
     private fun Settings() = ThinkrSettings(
         relaxed = false, onRelaxed = {}, haptics = true, onHaptics = {}, sound = false, onSound = {},
-        levels = listOf(LevelItem(GameId.ECHO, "Echo", 6)), onReset = {}, onAbout = {}, onBack = {},
+        levels = listOf(LevelItem(GameId.ECHO, "Echo", 6), LevelItem(GameId.SWITCHES, "Switches", 3)), onReset = {}, onAbout = {}, onBack = {},
     )
 
     @Test fun settings() = shot("settings") { Settings() }

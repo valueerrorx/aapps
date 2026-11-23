@@ -94,7 +94,7 @@ fun <S : Play, I> GameHost(
         val a = state.round
         val b = next.round
         state = next
-        if (b.combo.mult > a.combo.mult) haptics?.tick()
+        if (b.combo.mult > a.combo.mult || (def.tickOnHit && b.correct > a.correct)) haptics?.tick()
         if (b.correct > a.correct) tones?.play(Tones.Kind.HIT) else if (b.wrong > a.wrong) tones?.play(Tones.Kind.MISS)
         if (b.isOver && phase == Phase.PLAYING) phase = Phase.OVER
     }

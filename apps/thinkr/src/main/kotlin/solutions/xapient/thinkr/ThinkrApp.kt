@@ -102,6 +102,9 @@ fun ThinkrApp(clock: () -> LocalDate = LocalDate::now) {
             newBest = before.plays > 0 && res.score > before.best,
             dailyComplete = !wasDone && s.day in next.dailyDone,
             hasNext = s.daily && s.day == today && open.isNotEmpty(),
+            tally = def.tally,
+            hits = r.correct,
+            total = r.answered,
         )
         screen = Screen.RESULT
     }

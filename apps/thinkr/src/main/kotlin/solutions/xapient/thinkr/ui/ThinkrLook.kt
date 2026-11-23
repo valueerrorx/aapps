@@ -146,6 +146,15 @@ object ThinkrIcons {
         }
     }
 
+    // Weichen: Abzweig, am Ende ein Tor
+    val Switches: ImageVector by lazy {
+        line("switches") {
+            moveTo(12f, 20.5f); lineTo(12f, 14f); lineTo(6.5f, 8.5f); lineTo(6.5f, 4f)
+            moveTo(12f, 14f); lineTo(17.5f, 8.5f)
+            moveTo(17.5f, 8.5f); arcTo(2.3f, 2.3f, 0f, false, true, 17.5f, 3.9f); arcTo(2.3f, 2.3f, 0f, false, true, 17.5f, 8.5f)
+        }
+    }
+
     val Yes: ImageVector by lazy {
         line("yes") { moveTo(5f, 12.5f); lineTo(10f, 17.5f); lineTo(19f, 7f) }
     }
