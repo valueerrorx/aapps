@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tagline">Ein GPS-Tacho mit gespiegeltem Head-up-Display für die Windschutzscheibe.</string>
+    <string name="note_location">Nutzt deinen Standort nur, solange hudr offen ist. Es werden keine Routen gespeichert. hudr hat keine Internet-Berechtigung und kann nichts senden.</string>
+    <string name="note_estimate">Die GPS-Geschwindigkeit ist ein Richtwert und kann vom Tacho des Fahrzeugs abweichen. Nicht für verkehrsrechtliche Zwecke. Das Handy nicht während der Fahrt bedienen.</string>
+
+    <string name="dist_nm">sm</string>
+
+    <string name="gps_searching">Suche GPS</string>
+    <string name="gps_lost">Signal verloren</string>
+    <string name="gps_fix">±%1$d m</string>
+    <string name="gps_sats">%1$d/%2$d Sat</string>
+    <string name="stat_max">Max</string>
+    <string name="stat_avg">Ø</string>
+    <string name="stat_dist">Strecke</string>
+    <string name="reset">Fahrt zurücksetzen</string>
+    <string name="hud">HUD</string>
+    <string name="hud_exit">HUD beenden</string>
+    <string name="hud_show_exit">Beenden-Knopf zeigen</string>
+    <string name="footnote">Richtwert · nicht für Verkehrsrecht</string>
+    <string name="speed">Geschwindigkeit</string>
+    <string name="speed_state">%1$s %2$s</string>
+    <string name="speed_none">Kein GPS-Signal</string>
+    <string name="speed_over">%1$s %2$s, über der Warnschwelle</string>
+
+    <string name="loc_ask_title">Standort nötig</string>
+    <string name="loc_ask_text">hudr misst die Geschwindigkeit per GPS, solange die App offen ist. Nichts wird gespeichert oder gesendet.</string>
+    <string name="loc_allow">Standort erlauben</string>
+    <string name="loc_allow_short">Erlauben</string>
+    <string name="loc_coarse_title">Genauer Standort nötig</string>
+    <string name="loc_coarse_text">Mit ungefährem Standort lässt sich keine Geschwindigkeit messen. Erlaube den genauen Standort.</string>
+    <string name="loc_precise">Genauen Standort nutzen</string>
+    <string name="loc_precise_short">Genau</string>
+    <string name="loc_blocked_title">Standort gesperrt</string>
+    <string name="loc_blocked_text">Erlaube hudr in den App-Einstellungen unter Berechtigungen den genauen Standort, während die App verwendet wird.</string>
+    <string name="loc_settings">Einstellungen öffnen</string>
+    <string name="loc_settings_short">Einstellungen</string>
+    <string name="gps_off_title">Standort ist aus</string>
+    <string name="gps_off_text">Schalte den Standort in den Systemeinstellungen ein, damit hudr GPS empfangen kann.</string>
+    <string name="gps_turn_on">Standort einschalten</string>
+    <string name="gps_turn_on_short">Einschalten</string>
+
+    <string name="group_units">Einheiten</string>
+    <string name="unit">Geschwindigkeit in</string>
+    <string name="group_limit">Warnschwelle</string>
+    <string name="limit_on">Ab einer Geschwindigkeit warnen</string>
+    <string name="limit_on_sub">Bernstein kurz davor, rot darüber</string>
+    <string name="limit">Schwelle</string>
+    <string name="limit_value">%1$d %2$s</string>
+    <string name="raise">Schwelle erhöhen</string>
+    <string name="lower">Schwelle senken</string>
+    <string name="limit_sound">Ton</string>
+    <string name="limit_sound_sub">Ein Piepton beim Überschreiten</string>
+    <string name="group_display">Anzeige</string>
+    <string name="keep_on">Bildschirm anlassen</string>
+    <string name="keep_on_sub">Solange die Geschwindigkeit angezeigt wird</string>
+    <string name="hud_mirror">HUD spiegeln</string>
+    <string name="hud_mirror_sub">Für die Spiegelung in der Windschutzscheibe</string>
+    <string name="hud_bright">Volle Helligkeit im HUD</string>
+    <string name="hud_bright_sub">Tagsüber besser lesbar; nachts besser aus</string>
+    <string name="group_note">Hinweis</string>
+</resources>

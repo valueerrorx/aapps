@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- App-Icon fuer die Info-Seite (adaptive Icons kann Compose nicht direkt zeichnen); aus ic_launcher_foreground -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="72dp"
+    android:height="72dp"
+    android:viewportWidth="72"
+    android:viewportHeight="72">
+    <path android:pathData="M20,0h32a20,20 0 0 1 20,20v32a20,20 0 0 1 -20,20h-32a20,20 0 0 1 -20,-20v-32a20,20 0 0 1 20,-20z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="radial"
+                android:centerX="36"
+                android:centerY="32"
+                android:gradientRadius="44"
+                android:startColor="#FF16252A"
+                android:endColor="#FF10161B" />
+        </aapt:attr>
+    </path>
+    <path
+        android:pathData="M20,0.5h32a19.5,19.5 0 0 1 19.5,19.5v32a19.5,19.5 0 0 1 -19.5,19.5h-32a19.5,19.5 0 0 1 -19.5,-19.5v-32a19.5,19.5 0 0 1 19.5,-19.5z"
+        android:strokeWidth="1"
+        android:strokeColor="#FF26323C" />
+    <group android:translateX="-18" android:translateY="-18">
+        <path android:pathData="M47,52a24,24 0 1,0 48,0a24,24 0 1,0 -48,0z">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:type="radial"
+                    android:centerX="71"
+                    android:centerY="52"
+                    android:gradientRadius="24"
+                    android:startColor="#402EE6E6"
+                    android:endColor="#002EE6E6" />
+            </aapt:attr>
+        </path>
+        <path
+            android:pathData="M37.03,73.97A24,24 0 1,1 70.97,73.97"
+            android:strokeWidth="5"
+            android:strokeColor="#FF2E3B46"
+            android:strokeLineCap="round" />
+        <path
+            android:pathData="M37.03,73.97A24,24 0 1,1 77.18,50.79"
+            android:strokeWidth="5"
+            android:strokeLineCap="round">
+            <aapt:attr name="android:strokeColor">
+                <gradient
+                    android:type="linear"
+                    android:startX="34"
+                    android:startY="74"
+                    android:endX="78"
+                    android:endY="40"
+                    android:startColor="#FF128A8F"
+                    android:endColor="#FF2EE6E6" />
+            </aapt:attr>
+        </path>
+        <path
+            android:pathData="M54,57L71.39,52.34"
+            android:strokeWidth="3.5"
+            android:strokeColor="#FFDCE3E8"
+            android:strokeLineCap="round" />
+        <path
+            android:pathData="M50,57a4,4 0 1,0 8,0a4,4 0 1,0 -8,0z"
+            android:fillColor="#FFDCE3E8" />
+    </group>
+</vector>

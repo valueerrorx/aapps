@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tacho-Bogen mit Nadel -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:pathData="M37.03,73.97A24,24 0 1,1 77.18,50.79"
+        android:strokeWidth="5"
+        android:strokeColor="#FF000000"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M54,57L71.39,52.34"
+        android:strokeWidth="3.5"
+        android:strokeColor="#FF000000"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M50,57a4,4 0 1,0 8,0a4,4 0 1,0 -8,0z"
+        android:fillColor="#FF000000" />
+</vector>

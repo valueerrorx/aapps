@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">hudr</string>
+    <string name="tagline">A GPS speedometer with a mirrored head-up display for the windscreen.</string>
+    <string name="note_location">Uses your location only while hudr is open. No routes are stored. hudr has no internet permission, so it cannot send anything.</string>
+    <string name="note_estimate">GPS speed is an estimate and can differ from your vehicle\'s speedometer. Not for legal or enforcement purposes. Do not operate the phone while driving.</string>
+
+    <string name="unit_kmh" translatable="false">km/h</string>
+    <string name="unit_mph" translatable="false">mph</string>
+    <string name="unit_kn" translatable="false">kn</string>
+    <string name="dist_km" translatable="false">km</string>
+    <string name="dist_mi" translatable="false">mi</string>
+    <string name="dist_nm">nmi</string>
+
+    <string name="gps_searching">Searching GPS</string>
+    <string name="gps_lost">Signal lost</string>
+    <string name="gps_fix">±%1$d m</string>
+    <string name="gps_sats">%1$d/%2$d sat</string>
+    <string name="stat_max">Max</string>
+    <string name="stat_avg">Avg</string>
+    <string name="stat_dist">Distance</string>
+    <string name="reset">Reset trip</string>
+    <string name="hud">HUD</string>
+    <string name="hud_exit">Exit HUD</string>
+    <string name="hud_show_exit">Show exit button</string>
+    <string name="footnote">Estimate · not for legal purposes</string>
+    <string name="speed">Speed</string>
+    <string name="speed_state">%1$s %2$s</string>
+    <string name="speed_none">No GPS signal</string>
+    <string name="speed_over">%1$s %2$s, above limit</string>
+
+    <string name="loc_ask_title">Location needed</string>
+    <string name="loc_ask_text">hudr measures speed with GPS while it is open. Nothing is stored or sent.</string>
+    <string name="loc_allow">Allow location</string>
+    <string name="loc_allow_short">Allow</string>
+    <string name="loc_coarse_title">Precise location needed</string>
+    <string name="loc_coarse_text">Approximate location is too coarse to measure speed. Allow precise location.</string>
+    <string name="loc_precise">Use precise location</string>
+    <string name="loc_precise_short">Precise</string>
+    <string name="loc_blocked_title">Location blocked</string>
+    <string name="loc_blocked_text">Allow precise location for hudr under Permissions in the app settings, while using the app.</string>
+    <string name="loc_settings">Open settings</string>
+    <string name="loc_settings_short">Settings</string>
+    <string name="gps_off_title">Location is off</string>
+    <string name="gps_off_text">Turn on location in the system settings so hudr can receive GPS.</string>
+    <string name="gps_turn_on">Turn on location</string>
+    <string name="gps_turn_on_short">Turn on</string>
+
+    <string name="group_units">Units</string>
+    <string name="unit">Speed unit</string>
+    <string name="group_limit">Speed warning</string>
+    <string name="limit_on">Warn above a speed</string>
+    <string name="limit_on_sub">Amber near the limit, red above</string>
+    <string name="limit">Limit</string>
+    <string name="limit_value">%1$d %2$s</string>
+    <string name="raise">Raise limit</string>
+    <string name="lower">Lower limit</string>
+    <string name="limit_sound">Sound</string>
+    <string name="limit_sound_sub">One beep when going above the limit</string>
+    <string name="group_display">Display</string>
+    <string name="keep_on">Keep screen on</string>
+    <string name="keep_on_sub">While showing speed</string>
+    <string name="hud_mirror">Mirror HUD</string>
+    <string name="hud_mirror_sub">For reflection in the windscreen</string>
+    <string name="hud_bright">Full brightness in HUD</string>
+    <string name="hud_bright_sub">Easier to read by day; dim it at night</string>
+    <string name="group_note">Note</string>
+</resources>
