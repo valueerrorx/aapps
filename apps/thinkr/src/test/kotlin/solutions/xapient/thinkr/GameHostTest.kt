@@ -136,6 +136,8 @@ class GameHostTest {
 
     @Test fun swarmPausesAndEndsOnce() = pauseThenFinish(Games.Swarm)
 
+    @Test fun bouncePausesAndEndsOnce() = pauseThenFinish(Games.Bounce)
+
     // Weichen: 90 s Spielzeit, Pause haelt auch die Perlen an
     @Test fun switchesRoundLastsNinetySeconds() {
         launch(Games.Switches)

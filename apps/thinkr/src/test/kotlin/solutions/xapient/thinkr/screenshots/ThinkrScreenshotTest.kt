@@ -79,7 +79,7 @@ class ThinkrScreenshotTest {
     private fun GamesList() = GamesScreen(
         Games.all.mapIndexed { i, def ->
             val daily = def.id in Daily.pick(today, Games.ids)
-            GameItem(def.id, stringResource(def.name), def.icon, listOf(6, 3, 4, 5, 2)[i], listOf(4280, 1840, 2310, 3650, 0)[i], daily = daily, doneToday = daily && i == 0)
+            GameItem(def.id, stringResource(def.name), def.icon, listOf(6, 3, 4, 5, 2, 7, 4, 3, 5)[i], listOf(4280, 1840, 2310, 3650, 0, 2120, 3380, 1460, 5210)[i], daily = daily, doneToday = daily && i == 0)
         },
         onPlay = {}, onBack = {},
     )
@@ -142,7 +142,7 @@ class ThinkrScreenshotTest {
     @Composable
     private fun Settings() = ThinkrSettings(
         relaxed = false, onRelaxed = {}, safeColors = false, onSafeColors = {}, haptics = true, onHaptics = {}, sound = false, onSound = {},
-        levels = Games.all.mapIndexed { i, def -> LevelItem(def.id, stringResource(def.name), listOf(6, 3, 4, 5, 1)[i]) }, onReset = {}, onAbout = {}, onBack = {},
+        levels = Games.all.mapIndexed { i, def -> LevelItem(def.id, stringResource(def.name), listOf(6, 3, 4, 5, 1, 7, 4, 3, 5)[i]) }, onReset = {}, onAbout = {}, onBack = {},
     )
 
     @Test fun settings() = shot("settings") { Settings() }

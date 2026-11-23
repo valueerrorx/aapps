@@ -189,6 +189,16 @@ object ThinkrIcons {
         }
     }
 
+    // Bande: Lichtweg, der an einem Prisma um 90° abknickt
+    val Bounce: ImageVector by lazy {
+        line("bounce") {
+            moveTo(6.1f, 15.5f); lineTo(14.5f, 15.5f); lineTo(14.5f, 5f)
+            moveTo(11.5f, 18.5f); lineTo(17.5f, 12.5f)
+            moveTo(12.3f, 7.2f); lineTo(14.5f, 5f); lineTo(16.7f, 7.2f)
+            dot(4.5f, 15.5f, 1.6f)
+        }
+    }
+
     val Yes: ImageVector by lazy {
         line("yes") { moveTo(5f, 12.5f); lineTo(10f, 17.5f); lineTo(19f, 7f) }
     }

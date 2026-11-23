@@ -7,6 +7,9 @@ import solutions.xapient.aapps.core.ui.Haptics
 import solutions.xapient.thinkr.domain.GameId
 import solutions.xapient.thinkr.domain.MiniGame
 import solutions.xapient.thinkr.domain.Play
+import solutions.xapient.thinkr.domain.bounce.BounceGame
+import solutions.xapient.thinkr.domain.bounce.BounceState
+import solutions.xapient.thinkr.domain.bounce.Port
 import solutions.xapient.thinkr.domain.echo.EchoGame
 import solutions.xapient.thinkr.domain.echo.EchoState
 import solutions.xapient.thinkr.domain.ink.InkGame
@@ -21,6 +24,7 @@ import solutions.xapient.thinkr.domain.switches.SwitchesState
 import solutions.xapient.thinkr.ui.GameHost
 import solutions.xapient.thinkr.ui.Phase
 import solutions.xapient.thinkr.ui.ThinkrIcons
+import solutions.xapient.thinkr.ui.bounce.BounceBoard
 import solutions.xapient.thinkr.ui.echo.EchoBoard
 import solutions.xapient.thinkr.ui.ink.InkBoard
 import solutions.xapient.thinkr.ui.stars.StarsBoard
@@ -40,6 +44,8 @@ class GameDef<S : Play, I>(
     val tickOnHit: Boolean = false,
     // Ergebnis als „27/31" statt in Prozent
     val tally: Boolean = false,
+    // false: Runde endet ueber das Spiel selbst, keine Zeitleiste
+    val timed: Boolean = true,
     val board: Board<S, I>,
 ) {
     fun startLevel(saved: Int): Int = game.startLevel(saved)
@@ -88,8 +94,12 @@ object Games {
         SwarmBoard(s, live, count, input)
     }
 
+    val Bounce = GameDef<BounceState, Port>(GameId.BOUNCE, R.string.game_bounce, ThinkrIcons.Bounce, BounceGame) { s, live, count, input ->
+        BounceBoard(s, live, count, input)
+    }
+
     // Reihenfolge = Anzeige; neue Spiele hier eintragen
-    val all: List<GameDef<*, *>> = listOf(Echo, Switches, Stars, Ink, Swarm)
+    val all: List<GameDef<*, *>> = listOf(Echo, Switches, Stars, Ink, Swarm, Bounce)
 
     val ids: List<GameId> get() = all.map { it.id }
 
