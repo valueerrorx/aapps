@@ -112,7 +112,7 @@ private fun LimitRow(settings: Settings, haptics: Haptics?, onLimit: (Int) -> Un
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Step(HudrIcons.Minus, stringResource(R.string.lower), settings.limit > Limit.MIN) {
-                haptics?.tick()
+                haptics?.press()
                 onLimit(Limit.step(settings.limit, -1))
             }
             BasicText(
@@ -123,7 +123,7 @@ private fun LimitRow(settings: Settings, haptics: Haptics?, onLimit: (Int) -> Un
                 autoSize = TextAutoSize.StepBased(minFontSize = 10.sp, maxFontSize = 22.sp, stepSize = 0.5.sp),
             )
             Step(HudrIcons.Plus, stringResource(R.string.raise), settings.limit < Limit.MAX) {
-                haptics?.tick()
+                haptics?.press()
                 onLimit(Limit.step(settings.limit, +1))
             }
         }

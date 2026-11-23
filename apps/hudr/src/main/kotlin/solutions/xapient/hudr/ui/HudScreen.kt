@@ -81,7 +81,7 @@ fun HudScreen(
             .fillMaxSize()
             .background(HudBg)
             .clickable(remember { MutableInteractionSource() }, indication = null, onClickLabel = showLabel) {
-                haptics?.tick()
+                haptics?.press()
                 exit = !exit
             }
             .semantics {
@@ -115,7 +115,7 @@ fun HudScreen(
         if (exit) {
             Box(Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.safeDrawing).padding(24.dp), contentAlignment = Alignment.BottomCenter) {
                 AappsPillButton(stringResource(R.string.hud_exit), {
-                    haptics?.confirm()
+                    haptics?.press()
                     onExit()
                 }, icon = HudrIcons.Close)
             }

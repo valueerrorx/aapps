@@ -147,14 +147,14 @@ fun SpeedScreen(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             AappsIconButton(HudrIcons.Reset, stringResource(R.string.reset), {
-                haptics?.confirm()
+                haptics?.press()
                 onReset()
             })
             Spacer(Modifier.weight(1f))
             AappsPillButton(
                 stringResource(R.string.hud),
                 {
-                    haptics?.confirm()
+                    haptics?.press()
                     onHud()
                 },
                 Modifier.widthIn(min = 176.dp),
@@ -234,7 +234,7 @@ private fun LocAction(loc: LocState, haptics: Haptics?, onLoc: () -> Unit) {
     AappsPillButton(
         stringResource(text),
         {
-            haptics?.confirm()
+            haptics?.press()
             onLoc()
         },
         Modifier.widthIn(min = 176.dp),

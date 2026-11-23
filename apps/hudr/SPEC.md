@@ -34,7 +34,7 @@ Akzent Eis-Cyan `#2EE6E6` (Tacho, Icon), HUD-Ziffern `#3DFFFF` auf Schwarz; Bern
 | `ACCESS_FINE_LOCATION` | GPS-Geschwindigkeit. Nur bei Nutzung der App, nichts wird gespeichert oder gesendet. |
 | `ACCESS_COARSE_LOCATION` | Android 12+ verlangt sie zusammen mit FINE. |
 
-Kein INTERNET, kein Hintergrund-Standort, kein Dienst. `android.hardware.location.gps` nicht Pflicht.
+Kein INTERNET, kein Hintergrund-Standort, kein Dienst. `android.hardware.location.gps` nicht Pflicht. VIBRATE kommt aus `core/ui` (normal, ohne Rückfrage); hudr nutzt nur Touch-Haptik (`press`) für Tasten.
 
 ## Nicht
 - Keine Karte, keine Routen, kein Export, keine Blitzer-/Limitdaten, kein Höhenmesser, kein Kompass, keine Benachrichtigung.
@@ -66,4 +66,4 @@ Varianten (Standard Pixel 7, en): `_de`, `_land`, `_font200`, `_land_font200` f�
 ## Abnahmekriterien
 - Domain ohne Android-Imports, Unit-Tests für Glättung, Stillstand (kein Zittern), Einheiten/Locale, Strecke/Ø/Max/Reset, Lückenbrücke, Fallback aus Positionen, Warnschwelle mit Hysterese, Rundung und Ton-Auslösung, Fahrtbeginn (Zeit, Genauigkeit, Verschiebung), Ausreißer, Max-Haltezeit, Trend, GPS-Status/Veralten, Band, Ansage-Schlüssel, Feder, Sichern/Wiederherstellen, Kontrast (WCAG AA gemessen, auch HUD).
 - Gesten (Robolectric): HUD an/aus, Zurücksetzen, Standort-Aktion je Zustand, Schwellen-Schritte, Rechte-Fluss (weggetippt, einmal abgelehnt, gesperrt, nur ungefähr auch nach Begründung), GPS-an per Broadcast, HUD-Ausrichtung gesperrt/wiederhergestellt, Tipp-Bezeichnung. Ohne neuen Fix keine Frames.
-- `:apps:hudr:check`, `verifyRoborazziDebug`, `assembleRelease` grün; nur die zwei Standort-Rechte; Release-APK < 4 MB.
+- `:apps:hudr:check`, `verifyRoborazziDebug`, `assembleRelease` grün; nur die zwei Standort-Rechte und VIBRATE aus `core/ui`; Release-APK < 4 MB.
