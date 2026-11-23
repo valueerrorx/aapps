@@ -1,0 +1,338 @@
+[
+  {
+    "nr": "00",
+    "id": "sleepr",
+    "cat": "Rauschgenerator",
+    "accent": "#86B7CC",
+    "landscape": false,
+    "caption": "Mischt weißes, rosa, braunes, graues und grünes Rauschen live zum Abschirmen, Konzentrieren und Einschlafen.",
+    "text": [
+      "Erzeugt weißes, rosa, braunes, graues und grünes Rauschen live am Handy und mischt es frei zusammen.",
+      "Ganz ohne Audiodateien oder Schleifen, mit Meereswellen-Modus, Presets und Spektrumanzeige.",
+      "Ideal zum Einschlafen, Konzentrieren oder Abschirmen, der Timer blendet am Ende sanft aus."
+    ],
+    "icon": "img/sleepr-icon.png",
+    "shot": "img/sleepr-shot.webp",
+    "card": "cards/00-sleepr.png",
+    "source": {
+      "repo": "SLEEPR_DIR",
+      "shot": "docs/screenshot.png",
+      "icon": "vector:ic_launcher_fg"
+    }
+  },
+  {
+    "nr": "01",
+    "id": "levlr",
+    "cat": "Wasserwaage",
+    "accent": "#C6F24E",
+    "landscape": false,
+    "caption": "Wasserwaage, die bei 0,0° spürbar einrastet, auf der Kante oder flach liegend.",
+    "text": [
+      "Eine Wasserwaage, die genau zeigt, wie schief etwas ist, egal ob auf der Kante oder flach liegend.",
+      "Die Blase schwappt mit echter Federphysik und rastet bei 0,0° spürbar ein, kalibrierbar in zwei Schritten.",
+      "Perfekt zum Bilderaufhängen, Regalmontieren oder Tischausrichten."
+    ],
+    "icon": "img/levlr-icon.png",
+    "shot": "img/levlr-shot.webp",
+    "card": "cards/01-levlr.png",
+    "source": {
+      "ref": "feat/levlr",
+      "icon": "apps/levlr/screenshots/icon_store_512.png",
+      "shot": "apps/levlr/screenshots/edge_tilted_de.png"
+    }
+  },
+  {
+    "nr": "02",
+    "id": "nordr",
+    "cat": "Kompass",
+    "accent": "#8AD8FF",
+    "landscape": false,
+    "caption": "Ruhiger, genauer Kompass, der auf Wunsch einen Kurs hält.",
+    "text": [
+      "Ein Kompass, der ruhig und genau zeigt, wohin dein Handy schaut.",
+      "Funktioniert flach und aufrecht ohne Sprung, zeigt die Genauigkeit an und hält auf Wunsch einen Kurs.",
+      "Praktisch beim Wandern, zum Orientieren oder um die Himmelsrichtung von Balkon und Fenster zu prüfen."
+    ],
+    "icon": "img/nordr-icon.png",
+    "shot": "img/nordr-shot.webp",
+    "card": "cards/02-nordr.png",
+    "source": {
+      "ref": "feat/nordr",
+      "icon": "apps/nordr/screenshots/icon_store_512.png",
+      "shot": "apps/nordr/screenshots/heading_de.png"
+    }
+  },
+  {
+    "nr": "03",
+    "id": "spinr",
+    "cat": "Glücksrad",
+    "accent": "#B9A2FF",
+    "landscape": false,
+    "caption": "Glücksrad, das sich wie ein echtes dreht und fair entscheidet.",
+    "text": [
+      "Ein Glücksrad, das sich wie ein echtes dreht und fair irgendwo stehen bleibt.",
+      "Mit Schwung anwerfen, bis zu 50 Einträge, eigene Räder und fertige Vorlagen.",
+      "Für alle Fälle, wo keiner entscheiden will: was es zum Essen gibt oder wer als Nächstes dran ist."
+    ],
+    "icon": "img/spinr-icon.png",
+    "shot": "img/spinr-shot.webp",
+    "card": "cards/03-spinr.png",
+    "source": {
+      "ref": "feat/spinr",
+      "icon": "apps/spinr/screenshots/icon_store_512.png",
+      "shot": "apps/spinr/screenshots/wheel_de.png"
+    }
+  },
+  {
+    "nr": "04",
+    "id": "scorr",
+    "cat": "Punktezähler",
+    "accent": "#FFD24A",
+    "landscape": false,
+    "caption": "Punktezähler für Spieleabende mit großen Farbflächen pro Spieler.",
+    "text": [
+      "Zählt Punkte beim Spieleabend, beim Kartenspielen oder beim Tischtennis.",
+      "Jeder Spieler bekommt eine große Farbfläche: oben tippen heißt plus, unten minus, Ziehen zählt in Schritten.",
+      "Für 1 bis 8 Spieler oder Teams, mit Rundenverlauf, Zettel und Stift kannst du dir sparen."
+    ],
+    "icon": "img/scorr-icon.png",
+    "shot": "img/scorr-shot.webp",
+    "card": "cards/04-scorr.png",
+    "source": {
+      "ref": "feat/scorr",
+      "icon": "apps/scorr/screenshots/icon_store_512.png",
+      "shot": "apps/scorr/screenshots/board_de.png"
+    }
+  },
+  {
+    "nr": "05",
+    "id": "focusr",
+    "cat": "Visueller Timer",
+    "accent": "#FF6E5A",
+    "landscape": false,
+    "caption": "Visueller Timer: die Restzeit als farbige Scheibe, die langsam schrumpft.",
+    "text": [
+      "Ein visueller Timer: Die Restzeit siehst du als farbige Scheibe, die langsam kleiner wird.",
+      "Einfach am Rad drehen, Skala von 5 bis 120 Minuten, im Querformat auch schön am Beamer.",
+      "Ideal zum Lernen, Kochen, für Besprechungen oder im Unterricht."
+    ],
+    "icon": "img/focusr-icon.png",
+    "shot": "img/focusr-shot.webp",
+    "card": "cards/05-focusr.png",
+    "source": {
+      "ref": "feat/focusr",
+      "icon": "apps/focusr/screenshots/icon_store_512.png",
+      "shot": "apps/focusr/screenshots/running_de.png"
+    }
+  },
+  {
+    "nr": "06",
+    "id": "roundr",
+    "cat": "Intervall-Timer",
+    "accent": "#FF6B3D",
+    "landscape": false,
+    "caption": "Intervall-Timer für HIIT, Tabata und Boxrunden, aus drei Metern lesbar.",
+    "text": [
+      "Ein Intervall-Timer für HIIT, Tabata und Boxrunden.",
+      "Arbeit und Pause wechseln sich ab, groß lesbar aus drei Metern, mit Ton und Vibration, auch bei gesperrtem Bildschirm.",
+      "Mit fertigen Vorlagen oder eigenen Trainings, ideal fürs Workout daheim oder im Fitnessstudio."
+    ],
+    "icon": "img/roundr-icon.png",
+    "shot": "img/roundr-shot.webp",
+    "card": "cards/06-roundr.png",
+    "source": {
+      "ref": "feat/roundr",
+      "icon": "apps/roundr/screenshots/icon_store_512.png",
+      "shot": "apps/roundr/screenshots/home_de.png"
+    }
+  },
+  {
+    "nr": "07",
+    "id": "pulsr",
+    "cat": "Metronom",
+    "accent": "#FF4FA0",
+    "landscape": false,
+    "caption": "Metronom mit sauberem, sample-genauem Klick zum Üben.",
+    "text": [
+      "Ein Metronom zum Üben: Tempo einstellen, Start drücken, fertig.",
+      "Der Klick ist sample-genau und schwankt nicht, das Tempo stellst du per Drehrad, Plus/Minus oder Tap-Tempo ein.",
+      "Für alle, die ein Instrument lernen oder im Takt bleiben wollen, ohne Werbung."
+    ],
+    "icon": "img/pulsr-icon.png",
+    "shot": "img/pulsr-shot.webp",
+    "card": "cards/07-pulsr.png",
+    "source": {
+      "ref": "feat/pulsr",
+      "icon": "apps/pulsr/screenshots/icon_store_512.png",
+      "shot": "apps/pulsr/screenshots/play_accent_de.png"
+    }
+  },
+  {
+    "nr": "08",
+    "id": "loudr",
+    "cat": "Lautstärke-Messer",
+    "accent": "#FF8A3D",
+    "landscape": false,
+    "caption": "Lautstärke-Messer mit Alltagsvergleich und Verlauf.",
+    "text": [
+      "Ein Lautstärke-Messer: App öffnen und sofort sehen, wie laut es gerade ist.",
+      "Mit Alltagsvergleich wie Gespräch oder Rasenmäher, Minimum, Mittelwert, Maximum und Verlauf der letzten 60 Sekunden.",
+      "Praktisch im Klassenzimmer, beim Konzert oder wenn der Nachbar zu laut ist, ein Schätzwert, kein Eichgerät."
+    ],
+    "icon": "img/loudr-icon.png",
+    "shot": "img/loudr-shot.webp",
+    "card": "cards/08-loudr.png",
+    "source": {
+      "ref": "feat/loudr",
+      "icon": "apps/loudr/screenshots/icon_store_512.png",
+      "shot": "apps/loudr/screenshots/talk_de.png"
+    }
+  },
+  {
+    "nr": "09",
+    "id": "tunr",
+    "cat": "Stimmgerät",
+    "accent": "#4DF0A2",
+    "landscape": false,
+    "caption": "Chromatisches Stimmgerät: Ton spielen, Note und Abweichung sofort ablesen.",
+    "text": [
+      "Ein chromatisches Stimmgerät: Ton spielen, Note und Abweichung sofort ablesen.",
+      "Erkennt Töne von der tiefsten Bass-Saite bis ganz hoch, auf den Cent genau, mit eigenen Modi für Instrumente wie die Gitarre.",
+      "Für Gitarre, Geige, Ukulele und Co., ruhig, hübsch und ganz ohne Internet."
+    ],
+    "icon": "img/tunr-icon.png",
+    "shot": "img/tunr-shot.webp",
+    "card": "cards/09-tunr.png",
+    "source": {
+      "ref": "feat/tunr",
+      "icon": "apps/tunr/screenshots/icon_store_512.png",
+      "shot": "apps/tunr/screenshots/in_tune_de.png"
+    }
+  },
+  {
+    "nr": "10",
+    "id": "magnr",
+    "cat": "Metalldetektor",
+    "accent": "#C08EFF",
+    "landscape": false,
+    "caption": "Metalldetektor und Magnetfeld-Messer in Mikrotesla.",
+    "text": [
+      "Ein Metalldetektor und Magnetfeld-Messer mit Anzeige in Mikrotesla.",
+      "Findet Schrauben, Nägel, Stahlträger und Magnete in der Nähe, mit Ausschlag, Verlauf und Ton.",
+      "Ideal, bevor du in die Wand bohrst, und ehrlich: Er findet nur, was magnetisch ist."
+    ],
+    "icon": "img/magnr-icon.png",
+    "shot": "img/magnr-shot.webp",
+    "card": "cards/10-magnr.png",
+    "source": {
+      "ref": "feat/magnr",
+      "icon": "apps/magnr/screenshots/icon_store_512.png",
+      "shot": "apps/magnr/screenshots/near_de.png"
+    }
+  },
+  {
+    "nr": "11",
+    "id": "dozr",
+    "cat": "Einschlaf-Timer",
+    "accent": "#FF9EC7",
+    "landscape": false,
+    "caption": "Einschlaf-Timer für jede App, der Musik und Podcasts sanft ausblendet.",
+    "text": [
+      "Ein Einschlaf-Timer für jede App: Musik, Podcast, Hörbuch oder YouTube.",
+      "Du ziehst den Mond am Nachthimmel hoch, dozr blendet dann sanft aus und stoppt die Wiedergabe.",
+      "Danach ist die Lautstärke wieder wie vorher, die perfekte Schwester von sleepr."
+    ],
+    "icon": "img/dozr-icon.png",
+    "shot": "img/dozr-shot.webp",
+    "card": "cards/11-dozr.png",
+    "source": {
+      "ref": "feat/dozr",
+      "icon": "apps/dozr/screenshots/icon_store_512.png",
+      "shot": "apps/dozr/screenshots/running_de.png"
+    }
+  },
+  {
+    "nr": "12",
+    "id": "hertzr",
+    "cat": "Tongenerator",
+    "accent": "#5B8DFF",
+    "landscape": false,
+    "caption": "Sauberer Tongenerator mit genau einstellbarer Frequenz und Wellenform.",
+    "text": [
+      "Ein sauberer Tongenerator: ein reiner Ton mit genau einstellbarer Frequenz und Wellenform.",
+      "Von 1 Hz bis 22 kHz, mit Notenname, Sweep-Modus und Oszilloskop-Ansicht.",
+      "Für Lautsprecher- und Subwoofer-Tests, Raumresonanzen oder den Physikunterricht."
+    ],
+    "icon": "img/hertzr-icon.png",
+    "shot": "img/hertzr-shot.webp",
+    "card": "cards/12-hertzr.png",
+    "source": {
+      "ref": "feat/hertzr",
+      "icon": "apps/hertzr/screenshots/icon_store_512.png",
+      "shot": "apps/hertzr/screenshots/idle_de.png"
+    }
+  },
+  {
+    "nr": "13",
+    "id": "hudr",
+    "cat": "GPS-Tacho",
+    "accent": "#2EE6E6",
+    "landscape": false,
+    "caption": "GPS-Tacho mit riesiger Anzeige und HUD-Modus, ganz ohne Internet.",
+    "text": [
+      "Ein GPS-Tacho, der deine Geschwindigkeit riesig anzeigt.",
+      "Der HUD-Modus spiegelt die Zahl für die Windschutzscheibe, und ohne Internet-Berechtigung bleibt dein Standort garantiert am Handy.",
+      "Fürs Rad, Auto, Boot oder beim Laufen, ein Richtwert, kein Eichgerät."
+    ],
+    "icon": "img/hudr-icon.png",
+    "shot": "img/hudr-shot.webp",
+    "card": "cards/13-hudr.png",
+    "source": {
+      "ref": "feat/hudr",
+      "icon": "apps/hudr/screenshots/icon_store_512.png",
+      "shot": "apps/hudr/screenshots/drive_de.png"
+    }
+  },
+  {
+    "nr": "14",
+    "id": "moovr",
+    "cat": "Spiel · Clumsy Cow",
+    "accent": "#8FDC5C",
+    "landscape": true,
+    "caption": "Clumsy Cow: Geschicklichkeitsspiel mit einer tollpatschigen Kuh auf Eisschollen.",
+    "text": [
+      "Clumsy Cow: Eine tollpatschige Kuh hüpft über treibende Eisschollen, so weit sie nur kann.",
+      "Springen, schieben, Stacheln ausweichen, Kleeblätter für Leben und Sterne für Kuh-Superkräfte sammeln.",
+      "Ein lustiges Spiel für zwischendurch, ganz ohne Werbung und ohne Internet."
+    ],
+    "icon": "img/moovr-icon.png",
+    "shot": "img/moovr-shot.webp",
+    "card": "cards/14-moovr.png",
+    "source": {
+      "ref": "feat/moovr",
+      "icon": "apps/moovr/screenshots/icon_store_512.png",
+      "shot": "apps/moovr/src/main/assets/assets/sprites/clumsy-cheatsheet.jpg"
+    }
+  },
+  {
+    "nr": "15",
+    "id": "glidr",
+    "cat": "Spiel · Cool Cows on Ice",
+    "accent": "#CDE6FF",
+    "landscape": true,
+    "caption": "Cool Cows on Ice: Physikrätsel mit 48 Leveln und schlitternden Kühen.",
+    "text": [
+      "Cool Cows on Ice: ein Physikrätsel, bei dem Kühe übers Eis schlittern.",
+      "48 Level mit echter Physik, Sternen pro Level und kniffligen Hindernissen wie Schanzen, Wasserlöchern und Stachelblöcken.",
+      "Zum gemütlichen Knobeln für Groß und Klein, ganz ohne Werbung und ohne Internet."
+    ],
+    "icon": "img/glidr-icon.png",
+    "shot": "img/glidr-shot.webp",
+    "card": "cards/15-glidr.png",
+    "source": {
+      "ref": "feat/glidr",
+      "icon": "apps/glidr/screenshots/icon_store_512.png",
+      "shot": "level:23"
+    }
+  }
+]

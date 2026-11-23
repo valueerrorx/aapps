@@ -1,0 +1,68 @@
+/* aapps-Übersicht: dunkle Basis, je Karte eine Akzentfarbe (--a) */
+@font-face { font-family: "Inter"; font-weight: 400; font-display: swap; src: url("fonts/Inter-Regular.ttf") format("truetype"); }
+@font-face { font-family: "Inter"; font-weight: 600; font-display: swap; src: url("fonts/Inter-SemiBold.ttf") format("truetype"); }
+@font-face { font-family: "Space Grotesk"; font-weight: 700; font-display: swap; src: url("fonts/SpaceGrotesk-Bold.ttf") format("truetype"); }
+
+:root {
+  --bg: #0b1014; --card: #10161b; --fg: #dce3e8; --fg2: #c3ccd3; --muted: #8a97a2;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font: 400 17px/1.5 Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+.top, .bottom { max-width: 1240px; margin: 0 auto; padding: 48px 20px 8px; }
+.top h1 { font: 700 clamp(48px, 9vw, 84px)/1 "Space Grotesk", system-ui, sans-serif; margin: 0 0 12px; letter-spacing: -0.02em; }
+.top p { margin: 0; max-width: 40em; color: var(--fg2); font-size: 19px; }
+.bottom { padding: 24px 20px 48px; color: var(--muted); font-size: 14px; }
+
+.grid {
+  max-width: 1240px; margin: 0 auto; padding: 24px 20px;
+  display: grid; gap: 24px; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+}
+
+.card {
+  position: relative; display: flex; flex-direction: column; gap: 22px;
+  padding: 28px 26px 22px; border-radius: 28px; overflow: hidden;
+  background:
+    radial-gradient(120% 60% at 50% 45%, color-mix(in srgb, var(--a) 18%, transparent), transparent 70%),
+    linear-gradient(color-mix(in srgb, var(--a) 9%, transparent), transparent 160px),
+    var(--card);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+.card header { display: flex; align-items: center; gap: 16px; }
+.icon {
+  width: 68px; height: 68px; border-radius: 17px; flex: none;
+  box-shadow: 0 0 24px color-mix(in srgb, var(--a) 45%, transparent), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+.title { min-width: 0; }
+.card h2 { margin: 0; font: 700 42px/1 "Space Grotesk", system-ui, sans-serif; letter-spacing: -0.01em; }
+.cat { margin: 6px 0 0; color: var(--a); font-weight: 600; font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; }
+.nr { position: absolute; top: 24px; right: 26px; color: var(--muted); font-weight: 600; font-size: 14px; }
+
+.shot { margin: 0; display: flex; justify-content: center; }
+.shot img {
+  display: block; height: auto; border-radius: 22px;
+  width: min(62%, 260px);
+  box-shadow: 0 0 46px color-mix(in srgb, var(--a) 35%, transparent), 0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+.wide .shot { flex: 1; align-items: center; }
+.wide .shot img { width: 100%; border-radius: 16px; }
+
+.card ul { list-style: none; margin: 0; padding: 0 0 0 22px; display: grid; gap: 10px; }
+.card li { position: relative; color: var(--fg2); }
+.card li:first-child { color: var(--fg); font-weight: 600; }
+.card li::before {
+  content: ""; position: absolute; left: -20px; top: 0.6em;
+  width: 8px; height: 8px; border-radius: 50%; background: var(--a);
+}
+.png { align-self: flex-start; color: var(--muted); font-size: 13px; text-decoration: none; border-bottom: 1px solid currentColor; }
+.png:hover, .png:focus-visible { color: var(--a); }
+
+@media (max-width: 420px) {
+  .grid { padding: 16px 12px; gap: 16px; }
+  .card { padding: 22px 18px 18px; border-radius: 24px; }
+  .card h2 { font-size: 36px; }
+}
