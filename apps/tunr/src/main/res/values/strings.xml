@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">tunr</string>
+    <string name="tagline">A calm chromatic tuner. Play a note, watch the ring stand still.</string>
+    <string name="note_mic">Listens only while the tuner is on screen. Nothing is recorded, stored or sent.</string>
+
+    <string name="tuner">Tuner</string>
+    <string name="play_a_note">Play a note</string>
+    <string name="mic_off">Microphone off</string>
+    <string name="mic_silent">No sound from the microphone. Blocked or used by another app?</string>
+    <string name="cent">cent</string>
+    <string name="hz" translatable="false">Hz</string>
+    <string name="a4_label">A4 · %1$d Hz</string>
+    <string name="status_in_tune">In tune</string>
+    <string name="status_flat">Too low</string>
+    <string name="status_sharp">Too high</string>
+    <string name="state_listening">Listening</string>
+    <string name="state_in_tune">%1$s, in tune</string>
+    <string name="state_flat">%1$s, %2$d cents flat</string>
+    <string name="state_sharp">%1$s, %2$d cents sharp</string>
+
+    <string name="mic_ask_text">tunr needs the microphone to hear your instrument. Nothing is recorded.</string>
+    <string name="mic_allow">Allow microphone</string>
+    <string name="mic_blocked_text">Microphone access is turned off. Allow it under Permissions in the app info.</string>
+    <string name="mic_settings">Open app info</string>
+    <string name="mic_error_text">The microphone is busy or unavailable.</string>
+    <string name="mic_retry">Try again</string>
+
+    <string name="instrument">Instrument</string>
+    <string name="inst_chromatic">Chromatic</string>
+    <string name="inst_chromatic_sub">Any note, any instrument</string>
+    <string name="inst_guitar">Guitar</string>
+    <string name="inst_drop_d">Guitar · Drop D</string>
+    <string name="inst_bass">Bass</string>
+    <string name="inst_ukulele">Ukulele</string>
+    <string name="inst_violin">Violin</string>
+    <string name="string_desc">String %1$d, %2$s</string>
+    <string name="string_locked">held</string>
+    <string name="string_auto">automatic</string>
+
+    <string name="group_tuning">Tuning</string>
+    <string name="a4_title">Concert pitch A4</string>
+    <string name="a4_sub">Standard is 440 Hz</string>
+    <string name="a4_value">%1$d Hz</string>
+    <string name="a4_lower">Lower concert pitch</string>
+    <string name="a4_higher">Raise concert pitch</string>
+    <string name="notation">Note names</string>
+    <string name="notation_sharp">Sharps</string>
+    <string name="notation_flat">Flats</string>
+    <string name="notation_german">German H</string>
+    <string name="group_feedback">Feedback</string>
+    <string name="haptics">Vibrate when in tune</string>
+    <string name="haptics_sub">A short tap once the note locks in</string>
+</resources>

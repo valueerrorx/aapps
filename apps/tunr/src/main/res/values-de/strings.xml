@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tagline">Ein ruhiges chromatisches Stimmgerät. Ton spielen, bis der Ring stillsteht.</string>
+    <string name="note_mic">Hört nur zu, solange das Stimmgerät zu sehen ist. Nichts wird aufgenommen, gespeichert oder gesendet.</string>
+
+    <string name="tuner">Stimmgerät</string>
+    <string name="play_a_note">Spiel einen Ton</string>
+    <string name="mic_off">Mikrofon aus</string>
+    <string name="mic_silent">Kein Ton vom Mikrofon. Gesperrt oder von einer anderen App belegt?</string>
+    <string name="cent">Cent</string>
+    <string name="a4_label">A4 · %1$d Hz</string>
+    <string name="status_in_tune">Gestimmt</string>
+    <string name="status_flat">Zu tief</string>
+    <string name="status_sharp">Zu hoch</string>
+    <string name="state_listening">Hört zu</string>
+    <string name="state_in_tune">%1$s, gestimmt</string>
+    <string name="state_flat">%1$s, %2$d Cent zu tief</string>
+    <string name="state_sharp">%1$s, %2$d Cent zu hoch</string>
+
+    <string name="mic_ask_text">tunr braucht das Mikrofon, um dein Instrument zu hören. Nichts wird aufgenommen.</string>
+    <string name="mic_allow">Mikrofon erlauben</string>
+    <string name="mic_blocked_text">Der Mikrofonzugriff ist aus. Erlaube ihn in den App-Infos unter Berechtigungen.</string>
+    <string name="mic_settings">App-Infos öffnen</string>
+    <string name="mic_error_text">Das Mikrofon ist belegt oder nicht verfügbar.</string>
+    <string name="mic_retry">Erneut versuchen</string>
+
+    <string name="instrument">Instrument</string>
+    <string name="inst_chromatic">Chromatisch</string>
+    <string name="inst_chromatic_sub">Jeder Ton, jedes Instrument</string>
+    <string name="inst_guitar">Gitarre</string>
+    <string name="inst_drop_d">Gitarre · Drop D</string>
+    <string name="inst_bass">Bass</string>
+    <string name="inst_ukulele">Ukulele</string>
+    <string name="inst_violin">Violine</string>
+    <string name="string_desc">Saite %1$d, %2$s</string>
+    <string name="string_locked">festgehalten</string>
+    <string name="string_auto">automatisch</string>
+
+    <string name="group_tuning">Stimmung</string>
+    <string name="a4_title">Kammerton A4</string>
+    <string name="a4_sub">Standard ist 440 Hz</string>
+    <string name="a4_value">%1$d Hz</string>
+    <string name="a4_lower">Kammerton tiefer</string>
+    <string name="a4_higher">Kammerton höher</string>
+    <string name="notation">Notennamen</string>
+    <string name="notation_sharp">Kreuze</string>
+    <string name="notation_flat">Bes</string>
+    <string name="notation_german">Deutsch H</string>
+    <string name="group_feedback">Rückmeldung</string>
+    <string name="haptics">Vibrieren, wenn gestimmt</string>
+    <string name="haptics_sub">Ein kurzer Tipp, sobald der Ton einrastet</string>
+</resources>
