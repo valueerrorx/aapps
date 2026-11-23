@@ -16,7 +16,7 @@ Ideen und Recherche: `research/ideen.md`.
 ## Stack
 - Kotlin + Jetpack Compose. sleepr nutzt dagegen Views/Canvas.
 - Aktuelle stabile Versionen: AGP/Gradle/Kotlin, compileSdk 37, targetSdk 36, minSdk 26, JDK 17.
-- Erlaubte Abhängigkeiten: Compose BOM, activity/lifecycle, core-ktx, kotlinx-serialization (nur wo nötig). Ausnahme: androidx.webkit nur für moovr.
+- Erlaubte Abhängigkeiten: Compose BOM, activity/lifecycle, core-ktx, kotlinx-serialization (nur wo nötig). Ausnahme: androidx.webkit nur für moovr und glidr.
 - Verboten: Hilt, Navigation, Room, Firebase, Play Services, INTERNET.
 - Release-Build mit R8. Die APK soll unter 4 MB bleiben.
 - Sprachen: Englisch und Deutsch.
