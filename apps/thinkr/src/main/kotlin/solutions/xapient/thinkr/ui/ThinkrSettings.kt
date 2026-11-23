@@ -85,6 +85,7 @@ fun ThinkrAbout(versionName: String, onBack: () -> Unit) {
         notes = listOf(
             stringResource(R.string.note_echo),
             stringResource(R.string.note_switches),
+            stringResource(R.string.note_stars),
             stringResource(R.string.note_daily),
             stringResource(R.string.note_relaxed),
             stringResource(R.string.note_access),

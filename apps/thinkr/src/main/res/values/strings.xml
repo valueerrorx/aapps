@@ -4,6 +4,7 @@
     <string name="tagline">Short brain games for a quick break, about a minute each. Offline, no ads, no subscription.</string>
     <string name="note_echo">Echo: is the shape the same as the one before? Tap Yes or No, or swipe right for yes and left for no. The first card is just to remember. From level 10 you compare with the card two back.</string>
     <string name="note_switches">Switches: lights roll out of the portal one after another. Tap a junction to flip it, so every light reaches the gate with its colour and shape. A round lasts 90 seconds, and the better you route, the closer the lights follow each other. 90% or more on target moves you up a level, below 70% down. Higher levels have more gates.</string>
+    <string name="note_stars">Constellation: a few stars light up in the night sky and go dark again. Tap where they were. Two wrong taps end the pass. A perfect pass draws the constellation and adds a star, one mistake keeps the count, two take one away.</string>
     <string name="note_daily">Every day thinkr picks up to three games for you. A game counts as soon as you have played a round of it today. One missed day per week does not break your streak.</string>
     <string name="note_relaxed">Relaxed gives you half again as much time, with slower cards and lights, and keeps its own levels and best scores.</string>
     <string name="note_access">The games run against the clock and are hardly playable with a screen reader.</string>
@@ -11,6 +12,7 @@
 
     <string name="game_echo" translatable="false">Echo</string>
     <string name="game_switches">Switches</string>
+    <string name="game_stars">Constellation</string>
 
     <string name="date_pattern">EEEE, MMMM d</string>
     <string name="games">Games</string>
@@ -53,6 +55,11 @@
 
     <string name="switches_prompt">Guide every light to the gate of its shape</string>
     <string name="switches_board">Track network with %1$d gates</string>
+
+    <string name="stars_prompt">Remember the stars, then tap where they were</string>
+    <string name="stars_board">Star field, %1$d by %2$d</string>
+    <string name="stars_lives">Lives left: %1$d</string>
+
 
     <string name="accuracy">Hits</string>
     <string name="tally_desc">%1$d of %2$d on target</string>

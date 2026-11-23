@@ -3,12 +3,14 @@
     <string name="tagline">Kurze Denkspiele für zwischendurch, je etwa eine Minute. Offline, ohne Werbung, ohne Abo.</string>
     <string name="note_echo">Echo: Ist die Form gleich wie die vorige? Tippe Ja oder Nein, oder wische nach rechts für Ja und nach links für Nein. Die erste Karte nur merken. Ab Stufe 10 vergleichst du mit der Karte vor zwei.</string>
     <string name="note_switches">Weichen: Lichtperlen rollen nacheinander aus dem Portal. Tippe auf eine Weiche, um sie umzulegen, damit jede Perle das Tor mit ihrer Farbe und Form erreicht. Eine Runde dauert 90 Sekunden, und je besser du lenkst, desto dichter folgen die Perlen. Ab 90 % im Ziel steigt die Stufe, unter 70 % sinkt sie. Höhere Stufen haben mehr Tore.</string>
+    <string name="note_stars">Sternbild: Ein paar Sterne leuchten am Nachthimmel auf und verlöschen wieder. Tippe an, wo sie waren. Zwei falsche Tipps beenden den Durchgang. Ein perfekter Durchgang zeichnet das Sternbild und bringt einen Stern mehr, ein Fehler hält die Zahl, zwei nehmen einen weg.</string>
     <string name="note_daily">Jeden Tag stellt thinkr bis zu drei Spiele zusammen. Ein Spiel zählt, sobald du heute eine Runde davon gespielt hast. Ein verpasster Tag pro Woche unterbricht die Serie nicht.</string>
     <string name="note_relaxed">Gemächlich gibt dir die Hälfte mehr Zeit, mit langsameren Karten und Perlen, und führt eigene Stufen und Bestwerte.</string>
     <string name="note_access">Die Spiele laufen auf Zeit und sind mit einem Screenreader kaum spielbar.</string>
     <string name="note_health">Unterhaltung. Kein Medizinprodukt, keine Gesundheitsversprechen.</string>
 
     <string name="game_switches">Weichen</string>
+    <string name="game_stars">Sternbild</string>
 
     <string name="date_pattern">EEEE, d. MMMM</string>
     <string name="games">Spiele</string>
@@ -51,6 +53,11 @@
 
     <string name="switches_prompt">Lenk jede Perle ins Tor ihrer Form</string>
     <string name="switches_board">Schienennetz mit %1$d Toren</string>
+
+    <string name="stars_prompt">Merk dir die Sterne, dann tipp an, wo sie waren</string>
+    <string name="stars_board">Sternenfeld, %1$d mal %2$d</string>
+    <string name="stars_lives">Verbleibende Leben: %1$d</string>
+
 
     <string name="accuracy">Treffer</string>
     <string name="tally_desc">%1$d von %2$d im Ziel</string>

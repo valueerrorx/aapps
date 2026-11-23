@@ -9,12 +9,15 @@ import solutions.xapient.thinkr.domain.MiniGame
 import solutions.xapient.thinkr.domain.Play
 import solutions.xapient.thinkr.domain.echo.EchoGame
 import solutions.xapient.thinkr.domain.echo.EchoState
+import solutions.xapient.thinkr.domain.stars.StarsGame
+import solutions.xapient.thinkr.domain.stars.StarsState
 import solutions.xapient.thinkr.domain.switches.SwitchesGame
 import solutions.xapient.thinkr.domain.switches.SwitchesState
 import solutions.xapient.thinkr.ui.GameHost
 import solutions.xapient.thinkr.ui.Phase
 import solutions.xapient.thinkr.ui.ThinkrIcons
 import solutions.xapient.thinkr.ui.echo.EchoBoard
+import solutions.xapient.thinkr.ui.stars.StarsBoard
 import solutions.xapient.thinkr.ui.switches.SwitchesBoard
 
 // Brett eines Spiels: zeichnet den Stand, live = Spielzeit laeuft, count = Einzaehlen (0 = aus)
@@ -44,7 +47,8 @@ class GameDef<S : Play, I>(
         tones: TonePlayer?,
         onFinish: (Play) -> Unit,
         onQuit: () -> Unit,
-    ) = GameHost(this, seed, level, relaxed, haptics, tones, onFinish, onQuit)
+        safeColors: Boolean = false,
+    ) = GameHost(this, seed, level, relaxed, haptics, tones, onFinish, onQuit, safeColors = safeColors)
 
     // fuer Screenshots: fester Stand, keine Uhr
     @Composable
@@ -65,8 +69,12 @@ object Games {
         SwitchesBoard(s, live, count, input)
     }
 
+    val Stars = GameDef<StarsState, Int>(GameId.STARS, R.string.game_stars, ThinkrIcons.Stars, StarsGame) { s, live, count, input ->
+        StarsBoard(s, live, count, input)
+    }
+
     // Reihenfolge = Anzeige; neue Spiele hier eintragen
-    val all: List<GameDef<*, *>> = listOf(Echo, Switches)
+    val all: List<GameDef<*, *>> = listOf(Echo, Switches, Stars)
 
     val ids: List<GameId> get() = all.map { it.id }
 

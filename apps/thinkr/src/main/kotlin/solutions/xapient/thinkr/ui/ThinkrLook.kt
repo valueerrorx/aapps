@@ -155,6 +155,40 @@ object ThinkrIcons {
         }
     }
 
+    // Sternbild: drei Sterne, durch Linien verbunden, einer als Funke
+    val Stars: ImageVector by lazy {
+        line("stars") {
+            moveTo(7.6f, 15.4f); lineTo(10.6f, 9.4f)
+            moveTo(13.2f, 8.6f); lineTo(16.6f, 10.6f)
+            dot(6.5f, 17.5f, 2f)
+            dot(11.5f, 7.5f, 1.8f)
+            moveTo(18.5f, 9.5f); lineTo(19.3f, 11.7f); lineTo(21.5f, 12.5f); lineTo(19.3f, 13.3f)
+            lineTo(18.5f, 15.5f); lineTo(17.7f, 13.3f); lineTo(15.5f, 12.5f); lineTo(17.7f, 11.7f); close()
+        }
+    }
+
+    // Tinte: Tropfen mit Glanzlinie
+    val Ink: ImageVector by lazy {
+        line("ink") {
+            moveTo(12f, 3.5f)
+            curveTo(12f, 3.5f, 5.5f, 10.5f, 5.5f, 14.5f)
+            arcTo(6.5f, 6.5f, 0f, false, false, 18.5f, 14.5f)
+            curveTo(18.5f, 10.5f, 12f, 3.5f, 12f, 3.5f)
+            close()
+            moveTo(9f, 15f); arcTo(3f, 3f, 0f, false, false, 11.5f, 17.8f)
+        }
+    }
+
+    // Schwarm: grosser Pfeil in der Mitte, zwei kleine daneben
+    val Swarm: ImageVector by lazy {
+        line("swarm") {
+            moveTo(7.5f, 12.5f); lineTo(12f, 7.5f); lineTo(16.5f, 12.5f)
+            moveTo(12f, 7.5f); lineTo(12f, 17.5f)
+            moveTo(2.8f, 18.2f); lineTo(5.5f, 15.2f); lineTo(8.2f, 18.2f)
+            moveTo(15.8f, 18.2f); lineTo(18.5f, 15.2f); lineTo(21.2f, 18.2f)
+        }
+    }
+
     val Yes: ImageVector by lazy {
         line("yes") { moveTo(5f, 12.5f); lineTo(10f, 17.5f); lineTo(19f, 7f) }
     }
@@ -187,6 +221,11 @@ object ThinkrIcons {
         val k = 1.6f
         moveTo(l + k, t); lineTo(r - k, t); quadTo(r, t, r, t + k); lineTo(r, b - k); quadTo(r, b, r - k, b)
         lineTo(l + k, b); quadTo(l, b, l, b - k); lineTo(l, t + k); quadTo(l, t, l + k, t); close()
+    }
+
+    // kleiner Kreis als Strichpfad
+    private fun PathBuilder.dot(x: Float, y: Float, r: Float) {
+        moveTo(x - r, y); arcTo(r, r, 0f, true, true, x + r, y); arcTo(r, r, 0f, true, true, x - r, y); close()
     }
 
     private fun line(name: String, block: PathBuilder.() -> Unit): ImageVector =
