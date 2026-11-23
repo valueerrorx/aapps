@@ -8,14 +8,14 @@ Ein Glücksrad: dreht sich wie ein echtes, bleibt fair irgendwo stehen und zeigt
 - Drehen per Tippen aufs Rad, per Hauptaktion „Drehen" oder per Schwung (Wischen im Kreis). Langsames Ziehen dreht das Rad nur von Hand, ohne Ergebnis.
 - Physik: Anfangsschwung, Abbremsen aus Gleitreibung plus geschwindigkeitsabhängiger Reibung (geschlossene Lösung, keine Integrationsfehler). Kein Einrasten am Ende: Ergebnis ist das Segment, auf dem der Zeiger stehen bleibt.
 - Fairness: die Endstellung ist gleichverteilt über 360°. Tippen: Weg = 4–5 volle Umdrehungen + gleichverteilter Rest. Schwung: natürlicher Weg aus der Wischgeschwindigkeit (2,5–10 Umdrehungen), auf ±180° so angepasst, dass der Rest gleichverteilt ist. Während des Drehens ist das Rad gesperrt.
-- Stifte an den Segmentgrenzen, eine Zunge am Zeiger wird mitgenommen und schnellt zurück. Jeder Stift = Haptik-Tick (max. ~35/s), optional Klick-Ton (im Code erzeugt, ohne Datei). Bewegungsunschärfe bei hoher Geschwindigkeit.
-- Ergebnis: großer Text in der Segmentfarbe, Gewinner-Segment hebt sich, die anderen treten zurück, Konfetti aus dem Zeiger, Haptik `confirm`, Ansage für TalkBack.
+- Stifte an den Segmentgrenzen, eine Zunge am Zeiger wird mitgenommen und schnellt zurück. Jeder Stift = Touch-Haptik `step` (max. ~35/s, auch im freien Lauf; Raster, kein Ereignis), optional Klick-Ton (im Code erzeugt, ohne Datei). Bewegungsunschärfe bei hoher Geschwindigkeit.
+- Ergebnis: großer Text in der Segmentfarbe, Gewinner-Segment hebt sich, die anderen treten zurück, Konfetti aus dem Zeiger, Vibration `confirm` (Ereignis über den Vibrator, Usage Alarm), Ansage für TalkBack.
 - „Entfernen": gezogenen Eintrag für diese Runde herausnehmen (Reihenfolge auslosen). „Alle zurück" stellt die Runde wieder her. Nicht gespeichert.
 - Mehrere Räder gespeichert, eines aktiv. Beim ersten Start: Was essen wir?, Ja/Nein, Würfel 1–6, Wer zahlt?.
 - Vorlagen jederzeit hinzufügbar, gruppiert: Alltag (Essen, Ja/Nein, Wer zahlt?, Wochentage, Farben), Zahlen (Würfel, 1–10, Zahlenbereich von … bis …, 2–50 Zahlen, auch absteigend), Richtungen (Wohin?, Himmelsrichtungen), Spiele (Münzwurf, Schere/Stein/Papier, Wahrheit oder Pflicht, Buchstaben A–Z). Eine Vorlage ergibt ein normales, editierbares Rad.
 - Rad bearbeiten: Name, Einträge ändern/hinzufügen/löschen, Rad löschen (das letzte bleibt).
 - Farben: Pastell-Palette, Nachbarn nie gleich (auch über den Kreis).
-- Hoch- und Querformat, Englisch und Deutsch. Keine Berechtigungen.
+- Hoch- und Querformat, Englisch und Deutsch. Nur VIBRATE (normal, ohne Rückfrage, kommt aus `core/ui`).
 
 ## Nicht
 - Keine Gewichte, kein Münz-/Würfelmodus, kein Teilen, keine Historie, kein INTERNET.
@@ -47,5 +47,5 @@ Varianten (Standard: Pixel 7, en): `wheel_de`, `_360dp`, `_land`, `_font130`, `_
 ## Abnahmekriterien
 - Domain ohne Android-Imports, Unit-Tests für Reibung/Umkehrung, Drehverlauf, Segment unter dem Zeiger, Fairness (Chi-Quadrat über viele Drehungen, Tippen und Schwung), Stifte/Zunge, Palette, Speicherformat, Runde, Klick-Ton, Zahlenbereich, Vorlagen (2–50 Einträge, beide Sprachen).
 - Ruht das Rad, laufen keine Animations-Frames mehr.
-- `:apps:spinr:check`, `verifyRoborazziDebug`, `assembleRelease` grün, Manifest ohne Berechtigungen, Release-APK < 4 MB.
+- `:apps:spinr:check`, `verifyRoborazziDebug`, `assembleRelease` grün, Manifest nur mit VIBRATE, Release-APK < 4 MB.
 - Lesbar bei Schriftgröße 200 %.

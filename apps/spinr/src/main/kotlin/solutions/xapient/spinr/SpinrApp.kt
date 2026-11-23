@@ -159,7 +159,7 @@ fun SpinrApp() {
                     active = active,
                     onSelect = {
                         save(wheels, it)
-                        haptics.tick()
+                        haptics.press()
                         screen = Screen.WHEEL
                     },
                     onEdit = {
@@ -181,7 +181,7 @@ fun SpinrApp() {
                     groups = groups,
                     onAdd = {
                         save(wheels + it, wheels.size)
-                        haptics.tick()
+                        haptics.press()
                         screen = Screen.WHEEL
                     },
                     onBack = { screen = Screen.WHEELS },

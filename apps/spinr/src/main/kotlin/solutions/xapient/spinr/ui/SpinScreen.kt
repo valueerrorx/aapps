@@ -105,7 +105,8 @@ private class TickFeedback {
         val now = System.nanoTime()
         if (now - last < 28_000_000L) return
         last = now
-        haptics?.tick()
+        // Raster wie beim Ziehen: Vibrator waere auf 120 ms entprellt und zu schwer
+        haptics?.step()
         sound?.invoke()
     }
 }
