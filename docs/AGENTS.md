@@ -16,6 +16,12 @@ Robolectric läuft mit SDK 34 (`src/test/resources/robolectric.properties`), wei
 2. Fachlogik in `domain/` ohne Android-Imports; Sensoren/Audio/Uhr über Interfaces.
 3. Screenshot-Zustände aus der SPEC als Roborazzi-Tests, PNGs in `apps/<name>/screenshots/` committen.
 4. Berechtigungen: Standard ist keine. Freigaben pro App über `aapps { allowedPermissions.add("…") }`, INTERNET ist immer verboten (`check<Variant>ManifestPermissions`).
+   Ausnahme: VIBRATE kommt aus `core/ui` in jede App und ist immer frei (normale Berechtigung, keine Rückfrage).
+
+## Haptik (`core/ui/Haptics`)
+- `tick()`/`confirm()`: Ereignis (Fund, Einrasten, gestimmt, Ablauf). Läuft über den Vibrator (Usage Alarm), spürbar auch bei ausgeschalteter Touch-Haptik im System, entprellt auf 120 ms.
+- `step()`: Raster beim Ziehen, Wechsel im Segment. `press()`: Tasten. Beide über die View, folgen der System-Touch-Haptik.
+- Faustregel: Folgt die Rückmeldung direkt auf einen Finger, dann `step`/`press`.
 
 ## Regeln
 - Erlaubt: Compose BOM, activity, lifecycle, core-ktx, kotlinx-serialization (nur wo nötig).

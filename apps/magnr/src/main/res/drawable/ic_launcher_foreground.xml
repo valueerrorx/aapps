@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gekippter Hufeisenmagnet, leuchtende Pole, zwei Wellen am offenen Ende -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:pivotX="54"
+        android:pivotY="57"
+        android:rotation="40"
+        android:scaleX="0.92"
+        android:scaleY="0.92"
+        android:translateY="-3">
+        <!-- Lichthof vor den Polen -->
+        <path android:pathData="M28,72a26,26 0 1,0 52,0a26,26 0 1,0 -52,0z">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:type="radial"
+                    android:centerX="54"
+                    android:centerY="72"
+                    android:gradientRadius="26"
+                    android:startColor="#48C08EFF"
+                    android:endColor="#00C08EFF" />
+            </aapt:attr>
+        </path>
+        <!-- Wellen -->
+        <path
+            android:pathData="M45,76.7A14,14 0 0,0 63,76.7"
+            android:strokeWidth="3.5"
+            android:strokeColor="#FFE2CCFF"
+            android:strokeLineCap="round" />
+        <path
+            android:pathData="M38.6,84.4A24,24 0 0,0 69.4,84.4"
+            android:strokeWidth="3.5"
+            android:strokeColor="#FFC08EFF"
+            android:strokeLineCap="round" />
+        <!-- Magnet -->
+        <path
+            android:pathData="M41,64L41,46A13,13 0 0,1 67,46L67,64"
+            android:strokeWidth="10"
+            android:strokeColor="#FFDCE3E8" />
+        <!-- Pole -->
+        <path
+            android:pathData="M41,55L41,64M67,55L67,64"
+            android:strokeWidth="10"
+            android:strokeColor="#FFC08EFF" />
+    </group>
+</vector>

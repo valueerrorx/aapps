@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tagline">Ein Metalldetektor, der ehrlich sagt, was er findet: Schrauben, Nägel, Ständer und Magnete.</string>
+    <string name="note_honest">magnr misst das Magnetfeld. Es findet Eisen, Stahl, Nickel und Magnete. Gold, Silber, Kupfer und Aluminium findet es nicht, weil sie nicht magnetisch sind.</string>
+    <string name="note_sensor">Der Sensor sitzt im Handy, meist oben. Handy-Sensoren sind keine Messgeräte, Werte können driften.</string>
+
+    <string name="status_live">Misst</string>
+    <string name="status_paused">Pausiert</string>
+    <string name="pause">Pause</string>
+    <string name="resume">Weiter</string>
+    <string name="zero">Nullen</string>
+    <string name="sound">Ton</string>
+    <string name="on">An</string>
+    <string name="off">Aus</string>
+
+    <string name="level_quiet">Kein Ausschlag</string>
+    <string name="level_weak">Schwach</string>
+    <string name="level_near">Metall nah</string>
+    <string name="level_strong">Sehr nah</string>
+    <string name="at_limit">Sensor am Anschlag</string>
+    <string name="settling">Nullpunkt</string>
+    <string name="stat_baseline">Grundwert</string>
+    <string name="stat_total">Feld</string>
+    <string name="stat_peak">Spitze</string>
+    <string name="history">Letzte 20 s</string>
+    <string name="footnote">Findet Eisen, Stahl und Magnete · kein Gold, Kupfer oder Alu</string>
+
+    <string name="field">Magnetfeld</string>
+    <string name="field_none">Noch kein Wert</string>
+    <string name="field_settling">%1$s Mikrotesla, Nullpunkt wird gesetzt</string>
+    <string name="field_limit">%1$s Mikrotesla, Sensor am Anschlag</string>
+    <string name="field_state">Abweichung %1$s Mikrotesla, %2$s. Feld %3$s, Spitze %4$s</string>
+
+    <string name="no_sensor_title">Kein Magnetfeldsensor</string>
+    <string name="no_sensor_text">Dieses Gerät hat kein Magnetometer, daher kann magnr hier nichts messen.</string>
+
+    <string name="intro_title">Was magnr findet</string>
+    <string name="intro_finds">Eisen, Stahl, Nickel und Magnete, etwa Schrauben, Nägel, Ständer und Bewehrung.</string>
+    <string name="intro_not">Kein Gold, Silber, Kupfer oder Aluminium: Sie sind nicht magnetisch.</string>
+    <string name="intro_sensor">Der Sensor sitzt meist oben im Handy. Fahr mit dieser Kante langsam über die Wand.</string>
+    <string name="intro_ok">Verstanden</string>
+    <string name="intro_sub">Was es findet und wo der Sensor sitzt</string>
+    <string name="cal_title">Kalibrieren</string>
+    <string name="cal_body">Bewege das Handy ein paar Mal in einer Acht und kipp es dabei. Halte Abstand zu Metall.</string>
+    <string name="cal_sub">Acht-Bewegung, wenn die Werte driften</string>
+    <string name="hint_hide">Ausblenden</string>
+
+    <string name="group_measure">Messung</string>
+    <string name="sensitivity">Empfindlichkeit</string>
+    <string name="sens_low">Niedrig</string>
+    <string name="sens_medium">Mittel</string>
+    <string name="sens_high">Hoch</string>
+    <string name="sensitivity_sub">Vollausschlag bei %1$s Abweichung</string>
+    <string name="drift">Langsamer Drift folgen</string>
+    <string name="drift_sub">Kleine Änderungen werden langsam zum neuen Grundwert</string>
+    <string name="group_feedback">Rückmeldung</string>
+    <string name="sound_sub">Piept schneller und höher, wenn Metall nah ist</string>
+    <string name="haptics">Vibration</string>
+    <string name="haptics_sub">Tick bei jeder höheren Stufe</string>
+    <string name="keep_on">Bildschirm an lassen</string>
+    <string name="keep_on_sub">Während der Messung</string>
+    <string name="group_help">Hilfe</string>
+</resources>

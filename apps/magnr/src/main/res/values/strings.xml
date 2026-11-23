@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">magnr</string>
+    <string name="tagline">A metal detector that is honest about what it finds: screws, nails, studs and magnets.</string>
+    <string name="note_honest">magnr measures the magnetic field. It finds iron, steel, nickel and magnets. It cannot find gold, silver, copper or aluminium, because they are not magnetic.</string>
+    <string name="note_sensor">The sensor sits inside the phone, usually near the top. Phone sensors are not measuring instruments and values can drift.</string>
+
+    <string name="status_live">Measuring</string>
+    <string name="status_paused">Paused</string>
+    <string name="pause">Pause</string>
+    <string name="resume">Resume</string>
+    <string name="zero">Zero</string>
+    <string name="sound">Sound</string>
+    <string name="on">On</string>
+    <string name="off">Off</string>
+
+    <string name="unit_total" translatable="false">µT</string>
+    <string name="level_quiet">No signal</string>
+    <string name="level_weak">Weak</string>
+    <string name="level_near">Metal near</string>
+    <string name="level_strong">Very close</string>
+    <string name="at_limit">Sensor at limit</string>
+    <string name="settling">Zeroing</string>
+    <string name="stat_baseline">Baseline</string>
+    <string name="stat_total">Field</string>
+    <string name="stat_peak">Peak</string>
+    <string name="history">Last 20 s</string>
+    <string name="footnote">Finds iron, steel and magnets · no gold, copper or aluminium</string>
+
+    <string name="field">Magnetic field</string>
+    <string name="field_none">No value yet</string>
+    <string name="field_settling">%1$s microtesla, zeroing</string>
+    <string name="field_limit">%1$s microtesla, sensor at its limit</string>
+    <string name="field_state">Deviation %1$s microtesla, %2$s. Field %3$s, peak %4$s</string>
+
+    <string name="no_sensor_title">No magnetic sensor</string>
+    <string name="no_sensor_text">This device has no magnetometer, so magnr cannot measure anything here.</string>
+
+    <string name="intro_title">What magnr finds</string>
+    <string name="intro_finds">Iron, steel, nickel and magnets, such as screws, nails, studs and rebar.</string>
+    <string name="intro_not">Not gold, silver, copper or aluminium: they are not magnetic.</string>
+    <string name="intro_sensor">The sensor usually sits near the top of the phone. Sweep that edge slowly across the wall.</string>
+    <string name="intro_ok">Got it</string>
+    <string name="intro_sub">What it finds and where the sensor sits</string>
+    <string name="cal_title">Calibrate</string>
+    <string name="cal_body">Move the phone in a figure eight a few times, tilting it as you go. Keep away from metal while doing so.</string>
+    <string name="cal_sub">Figure-eight motion when values drift</string>
+    <string name="hint_hide">Hide</string>
+
+    <string name="group_measure">Measurement</string>
+    <string name="sensitivity">Sensitivity</string>
+    <string name="sens_low">Low</string>
+    <string name="sens_medium">Medium</string>
+    <string name="sens_high">High</string>
+    <string name="scale_value" translatable="false">%1$s µT</string>
+    <string name="sensitivity_sub">Full scale at %1$s deviation</string>
+    <string name="drift">Follow slow drift</string>
+    <string name="drift_sub">Small changes slowly become the new baseline</string>
+    <string name="group_feedback">Feedback</string>
+    <string name="sound_sub">Beeps faster and higher when metal is near</string>
+    <string name="haptics">Vibration</string>
+    <string name="haptics_sub">Tick on each step up</string>
+    <string name="keep_on">Keep screen on</string>
+    <string name="keep_on_sub">While measuring</string>
+    <string name="group_help">Help</string>
+</resources>

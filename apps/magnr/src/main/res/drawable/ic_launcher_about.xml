@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- App-Icon fuer die Info-Seite (adaptive Icons kann Compose nicht direkt zeichnen); aus ic_launcher_foreground -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="72dp"
+    android:height="72dp"
+    android:viewportWidth="72"
+    android:viewportHeight="72">
+    <path android:pathData="M20,0h32a20,20 0 0 1 20,20v32a20,20 0 0 1 -20,20h-32a20,20 0 0 1 -20,-20v-32a20,20 0 0 1 20,-20z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="radial"
+                android:centerX="36"
+                android:centerY="32"
+                android:gradientRadius="44"
+                android:startColor="#FF231D2E"
+                android:endColor="#FF10161B" />
+        </aapt:attr>
+    </path>
+    <path
+        android:pathData="M20,0.5h32a19.5,19.5 0 0 1 19.5,19.5v32a19.5,19.5 0 0 1 -19.5,19.5h-32a19.5,19.5 0 0 1 -19.5,-19.5v-32a19.5,19.5 0 0 1 19.5,-19.5z"
+        android:strokeWidth="1"
+        android:strokeColor="#FF26323C" />
+    <group android:translateX="-18" android:translateY="-18">
+        <!-- Lichthof nicht ueber die runden Ecken hinaus -->
+        <clip-path android:pathData="M38,18h32a20,20 0 0 1 20,20v32a20,20 0 0 1 -20,20h-32a20,20 0 0 1 -20,-20v-32a20,20 0 0 1 20,-20z" />
+        <group
+            android:pivotX="54"
+            android:pivotY="57"
+            android:rotation="40"
+            android:scaleX="0.92"
+            android:scaleY="0.92"
+            android:translateY="-3">
+            <path android:pathData="M28,72a26,26 0 1,0 52,0a26,26 0 1,0 -52,0z">
+                <aapt:attr name="android:fillColor">
+                    <gradient
+                        android:type="radial"
+                        android:centerX="54"
+                        android:centerY="72"
+                        android:gradientRadius="26"
+                        android:startColor="#48C08EFF"
+                        android:endColor="#00C08EFF" />
+                </aapt:attr>
+            </path>
+            <path
+                android:pathData="M45,76.7A14,14 0 0,0 63,76.7"
+                android:strokeWidth="3.5"
+                android:strokeColor="#FFE2CCFF"
+                android:strokeLineCap="round" />
+            <path
+                android:pathData="M38.6,84.4A24,24 0 0,0 69.4,84.4"
+                android:strokeWidth="3.5"
+                android:strokeColor="#FFC08EFF"
+                android:strokeLineCap="round" />
+            <path
+                android:pathData="M41,64L41,46A13,13 0 0,1 67,46L67,64"
+                android:strokeWidth="10"
+                android:strokeColor="#FFDCE3E8" />
+            <path
+                android:pathData="M41,55L41,64M67,55L67,64"
+                android:strokeWidth="10"
+                android:strokeColor="#FFC08EFF" />
+        </group>
+    </group>
+</vector>
