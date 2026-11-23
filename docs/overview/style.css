@@ -5,6 +5,7 @@
 
 :root {
   --bg: #0b1014; --card: #10161b; --fg: #dce3e8; --fg2: #c3ccd3; --muted: #8a97a2;
+  --shot-h: 520px; /* einheitliche Höhe der Hochformat-Screenshots */
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
@@ -20,7 +21,8 @@ body {
 
 .grid {
   max-width: 1240px; margin: 0 auto; padding: 24px 20px;
-  display: grid; gap: 24px; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  display: grid; gap: 24px; grid-template-columns: repeat(auto-fill, minmax(min(340px, 100%), 1fr));
+  align-items: stretch; /* Karten einer Zeile gleich hoch */
 }
 
 .card {
@@ -42,16 +44,19 @@ body {
 .cat { margin: 6px 0 0; color: var(--a); font-weight: 600; font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; }
 .nr { position: absolute; top: 24px; right: 26px; color: var(--muted); font-weight: 600; font-size: 14px; }
 
+/* Hochformat: alle Screenshots gleich hoch, Breite folgt dem eigenen Seitenverhältnis (width/height im HTML) */
 .shot { margin: 0; display: flex; justify-content: center; }
 .shot img {
-  display: block; height: auto; border-radius: 22px;
-  width: min(62%, 260px);
+  display: block; height: var(--shot-h); width: auto; max-width: 100%;
+  object-fit: contain; border-radius: 22px;
   box-shadow: 0 0 46px color-mix(in srgb, var(--a) 35%, transparent), 0 0 0 1px rgba(255, 255, 255, 0.12);
 }
+/* Querformat: volle Breite, nie höher als der Hochformat-Rahmen, im freien Platz zentriert */
 .wide .shot { flex: 1; align-items: center; }
-.wide .shot img { width: 100%; border-radius: 16px; }
+.wide .shot img { width: 100%; height: auto; max-height: var(--shot-h); border-radius: 16px; }
 
-.card ul { list-style: none; margin: 0; padding: 0 0 0 22px; display: grid; gap: 10px; }
+/* Text immer unten bündig */
+.card ul { list-style: none; margin: auto 0 0; padding: 0 0 0 22px; display: grid; gap: 10px; }
 .card li { position: relative; color: var(--fg2); }
 .card li:first-child { color: var(--fg); font-weight: 600; }
 .card li::before {
@@ -62,6 +67,7 @@ body {
 .png:hover, .png:focus-visible { color: var(--a); }
 
 @media (max-width: 420px) {
+  :root { --shot-h: 460px; }
   .grid { padding: 16px 12px; gap: 16px; }
   .card { padding: 22px 18px 18px; border-radius: 24px; }
   .card h2 { font-size: 36px; }
