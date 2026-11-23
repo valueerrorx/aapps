@@ -198,7 +198,7 @@ fun SleepScreen(
             AappsIconButton(AappsIcons.Gear, stringResource(solutions.xapient.aapps.core.ui.R.string.aapps_settings), onSettings)
         }
         val quick: @Composable () -> Unit = {
-            QuickRow(running, sleep.setMin, { haptics?.confirm(); onChoose(it) }, { haptics?.confirm(); onExtend() })
+            QuickRow(running, sleep.setMin, { haptics?.press(); onChoose(it) }, { haptics?.press(); onExtend() })
         }
         val pill: @Composable () -> Unit = {
             AappsPillButton(

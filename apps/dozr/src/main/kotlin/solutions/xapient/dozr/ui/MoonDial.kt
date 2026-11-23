@@ -342,7 +342,7 @@ fun MoonDial(inputs: DialInputs, haptics: Haptics?, onChoose: (Int) -> Unit, mod
                         if (d.getDistance() < g.r * 0.12f) return
                         val m = Moon.snap(drag.move(d.x, -d.y))
                         if (m != last) {
-                            haptics?.tick()
+                            haptics?.step()
                             last = m
                         }
                         inputs.drag.value = m
