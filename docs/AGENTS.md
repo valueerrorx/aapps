@@ -19,7 +19,7 @@ Robolectric läuft mit SDK 34 (`src/test/resources/robolectric.properties`), wei
 
 ## Regeln
 - Erlaubt: Compose BOM, activity, lifecycle, core-ktx, kotlinx-serialization (nur wo nötig).
-- Ausnahme: androidx.webkit nur für moovr (WebViewAssetLoader für die Spiel-Assets).
+- Ausnahme: androidx.webkit nur für die Spiele moovr und glidr (WebViewAssetLoader für die Spiel-Assets).
 - Verboten: Hilt, Navigation, Room, Firebase, Play Services, INTERNET.
 - Code erst beim zweiten Nutzer in `core/` verschieben.
 - Keystore nie ins Repo. Signierung nur über Umgebungsvariablen (`KEYSTORE_FILE`, `KEYSTORE_PASSWORD`, `KEY_PASSWORD_<APP>`, Alias = App-Name), sonst Debug-Schlüssel. Mit `-Paapps.requireReleaseKey=true` (CI bei Push auf main/Tag) bricht der Build ohne Schlüssel ab.
