@@ -43,6 +43,8 @@ class PitchTracker(a4: Int = Notes.A4_DEFAULT, instrument: Instrument = Instrume
     private var heard = false
     private var active = false
     private var locks = 0
+    // Referenzton klingt: so viele Analysen noch ignorieren
+    private var hushed = 0
 
     var reading = Reading()
         private set
@@ -72,6 +74,10 @@ class PitchTracker(a4: Int = Notes.A4_DEFAULT, instrument: Instrument = Instrume
     }
 
     fun push(f: Frame): Reading {
+        if (hushed > 0) {
+            hushed--
+            return reading
+        }
         gate = if (gate) f.rmsDb >= CLOSE_DB else f.rmsDb >= OPEN_DB
         if (!gate || f.hz <= 0f) {
             pending = Float.NaN
@@ -128,7 +134,14 @@ class PitchTracker(a4: Int = Notes.A4_DEFAULT, instrument: Instrument = Instrume
         gate = false
         quiet = 0
         pending = Float.NaN
+        hushed = 0
         publish()
+    }
+
+    // eigener Referenzton: Anzeige aus, die naechsten frames Analysen zaehlen nicht (Rueckkopplung)
+    fun hush(frames: Int) {
+        stop()
+        hushed = frames.coerceAtLeast(0)
     }
 
     private fun begin(c: Float) {

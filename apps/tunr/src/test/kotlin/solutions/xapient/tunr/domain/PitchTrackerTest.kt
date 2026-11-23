@@ -187,4 +187,38 @@ class PitchTrackerTest {
         assertEquals(52, t.reading.target)
         assertFalse(t.reading.inTune)
     }
+
+    // Referenzton: Anzeige aus, eigener Ton zaehlt nicht, danach laeuft die Erkennung von selbst weiter
+    @Test fun referenceToneHushesDetection() {
+        val t = PitchTracker(instrument = Instrument.GUITAR)
+        repeat(6) { t.push(tone(45, -20f)) }
+        assertTrue(t.reading.active)
+        t.hush(Pluck.HUSH_FRAMES)
+        assertFalse(t.reading.active)
+        val before = t.reading
+        repeat(Pluck.HUSH_FRAMES) { assertEquals(before, t.push(tone(40))) }
+        // zwei passende Werte nach dem Ausklingen: wieder aktiv, mit dem echten Ton
+        t.push(tone(45, -20f))
+        val r = t.push(tone(45, -20f))
+        assertTrue(r.active)
+        assertEquals(1, r.string)
+        assertEquals(-20f, r.cents, 0.01f)
+    }
+
+    // Mikrofon aus (stop) beendet die Pause sofort; erneutes Anschlagen verlaengert sie
+    @Test fun hushEndsOnStopAndRestarts() {
+        val t = PitchTracker()
+        t.hush(Pluck.HUSH_FRAMES)
+        t.stop()
+        repeat(2) { t.push(tone(57)) }
+        assertTrue(t.reading.active)
+        t.hush(10)
+        repeat(8) { t.push(tone(57)) }
+        t.hush(10)
+        repeat(10) { assertFalse(t.push(tone(57)).active) }
+        repeat(2) { t.push(tone(57)) }
+        assertTrue(t.reading.active)
+        // Lauflaenge passt zum Ton: ganzer Ton plus Nachlauf, in Analysen zu 25 ms
+        assertTrue(Pluck.HUSH_FRAMES * 0.025f >= Pluck.SECONDS + Pluck.TAIL_S - 1e-3f)
+    }
 }
