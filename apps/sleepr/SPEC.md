@@ -14,7 +14,7 @@ Rauschgenerator zum Abschirmen von Störgeräuschen, Konzentrieren und Einschlaf
 - Hintergrund: Foreground-Service `mediaPlayback` mit MediaSession und Benachrichtigung (Mischung, Timer, Stopp; auch am Sperrbildschirm). Audio-Fokus: Verlust (auch kurzzeitig, z. B. Anruf) = Stopp.
 - Mischung, Lautstärke, Höhen und Timer überstehen Neustart (SharedPreferences). Nach Prozess-Tod spielt nichts von selbst.
 - Hoch- und Querformat, lesbar bei 200 % Schrift. Edge-to-edge, Inhalt im sicheren Bereich.
-- Einstellungen hinter dem Zahnrad oben rechts: „Wellen-Schalter anzeigen“ und „Mischungen anzeigen“ (beide Standard an, SharedPreferences `app`, überstehen Drehen und Neustart). Aus = nur die Bedienelemente verschwinden, laufende Wellen und Mischung bleiben. Mischungen lassen sich dort immer laden. Dazu Erklärungen zu Rauschfarben, Wellen, Mischungen und Timer sowie die Info-Seite (Version, Versprechen, Quellcode, Datenschutz, GPLv3). Zurück-Taste/-Geste schließt Info bzw. Einstellungen.
+- Einstellungen hinter dem Zahnrad oben rechts: „Wellen-Schalter anzeigen“ und „Mischungen anzeigen“ (beide Standard an, SharedPreferences `app`, überstehen Drehen und Neustart). Aus = nur die Bedienelemente verschwinden, laufende Wellen und Mischung bleiben. Mischungen lassen sich dort immer laden. Dazu Erklärungen zu Rauschfarben, Wellen, Mischungen, Lautstärke/Höhen und Timer sowie die Info-Seite (Version, Versprechen, Quellcode, Datenschutz, GPLv3). Zurück-Taste/-Geste schließt Info bzw. Einstellungen.
 
 ## Berechtigungen
 | Berechtigung | Grund |
@@ -37,14 +37,15 @@ Kein INTERNET, kein VIBRATE (sleepr nutzt `core/ui` nicht). Haptik wie `press()`
 - Kein Ausblenden fremder Apps (das macht dozr).
 
 ## Screens
-1. **Mixer**: Kopfzeile wie die anderen aapps (64 dp, „sleepr“ in Inter SemiBold 18 sp links, Zahnrad rechts); Karte „Spektrum der Mischung“; Mischungen als Chips; Karte Rauschfarben (Farbpunkt, Name, Steigung, Hinweis, Wellen-Schalter, Wert, Regler, bei aktiven Wellen Regler für die Wellenlänge); Karte Lautstärke und Höhen; Timer-Chips; Hinweistext. Hauptaktion START/STOP als Pille unten mittig mit Glow, Status („Bereit“, „Läuft · noch m:ss“, „Blendet aus · …“) und Mischung darüber. Hochformat: Leiste unten fest, Inhalt scrollt darüber und blendet weich aus. Querformat: Kopfzeile über die ganze Breite, darunter Status und Pille links, Inhalt rechts.
-2. **Einstellungen**: Gruppen Anzeige (zwei Schalter), Mischungen (Kurztext, sechs Mischungen mit Zusammensetzung, aktive mit Haken), Rauschfarben, Wellen, Timer (Erklärtexte), Info.
+1. **Mixer**: Kopfzeile wie die anderen aapps (64 dp, „sleepr“ in Inter SemiBold 18 sp links, Zahnrad rechts); Karte „Spektrum der Mischung“; Mischungen als Chips; Karte Rauschfarben (Farbpunkt, Name, Steigung, Hinweis, Wellen-Schalter, Wert, Regler, bei aktiven Wellen Regler für die Wellenlänge); Karte Lautstärke und Höhen; Timer-Chips. Keine Erklärtexte auf dem Hauptschirm (nur Bedien-Labels, Überschriften und die Kurzbeschreibung je Rauschfarbe), Erklärungen stehen in den Einstellungen. Hauptaktion START/STOP als Pille unten mittig mit Glow, Status („Bereit“, „Läuft · noch m:ss“, „Blendet aus · …“) und Mischung darüber. Hochformat: Leiste unten fest, Inhalt scrollt darüber und blendet weich aus. Querformat: Kopfzeile über die ganze Breite, darunter Status und Pille links, Inhalt rechts.
+2. **Einstellungen**: Gruppen Anzeige (zwei Schalter), Mischungen (Kurztext, sechs Mischungen mit Zusammensetzung, aktive mit Haken), Rauschfarben, Wellen, Lautstärke und Höhen, Timer (Erklärtexte), Info.
 3. **Info**: App-Icon, Name, Version (BuildConfig aus `version.txt`), Kurztext, Versprechen (keine Werbung, kein Tracking, keine Internet-Berechtigung), Quellcode-Link, Hinweise Datenschutz und Hintergrund, Lizenz, Schriften.
 
 ## Screenshot-Zustände (Roborazzi, `apps/sleepr/screenshots/`)
 | Name | Inhalt |
 |---|---|
 | `idle` | Standardmischung (Rosa 20, Braun 60), gestoppt |
+| `idle_bottom` | wie `idle`, Liste ganz unten (Timer als Abschluss) |
 | `playing` | läuft, Timer mit Restzeit |
 | `idle_land`, `idle_font200`, `idle_tablet` | Querformat, 200 % Schrift, Tablet 800 × 1280 dp |
 | `idle_plain`, `idle_plain_land` | Wellen-Schalter und Mischungen ausgeblendet |

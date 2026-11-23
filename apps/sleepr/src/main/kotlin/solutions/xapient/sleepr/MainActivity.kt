@@ -212,12 +212,11 @@ class MainActivity : Activity() {
             addView(row(text(getString(R.string.volume), 16f, FG, bold = true), masterVal))
             addView(masterSeek, lp(2))
             addView(row(text(getString(R.string.treble), 16f, FG, bold = true), toneVal), lp(14))
-            addView(text(getString(R.string.treble_hint), 12f, MUTED))
             addView(toneSeek, lp(2))
         })
 
         // Timer
-        add(label(getString(R.string.timer_label)), 22)
+        add(label(getString(R.string.group_timer)), 22)
         add(chipRow(Mixer.TIMERS.map { t ->
             chip(if (t == 0) getString(R.string.timer_off) else getString(R.string.timer_chip, t)) {
                 Mixer.timer = t; Mixer.save(this); syncTimers()
@@ -229,8 +228,6 @@ class MainActivity : Activity() {
                 timerChips += t to it
             }
         }), 8)
-
-        add(text(getString(R.string.hint), 13f, MUTED), 26)
 
         val scroll = ScrollView(this).apply { setBackgroundColor(BG); isFillViewport = true; addView(col) }
         val match = ViewGroup.LayoutParams.MATCH_PARENT

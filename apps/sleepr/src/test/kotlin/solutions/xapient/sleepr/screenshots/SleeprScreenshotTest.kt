@@ -3,6 +3,8 @@ package solutions.xapient.sleepr.screenshots
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.view.View
+import android.view.ViewGroup
+import android.widget.ScrollView
 import com.github.takahirom.roborazzi.RobolectricDeviceQualifiers
 import com.github.takahirom.roborazzi.RoborazziOptions
 import com.github.takahirom.roborazzi.captureRoboImage
@@ -33,6 +35,8 @@ class SleeprScreenshotTest {
 
     @Test fun idle() = shot("idle")
     @Test fun playing() { setEngine(fakeEngine()); shot("playing") }
+    // Liste ganz unten: Timer als Abschluss, keine Erklärtexte
+    @Test fun idle_bottom() = shot("idle_bottom", bottom = true)
     @Test fun idle_land() = shot("idle_land", "+land")
     @Test fun idle_font200() = shot("idle_font200", fontScale = 2f)
     @Test fun idle_tablet() = shot("idle_tablet", "w800dp-h1280dp-port-xhdpi")
@@ -56,7 +60,7 @@ class SleeprScreenshotTest {
     private fun plain() = Display(RuntimeEnvironment.getApplication()).run { showWaves = false; showMixes = false }
 
     // Hauptbildschirm als Ganzes rendern (Views, kein Compose); Standard deutsch wie bisher, _en englisch
-    private fun shot(name: String, qualifiers: String? = null, fontScale: Float = 1f, screen: MainActivity.Screen = MainActivity.Screen.MAIN, lang: String = "de") {
+    private fun shot(name: String, qualifiers: String? = null, fontScale: Float = 1f, screen: MainActivity.Screen = MainActivity.Screen.MAIN, lang: String = "de", bottom: Boolean = false) {
         if (qualifiers != null) RuntimeEnvironment.setQualifiers(qualifiers)
         RuntimeEnvironment.setQualifiers("+$lang")
         if (fontScale != 1f) RuntimeEnvironment.setFontScale(fontScale)
@@ -69,9 +73,16 @@ class SleeprScreenshotTest {
             View.MeasureSpec.makeMeasureSpec(dm.heightPixels, View.MeasureSpec.EXACTLY),
         )
         root.layout(0, 0, dm.widthPixels, dm.heightPixels)
+        if (bottom) scrollAll(root)
         val bmp = Bitmap.createBitmap(dm.widthPixels, dm.heightPixels, Bitmap.Config.ARGB_8888)
         root.draw(Canvas(bmp))
         bmp.captureRoboImage("screenshots/$name.png", options)
+    }
+
+    // Alle ScrollViews ans Ende scrollen
+    private fun scrollAll(v: View) {
+        if (v is ScrollView && v.childCount > 0) v.scrollTo(0, maxOf(0, v.getChildAt(0).height - v.height))
+        if (v is ViewGroup) for (i in 0 until v.childCount) scrollAll(v.getChildAt(i))
     }
 
     // Engine mit laufendem Status und Timer, ohne Audio-Thread zu starten

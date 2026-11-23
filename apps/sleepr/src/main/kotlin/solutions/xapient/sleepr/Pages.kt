@@ -73,6 +73,9 @@ class Pages(private val a: Activity, private val look: Look) {
                 group(a.getString(R.string.group_waves), this@page).apply {
                     addView(body(a.getString(R.string.explain_waves), muted).apply { setPadding(dp(18), dp(16), dp(18), dp(16)) })
                 }
+                group(a.getString(R.string.group_volume), this@page).apply {
+                    addView(body(a.getString(R.string.explain_volume), muted).apply { setPadding(dp(18), dp(16), dp(18), dp(16)) })
+                }
                 group(a.getString(R.string.group_timer), this@page).apply {
                     addView(body(a.getString(R.string.explain_timer), muted).apply { setPadding(dp(18), dp(16), dp(18), dp(16)) })
                 }

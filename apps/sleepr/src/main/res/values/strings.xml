@@ -36,9 +36,7 @@
     <string name="waves_off">Turn off waves for %1$s</string>
     <string name="volume">Volume</string>
     <string name="treble">Treble</string>
-    <string name="treble_hint">Left duller, right brighter</string>
     <string name="treble_open">open</string>
-    <string name="timer_label">Timer with gentle fade-out</string>
     <string name="timer_off">Off</string>
     <string name="timer_chip">%1$d min</string>
     <string name="with_timer">%1$s · Timer %2$d min</string>
@@ -51,7 +49,6 @@
     <string name="level_live" translatable="false">~%1$d</string>
     <string name="wave_sec" translatable="false">~%1$d s</string>
     <string name="percent" translatable="false">%1$d %%</string>
-    <string name="hint">Quiet is enough: noises should blur, it need not be louder than a calm conversation. For children, a speaker is better than headphones.\n\nGrey and green are approximations: grey roughly evens out how the ear hears loudness, green brings out the middle range around 500 Hz.</string>
 
     <!-- Rauschfarben: Name, Steigung, Kurzhinweis -->
     <string name="white">White</string>
@@ -96,15 +93,17 @@
     <string name="group_mixes">Mixes</string>
     <string name="group_colors">Noise colours</string>
     <string name="group_waves">Waves</string>
+    <string name="group_volume">Volume and treble</string>
     <string name="group_timer">Timer</string>
 
     <string name="explain_mixes">Ready-made mixes as a starting point. Then adjust any slider as you like.</string>
-    <string name="explain_colors">Each colour has its own slider, mix them freely. All are set equally loud, they differ only in sound.</string>
+    <string name="explain_colors">Each colour has its own slider, mix them freely. All are set equally loud, they differ only in sound. Grey and green are approximations.</string>
     <string name="explain_white">bright and hissing, all frequencies equally strong</string>
     <string name="explain_pink">balanced, like rain; softer highs than white</string>
     <string name="explain_brown">deep, like surf; even fewer highs</string>
     <string name="explain_grey">roughly evens out how the ear hears highs and lows, so it sounds equally loud everywhere</string>
     <string name="explain_green">brings out the middle around 500 Hz, soft and natural</string>
     <string name="explain_waves">The wave button next to a colour makes it swell and fade like ocean waves: rising, breaking, running out, each wave a little different. Below it you set how long the waves are on average (3 to 20 s). While playing, the slider moves along.</string>
+    <string name="explain_volume">Quiet is enough: noises should blur, it need not be louder than a calm conversation. For children, a speaker is better than headphones. Treble: left sounds duller, right brighter.</string>
     <string name="explain_timer">The timer fades out gently at the end instead of stopping hard, over up to 2 minutes for long timers. If you change it while playing, it starts over.</string>
 </resources>
