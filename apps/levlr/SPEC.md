@@ -9,13 +9,14 @@ Eine Wasserwaage: zeigt, wie schief etwas ist, und rastet hörbar-fühlbar ein, 
   - **Flach**: Handy liegt auf dem Rücken. Dosenlibelle, 2 Achsen.
 - Große Anzeige des Neigungswinkels, eine Nachkommastelle. Einheit wählbar: Grad, Prozent, mm/m.
 - Flüssigkeit und Blase folgen der Neigung mit Federphysik (Nachschwappen, Blase verformt sich bei Bewegung).
-- Einrasten bei 0,0°: Farbwechsel auf den Akzent, Glanz-Effekt, Haptik (einmal pro Einrasten, Hysterese gegen Flattern).
+- Einrasten bei 0,0°: Farbwechsel auf den Akzent, Glanz-Effekt, Vibration (`confirm`, einmal pro Einrasten, Hysterese gegen Flattern).
+- Haptik: Einrasten und Kalibrier-Schritte sind Ereignisse (`tick`/`confirm` über den Vibrator, Usage Alarm), Einheiten-Wahl ist Touch-Feedback (`step`).
 - Halten: Wert und Blase einfrieren (Hauptaktion, Tipp auf den Knopf oder auf die Zahl).
 - Zwei-Punkt-Kalibrierung pro Modus: messen, Handy um 180° drehen (Flach: auf der Stelle drehen; Kante: auf die gegenüberliegende Kante stellen), messen. Ergebnis gespeichert, zurücksetzbar.
 - Bildschirm bleibt an, solange die Waage sichtbar ist.
 - Hoch- und Querformat, Englisch und Deutsch.
 - Sensor: Gravity-Sensor, sonst Beschleunigungssensor. Listener nur zwischen onResume und onPause. Kein Sensor: Hinweis statt Absturz.
-- Keine Berechtigungen.
+- Nur VIBRATE (normal, ohne Rückfrage, kommt aus `core/ui`).
 
 ## Nicht
 - Kein Ton, keine Kamera, kein AR-Messen, keine Historie, kein Werbe-/Tracking-Code, kein INTERNET.
@@ -47,6 +48,6 @@ Varianten (Standard: Pixel 7, en): `edge_tilted_de`, `_360dp`, `_land`, `_font13
 - Domain ohne Android-Imports, Unit-Tests für Winkel, Einheiten, Glättung, Modus-Hysterese, Einrast-Hysterese, Kalibrierung.
 - Liegt das Handy still, laufen keine Animations-Frames mehr (Totband auf Messwert, Feder schläft ein).
 - Kalibrierung: Bias von ±1° wird nach zwei Messungen auf < 0,05° korrigiert (Unit-Test).
-- `./gradlew :apps:levlr:check :apps:levlr:assembleDebug` grün, Screenshots verifiziert, Manifest ohne Berechtigungen.
+- `./gradlew :apps:levlr:check :apps:levlr:assembleDebug` grün, Screenshots verifiziert, Manifest nur mit VIBRATE.
 - Release-APK < 4 MB.
 - Lesbar bei Schriftgröße 200 %, nichts abgeschnitten.

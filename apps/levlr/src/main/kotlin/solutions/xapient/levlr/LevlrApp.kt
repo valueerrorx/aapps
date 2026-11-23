@@ -88,7 +88,7 @@ fun LevlrApp() {
                 BackHandler { screen = Screen.LEVEL }
                 LevlrSettings(
                     unit = unit,
-                    onUnit = { unit = it; prefs.unit = it; haptics.tick() },
+                    onUnit = { unit = it; prefs.unit = it; haptics.step() },
                     haptics = hapticsOn,
                     onHaptics = { hapticsOn = it; prefs.haptics = it },
                     calibration = calibration,
