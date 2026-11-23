@@ -28,5 +28,14 @@
 - Alle 48 Level zum Sichten: `node glidr-all.js /tmp` (3 Blätter à 16).
 - Ref abweichend von `feat/glidr`: `GLIDR_REF=main`.
 
+## Play-Store-Grafiken
+`node store-images.js [app,…] [--collage vorschau.png]` schreibt je App und Sprache (de-DE, en-US) nach `apps/<app>/fastlane/metadata/android/<locale>/images/`:
+- `phoneScreenshots/1.png …`: Auswahl und Reihenfolge aus `apps/<app>/fastlane/README.md` (Abschnitt „Phone-Screenshots“), Quelle `apps/<app>/screenshots/` im Arbeitsbaum. Ohne Beschnitt auf 1200×2400 bzw. 2400×1200 (2:1) gebracht, der Rand setzt die Randpixel des Bildes fort. moovr und glidr bekommen keine (nur vom Gerät).
+- `featureGraphic.png`: 1024×500, RGB ohne Alpha. Icon, Name, Kategorie aus `title.txt`, Claim aus `short_description.txt`, rechts das erste Hochformat-Bild der Liste im Handy-Rahmen (moovr/glidr: Spielgrafik aus `img/`).
+- `icon.png`: 512×512 RGBA aus `screenshots/icon_store_512.png`.
+- `--collage`: alle de-DE-Feature-Grafiken als Vorschau in 2 Spalten.
+
+`node store-images.js --check` prüft alle Dateien gegen die Play-Vorgaben (Maße, max. 2:1, Alpha, Dateigröße).
+
 ## Schriften
 Inter und Space Grotesk (SIL Open Font License 1.1, Lizenztexte in `../fonts/`) als Teilmengen (Latein inkl. Umlaute), dieselben wie in den Apps.
