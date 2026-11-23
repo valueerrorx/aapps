@@ -171,11 +171,13 @@ object GlanceGame : MiniGame<GlanceState, GlanceInput> {
             tr.flashAt < 0 -> if (t >= tr.startAt + tr.fixMs && t < x.round.durationMs - 1_000) {
                 x = x.copy(trial = tr.copy(flashAt = t), shown = x.shown + 1)
             }
+            // Frame ohne Zeitfortschritt mitten im Blitz = Pause und Weiter: der Blitz stand real zu lang
+            tr.maskAt < 0 && dt == 0L && t > tr.flashAt && !tr.void -> x = x.copy(trial = tr.copy(void = true), voids = x.voids + 1)
             // Maske im ersten Frame, in dem die Zielzeit (bis auf einen halben Frame) erreicht ist
             tr.maskAt < 0 -> if (t - tr.flashAt >= target - x.frameMs / 2) {
                 val shownMs = t - tr.flashAt
-                val void = abs(shownMs - target) > maxOf(x.frameMs * 0.75, 6.0)
-                x = x.copy(trial = tr.copy(maskAt = t, void = void), voids = x.voids + if (void) 1 else 0)
+                val off = abs(shownMs - target) > maxOf(x.frameMs * 0.75, 6.0)
+                x = x.copy(trial = tr.copy(maskAt = t, void = tr.void || off), voids = x.voids + if (off && !tr.void) 1 else 0)
             }
             tr.done && x.nextAt <= t && x.nextAt < x.round.durationMs ->
                 x = x.copy(trial = newTrial(x, tr.no + 1, x.nextAt))
@@ -184,6 +186,8 @@ object GlanceGame : MiniGame<GlanceState, GlanceInput> {
     }
 
     override fun input(s: GlanceState, input: GlanceInput, t: Long): GlanceState {
+        // Tipps waehrend des Blitzes zaehlen nicht und ruehren die Frame-Messung nicht an
+        if (s.phase() == GlancePhase.FLASH) return s
         val x = tick(s, t)
         val tr = x.trial
         if (x.round.isOver || x.phase(t) != GlancePhase.ANSWER) return x

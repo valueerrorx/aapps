@@ -77,6 +77,24 @@ class GlanceGameTest {
         assertTrue(a.trial.done)
     }
 
+    @Test fun pauseDuringFlashVoidsTheTrial() {
+        var x = g.start(5, 1, false)
+        var t = 0L
+        while (x.phase() != GlancePhase.FLASH) {
+            t += 16
+            x = g.tick(x, t)
+        }
+        x = g.tick(x, t + 16)
+        // Pause: Spielzeit steht, der erste Frame danach bringt keine Zeit
+        x = g.tick(x, t + 16)
+        assertTrue(x.trial.void)
+        // Tipp im Blitz aendert nichts
+        assertEquals(x, g.input(x, GlanceInput.Center(Mark.ORB), t + 16))
+        val (y, _) = run(x)
+        assertTrue(y.trial.void)
+        assertEquals(1, y.voids)
+    }
+
     @Test fun phasesInOrder() {
         var x = g.start(2, 3, false)
         assertEquals(GlancePhase.FIX, x.phase())
