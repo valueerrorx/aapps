@@ -17,6 +17,18 @@
 
     // Antwort an die Activity: 'exit' = App schliessen, 'handled' = Spiel hat reagiert
     window.moovrBack = function () {
+        try {
+            return back();
+        } catch (e) {
+            // Fehler im Spiel oder in der Blende: nicht mitten im Spiel beenden
+            try {
+                if (ready() && (game.state.current === '0' || inTransition())) return 'handled';
+            } catch (ignored) {}
+            return 'exit';
+        }
+    };
+
+    function back() {
         if (!ready()) return 'exit';
         if (inTransition()) return 'handled';
         var state = game.state.current;
@@ -42,7 +54,7 @@
             return 'handled';
         }
         return 'exit';
-    };
+    }
 
     // App im Hintergrund: Spielzeit anhalten und Audio wirklich stoppen
     window.moovrPause = function () {

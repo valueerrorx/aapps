@@ -165,13 +165,27 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    // Renderer vom System beendet: neu aufbauen statt abzustuerzen
+    // im Test ersetzbar, weil Robolectric recreate() nicht beobachtbar macht
+    internal var restart: () -> Unit = { recreate() }
+
+    // Renderer vom System beendet: einmal pro Fenster neu aufbauen, sonst beenden (keine Neustart-Schleife)
     private fun onRendererGone() {
         rendererGone = true
-        recreate()
+        val now = SystemClock.elapsedRealtime()
+        val last = lastRendererRestart
+        if (last == null || now - last >= RENDERER_RESTART_WINDOW_MS) {
+            lastRendererRestart = now
+            restart()
+        } else if (!isFinishing) {
+            finish()
+        }
     }
 
-    private companion object {
+    internal companion object {
         const val SPLASH_MAX_MS = 2000L
+        const val RENDERER_RESTART_WINDOW_MS = 30_000L
+
+        // ueberlebt recreate(), gilt fuer den ganzen Prozess
+        internal var lastRendererRestart: Long? = null
     }
 }
