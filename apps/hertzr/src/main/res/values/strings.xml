@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">hertzr</string>
+    <string name="tagline">A clean tone generator from 1 Hz to 22 kHz. Sine, square, triangle, saw and log sweeps for speakers, rooms and the classroom.</string>
+    <string name="note_hearing">Start quietly. Loud tones, especially on headphones, can damage your hearing; deep square waves can damage speakers.</string>
+    <string name="note_background">Keeps playing with the screen off. The notification lets you stop it.</string>
+
+    <string name="start">Play</string>
+    <string name="start_sweep">Sweep</string>
+    <string name="stop">Stop</string>
+    <string name="frequency">Frequency</string>
+    <string name="enter_frequency">Enter frequency</string>
+    <string name="hz" translatable="false">Hz</string>
+    <string name="khz" translatable="false">kHz</string>
+    <string name="decimal_sep">.</string>
+    <string-array name="note_names">
+        <item>C</item>
+        <item>C♯</item>
+        <item>D</item>
+        <item>D♯</item>
+        <item>E</item>
+        <item>F</item>
+        <item>F♯</item>
+        <item>G</item>
+        <item>G♯</item>
+        <item>A</item>
+        <item>A♯</item>
+        <item>B</item>
+    </string-array>
+
+    <string name="mode_tone">Tone</string>
+    <string name="mode_sweep">Sweep</string>
+    <string name="octave_down">One octave down</string>
+    <string name="octave_up">One octave up</string>
+    <string name="lower">Lower</string>
+    <string name="higher">Higher</string>
+    <string name="semitone_up">Semitone up</string>
+    <string name="semitone_down">Semitone down</string>
+    <string name="sweep_from">From</string>
+    <string name="sweep_to">To</string>
+    <string name="sweep_time">Time</string>
+    <string name="sweep_from_title">Sweep start</string>
+    <string name="sweep_to_title">Sweep end</string>
+    <string name="sweep_time_desc">Sweep duration</string>
+    <string name="seconds">%1$d s</string>
+
+    <string name="wave_sine">Sine</string>
+    <string name="wave_square">Square</string>
+    <string name="wave_triangle">Triangle</string>
+    <string name="wave_saw">Sawtooth</string>
+
+    <string name="level">Level</string>
+    <string name="warn_loud">High level. Protect your ears and speakers.</string>
+    <string name="warn_headphones">Headphones connected. Start quietly.</string>
+
+    <string name="cancel">Cancel</string>
+    <string name="set">Set</string>
+    <string name="input_range">%1$s to %2$s</string>
+    <string name="input_hint">e.g. 440 Hz or 1.5 kHz</string>
+    <string name="unit">Unit</string>
+
+    <string name="group_output">Output</string>
+    <string name="output">Channels</string>
+    <string name="output_both">Both</string>
+    <string name="output_left">Left</string>
+    <string name="output_right">Right</string>
+    <string name="output_invert">L / −R</string>
+    <string name="group_display">Display</string>
+    <string name="keep_on">Keep screen on</string>
+    <string name="keep_on_sub">While a tone plays</string>
+
+    <string name="notify_channel">Tone</string>
+    <string name="notify_sweep">%1$s → %2$s · %3$d s</string>
+    <string name="notify_text">%1$s · %2$d dB</string>
+</resources>

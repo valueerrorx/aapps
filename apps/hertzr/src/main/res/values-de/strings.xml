@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tagline">Ein sauberer Tongenerator von 1 Hz bis 22 kHz. Sinus, Rechteck, Dreieck, Sägezahn und Log-Sweeps für Lautsprecher, Räume und den Unterricht.</string>
+    <string name="note_hearing">Leise beginnen. Laute Töne, besonders über Kopfhörer, können das Gehör schädigen; tiefe Rechtecktöne können Lautsprecher beschädigen.</string>
+    <string name="note_background">Spielt bei ausgeschaltetem Bildschirm weiter. In der Benachrichtigung lässt es sich stoppen.</string>
+
+    <string name="start">Spielen</string>
+    <string name="start_sweep">Sweep</string>
+    <string name="stop">Stopp</string>
+    <string name="frequency">Frequenz</string>
+    <string name="enter_frequency">Frequenz eingeben</string>
+    <string name="decimal_sep">,</string>
+    <string-array name="note_names">
+        <item>C</item>
+        <item>C♯</item>
+        <item>D</item>
+        <item>D♯</item>
+        <item>E</item>
+        <item>F</item>
+        <item>F♯</item>
+        <item>G</item>
+        <item>G♯</item>
+        <item>A</item>
+        <item>B</item>
+        <item>H</item>
+    </string-array>
+
+    <string name="mode_tone">Ton</string>
+    <string name="mode_sweep">Sweep</string>
+    <string name="octave_down">Eine Oktave tiefer</string>
+    <string name="octave_up">Eine Oktave höher</string>
+    <string name="lower">Tiefer</string>
+    <string name="higher">Höher</string>
+    <string name="semitone_up">Halbton höher</string>
+    <string name="semitone_down">Halbton tiefer</string>
+    <string name="sweep_from">Von</string>
+    <string name="sweep_to">Bis</string>
+    <string name="sweep_time">Dauer</string>
+    <string name="sweep_from_title">Sweep-Start</string>
+    <string name="sweep_to_title">Sweep-Ende</string>
+    <string name="sweep_time_desc">Sweep-Dauer</string>
+    <string name="seconds">%1$d s</string>
+
+    <string name="wave_sine">Sinus</string>
+    <string name="wave_square">Rechteck</string>
+    <string name="wave_triangle">Dreieck</string>
+    <string name="wave_saw">Sägezahn</string>
+
+    <string name="level">Pegel</string>
+    <string name="warn_loud">Hoher Pegel. Gehör und Lautsprecher schonen.</string>
+    <string name="warn_headphones">Kopfhörer verbunden. Leise beginnen.</string>
+
+    <string name="cancel">Abbrechen</string>
+    <string name="set">Übernehmen</string>
+    <string name="input_range">%1$s bis %2$s</string>
+    <string name="input_hint">z. B. 440 Hz oder 1,5 kHz</string>
+    <string name="unit">Einheit</string>
+
+    <string name="group_output">Ausgang</string>
+    <string name="output">Kanäle</string>
+    <string name="output_both">Beide</string>
+    <string name="output_left">Links</string>
+    <string name="output_right">Rechts</string>
+    <string name="output_invert">L / −R</string>
+    <string name="group_display">Anzeige</string>
+    <string name="keep_on">Bildschirm an lassen</string>
+    <string name="keep_on_sub">Solange ein Ton spielt</string>
+
+    <string name="notify_channel">Ton</string>
+    <string name="notify_sweep">%1$s → %2$s · %3$d s</string>
+    <string name="notify_text">%1$s · %2$d dB</string>
+</resources>
