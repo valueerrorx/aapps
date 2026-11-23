@@ -157,7 +157,7 @@ fun TunrApp(micFactory: (Context) -> Mic = ::AudioRecordMic) {
             Screen.INSTRUMENT -> {
                 BackHandler { screen = Screen.TUNER }
                 InstrumentScreen(settings.instrument, settings.notation, onSelect = {
-                    haptics.tick()
+                    haptics.press()
                     change(settings.copy(instrument = it))
                     screen = Screen.TUNER
                 }, onBack = { screen = Screen.TUNER })

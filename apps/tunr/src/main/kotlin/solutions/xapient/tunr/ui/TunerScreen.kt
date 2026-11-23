@@ -273,7 +273,7 @@ private fun StringRow(
                         .background(fill, CircleShape)
                         .border(if (isLocked) 2.dp else 1.dp, edge, CircleShape)
                         .clickable(interactionSource = null, indication = null, role = Role.Button) {
-                            haptics?.tick()
+                            haptics?.press()
                             onLock(if (isLocked) -1 else i)
                         }
                         .semantics {

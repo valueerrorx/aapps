@@ -9,7 +9,7 @@ Chromatisches Stimmgerät: App öffnen, Ton spielen, Note und Abweichung sofort 
 - Oktavsicherheit: Liegt bei 2τ bzw. 3τ ein deutlich tieferes Minimum (< 20 % des gewählten), gilt die längere Periode (schwacher Grundton, schwache ungerade Obertöne).
 - Stille: Pegel-Tor mit Hysterese (auf ab −50 dBFS, zu unter −56 dBFS; bei `UNPROCESSED` ohne Vorverstärkung 10 dB tiefer, −60/−66 dBFS – konservative Annahme, **am Gerät prüfen**), gemessen über dasselbe jüngste Fenster, das YIN auswertet; ohne Ton über 150 ms gilt „kein Ton“, die letzte Note bleibt gedimmt stehen.
 - Glättung in Cent: Median der letzten 5 Werte, dann exponentiell (α 0,4). Ausreißer (> 60 Cent Sprung) zählen erst, wenn der nächste Wert sie bestätigt; dann rastet die Anzeige sofort auf den neuen Ton ein (kein Nachziehen). Ebenso gilt der erste Wert nach Stille erst mit einem passenden zweiten (kein falsches Einrasten durch Anschlag oder Geräusch).
-- Anzeige: Notenname groß mit Vorzeichen und Oktave (wissenschaftlich, C4 = eingestrichenes c), Abweichung ±50 Cent auf einer Bogenskala mit Federzeiger, Frequenz in Hz (0,1), Cent als Zahl. Zone „gestimmt“ ±5 Cent (raus erst über 7 Cent): Zone leuchtet grün, einmaliger Glanz, Haptik `confirm`.
+- Anzeige: Notenname groß mit Vorzeichen und Oktave (wissenschaftlich, C4 = eingestrichenes c), Abweichung ±50 Cent auf einer Bogenskala mit Federzeiger, Frequenz in Hz (0,1), Cent als Zahl. Zone „gestimmt“ ±5 Cent (raus erst über 7 Cent): Zone leuchtet grün, einmaliger Glanz, Vibration `confirm` (Ereignis über den Vibrator, Usage Alarm). Saite und Instrument wählen: Touch-Feedback `press`.
 - Strobe-Ring wie bei Hardware-Stimmern: dreht mit der Abweichung (zu hoch im Uhrzeigersinn), steht bei 0 Cent still. Tempo nahe 0 linear (6°/s je Cent), darüber gestaucht auf höchstens 120°/s, damit je Bild (60 Hz) unter 0,4 Strichabstand: kein scheinbares Rückwärtsdrehen. Farbe stufenlos grün (±5) → bernstein → koralle (≥ 35 Cent).
 - Kammerton A4 415–466 Hz in 1-Hz-Schritten (Standard 440), gespeichert.
 - Schreibweise: C♯ (Kreuze), D♭ (Bes), deutsch (H, B = B♭). Standard nach Sprache: Deutsch → deutsch, sonst Kreuze.
@@ -25,7 +25,7 @@ Chromatisches Stimmgerät: App öffnen, Ton spielen, Note und Abweichung sofort 
 |---|---|
 | `RECORD_AUDIO` | Das Stimmgerät hört den Ton des Instruments. Nur im Vordergrund, nichts wird gespeichert oder übertragen. |
 
-Kein INTERNET, kein VIBRATE (Haptik über die View), kein Dienst.
+Dazu VIBRATE aus `core/ui` (normal, ohne Rückfrage) für die Gestimmt-Vibration. Kein INTERNET, kein Dienst.
 
 ## Nicht
 - Kein Referenzton, keine eigenen Stimmungen, kein Verlauf/Aufnahme, keine Transposition, kein Diagnose-WAV (später).
@@ -53,4 +53,4 @@ Varianten (Standard Pixel 7, en): `_de`, `_land`, `_font200`, `_land_font200` f�
 ## Abnahmekriterien
 - Domain ohne Android-Imports. Unit-Tests mit synthetischen Signalen bei 48 und 44,1 kHz: Sinus E1…C8 (< 1 Cent), Sägezahn, schwacher Grundton (Oktave stimmt), Rauschen/Stille (kein Ton), Sinus mit Rauschen, ±Cent-Verstimmung; FFT gegen DFT; Noten/Schreibweise/Kammerton; Saitenwahl; Tracker (Median, Ausreißer, Einrasten, Stille, Hysterese); Federn (schlafen ein, Strobe steht bei 0); Mikrofon-Zustand; Speicher; Kontrast (WCAG AA gemessen, inaktive Elemente ≥ 3:1).
 - Gesten (Robolectric): Saite festhalten/lösen, Instrument wählen, Kammerton −/+, Mikrofon-Knöpfe. Im Leerlauf keine Frames.
-- `:apps:tunr:check`, `verifyRoborazziDebug`, `assembleRelease` grün; nur `RECORD_AUDIO`; Release-APK < 4 MB.
+- `:apps:tunr:check`, `verifyRoborazziDebug`, `assembleRelease` grün; nur `RECORD_AUDIO` und VIBRATE; Release-APK < 4 MB.
