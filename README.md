@@ -19,6 +19,7 @@ Kleine Android-Werkzeuge, jedes mit genau einer Aufgabe: schön, schnell, offlin
 - **hudr** – GPS-Tacho mit riesiger Anzeige und HUD-Modus, ganz ohne Internet.
 - **moovr** – Clumsy Cow: Geschicklichkeitsspiel mit einer tollpatschigen Kuh auf Eisschollen.
 - **glidr** – Cool Cows on Ice: Physikrätsel mit 48 Leveln und schlitternden Kühen.
+- **thinkr** – Kurze Denkspiele für zwischendurch, je etwa eine Minute, mit Tagestraining (im Bau).
 
 Jede App liegt unter `apps/<name>/` mit `SPEC.md`. Übersicht mit Bildern: [docs/overview/index.html](docs/overview/index.html), Plan: [docs/PLAN.md](docs/PLAN.md).
 
