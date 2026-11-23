@@ -6,6 +6,7 @@
     <string name="note_switches">Switches: lights roll out of the portal one after another. Tap a junction to flip it, so every light reaches the gate with its colour and shape. A round lasts 90 seconds, and the better you route, the closer the lights follow each other. 90% or more on target moves you up a level, below 70% down. Higher levels have more gates.</string>
     <string name="note_stars">Constellation: a few stars light up in the night sky and go dark again. Tap where they were. Two wrong taps end the pass. A perfect pass draws the constellation and adds a star, one mistake keeps the count, two take one away.</string>
     <string name="note_ink">Ink: does the meaning of the word on the left match the ink colour of the word on the right? Only the colour on the right counts, not what it says. Ink lives on colour and is only partly playable with strong colour blindness. Colour-blind mode keeps it to four colours that stay apart with red-green weakness.</string>
+    <string name="note_swarm">Swarm: a swarm of comets shows up somewhere on the screen. Swipe the way the middle one with the ring points, whatever the others do. From level 10 the swarm also flies: if the middle one is hollow, swipe the way the swarm flies instead.</string>
     <string name="note_daily">Every day thinkr picks up to three games for you. A game counts as soon as you have played a round of it today. One missed day per week does not break your streak.</string>
     <string name="note_relaxed">Relaxed gives you half again as much time, with slower cards and lights, and keeps its own levels and best scores.</string>
     <string name="note_access">The games run against the clock and are hardly playable with a screen reader.</string>
@@ -15,6 +16,7 @@
     <string name="game_switches">Switches</string>
     <string name="game_stars">Constellation</string>
     <string name="game_ink">Ink</string>
+    <string name="game_swarm">Swarm</string>
 
     <string name="date_pattern">EEEE, MMMM d</string>
     <string name="games">Games</string>
@@ -73,6 +75,13 @@
     <string name="ink_red">Red</string>
     <string name="ink_green">Green</string>
 
+    <string name="swarm_prompt">Swipe the way the middle one points</string>
+    <string name="swarm_prompt_hollow">Filled: swipe the way it points. Hollow: swipe the way the swarm flies.</string>
+    <string name="swarm_board">Swarm of comets, swipe to answer</string>
+    <string name="dir_up">Up</string>
+    <string name="dir_right">Right</string>
+    <string name="dir_down">Down</string>
+    <string name="dir_left">Left</string>
 
     <string name="accuracy">Hits</string>
     <string name="tally_desc">%1$d of %2$d on target</string>

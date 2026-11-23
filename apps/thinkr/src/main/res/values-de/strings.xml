@@ -5,6 +5,7 @@
     <string name="note_switches">Weichen: Lichtperlen rollen nacheinander aus dem Portal. Tippe auf eine Weiche, um sie umzulegen, damit jede Perle das Tor mit ihrer Farbe und Form erreicht. Eine Runde dauert 90 Sekunden, und je besser du lenkst, desto dichter folgen die Perlen. Ab 90 % im Ziel steigt die Stufe, unter 70 % sinkt sie. Höhere Stufen haben mehr Tore.</string>
     <string name="note_stars">Sternbild: Ein paar Sterne leuchten am Nachthimmel auf und verlöschen wieder. Tippe an, wo sie waren. Zwei falsche Tipps beenden den Durchgang. Ein perfekter Durchgang zeichnet das Sternbild und bringt einen Stern mehr, ein Fehler hält die Zahl, zwei nehmen einen weg.</string>
     <string name="note_ink">Tinte: Passt die Bedeutung des Worts links zur Schriftfarbe des Worts rechts? Rechts zählt nur die Farbe, nicht was dasteht. Tinte lebt von Farbe und ist bei starker Farbsehschwäche nur eingeschränkt spielbar. Der Farbenblind-Modus bleibt bei vier Farben, die auch bei Rot-Grün-Schwäche unterscheidbar sind.</string>
+    <string name="note_swarm">Schwarm: Irgendwo am Schirm taucht ein Schwarm Kometen auf. Wische dorthin, wohin der mittlere mit dem Ring zeigt, egal was die anderen tun. Ab Stufe 10 fliegt der Schwarm auch: Ist der mittlere hohl, wische stattdessen dorthin, wohin der Schwarm fliegt.</string>
     <string name="note_daily">Jeden Tag stellt thinkr bis zu drei Spiele zusammen. Ein Spiel zählt, sobald du heute eine Runde davon gespielt hast. Ein verpasster Tag pro Woche unterbricht die Serie nicht.</string>
     <string name="note_relaxed">Gemächlich gibt dir die Hälfte mehr Zeit, mit langsameren Karten und Perlen, und führt eigene Stufen und Bestwerte.</string>
     <string name="note_access">Die Spiele laufen auf Zeit und sind mit einem Screenreader kaum spielbar.</string>
@@ -13,6 +14,7 @@
     <string name="game_switches">Weichen</string>
     <string name="game_stars">Sternbild</string>
     <string name="game_ink">Tinte</string>
+    <string name="game_swarm">Schwarm</string>
 
     <string name="date_pattern">EEEE, d. MMMM</string>
     <string name="games">Spiele</string>
@@ -71,6 +73,13 @@
     <string name="ink_red">Rot</string>
     <string name="ink_green">Grün</string>
 
+    <string name="swarm_prompt">Wisch dorthin, wohin der mittlere zeigt</string>
+    <string name="swarm_prompt_hollow">Gefüllt: wohin er zeigt. Hohl: wohin der Schwarm fliegt.</string>
+    <string name="swarm_board">Kometenschwarm, zum Antworten wischen</string>
+    <string name="dir_up">Nach oben</string>
+    <string name="dir_right">Nach rechts</string>
+    <string name="dir_down">Nach unten</string>
+    <string name="dir_left">Nach links</string>
 
     <string name="accuracy">Treffer</string>
     <string name="tally_desc">%1$d von %2$d im Ziel</string>

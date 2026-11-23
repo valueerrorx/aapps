@@ -13,6 +13,9 @@ import solutions.xapient.thinkr.domain.ink.InkGame
 import solutions.xapient.thinkr.domain.ink.InkState
 import solutions.xapient.thinkr.domain.stars.StarsGame
 import solutions.xapient.thinkr.domain.stars.StarsState
+import solutions.xapient.thinkr.domain.swarm.Dir
+import solutions.xapient.thinkr.domain.swarm.SwarmGame
+import solutions.xapient.thinkr.domain.swarm.SwarmState
 import solutions.xapient.thinkr.domain.switches.SwitchesGame
 import solutions.xapient.thinkr.domain.switches.SwitchesState
 import solutions.xapient.thinkr.ui.GameHost
@@ -21,6 +24,7 @@ import solutions.xapient.thinkr.ui.ThinkrIcons
 import solutions.xapient.thinkr.ui.echo.EchoBoard
 import solutions.xapient.thinkr.ui.ink.InkBoard
 import solutions.xapient.thinkr.ui.stars.StarsBoard
+import solutions.xapient.thinkr.ui.swarm.SwarmBoard
 import solutions.xapient.thinkr.ui.switches.SwitchesBoard
 
 // Brett eines Spiels: zeichnet den Stand, live = Spielzeit laeuft, count = Einzaehlen (0 = aus)
@@ -80,8 +84,12 @@ object Games {
         InkBoard(s, live, count, input)
     }
 
+    val Swarm = GameDef<SwarmState, Dir>(GameId.SWARM, R.string.game_swarm, ThinkrIcons.Swarm, SwarmGame) { s, live, count, input ->
+        SwarmBoard(s, live, count, input)
+    }
+
     // Reihenfolge = Anzeige; neue Spiele hier eintragen
-    val all: List<GameDef<*, *>> = listOf(Echo, Switches, Stars, Ink)
+    val all: List<GameDef<*, *>> = listOf(Echo, Switches, Stars, Ink, Swarm)
 
     val ids: List<GameId> get() = all.map { it.id }
 
