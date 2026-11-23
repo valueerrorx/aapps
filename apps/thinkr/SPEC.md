@@ -1,4 +1,4 @@
-# thinkr – SPEC (Phase 1: Gerüst + Echo, Phase 2: Weichen)
+# thinkr – SPEC (Phase 1: Gerüst + Echo, Phase 2: Weichen, Phase 3: Sternbild, Tinte, Schwarm = Release 1)
 
 ## Aufgabe
 Kurze Denkspiele für zwischendurch, je etwa eine Minute. Offline, ohne Werbung, ohne Abo, ohne Konto. Jeden Tag stellt thinkr bis zu drei Spiele als Tagestraining zusammen. Unterhaltung, keine Gesundheitsversprechen.
@@ -51,12 +51,45 @@ Erster Release: 5 Spiele (Echo, Weichen, Sternbild, Tinte, Schwarm), die übrige
 - Haptik: Weiche `press()`, richtige Ankunft und Kettenaufstieg `tick()` (entprellt), Rundenende `confirm()`. Fehler nur optisch.
 - Barrierefreiheit: jede Farbe hat ihre Form (Kreis, Dreieck, Quadrat, Raute, Stern, Sechseck, Kreuz, Halbmond, Herz, Ring), Palette Okabe-Ito mit Helligkeitsstufen.
 
+## Gemeinsam für Sternbild, Tinte, Schwarm
+- Alle Bewegungen (Federn, Glühen, Staub, Abgänge) hängen nur an der Spielzeit `round.now`: in Pause und Einzählen steht alles still. Federn als reine Zeitfunktion (`Spring`).
+- Frist-Spiele (Tinte, Schwarm) nutzen dieselben Frist-Bänder wie Echo (`Bands`): Treppe 3 richtig −8 %, Fehler +12 %, Stufe = Band der aktuellen Frist, höchstens eine Spielart hinauf/hinunter je Runde, Aufwärmen −2 aber nicht unter den Beginn der Spielart.
+- Haptik: Tipp/Wisch `press()` (Rahmen), Kettenaufstieg `tick()`, Spiel-Ereignis (`Play.cheers`, z. B. perfekter Durchgang) `tick()`, Rundenende `confirm()`. Fehler nur optisch.
+- Gemeinsame Bausteine in `ui/GameParts.kt`: Einzähl-Overlay, Ja/Nein-Taste, Fristlinie.
+
+## Sternbild
+- Raster aus dunklen Punkten (4×4 bis 7×7) auf Nachthimmel mit langsam ziehendem Staub. N Sterne (Stufe + 2) leuchten nach 0,5 s auf, stehen 1,2 s (−20 ms je Stufe, min. 0,95 s, Gemächlich ×1,5) und verlöschen. Dann aus dem Gedächtnis antippen (löst beim Aufsetzen aus).
+- Treffer: Stern mit Ring. Fehler: Bernstein-X. Zwei Fehler beenden den Durchgang, verpasste Sterne erscheinen gestrichelt. Perfekt: Sternbild-Linien (kürzester Baum) wachsen nacheinander mit Feder, `cheers` +1.
+- Treppe je Durchgang: perfekt +1, ein Fehler gleich, zwei −1 (Stufe 1–14). Raster: ≤4 Sterne 4×4, ≤7 5×5, ≤11 6×6, sonst 7×7 (höchstens ein Drittel leuchtet).
+- Punkte: 30 je Stern × Multiplikator, perfekt +10 je Stern × Multiplikator. Treffer % = richtige Tipps / alle Tipps.
+- Oben: „Merken" bzw. „gefunden / gesamt", rechts zwei Leben als Rauten.
+- Raster-Drehung ab Stufe 12: bewusst noch nicht (Plan: erst nach Review).
+
+## Tinte
+- Zwei Glas-Karten: links „Bedeutung" (Wort in neutraler Schrift), rechts „Schriftfarbe" (Wort in Farbe). Frage: passt die Bedeutung links zur Schriftfarbe rechts? Ja/Nein-Tasten wie Echo.
+- Farben: Blau, Orange, Gelb, Lila (sicher), ab Stufe 6 dazu Rot und Grün. Ab Stufe 10 ist auch das linke Wort farbig (Ablenkung, 70 % in fremder Farbe). Anteil widersprüchlicher Karten rechts 30 % + 5 % je Stufe bis 75 %; bei „Nein"-Karten oft der Köder „Wort rechts = Bedeutung links".
+- Farbenblind-Modus (Einstellung, Standard aus): nur die vier sicheren Farben. Test: paarweise ΔE ≥ 22 unter Protanopie und Deuteranopie (Machado 2009), ohne Sehschwäche alle sechs ≥ 25.
+- Kartenfolge: Anteil „passt" 40–60 %, nie mehr als 4 gleiche Antworten in Folge, nie zweimal dieselbe Karte.
+- Frist-Bänder: 1–5 ab 2600 ms, 6–9 ab 2900 ms, 10–16 ab 3100 ms, je Stufe ×0,9. Nach jeder Antwort 140 ms Wechsel.
+- Punkte: 50 × Multiplikator.
+- Optik: alte Karte gleitet nach oben (richtig) bzw. wackelt bernstein nach unten (falsch), neue klappt mit Feder herein. Wörter per Auto-Size einzeilig, auch bei 200 % Schrift. Farbwörter als Ressourcen (DE/EN, Test).
+- Info sagt ehrlich: bei starker Farbsehschwäche nur eingeschränkt spielbar.
+
+## Schwarm
+- Ein Schwarm Kometen (Pfeilkopf mit Lichtschweif) in wechselnder Formation (Linie, Kreuz, V, Raute) an wechselnder Stelle. Der Mittlere ist größer und trägt einen Ring. Wisch in seine Zeigerichtung (löst aus, sobald der Finger 28 dp gezogen hat).
+- Ab Stufe 10 fliegt der Schwarm langsam (0,55 Abstände/s). Ist der Mittlere hohl (40 %), zählt die Flugrichtung statt der Zeigerichtung; meist weichen beide ab.
+- Größe 5 (1–3), 7 (4–7), 9 (ab 8). Anteil gemischter Schwärme 30 % + 5 % je Stufe bis 70 %. Zittern wächst mit der Stufe.
+- Antworten gleichverteilt, höchstens 3 gleiche in Folge, nie zweimal dieselbe Formation oder fast dieselbe Stelle.
+- Frist-Bänder: 1–9 ab 2600 ms, 10–16 ab 3200 ms, je Stufe ×0,9. Nach jeder Antwort 220 ms Wechsel.
+- Punkte: 40 × Multiplikator.
+- Optik: richtig zieht der Schwarm in Wischrichtung mit langen Schweifen ab, falsch wackelt er bernstein und verblasst. Keine Vögel, nur abstrakte Kometen. TalkBack-Aktionen für die vier Richtungen.
+
 ## Screens
 1. **Heute**: Datum, oben Spiele und Zahnrad. Hero: Tagesbild aus bis zu 3 Lichtkugeln (Spielsymbol, Name, Stufe), verbunden durch Linien, erledigt = Akzent mit Haken. Darunter Serie und Woche Mo–So. Pille „Start" / „Weiter" / „Fertig für heute".
 2. **Spiele**: alle Spiele mit Stufe und Bestwert, Tipp startet.
 3. **Spiel**: Zeitleiste, Punkte, Multiplikator mit 4 Punkten, Pause.
 4. **Ergebnis**: Punkte groß, Stufe mit Pfeil, Treffer in %, Bestwert, „Neuer Bestwert" mit einmaligem Glanz, „Tagestraining erledigt". Pille „Weiter" (nächstes Tagesspiel) bzw. „Nochmal", Text-Knopf „Fertig".
-5. **Einstellungen**: Gemächlich, Haptik, Töne, Stufe zurücksetzen je Spiel (zweimal tippen), Info.
+5. **Einstellungen**: Gemächlich, Farbenblind-Modus, Haptik, Töne, Stufe zurücksetzen je Spiel (zweimal tippen), Info.
 6. **Info**: wie alle aapps, plus Spielregeln, Tagestraining, Hinweis zu TalkBack, Gesundheits-Satz.
 
 Verlauf-Screen kommt in einer späteren Phase.
@@ -68,7 +101,8 @@ Verlauf-Screen kommt in einer späteren Phase.
 ## Screenshot-Zustände (`apps/thinkr/screenshots/`)
 | Name | Inhalt |
 |---|---|
-| `home` | Tagesbild, nichts erledigt, Serie 4 |
+| `home` | Tagesbild mit den drei echten Tagesspielen, nichts erledigt, Serie 4 |
+| `home_partly` | eines erledigt (`home_partly_land`: zwei) |
 | `home_done` | alles erledigt, Pille „Fertig für heute" |
 | `games` | Spieleliste |
 | `echo_countdown` | Einzählen mit Frage |
@@ -91,9 +125,13 @@ Varianten: `_de`, `_land`, `_font200` für home, games, echo_play, result_best; 
 
 Weichen-Varianten: `switches_play_de`, `_land`, `_font200`, `switches_play_360dp` (8 Tore), `switches_eight_land`, `switches_ten_land`, `switches_countdown_de_font200`, `result_switches_de`.
 
-`preview_home3`, `preview_home3_land`: Layout-Vorschau des Tagesbilds mit drei Kugeln (Echo, Weichen, Platzhalter), bis das dritte Spiel da ist.
+Sternbild: `stars_show` (Sterne leuchten), `stars_recall` (2 gefunden, 1 Fehler), `stars_perfect` (Sternbild-Linien), `stars_failed` (zwei Fehler, verpasste gestrichelt), `stars_big` (7×7), `stars_countdown`, `stars_paused`; Varianten `stars_show_land`, `stars_show_360dp`, `stars_recall_de`, `stars_recall_font200`, `stars_countdown_de_font200`.
+
+Tinte: `ink_play` (4 Farben), `ink_wrong` (falsch, alte Karte wackelt hinaus), `ink_tinted` (Stufe 12, linkes Wort farbig), `ink_colorblind` (Stufe 12 im Farbenblind-Modus), `ink_countdown`, `ink_paused`; Varianten `ink_play_de`, `_land`, `_font200`, `_360dp`, `ink_tinted_de`, `ink_countdown_de_font200`.
+
+Schwarm: `swarm_play` (7 Kometen, gemischt), `swarm_hollow` (Stufe 12, hohl, fliegt), `swarm_leaving` (richtig gewischt, zieht ab), `swarm_countdown`, `swarm_paused`; Varianten `swarm_play_de`, `_land`, `_360dp` (9 Kometen), `swarm_hollow_land`, `swarm_countdown_hollow_de_font200`.
 
 ## Abnahme
-- Domain ohne Android-Imports; Unit-Tests für Kette, Treppe, Runde, Echo (Kartenfolge, Frist, Ablauf, Wechsel-Sperre, Punkte, Stufen), Tagestraining, Serie, Fortschritt und Codec (inkl. kaputter Daten).
+- Domain ohne Android-Imports; Unit-Tests für Kette, Treppe, Frist-Bänder, Runde, Echo (Kartenfolge, Frist, Ablauf, Wechsel-Sperre, Punkte, Stufen), Sternbild (Muster, Linien-Baum, Phasen, Treppe, Punkte), Tinte (Kartenfolge, Anteile, Farbenblind-Palette, Frist), Schwarm (Formationen, Verteilung, Hohl-Regel, Frist), Tagestraining, Serie, Fortschritt und Codec (inkl. kaputter Daten). Farbwörter DE/EN per Robolectric.
 - Pause bei `ON_STOP` (Robolectric-Test).
 - `:apps:thinkr:check`, `assembleDebug`, `verifyRoborazziDebug` grün. Manifest nur mit VIBRATE.
