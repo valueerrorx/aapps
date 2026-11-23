@@ -1,0 +1,15 @@
+tunr listens and shows you right away which note you are playing and how far off it is. Note, deviation in cents and frequency sit large in the middle, together with a needle and a strobe ring like on hardware tuners: it turns while the note is sharp or flat and stands still when it is in tune.
+
+Features
+• Chromatic from E1 to C8
+• Instruments: guitar (standard and drop D), 4-string bass, ukulele, violin
+• Reference tone for each string to tune by ear
+• Concert pitch adjustable from 415 to 466 Hz (default 440 Hz)
+• Note names with sharps, flats or German style (H and B)
+• Vibration when the note is in tune
+• Portrait and landscape, English and German
+
+Microphone: tunr needs the microphone permission to detect the pitch. The signal is analysed live only. It is not recorded, not stored and not sent anywhere. The microphone is only active while the tuning screen is in the foreground.
+
+No ads, no tracking, no account. tunr has no internet permission, everything stays on your device.
+Free software under the GNU GPLv3. Source code: https://github.com/valueerrorx/aapps

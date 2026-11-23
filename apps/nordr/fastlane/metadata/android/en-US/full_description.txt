@@ -1,0 +1,18 @@
+nordr calmly shows where your phone is pointing. The direction comes from the device's orientation sensors and is smoothed so the reading does not jitter when you hold still. It works lying flat and held upright, without a jump in between.
+
+Features
+• Large heading in degrees and compass direction (16 points)
+• Compass rose with inertia and a slight overshoot
+• Set a course: nordr shows the deviation ("12° right") and lets you know when you are back on course
+• Magnetic or true north. The declination comes from a region you choose yourself, no location access needed
+• Calibration hint (figure-eight motion) when accuracy is low, and a notice when there is magnetic interference
+• Optional vibration when passing N, E, S and W
+• Screen stays on while the compass is open
+• Portrait and landscape, English and German
+
+nordr needs a magnetic field sensor in your phone. Metal, magnets and electronics nearby can distort the reading. nordr is not meant for navigation in critical situations.
+
+nordr needs no permissions other than vibration and does not access your location.
+
+No ads, no tracking, no account. nordr has no internet permission, everything stays on your device.
+Free software under the GNU GPLv3. Source code: https://github.com/valueerrorx/aapps

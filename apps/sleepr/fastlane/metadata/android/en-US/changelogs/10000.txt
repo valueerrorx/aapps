@@ -1,0 +1,1 @@
+First release on Google Play: five noise colours mixed live, wave mode, six mixes, spectrum display, timer with gentle fade-out and playback with the screen locked.

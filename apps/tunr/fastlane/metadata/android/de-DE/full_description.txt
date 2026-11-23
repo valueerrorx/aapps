@@ -1,0 +1,15 @@
+tunr hört zu und zeigt dir sofort, welchen Ton du spielst und wie weit er danebenliegt. Note, Abweichung in Cent und Frequenz stehen groß in der Mitte, dazu ein Zeiger und ein Strobe-Ring wie bei Stimmgeräten aus Hardware: Er dreht sich, solange der Ton zu hoch oder zu tief ist, und steht still, wenn er stimmt.
+
+Funktionen
+• Chromatisch von E1 bis C8
+• Instrumente: Gitarre (Standard und Drop D), Bass mit 4 Saiten, Ukulele, Violine
+• Referenzton je Saite zum Stimmen nach Gehör
+• Kammerton von 415 bis 466 Hz einstellbar (Standard 440 Hz)
+• Schreibweise mit Kreuzen, mit Bs oder deutsch (H und B)
+• Vibration, wenn der Ton stimmt
+• Hoch- und Querformat, Deutsch und Englisch
+
+Mikrofon: tunr braucht die Mikrofon-Berechtigung, um den Ton zu erkennen. Das Signal wird nur live ausgewertet, nicht aufgenommen, nicht gespeichert und nicht gesendet. Das Mikrofon ist nur aktiv, solange der Stimm-Bildschirm im Vordergrund ist.
+
+Ohne Werbung, ohne Tracking, ohne Konto. tunr hat keine Internet-Berechtigung, alles bleibt auf deinem Gerät.
+Freie Software unter der GNU GPLv3. Quellcode: https://github.com/valueerrorx/aapps

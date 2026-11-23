@@ -1,0 +1,11 @@
+Clumsy Cow ist ein Geschicklichkeitsspiel für zwischendurch. Eine tollpatschige Kuh hüpft über treibende Eisschollen, und du hilfst ihr, so weit wie möglich zu kommen.
+
+• Springen und schieben, Stacheln ausweichen
+• Kleeblätter sammeln für zusätzliche Leben, Sterne für Kuh-Superkräfte
+• Dein Rekord in Metern wird gespeichert
+• Mit Musik und Soundeffekten, im Querformat
+• Die Spieltexte sind auf Englisch
+
+Ohne Werbung, ohne In-App-Käufe, ohne Tracking. Das Spiel hat keine Internet-Berechtigung und läuft komplett offline. Dein Rekord bleibt auf deinem Gerät.
+
+Freie Software unter der GNU GPLv3. Quellcode: https://github.com/valueerrorx/aapps

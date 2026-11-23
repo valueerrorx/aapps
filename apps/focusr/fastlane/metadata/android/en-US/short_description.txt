@@ -1,0 +1,1 @@
+A timer that shows the time left as a coloured disc that slowly shrinks.

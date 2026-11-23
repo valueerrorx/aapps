@@ -1,0 +1,1 @@
+First release on Google Play: sleep timer for any player app, gentle fade-out of the media volume, pause and volume restore, extend by shaking and a Quick Settings tile.

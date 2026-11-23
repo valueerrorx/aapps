@@ -1,0 +1,18 @@
+magnr uses your phone's magnetic field sensor to find screws, nails, steel beams and magnets nearby. A fan of eight arcs shows how far the field deviates from the baseline, with the deviation in microtesla below.
+
+What magnr finds and what it does not: it only detects ferromagnetic metals (iron, steel, nickel) and magnets. It does not detect gold, silver, copper or aluminium. magnr is not a wire or pipe detector: cables and pipes may go unnoticed. The sensor usually sits near the top of the phone, so move the top edge slowly across the surface.
+
+Features
+• Deviation from the baseline in µT, plus field strength, baseline and peak
+• Three sensitivity levels
+• Zero at the push of a button and slow drift compensation at rest (can be turned off)
+• Compensates a residual sensor offset when tilting, if the phone has an orientation sensor
+• Vibration as the level rises, optional beeps
+• History of the last 20 seconds
+• Calibration hint and a notice when the sensor is saturated
+• Portrait and landscape, English and German
+
+magnr needs a magnetic field sensor and no permissions other than vibration.
+
+No ads, no tracking, no account. magnr has no internet permission, everything stays on your device.
+Free software under the GNU GPLv3. Source code: https://github.com/valueerrorx/aapps

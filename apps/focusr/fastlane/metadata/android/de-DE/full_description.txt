@@ -1,0 +1,17 @@
+Bei focusr siehst du die Restzeit auf einen Blick: Eine farbige Scheibe zeigt, wie viel Zeit noch bleibt, und wird beim Ablaufen langsam kleiner. Die Zeit stellst du ein, indem du am Rand der Scheibe ziehst. Gedacht zum Lernen, für Meetings, beim Kochen oder im Unterricht, auch am Beamer im Querformat.
+
+Funktionen
+• Einstellen per Ziehen mit spürbaren Rasten
+• Skala 5, 20, 60 oder 120 Minuten
+• Große Restzeit und Endzeit („Endet um 14:35“)
+• Start, Pause, Weiter und Zurücksetzen
+• Am Ende ein sanfter Glockenton und Vibration, beides einzeln abschaltbar
+• Das Ende kommt pünktlich, auch bei gesperrtem Bildschirm und wenn das Handy länger ruht
+• Laufende Benachrichtigung mit Countdown, solange die App im Hintergrund ist
+• Bildschirm bleibt an, solange der Timer läuft (abschaltbar)
+• Hoch- und Querformat, Deutsch und Englisch, bedienbar mit TalkBack
+
+Berechtigungen: exakter Wecker (damit das Ende pünktlich kommt), Benachrichtigungen und Vibration. Der Timer funktioniert auch ohne Benachrichtigungen, Ton und Vibration kommen trotzdem.
+
+Ohne Werbung, ohne Tracking, ohne Konto. focusr hat keine Internet-Berechtigung, alles bleibt auf deinem Gerät.
+Freie Software unter der GNU GPLv3. Quellcode: https://github.com/valueerrorx/aapps

@@ -1,0 +1,1 @@
+Wasserwaage für Kante und Fläche, die bei 0,0° spürbar einrastet.

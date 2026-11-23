@@ -1,0 +1,1 @@
+GPS-Tacho mit großer Anzeige und HUD-Modus für die Windschutzscheibe.

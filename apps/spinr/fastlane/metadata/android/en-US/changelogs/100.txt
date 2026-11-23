@@ -1,0 +1,1 @@
+First release on Google Play: decision wheel with real spin physics and a fair stopping point, up to 50 entries, several wheels, templates and rounds with remove.

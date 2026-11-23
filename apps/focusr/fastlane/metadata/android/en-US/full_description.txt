@@ -1,0 +1,17 @@
+With focusr you see the time left at a glance: a coloured disc shows how much time remains and slowly shrinks as it runs down. You set the time by dragging the edge of the disc. Made for studying, meetings, cooking or the classroom, including a projector in landscape.
+
+Features
+• Set the time by dragging, with tactile detents
+• Scale of 5, 20, 60 or 120 minutes
+• Large time remaining and end time ("Ends at 2:35 PM")
+• Start, pause, resume and reset
+• A soft chime and vibration at the end, each can be turned off
+• The end arrives on time, even with the screen locked and the phone idle for a long time
+• Ongoing notification with a countdown while the app is in the background
+• Screen stays on while the timer runs (can be turned off)
+• Portrait and landscape, English and German, works with TalkBack
+
+Permissions: exact alarm (so the end arrives on time), notifications and vibration. The timer also works without notifications, sound and vibration still play.
+
+No ads, no tracking, no account. focusr has no internet permission, everything stays on your device.
+Free software under the GNU GPLv3. Source code: https://github.com/valueerrorx/aapps

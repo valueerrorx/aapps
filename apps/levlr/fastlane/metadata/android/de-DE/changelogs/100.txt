@@ -1,0 +1,1 @@
+Erste Version im Play Store: Wasserwaage für Kante und Fläche, Einrasten bei 0,0° mit Vibration, Einheiten Grad, Prozent und mm/m, Halten und Zwei-Punkt-Kalibrierung.

@@ -1,0 +1,18 @@
+What's for dinner, who pays, whose turn is it? spinr is a decision wheel that spins like a real one. Tap the wheel, press "Spin" or flick it: the wheel slows down and stops wherever the pointer lands. The final position is spread evenly around the whole circle, so every slice has the same chance.
+
+Features
+• 2 to 50 entries per wheel, several wheels saved
+• Templates: food, yes/no, who pays?, weekdays, dice, number ranges, compass directions, coin flip, rock/paper/scissors, truth or dare, letters A–Z
+• Every template becomes a normal wheel you can edit
+• Pegs and a pointer flap with a tactile click, optional sound
+• Large result with confetti, announced for TalkBack
+• "Remove": take drawn entries out for this round, for example to draw an order
+• Pastel colours, neighbouring slices never match
+• Portrait and landscape, English and German
+
+spinr is not a gambling app: no stakes, no prizes, no purchases.
+
+spinr needs no permissions other than vibration.
+
+No ads, no tracking, no account. spinr has no internet permission, everything stays on your device.
+Free software under the GNU GPLv3. Source code: https://github.com/valueerrorx/aapps

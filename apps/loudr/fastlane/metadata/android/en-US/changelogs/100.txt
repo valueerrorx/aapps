@@ -1,0 +1,1 @@
+First release on Google Play: sound level in dB(A) with Fast/Slow, min, max and Leq, 60-second history, everyday comparisons and a calibration offset.

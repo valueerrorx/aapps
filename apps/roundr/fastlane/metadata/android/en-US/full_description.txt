@@ -1,0 +1,19 @@
+roundr switches between work and rest for you and counts the rounds. The whole screen glows in the colour of the current phase and drains like a fill level, with the time left in large digits in the middle. You can see how long is left even from a few metres away.
+
+Features
+• Prepare, work, rest, rounds, sets and set rest, all adjustable
+• Templates: Tabata, Tabata with 3 sets, HIIT 40/20, EMOM, boxing 3:00/1:00
+• Save up to 20 of your own workouts by name
+• 3-2-1 beeps before every phase change, separate sounds for work, rest and finish, plus vibration (both can be turned off)
+• Keeps running with the screen locked, controls in the notification
+• Pause, skip to the next phase or go back to the start of the phase
+• Time runs steadily without drifting
+• Screen stays on during a workout (can be turned off)
+• Portrait and landscape, English and German
+
+roundr is a timer. It does not record health or fitness data and gives no training advice.
+
+Permissions: notifications, vibration and a foreground service so the timer keeps running with the screen locked. The timer also works without notifications.
+
+No ads, no tracking, no account. roundr has no internet permission, everything stays on your device.
+Free software under the GNU GPLv3. Source code: https://github.com/valueerrorx/aapps

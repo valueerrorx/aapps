@@ -1,0 +1,1 @@
+First release on Google Play: GPS speedometer with a large display, speed tape, trip values, speed warning and a mirrored HUD mode. Location in the foreground only.

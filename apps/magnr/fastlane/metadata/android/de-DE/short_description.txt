@@ -1,0 +1,1 @@
+Spürt Eisen, Stahl und Magnete über den Magnetfeldsensor auf, Anzeige in µT.

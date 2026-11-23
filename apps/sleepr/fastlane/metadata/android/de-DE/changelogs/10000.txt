@@ -1,0 +1,1 @@
+Erste Version im Play Store: fünf Rauschfarben live gemischt, Wellen-Modus, sechs Mischungen, Spektrumanzeige, Timer mit sanftem Ausblenden und Wiedergabe bei gesperrtem Bildschirm.

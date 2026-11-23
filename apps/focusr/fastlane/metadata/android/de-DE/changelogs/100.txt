@@ -1,0 +1,1 @@
+Erste Version im Play Store: visueller Timer mit schrumpfender Scheibe, Einstellen per Ziehen, vier Skalen, Glockenton und Vibration am Ende, pünktlich auch im Hintergrund.

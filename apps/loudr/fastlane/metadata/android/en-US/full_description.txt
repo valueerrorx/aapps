@@ -1,0 +1,17 @@
+loudr shows you how loud it is right now. Open the app and the measurement starts: the level in dB(A), an everyday comparison (from a whisper to a siren) and a history of the last 60 seconds.
+
+Features
+• A-weighted level, Fast or Slow time weighting
+• Minimum, maximum and average (Leq) over the measurement period
+• History of the last 60 seconds
+• Everyday comparison and four colour zones from quiet to very loud
+• Calibration offset from −20 to +20 dB if you have a reference meter
+• Pause and reset
+• Portrait and landscape, English and German
+
+Phone microphones are not calibrated. loudr gives an estimate and does not replace a sound level meter. loudr makes no claims about health or hearing protection.
+
+Microphone: loudr needs the microphone permission to measure the level. The signal is analysed live only. It is not recorded, not stored and not sent anywhere. loudr only measures while it is in the foreground.
+
+No ads, no tracking, no account. loudr has no internet permission, everything stays on your device.
+Free software under the GNU GPLv3. Source code: https://github.com/valueerrorx/aapps

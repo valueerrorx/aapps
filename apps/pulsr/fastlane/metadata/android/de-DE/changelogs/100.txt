@@ -1,0 +1,1 @@
+Erste Version im Play Store: Metronom mit sample-genauem Klick, 20 bis 300 BPM, Tap-Tempo, Taktarten bis 12, vier Unterteilungen, drei Klänge und Wiedergabe bei gesperrtem Bildschirm.

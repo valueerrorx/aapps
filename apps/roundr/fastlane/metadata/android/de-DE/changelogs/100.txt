@@ -1,0 +1,1 @@
+Erste Version im Play Store: Intervall-Timer mit Phasen, Runden und Sätzen, Vorlagen und eigenen Trainings, 3-2-1-Signalen, Vibration und Lauf bei gesperrtem Bildschirm.

@@ -1,0 +1,9 @@
+Cool Cows on Ice is a physics puzzle for relaxed brain-teasing. The cows slide across the ice with real physics, and ramps, water holes and spike blocks stand in their way. Work out how to beat each level and collect stars.
+
+• 48 levels with real physics
+• Stars for every level, your progress is saved
+• With music and sound effects, in landscape
+
+No ads, no in-app purchases, no tracking. The game has no internet permission and runs completely offline. Your progress stays on your device.
+
+Free software under the GNU GPLv3. Source code: https://github.com/valueerrorx/aapps

@@ -1,0 +1,1 @@
+First release on Google Play: metal detector for iron, steel and magnets with readings in µT, three sensitivity levels, zeroing, drift compensation, vibration and optional sound.

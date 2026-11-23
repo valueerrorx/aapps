@@ -1,0 +1,1 @@
+First release on Google Play: spirit level for edges and flat surfaces, lock-in at 0.0° with vibration, degrees, percent and mm/m, hold and two-point calibration.

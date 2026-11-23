@@ -1,0 +1,1 @@
+Erste Version im Play Store: Glücksrad mit echter Drehphysik und fairer Endstellung, bis zu 50 Einträge, mehrere Räder, Vorlagen und Runden mit Entfernen.

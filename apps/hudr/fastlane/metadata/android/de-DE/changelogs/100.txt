@@ -1,0 +1,1 @@
+Erste Version im Play Store: GPS-Tacho mit großer Anzeige, Geschwindigkeitsband, Fahrtwerten, Warnschwelle und gespiegeltem HUD-Modus. Standort nur im Vordergrund.

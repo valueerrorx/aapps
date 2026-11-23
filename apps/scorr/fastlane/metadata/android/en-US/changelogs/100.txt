@@ -1,0 +1,1 @@
+First release on Google Play: score keeper for 1 to 8 players with big colour tiles, drag and number entry, undo, rounds with history, target and winners.

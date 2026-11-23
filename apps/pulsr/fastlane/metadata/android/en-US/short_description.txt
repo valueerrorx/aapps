@@ -1,0 +1,1 @@
+Metronome with a steady click, tap tempo, time signatures and subdivisions.

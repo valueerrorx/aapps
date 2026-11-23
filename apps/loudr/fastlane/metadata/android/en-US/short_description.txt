@@ -1,0 +1,1 @@
+Shows the sound level in dB(A), with everyday comparisons and a history.

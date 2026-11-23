@@ -1,0 +1,1 @@
+First release on Google Play: calm compass for flat and upright use, hold a course, magnetic or true north by region, calibration and interference hints.

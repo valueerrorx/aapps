@@ -1,0 +1,1 @@
+First release on Google Play: visual timer with a shrinking disc, set by dragging, four scales, chime and vibration at the end, on time even in the background.

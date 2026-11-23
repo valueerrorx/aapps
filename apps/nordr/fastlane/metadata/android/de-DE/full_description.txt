@@ -1,0 +1,18 @@
+nordr zeigt dir ruhig an, wohin dein Handy zeigt. Die Richtung kommt aus den Lagesensoren des Geräts und wird geglättet, damit die Anzeige im Stillstand nicht zittert. Das funktioniert flach liegend und aufrecht gehalten, ohne Sprung dazwischen.
+
+Funktionen
+• Große Gradzahl und Himmelsrichtung (16 Richtungen)
+• Kompassrose mit Trägheit und leichtem Nachschwingen
+• Kurs setzen: nordr zeigt die Abweichung („12° rechts“) und meldet sich, wenn du wieder auf Kurs bist
+• Missweisend (magnetisch) oder rechtweisend (geografisch). Die Missweisung ergibt sich aus einer Region, die du selbst auswählst, ganz ohne Standortzugriff
+• Kalibrierhinweis (Acht-Bewegung) bei geringer Genauigkeit und Hinweis bei magnetischer Störung
+• Optionale Vibration beim Überstreichen von N, O, S und W
+• Bildschirm bleibt an, solange der Kompass offen ist
+• Hoch- und Querformat, Deutsch und Englisch
+
+nordr braucht einen Magnetfeldsensor im Handy. Metall, Magnete und Elektronik in der Nähe können die Anzeige verfälschen. Für die Navigation in kritischen Situationen ist nordr nicht gedacht.
+
+nordr braucht keine Berechtigungen außer Vibration und greift nicht auf deinen Standort zu.
+
+Ohne Werbung, ohne Tracking, ohne Konto. nordr hat keine Internet-Berechtigung, alles bleibt auf deinem Gerät.
+Freie Software unter der GNU GPLv3. Quellcode: https://github.com/valueerrorx/aapps

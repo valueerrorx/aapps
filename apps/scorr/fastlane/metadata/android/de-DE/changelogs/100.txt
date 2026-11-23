@@ -1,0 +1,1 @@
+Erste Version im Play Store: Punktezähler für 1 bis 8 Spieler mit großen Farbflächen, Ziehen und Eingabe, Rückgängig, Runden mit Verlauf, Ziel und Gewinner.

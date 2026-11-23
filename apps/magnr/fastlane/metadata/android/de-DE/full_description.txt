@@ -1,0 +1,18 @@
+magnr nutzt den Magnetfeldsensor deines Handys, um Schrauben, Nägel, Stahlträger und Magnete in der Nähe aufzuspüren. Ein Fächer aus acht Bögen zeigt, wie stark das Feld vom Grundwert abweicht, darunter steht die Abweichung in Mikrotesla.
+
+Was magnr findet und was nicht: Erkannt werden nur ferromagnetische Metalle (Eisen, Stahl, Nickel) und Magnete. Gold, Silber, Kupfer und Aluminium erkennt magnr nicht. magnr ist kein Leitungssucher: Kabel und Rohre können unentdeckt bleiben. Der Sensor sitzt meist oben im Handy, fahr also mit der Oberkante langsam über die Fläche.
+
+Funktionen
+• Abweichung vom Grundwert in µT, dazu Feldstärke, Grundwert und Spitzenwert
+• Drei Empfindlichkeitsstufen
+• Nullen auf Knopfdruck und langsamer Driftausgleich im Ruhezustand (abschaltbar)
+• Gleicht einen Rest-Versatz des Sensors beim Kippen aus, wenn das Handy einen Lagesensor hat
+• Vibration bei steigender Stufe, optional Pieptöne
+• Verlauf der letzten 20 Sekunden
+• Kalibrierhinweis und Hinweis, wenn der Sensor am Anschlag ist
+• Hoch- und Querformat, Deutsch und Englisch
+
+magnr braucht einen Magnetfeldsensor und keine Berechtigungen außer Vibration.
+
+Ohne Werbung, ohne Tracking, ohne Konto. magnr hat keine Internet-Berechtigung, alles bleibt auf deinem Gerät.
+Freie Software unter der GNU GPLv3. Quellcode: https://github.com/valueerrorx/aapps

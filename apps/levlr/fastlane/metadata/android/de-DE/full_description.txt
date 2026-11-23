@@ -1,0 +1,19 @@
+levlr zeigt dir, wie schief etwas ist. Stell das Handy auf eine Kante oder leg es flach hin, levlr wählt den passenden Modus selbst: auf der Kante eine Röhrenlibelle mit einer Achse, flach liegend eine Dosenlibelle mit zwei Achsen.
+
+Bei 0,0° rastet die Anzeige ein: Farbwechsel, ein kurzer Glanz und eine Vibration. So merkst du auch ohne hinzusehen, dass es passt.
+
+Funktionen
+• Automatischer Wechsel zwischen Kante und flach
+• Große Anzeige mit einer Nachkommastelle, wahlweise in Grad, Prozent oder mm/m
+• Blase und Flüssigkeit bewegen sich mit Federphysik
+• Halten: Wert einfrieren und in Ruhe ablesen
+• Zwei-Punkt-Kalibrierung je Modus, jederzeit zurücksetzbar
+• Bildschirm bleibt an, solange die Waage offen ist
+• Hoch- und Querformat, Deutsch und Englisch
+
+Praktisch zum Bilderaufhängen, Regalmontieren oder Tischausrichten. Wie genau levlr misst, hängt vom Sensor deines Handys ab. Für Vermessungsarbeiten ist levlr nicht gedacht.
+
+levlr braucht keine Berechtigungen außer Vibration.
+
+Ohne Werbung, ohne Tracking, ohne Konto. levlr hat keine Internet-Berechtigung, alles bleibt auf deinem Gerät.
+Freie Software unter der GNU GPLv3. Quellcode: https://github.com/valueerrorx/aapps

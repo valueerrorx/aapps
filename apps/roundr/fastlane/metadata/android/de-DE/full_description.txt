@@ -1,0 +1,19 @@
+roundr wechselt für dich zwischen Arbeit und Pause und zählt die Runden mit. Die ganze Fläche leuchtet in der Farbe der aktuellen Phase und leert sich wie ein Füllstand, die Restzeit steht groß in der Mitte. So siehst du auch aus ein paar Metern Entfernung, wie lange es noch dauert.
+
+Funktionen
+• Vorbereitung, Arbeit, Pause, Runden, Sätze und Satzpause frei einstellbar
+• Vorlagen: Tabata, Tabata mit 3 Sätzen, HIIT 40/20, EMOM, Boxen 3:00/1:00
+• Bis zu 20 eigene Trainings unter einem Namen speichern
+• Piep bei 3-2-1 vor jedem Phasenwechsel, eigene Töne für Arbeit, Pause und Ende, dazu Vibration (beides abschaltbar)
+• Läuft bei gesperrtem Bildschirm weiter, Steuerung über die Benachrichtigung
+• Anhalten, zur nächsten Phase springen oder zurück zum Phasenanfang
+• Die Zeit läuft gleichmäßig weiter, ohne abzudriften
+• Bildschirm bleibt im Lauf an (abschaltbar)
+• Hoch- und Querformat, Deutsch und Englisch
+
+roundr ist ein Timer. Es zeichnet keine Gesundheits- oder Fitnessdaten auf und gibt keine Trainingsempfehlungen.
+
+Berechtigungen: Benachrichtigungen, Vibration und ein Vordergrunddienst, damit der Timer bei gesperrtem Bildschirm weiterläuft. Der Timer funktioniert auch ohne Benachrichtigungen.
+
+Ohne Werbung, ohne Tracking, ohne Konto. roundr hat keine Internet-Berechtigung, alles bleibt auf deinem Gerät.
+Freie Software unter der GNU GPLv3. Quellcode: https://github.com/valueerrorx/aapps

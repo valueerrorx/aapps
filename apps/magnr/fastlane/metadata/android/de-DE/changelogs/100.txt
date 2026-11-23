@@ -1,0 +1,1 @@
+Erste Version im Play Store: Metalldetektor für Eisen, Stahl und Magnete mit Anzeige in µT, drei Empfindlichkeiten, Nullen, Driftausgleich, Vibration und optionalem Ton.

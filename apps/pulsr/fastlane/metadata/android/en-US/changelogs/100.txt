@@ -1,0 +1,1 @@
+First release on Google Play: metronome with a sample-accurate click, 20 to 300 BPM, tap tempo, up to 12 beats per bar, four subdivisions, three sounds and playback with the screen locked.

@@ -1,0 +1,18 @@
+hudr shows your GPS speed in large, easy-to-read digits, whether you are cycling, driving, boating or running. In HUD mode the display is mirrored so you can read its reflection in the windscreen.
+
+Features
+• Large digits in km/h, mph or knots
+• Speed tape like in an aircraft HUD, with a trend arrow
+• Trip values: top speed, average and distance
+• Optional speed warning with colour change and sound
+• GPS status with accuracy and number of satellites
+• HUD mode: black background, mirrored (can be turned off), optional full brightness
+• Calm display when stationary, no jitter around 0
+• Portrait and landscape, English and German
+
+Location: hudr needs your precise location to measure speed. It is only used while the app is in the foreground and is not stored. hudr cannot send it anywhere because the app has no internet permission. hudr only keeps the top speed, average and distance of the current trip, no route.
+
+Note: the reading is a guide value and may differ from your vehicle's speedometer. It is not intended for legal or traffic enforcement purposes. Do not operate the app while driving.
+
+No ads, no tracking, no account. Everything stays on your device.
+Free software under the GNU GPLv3. Source code: https://github.com/valueerrorx/aapps

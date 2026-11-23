@@ -1,0 +1,1 @@
+Erste Version im Play Store: Einschlaf-Timer für jede Player-App, sanftes Ausblenden der Medienlautstärke, Pause und Wiederherstellen der Lautstärke, Verlängern per Schütteln und Schnelleinstellungs-Kachel.

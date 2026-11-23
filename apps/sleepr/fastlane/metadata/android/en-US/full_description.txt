@@ -1,0 +1,18 @@
+sleepr generates noise live on your device and lets you mix five noise colours freely: to mask distracting sounds, to focus or to fall asleep. There are no audio files and no loops. The noise is computed continuously and never repeats.
+
+Features
+• Five noise colours, each with its own slider: white, pink, brown, grey (shaped to human hearing) and green
+• Wave mode per colour: the noise rises and falls like ocean waves, wave length 3 to 20 seconds
+• Six ready-made mixes: Ocean, Focus, Sleep, Mask, Nature, Classic white
+• Volume and a treble control for a darker or brighter sound
+• Spectrum display of the current mix
+• Timer from 15 to 90 minutes with a gentle fade-out at the end
+• Keeps playing with the screen locked, stop button in the notification
+• Portrait and landscape, English and German
+
+sleepr is not a medical app. Choose a comfortable, moderate volume, especially with headphones.
+
+Permissions: notifications (stop button on the lock screen) and a foreground service so playback continues while the screen is locked. sleepr also works without notifications.
+
+No ads, no tracking, no account. sleepr has no internet permission, everything stays on your device.
+Free software under the GNU GPLv3. Source code: https://github.com/valueerrorx/aapps

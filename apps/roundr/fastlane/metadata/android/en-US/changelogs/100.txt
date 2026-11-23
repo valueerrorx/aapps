@@ -1,0 +1,1 @@
+First release on Google Play: interval timer with phases, rounds and sets, templates and your own workouts, 3-2-1 signals, vibration and running with the screen locked.

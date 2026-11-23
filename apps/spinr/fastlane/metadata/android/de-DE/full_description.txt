@@ -1,0 +1,18 @@
+Was gibt es zum Essen, wer zahlt, wer ist als Nächstes dran? spinr ist ein Glücksrad, das sich wie ein echtes dreht. Tipp aufs Rad, drück „Drehen“ oder wirf es mit Schwung an: Das Rad läuft aus und bleibt dort stehen, wo der Zeiger hinzeigt. Die Endstellung ist gleichmäßig über den ganzen Kreis verteilt, jedes Feld hat also dieselbe Chance.
+
+Funktionen
+• 2 bis 50 Einträge pro Rad, mehrere Räder gespeichert
+• Vorlagen: Essen, Ja/Nein, Wer zahlt?, Wochentage, Würfel, Zahlenbereiche, Himmelsrichtungen, Münzwurf, Schere/Stein/Papier, Wahrheit oder Pflicht, Buchstaben A–Z
+• Jede Vorlage wird zu einem normalen Rad, das du bearbeiten kannst
+• Stifte und Zeigerzunge mit spürbarem Klicken, optional mit Ton
+• Großes Ergebnis mit Konfetti, Ansage für TalkBack
+• „Entfernen“: gezogene Einträge für diese Runde herausnehmen, etwa um eine Reihenfolge auszulosen
+• Pastellfarben, benachbarte Felder nie gleich
+• Hoch- und Querformat, Deutsch und Englisch
+
+spinr ist kein Glücksspiel: keine Einsätze, keine Gewinne, keine Käufe.
+
+spinr braucht keine Berechtigungen außer Vibration.
+
+Ohne Werbung, ohne Tracking, ohne Konto. spinr hat keine Internet-Berechtigung, alles bleibt auf deinem Gerät.
+Freie Software unter der GNU GPLv3. Quellcode: https://github.com/valueerrorx/aapps

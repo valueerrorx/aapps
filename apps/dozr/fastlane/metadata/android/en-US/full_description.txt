@@ -1,0 +1,22 @@
+Music, a podcast or an audiobook to fall asleep to, but not all night? dozr is a sleep timer that works with your player app. When the time is up, dozr slowly lowers the media volume, asks playback to pause and then sets the volume back to where it was.
+
+How it works
+• Set the time by pulling the moon up the sky (5 to 120 minutes), or pick 15, 30, 45 or 60
+• During the last 1, 3 or 5 minutes, dozr gently lowers the media volume
+• Then dozr briefly takes over audio playback so your player pauses. If something is still playing, dozr sends the pause key once
+• Afterwards dozr restores the volume. If you changed it yourself in the meantime, dozr leaves it alone
+
+More features
+• Extend by 10 minutes: in the app, in the notification or by shaking the phone (can be turned off)
+• Quick Settings tile
+• Keeps running with the screen locked
+• Portrait and landscape, English and German
+
+Players that follow Android's audio rules pause when this happens. Some apps do not. In that case the volume stays at zero so it is quiet, and it is restored the next time you open dozr.
+
+dozr is not a medical app.
+
+Permissions: notifications, vibration (confirmation when shaking) and a foreground service so the timer runs reliably with the screen locked.
+
+No ads, no tracking, no account. dozr has no internet permission, everything stays on your device.
+Free software under the GNU GPLv3. Source code: https://github.com/valueerrorx/aapps

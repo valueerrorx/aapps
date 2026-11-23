@@ -1,0 +1,21 @@
+hertzr erzeugt einen sauberen Ton mit genau einstellbarer Frequenz und Wellenform. Für Lautsprecher- und Subwoofer-Tests, zum Aufspüren von Raumresonanzen, zum Ausprobieren des eigenen Hörbereichs oder für den Physikunterricht.
+
+Funktionen
+• Frequenz von 1 Hz bis 22 kHz (die Obergrenze hängt von der Abtastrate des Geräts ab)
+• Einstellen über ein logarithmisches Frequenzband, mit −/+, in Oktavschritten oder per direkter Eingabe
+• Anzeige des nächsten Notennamens mit Abweichung in Cent
+• Wellenformen Sinus, Rechteck, Dreieck und Sägezahn, mit Anti-Aliasing
+• Sweep: logarithmisch von der Start- zur Endfrequenz in 5 bis 60 Sekunden
+• Ausgang auf beiden Kanälen, nur links, nur rechts oder gegenphasig (Polaritätstest)
+• Oszilloskop-Anzeige der Wellenform
+• Spielt bei ausgeschaltetem Bildschirm weiter und stoppt, wenn du den Kopfhörer absteckst oder ein Anruf kommt
+• Hoch- und Querformat, Deutsch und Englisch
+
+Gehör und Lautsprecher schonen: hertzr startet mit −24 dB, blendet weich ein und aus, warnt bei hohem Pegel und regelt herunter, wenn während der Wiedergabe ein Kopfhörer verbunden wird. Beginne trotzdem immer leise.
+
+hertzr ist ein technisches Werkzeug, ohne „Heilfrequenzen“ und ohne Gesundheitsversprechen.
+
+Berechtigungen: Benachrichtigungen (Stopp-Taste) und ein Vordergrunddienst, damit Ton und Sweep bei ausgeschaltetem Bildschirm weiterlaufen.
+
+Ohne Werbung, ohne Tracking, ohne Konto. hertzr hat keine Internet-Berechtigung, alles bleibt auf deinem Gerät.
+Freie Software unter der GNU GPLv3. Quellcode: https://github.com/valueerrorx/aapps

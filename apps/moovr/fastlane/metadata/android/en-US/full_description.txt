@@ -1,0 +1,10 @@
+Clumsy Cow is a skill game for a quick break. A clumsy cow hops across drifting ice floes, and you help her get as far as she can.
+
+• Jump and push, dodge the spikes
+• Collect clover leaves for extra lives and stars for cow superpowers
+• Your best distance in metres is saved
+• With music and sound effects, in landscape
+
+No ads, no in-app purchases, no tracking. The game has no internet permission and runs completely offline. Your record stays on your device.
+
+Free software under the GNU GPLv3. Source code: https://github.com/valueerrorx/aapps

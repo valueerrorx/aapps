@@ -1,0 +1,1 @@
+Erste Version im Play Store: Tongenerator von 1 Hz bis 22 kHz, vier Wellenformen, logarithmischer Sweep, Kanalwahl mit Polaritätstest, Oszilloskop und Gehörschutz-Hinweise.

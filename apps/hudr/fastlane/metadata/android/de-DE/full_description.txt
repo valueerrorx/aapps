@@ -1,0 +1,18 @@
+hudr zeigt deine Geschwindigkeit aus dem GPS groß und gut lesbar an, ob am Rad, im Auto, auf dem Boot oder beim Laufen. Im HUD-Modus wird die Anzeige gespiegelt, damit du sie als Spiegelbild in der Windschutzscheibe lesen kannst.
+
+Funktionen
+• Große Ziffern, Einheit km/h, mph oder Knoten
+• Geschwindigkeitsband wie in einem Flugzeug-HUD, mit Trendpfeil
+• Fahrtwerte: Höchstgeschwindigkeit, Durchschnitt und Strecke
+• Optionale Warnschwelle mit Farbwechsel und Ton
+• GPS-Status mit Genauigkeit und Anzahl der Satelliten
+• HUD-Modus: schwarzer Hintergrund, gespiegelt (abschaltbar), optional volle Helligkeit
+• Ruhige Anzeige im Stand, kein Zittern um 0
+• Hoch- und Querformat, Deutsch und Englisch
+
+Standort: hudr braucht den genauen Standort, um die Geschwindigkeit zu messen. Er wird nur genutzt, solange die App im Vordergrund ist, und nicht gespeichert. Senden kann hudr ihn nicht, weil die App keine Internet-Berechtigung hat. hudr merkt sich nur Höchstwert, Durchschnitt und Strecke der aktuellen Fahrt, keine Route.
+
+Hinweis: Die Anzeige ist ein Richtwert und kann vom Tacho deines Fahrzeugs abweichen. Sie ist nicht für verkehrsrechtliche Zwecke gedacht. Bediene die App nicht während der Fahrt.
+
+Ohne Werbung, ohne Tracking, ohne Konto. Alles bleibt auf deinem Gerät.
+Freie Software unter der GNU GPLv3. Quellcode: https://github.com/valueerrorx/aapps

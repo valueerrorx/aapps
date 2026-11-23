@@ -1,0 +1,1 @@
+First release on Google Play: chromatic tuner with strobe ring, instruments with reference tones, adjustable concert pitch and three note name styles.

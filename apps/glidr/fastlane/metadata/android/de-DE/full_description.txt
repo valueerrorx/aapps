@@ -1,0 +1,10 @@
+Cool Cows on Ice ist ein Physikrätsel zum gemütlichen Knobeln. Die Kühe schlittern mit echter Physik übers Eis, dazwischen warten Schanzen, Wasserlöcher und Stachelblöcke. Finde heraus, wie du jedes Level schaffst, und sammle Sterne.
+
+• 48 Level mit echter Physik
+• Sterne für jedes Level, dein Fortschritt wird gespeichert
+• Mit Musik und Soundeffekten, im Querformat
+• Die Spieltexte sind auf Englisch
+
+Ohne Werbung, ohne In-App-Käufe, ohne Tracking. Das Spiel hat keine Internet-Berechtigung und läuft komplett offline. Dein Fortschritt bleibt auf deinem Gerät.
+
+Freie Software unter der GNU GPLv3. Quellcode: https://github.com/valueerrorx/aapps

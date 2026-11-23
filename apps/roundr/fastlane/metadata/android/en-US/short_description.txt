@@ -1,0 +1,1 @@
+Interval timer for HIIT, Tabata and boxing rounds, readable from a distance.

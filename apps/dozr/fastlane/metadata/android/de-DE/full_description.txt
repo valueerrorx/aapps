@@ -1,0 +1,22 @@
+Musik, Podcast oder Hörbuch zum Einschlafen, aber nicht die ganze Nacht? dozr ist ein Einschlaf-Timer, der mit deiner Player-App zusammenarbeitet. Nach der eingestellten Zeit senkt dozr die Medienlautstärke langsam ab, bittet die Wiedergabe um eine Pause und stellt danach die Lautstärke wieder auf den alten Wert.
+
+So funktioniert es
+• Zeit einstellen, indem du den Mond am Himmel hochziehst (5 bis 120 Minuten), oder per Schnellwahl 15, 30, 45 oder 60
+• In den letzten 1, 3 oder 5 Minuten senkt dozr die Medienlautstärke sanft ab
+• Dann übernimmt dozr kurz die Audio-Wiedergabe, damit dein Player pausiert. Läuft trotzdem noch etwas, sendet dozr einmal die Pause-Taste
+• Danach stellt dozr die Lautstärke wieder her. Hast du sie zwischendurch selbst geändert, lässt dozr sie in Ruhe
+
+Weitere Funktionen
+• Um 10 Minuten verlängern: in der App, in der Benachrichtigung oder durch Schütteln (abschaltbar)
+• Kachel für die Schnelleinstellungen
+• Läuft bei gesperrtem Bildschirm weiter
+• Hoch- und Querformat, Deutsch und Englisch
+
+Player, die sich an die Android-Regeln für Audio halten, pausieren dabei. Bei manchen Apps klappt das nicht. Dann bleibt die Lautstärke auf null, damit es still ist, und wird beim nächsten Öffnen von dozr zurückgestellt.
+
+dozr ist keine medizinische App.
+
+Berechtigungen: Benachrichtigungen, Vibration (Bestätigung beim Schütteln) und ein Vordergrunddienst, damit der Timer bei gesperrtem Bildschirm zuverlässig läuft.
+
+Ohne Werbung, ohne Tracking, ohne Konto. dozr hat keine Internet-Berechtigung, alles bleibt auf deinem Gerät.
+Freie Software unter der GNU GPLv3. Quellcode: https://github.com/valueerrorx/aapps

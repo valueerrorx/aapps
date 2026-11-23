@@ -1,0 +1,19 @@
+levlr shows you how far off level something is. Stand your phone on an edge or lay it flat and levlr picks the right mode by itself: a tube level with one axis on the edge, a bullseye level with two axes when lying flat.
+
+At 0.0° the display locks in: the colour changes, a short shine runs across and the phone vibrates. You can tell it is level without looking.
+
+Features
+• Switches automatically between edge and flat
+• Large reading with one decimal place, in degrees, percent or mm/m
+• Bubble and liquid move with spring physics
+• Hold: freeze the reading to read it calmly
+• Two-point calibration per mode, can be reset at any time
+• Screen stays on while the level is open
+• Portrait and landscape, English and German
+
+Handy for hanging pictures, mounting shelves or levelling tables. Accuracy depends on your phone's sensor. levlr is not meant for surveying work.
+
+levlr needs no permissions other than vibration.
+
+No ads, no tracking, no account. levlr has no internet permission, everything stays on your device.
+Free software under the GNU GPLv3. Source code: https://github.com/valueerrorx/aapps
