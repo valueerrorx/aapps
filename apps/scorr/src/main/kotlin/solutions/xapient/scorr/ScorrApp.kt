@@ -90,7 +90,7 @@ fun ScorrApp() {
                                 score = game.scores[i],
                                 onApply = { d ->
                                     update(session.game.enter(i, d, System.currentTimeMillis()))
-                                    haptics.tick()
+                                    haptics.press()
                                     entry = -1
                                 },
                                 onDismiss = { entry = -1 },
@@ -131,7 +131,7 @@ fun ScorrApp() {
                     onPlayers = { screen = Screen.PLAYERS },
                     onNewGame = {
                         newGame()
-                        haptics.confirm()
+                        haptics.press()
                         screen = Screen.BOARD
                     },
                     onAbout = { screen = Screen.ABOUT },

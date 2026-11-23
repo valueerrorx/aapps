@@ -178,7 +178,7 @@ fun ScoreScreen(
                     {
                         if (confirm) {
                             confirm = false
-                            haptics?.confirm()
+                            haptics?.press()
                             onNewGame()
                         } else {
                             haptics?.press()
@@ -554,7 +554,7 @@ private fun Tile(
                     when (withTimeoutOrNull(longMs) { tapOrDrag(down, slop) }) {
                         Gesture.TAP -> {
                             pressed.intValue = 0
-                            haptics?.tick()
+                            haptics?.press()
                             score1.value(index, half)
                         }
                         Gesture.DRAG -> {
@@ -566,7 +566,7 @@ private fun Tile(
                                 val s = Board.steps(ch.position.y - down.position.y, stepPx)
                                 if (s != scrub.intValue) {
                                     scrub.intValue = s
-                                    haptics?.tick()
+                                    haptics?.step()
                                 }
                             }
                             val s = scrub.intValue

@@ -5,16 +5,16 @@ Punkte zählen beim Spieleabend, Kartenspiel oder Tischtennis: große Farbfläch
 
 ## Muss
 - 1–8 Spieler oder Teams, jeder mit Name (max. 24 Zeichen) und einer von 8 Farben. Leerer Name zeigt „Spieler n".
-- Kachel pro Spieler (Hero, zusammen ≥ 60 %): Tippen obere Hälfte +1, untere Hälfte −1. Senkrecht ziehen zählt in Schritten (je 24 dp ein Punkt, nach oben plus) mit Vorschau „+7" und Haptik je Schritt, Loslassen bucht. Lange drücken öffnet die Eingabe (beliebige Zahl addieren oder abziehen).
+- Kachel pro Spieler (Hero, zusammen ≥ 60 %): Tippen obere Hälfte +1, untere Hälfte −1. Senkrecht ziehen zählt in Schritten (je 24 dp ein Punkt, nach oben plus) mit Vorschau „+7" und Haptik je Schritt (`step`, Tippen `press`), Loslassen bucht. Lange drücken öffnet die Eingabe (beliebige Zahl addieren oder abziehen).
 - Schnelle Änderungen am selben Spieler (< 2 s) werden zu einem Zug zusammengefasst; die Kachel zeigt den Zug kurz als „+3". Ein Zug, der sich auf 0 aufhebt, verschwindet.
 - Rückgängig: nimmt den letzten Zug bzw. das letzte Rundenende zurück, beliebig oft.
 - Runden (abschaltbar): Hauptaktion „Nächste Runde". Verlauf als Tabelle: Summen oben (am größten), darunter Runden absteigend mit dem Punkteunterschied je Spieler.
 - Ziel (optional, beliebige Zahl): erreicht ein Spieler das Ziel, ist das Spiel aus. Gewinner nach Einstellung „meiste" oder „wenigste Punkte" (z. B. Uno). Gleichstand = mehrere Gewinner.
-- Gewinner: Krone, Glanz einmalig, Lichthof, die anderen treten zurück, Haptik `confirm`, Ansage für TalkBack. Ohne Ende trägt die Führung eine kleine Krone.
+- Gewinner: Krone, Glanz einmalig, Lichthof, die anderen treten zurück, Vibration `confirm` (Ereignis über den Vibrator, Usage Alarm), Ansage für TalkBack. Ohne Ende trägt die Führung eine kleine Krone.
 - Neues Spiel: Punkte und Verlauf löschen, Spieler bleiben (zweimal tippen zum Bestätigen).
 - Zustand übersteht Drehung und Prozess-Tod (bei jeder Änderung gespeichert). Bildschirm bleibt an (abschaltbar).
 - Punkte −999 999 … 999 999, Minus als echtes „−". Zahl füllt die Kachel und wird nie umgebrochen.
-- Hoch- und Querformat, Englisch und Deutsch. Keine Berechtigungen.
+- Hoch- und Querformat, Englisch und Deutsch. Nur VIBRATE (normal, ohne Rückfrage, kommt aus `core/ui`).
 
 ## Nicht
 - Keine Spielvorlagen/Regelwerke, kein Timer, kein Teilen, keine Statistik über Spiele hinweg, kein INTERNET.
@@ -49,5 +49,5 @@ Varianten (Standard Pixel 7, en): `_de`, `_land`, `_font200`, `_land_font200` f�
 ## Abnahmekriterien
 - Domain ohne Android-Imports, Unit-Tests für Zählen/Zusammenfassen, Rückgängig, Runden-Tabelle, Ziel/Gewinner (beide Richtungen, Gleichstand), Spieler ändern/entfernen, Grenzen, Speicherformat (inkl. kaputter Daten), Raster, Zahlformat.
 - Im Leerlauf keine Animations-Frames.
-- `:apps:scorr:check`, `verifyRoborazziDebug`, `assembleRelease` grün, Manifest ohne Berechtigungen, Release-APK < 4 MB.
+- `:apps:scorr:check`, `verifyRoborazziDebug`, `assembleRelease` grün, Manifest nur mit VIBRATE, Release-APK < 4 MB.
 - Lesbar bei Schriftgröße 200 %.
