@@ -42,9 +42,14 @@ abstract class CheckManifestPermissionsTask : DefaultTask() {
         }
         // androidx.core legt diese app-interne Signatur-Berechtigung an
         val internal = "${applicationId.get()}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
-        val bad = found.filter { it != internal && it !in allowed.get() }
+        val bad = found.filter { it != internal && it !in CORE && it !in allowed.get() }
         report.get().asFile.writeText(found.joinToString("\n", postfix = "\n"))
         if ("android.permission.INTERNET" in found) fail("INTERNET im Manifest von ${applicationId.get()} – verboten")
         if (bad.isNotEmpty()) fail("Nicht freigegebene Berechtigungen in ${applicationId.get()}: ${bad.joinToString()}")
+    }
+
+    private companion object {
+        // kommt per Manifest-Merge aus core/ui (Haptics) in jede App
+        val CORE = setOf("android.permission.VIBRATE")
     }
 }
