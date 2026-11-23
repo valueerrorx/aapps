@@ -349,7 +349,7 @@ private fun TimerDial(look: DialInputs, haptics: Haptics?, onCommit: (Long) -> U
                         if (d.getDistance() < r * 0.12f) return
                         val ms = Dial.snap(drag.move(Dial.fraction(d.x, d.y)), sc)
                         if (ms != last) {
-                            haptics?.tick()
+                            haptics?.step()
                             last = ms
                         }
                         look.drag.value = ms
@@ -442,7 +442,7 @@ private fun Controls(
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
         Box(Modifier.size(side), contentAlignment = Alignment.Center) {
             ResetButton(phase != Phase.IDLE) {
-                haptics?.confirm()
+                haptics?.press()
                 onReset()
             }
         }
