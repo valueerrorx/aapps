@@ -92,7 +92,7 @@ fun MagnrApp(
 
     AappsTheme(MagnrAccent) {
         val haptics = rememberHaptics(settings.haptics)
-        // Haptik beim Steigen der Stufe
+        // Steigen der Stufe ist ein Ereignis: Vibrator, nicht Touch-Haptik
         DisposableEffect(state, haptics) {
             state.onRise = { l -> if (l == Level.STRONG) haptics.confirm() else haptics.tick() }
             onDispose { state.onRise = null }
@@ -120,7 +120,7 @@ fun MagnrApp(
                 MagnrSettings(
                     settings,
                     {
-                        if (it.sensitivity != settings.sensitivity) haptics.tick()
+                        if (it.sensitivity != settings.sensitivity) haptics.step()
                         change(it)
                     },
                     onIntro = {

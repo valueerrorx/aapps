@@ -17,11 +17,13 @@ Metalldetektor und Magnetfeld-Messer: Schrauben, Nägel, Stahlträger und Magnet
 - Grundwert (Erdfeld am Ort):
   - automatisch: Mittel der ersten 0,5 s nach dem Start.
   - Kurze Pause (≤ 60 s, auch Einstellungen oder App-Wechsel): Er bleibt, sonst würde ein gerade gehaltener Fund zum Grundwert. Längere Pause, Prozess-Tod über 60 s oder Neustart des Geräts: Er schwingt neu ein, weil das Handy vermutlich woanders steht. Der Pausenbeginn (elapsedRealtime) wird mitgesichert.
-  - „Nullen“ (Hauptaktion): Grundwert = aktueller Betrag, mit Haptik. Pausiert: misst weiter und schwingt neu ein.
+  - „Nullen“ (Hauptaktion): Grundwert = aktueller Betrag, mit Tasten-Haptik (`press`). Pausiert: misst weiter und schwingt neu ein.
   - Driftausgleich (abschaltbar, Standard an): nur in Stufe „ruhig“ und solange |Δ| unter der doppelten Rauschschwelle der Empfindlichkeit liegt (6 / 1,8 / 1,2 µT). Dann folgt der Grundwert langsam (τ = 30 s). Ein gehaltener Fund verschwindet so nicht.
 - Abweichung Δ = Betrag − Grundwert (mit Vorzeichen). Ausschlag 0…1 = (|Δ| − Rauschen) / (Vollausschlag − Rauschen).
 - Empfindlichkeit: Vollausschlag 100 / 40 / 12 µT (niedrig / mittel / hoch, durch 4 teilbar für runde Skalenwerte), Rauschschwelle 3 / 0,9 / 0,6 µT.
-- Stufen mit Hysterese (0,04): ruhig < 0,12 ≤ schwach < 0,45 ≤ nah < 0,8 ≤ sehr nah. Haptik-Tick beim Steigen der Stufe, „sehr nah“ mit Bestätigungs-Haptik. Abschaltbar. Ein Wechsel der Empfindlichkeit setzt die Stufe aus dem aktuellen Δ, ohne Haptik.
+- Stufen mit Hysterese (0,04): ruhig < 0,12 ≤ schwach < 0,45 ≤ nah < 0,8 ≤ sehr nah. Vibration beim Steigen der Stufe: Klick (`tick`), „sehr nah“ kräftiger Klick (`confirm`), höchstens alle 120 ms, der kräftige darf einen frischen Klick überholen. Abschaltbar (Einstellung „Vibration“).
+  - Ein Fund ist ein Ereignis, keine Touch-Rückmeldung: Vibrator mit Usage Alarm statt `performHapticFeedback`. Feldtest Pixel: über die View kam nichts an, weil sie der System-Touch-Haptik folgt.
+  - Respektiert den System-Hauptschalter „Vibration & Haptik“ und die Stufe „Wecker-Vibration“; Touch-Haptik und Lautlos-Modus spielen keine Rolle. Ein Wechsel der Empfindlichkeit setzt die Stufe aus dem aktuellen Δ, ohne Haptik.
 - Spitze: größte |Δ| bleibt 2 s stehen, dann folgt sie dem aktuellen Wert.
 - Verlauf der letzten 20 s: Ausschlag je 100 ms, Pausen als Lücke.
 - Ton (Standard aus, Schalter auf dem Hauptschirm und in den Einstellungen): kurze Pieptöne ab „schwach“.
@@ -46,7 +48,7 @@ Metalldetektor und Magnetfeld-Messer: Schrauben, Nägel, Stahlträger und Magnet
 - Bildschirm bleibt beim Messen an (abschaltbar). Hoch- und Querformat, Englisch und Deutsch, lesbar bei 200 % Schrift.
 
 ## Berechtigungen
-Keine (Lagesensor braucht keine). Haptik über die View, Ton über AudioTrack. Kein INTERNET, kein Dienst.
+Nur VIBRATE (normale Berechtigung, ohne Rückfrage, kommt aus `core/ui` in jede App). Lagesensor braucht keine, Ton über AudioTrack. Kein INTERNET, kein Dienst.
 
 ## Nicht
 - Keine „Gold-/Schatzsuche“, keine EMF-/Strahlungs- oder Gesundheitsaussagen, keine Richtungs-/Vektoranzeige, kein Export, keine eigene volle Kalibrierung (macht das System, magnr schätzt nur den Rest-Versatz nach).
@@ -91,4 +93,5 @@ Varianten (Standard Pixel 7, en): `near_de`, `near_land`, `near_font200`, `near_
   - Sichern/Wiederherstellen inklusive veraltetem Grundwert nach langer Pause, Tonabbildung (Tonhöhe, Abstand, Stille), Piep-Synthese (Frequenz, keine Sprünge)
   - Kontrast (WCAG AA gemessen, auch pausiert, jeder Fächerbogen).
 - Gesten (Robolectric): Nullen, Pause/Weiter, Ton, Empfindlichkeit, Einführung schließen, Einstellungen stoppen die Messung. Pausiert keine Frames. Sensor und Ton folgen ON_START/ON_STOP. Ein Ton-Thread, nicht blockierend.
-- `:apps:magnr:check`, `verifyRoborazziDebug`, `assembleRelease` grün; Manifest ohne Berechtigungen; Release-APK < 4 MB.
+- Vibration (Robolectric): Fund vibriert mit Usage Alarm und kräftigem Klick bei „sehr nah“, ausgeschaltet still.
+- `:apps:magnr:check`, `verifyRoborazziDebug`, `assembleRelease` grün; Manifest nur mit VIBRATE; Release-APK < 4 MB.
