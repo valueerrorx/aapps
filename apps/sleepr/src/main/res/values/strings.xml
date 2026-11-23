@@ -1,3 +1,38 @@
 <resources>
     <string name="app_name">sleepr</string>
+    <!-- Oberflaeche derzeit nur Deutsch; Formulierungen wie core/ui (aapps_*) -->
+    <string name="settings">Einstellungen</string>
+    <string name="about">Info</string>
+    <string name="back">Zurück</string>
+    <string name="version">Version %1$s</string>
+    <string name="promise_ads">Keine Werbung</string>
+    <string name="promise_tracking">Kein Tracking</string>
+    <string name="promise_internet">Keine Internet-Berechtigung</string>
+    <string name="source">Quellcode</string>
+    <string name="license">Freie Software unter der GNU GPLv3. Du darfst sie nutzen, untersuchen, weitergeben und verändern.</string>
+    <string name="fonts">Schriften: Space Grotesk und Inter, SIL Open Font License 1.1.</string>
+
+    <string name="tagline">Farbiges Rauschen zum Abschirmen und Runterkommen. Mischen, Timer setzen, laufen lassen.</string>
+    <string name="note_privacy">Alles wird live am Gerät berechnet. sleepr sammelt keine Daten und sendet nichts.</string>
+    <string name="note_background">Rauscht bei gesperrtem Bildschirm weiter. In der Benachrichtigung lässt es sich stoppen.</string>
+
+    <string name="group_display">Anzeige</string>
+    <string name="show_waves">Wellen-Schalter anzeigen</string>
+    <string name="show_waves_sub">Ausgeblendet laufen Wellen weiter</string>
+    <string name="show_mixes">Mischungen anzeigen</string>
+    <string name="show_mixes_sub">Laden geht auch immer hier</string>
+    <string name="group_mixes">Mischungen</string>
+    <string name="group_colors">Rauschfarben</string>
+    <string name="group_waves">Wellen</string>
+    <string name="group_timer">Timer</string>
+
+    <string name="explain_mixes">Fertige Mischungen als Startpunkt. Danach kannst du jeden Regler weiter anpassen.</string>
+    <string name="explain_colors">Jede Farbe hat ihren eigenen Regler, du kannst sie frei mischen. Alle sind gleich laut eingestellt, sie unterscheiden sich nur im Klang.</string>
+    <string name="explain_white">hell und zischend, alle Frequenzen gleich stark</string>
+    <string name="explain_pink">ausgewogen, wie Regen; Höhen leiser als bei Weiß</string>
+    <string name="explain_brown">tief, wie Brandung; noch weniger Höhen</string>
+    <string name="explain_grey">gleicht grob aus, wie das Ohr Höhen und Tiefen hört, und wirkt so überall gleich laut</string>
+    <string name="explain_green">betont die Mitte um 500 Hz, weich und naturnah</string>
+    <string name="explain_waves">Der Wellen-Knopf neben einer Farbe lässt sie an- und abschwellen wie Meereswellen: anschwellen, brechen, auslaufen, jede Welle etwas anders. Darunter stellst du ein, wie lang die Wellen im Schnitt sind (3 bis 20 s). Beim Abspielen bewegt sich der Regler mit.</string>
+    <string name="explain_timer">Der Timer blendet am Ende sanft aus statt hart zu stoppen, bei langen Timern über bis zu 2 Minuten. Wechselst du ihn während des Abspielens, beginnt er von vorn.</string>
 </resources>

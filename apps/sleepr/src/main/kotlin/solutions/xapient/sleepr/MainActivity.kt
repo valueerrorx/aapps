@@ -6,6 +6,7 @@ import android.animation.PropertyValuesHolder
 import android.animation.StateListAnimator
 import android.animation.TimeInterpolator
 import android.app.Activity
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
@@ -36,11 +37,16 @@ import android.widget.ScrollView
 import android.widget.SeekBar
 import android.widget.Space
 import android.widget.TextView
+import android.window.OnBackInvokedCallback
+import android.window.OnBackInvokedDispatcher
+import androidx.annotation.RequiresApi
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 
 class MainActivity : Activity() {
+    private companion object { const val KEY_SCREEN = "screen" }
+
     private val BG = 0xFF10161B.toInt()
     private val SURFACE = 0xFF172028.toInt()
     private val FG = 0xFFDCE3E8.toInt()
@@ -72,12 +78,24 @@ class MainActivity : Activity() {
     private lateinit var toneVal: TextView
     private val timerChips = mutableListOf<Pair<Int, TextView>>()
     private var syncing = false
+    private lateinit var look: Look
+    private lateinit var display: Display
+    private lateinit var mixesLabel: View
+    private lateinit var mixesRow: View
+    private lateinit var mainRoot: View
+    internal var screen = Screen.MAIN
+        private set
+    private var backCallback: Any? = null
+
+    enum class Screen { MAIN, SETTINGS, ABOUT }
 
     private val Int.dp get() = (this * resources.displayMetrics.density).toInt()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Mixer.load(this)
+        look = Look(this)
+        display = Display(this)
         // Edge-to-edge (ab targetSdk 35 Pflicht), Inhalt per Insets in den sicheren Bereich
         WindowCompat.setDecorFitsSystemWindows(window, false)
         if (Build.VERSION.SDK_INT < 35) legacyBarColors()
@@ -85,14 +103,21 @@ class MainActivity : Activity() {
         val land = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
         val col = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
-            setPadding(18.dp, 22.dp, if (land) 24.dp else 18.dp, 24.dp)
+            setPadding(18.dp, 0, if (land) 24.dp else 18.dp, 24.dp)
         }
         fun add(v: View, top: Int = 18) {
             col.addView(v, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply { topMargin = top.dp })
         }
 
-        val title = text("sleepr", 30f, FG, bold = true)
-        val intro = text("Farbiges Rauschen zum Abschirmen und Runterkommen. Mischen, Timer setzen, laufen lassen.", 15f, MUTED)
+        // Kopfzeile wie in den anderen aapps: 64 dp, Name links, Zahnrad rechts
+        val header = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL
+            minimumHeight = 64.dp
+            setPadding(20.dp, 0, 8.dp, 0)
+            addView(look.title(getString(R.string.app_name)).apply { with(look) { accessibilityHeading() } },
+                LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+            addView(look.iconButton(R.drawable.ic_gear, getString(R.string.settings)) { show(Screen.SETTINGS) }, LinearLayout.LayoutParams(48.dp, 48.dp))
+        }
 
         // Player: Status über der Hauptaktion (Pille unten mittig wie in den aapps)
         status = text("Bereit", 17f, FG, bold = true).apply { gravity = Gravity.CENTER }
@@ -109,18 +134,18 @@ class MainActivity : Activity() {
             }
         }
 
-        if (!land) { add(title, 0); add(intro, 4) }
-
         // Spektrum
         spectrum = SpectrumView(this).apply { accent = ACCENT; grid = LINE; muted = MUTED }
         add(card().apply {
             addView(row(label("Spektrum der Mischung"), text("Leistung/Hz · dB", 11f, MUTED)))
             addView(spectrum, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 150.dp).apply { topMargin = 8.dp })
-        })
+        }, 4)
 
         // Presets
-        add(label("Mischungen"), 22)
-        add(chipRow(Mixer.PRESETS.map { p -> chip(p.name) { Mixer.applyPreset(p); changed() } }), 8)
+        mixesLabel = label("Mischungen")
+        mixesRow = chipRow(Mixer.PRESETS.map { p -> chip(p.name) { Mixer.applyPreset(p); changed() } })
+        add(mixesLabel, 22)
+        add(mixesRow, 8)
 
         // Rauschfarben
         add(card().apply {
@@ -212,15 +237,18 @@ class MainActivity : Activity() {
             bar.setPadding(0, 0, 0, 16.dp)
             val left = LinearLayout(this).apply {
                 orientation = LinearLayout.VERTICAL
-                setPadding(24.dp, 22.dp, 12.dp, 0)
-                addView(title); addView(intro, lp(4))
+                setPadding(24.dp, 0, 12.dp, 0)
                 addView(Space(this@MainActivity), LinearLayout.LayoutParams(0, 18.dp, 1f))
                 addView(bar, lp(0))
             }
             LinearLayout(this).apply {
-                orientation = LinearLayout.HORIZONTAL; setBackgroundColor(BG)
-                addView(ScrollView(this@MainActivity).apply { isFillViewport = true; addView(left) }, LinearLayout.LayoutParams(0, match, 0.42f))
-                addView(scroll, LinearLayout.LayoutParams(0, match, 0.58f))
+                orientation = LinearLayout.VERTICAL; setBackgroundColor(BG)
+                addView(header, LinearLayout.LayoutParams(match, ViewGroup.LayoutParams.WRAP_CONTENT))
+                addView(LinearLayout(this@MainActivity).apply {
+                    orientation = LinearLayout.HORIZONTAL
+                    addView(ScrollView(this@MainActivity).apply { isFillViewport = true; addView(left) }, LinearLayout.LayoutParams(0, match, 0.42f))
+                    addView(scroll, LinearLayout.LayoutParams(0, match, 0.58f))
+                }, LinearLayout.LayoutParams(match, 0, 1f))
             }
         } else {
             // Hochformat: feste Leiste unten, Inhalt scrollt darüber und blendet weich aus
@@ -228,6 +256,7 @@ class MainActivity : Activity() {
             val fade = View(this).apply { background = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(BG and 0x00FFFFFF, BG)) }
             LinearLayout(this).apply {
                 orientation = LinearLayout.VERTICAL; setBackgroundColor(BG)
+                addView(header, LinearLayout.LayoutParams(match, ViewGroup.LayoutParams.WRAP_CONTENT))
                 addView(FrameLayout(this@MainActivity).apply {
                     addView(scroll)
                     addView(fade, FrameLayout.LayoutParams(match, 24.dp, Gravity.BOTTOM))
@@ -235,13 +264,78 @@ class MainActivity : Activity() {
                 addView(bar, LinearLayout.LayoutParams(match, ViewGroup.LayoutParams.WRAP_CONTENT))
             }
         }
-        ViewCompat.setOnApplyWindowInsetsListener(root) { v, insets ->
+        mainRoot = safeArea(root)
+        syncInputs(); syncTimers(); render()
+        show(savedInstanceState?.getString(KEY_SCREEN)?.let { runCatching { Screen.valueOf(it) }.getOrNull() } ?: Screen.MAIN)
+    }
+
+    // Inhalt in den sicheren Bereich, Hintergrund bleibt vollflächig
+    private fun safeArea(v: View): View {
+        ViewCompat.setOnApplyWindowInsetsListener(v) { view, insets ->
             val b = insets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout())
-            v.setPadding(b.left, b.top, b.right, b.bottom)
+            view.setPadding(b.left, b.top, b.right, b.bottom)
             WindowInsetsCompat.CONSUMED
         }
-        setContentView(root)
-        syncInputs(); syncTimers(); render()
+        return v
+    }
+
+    /** Wechselt zwischen Mixer, Einstellungen und Info; der Mixer bleibt erhalten */
+    internal fun show(s: Screen) {
+        screen = s
+        val pages = Pages(this, look)
+        val v = when (s) {
+            Screen.MAIN -> { applyDisplay(); mainRoot }
+            Screen.SETTINGS -> safeArea(pages.settings(display,
+                onPreset = { p -> Mixer.applyPreset(p); changed(); show(Screen.MAIN) },
+                onChanged = { applyDisplay() },
+                onAbout = { show(Screen.ABOUT) },
+                onBack = { goBack() }))
+            Screen.ABOUT -> safeArea(pages.about { goBack() })
+        }
+        (v.parent as? ViewGroup)?.removeView(v)
+        setContentView(v)
+        ViewCompat.requestApplyInsets(v)
+        updateBackCallback()
+    }
+
+    private fun goBack() = show(if (screen == Screen.ABOUT) Screen.SETTINGS else Screen.MAIN)
+
+    override fun onSaveInstanceState(out: Bundle) {
+        super.onSaveInstanceState(out)
+        out.putString(KEY_SCREEN, screen.name)
+    }
+
+    // Zurück-Geste: ab Android 13 über OnBackInvokedCallback (targetSdk 36 ruft onBackPressed nicht mehr)
+    private fun updateBackCallback() {
+        if (Build.VERSION.SDK_INT >= 33) updateBackCallback33()
+    }
+
+    @RequiresApi(33)
+    private fun updateBackCallback33() {
+        val cb = backCallback as OnBackInvokedCallback?
+        if (screen != Screen.MAIN && cb == null) {
+            val n = OnBackInvokedCallback { goBack() }
+            onBackInvokedDispatcher.registerOnBackInvokedCallback(OnBackInvokedDispatcher.PRIORITY_DEFAULT, n)
+            backCallback = n
+        } else if (screen == Screen.MAIN && cb != null) {
+            onBackInvokedDispatcher.unregisterOnBackInvokedCallback(cb)
+            backCallback = null
+        }
+    }
+
+    // Nur bis Android 12; ab 13 greift der OnBackInvokedCallback oben
+    @SuppressLint("GestureBackNavigation")
+    @Deprecated("Nur bis Android 12")
+    @Suppress("DEPRECATION")
+    override fun onBackPressed() {
+        if (screen != Screen.MAIN) goBack() else super.onBackPressed()
+    }
+
+    /** Wellen-Schalter und Mischungen je nach Einstellung ein- oder ausblenden */
+    private fun applyDisplay() {
+        val mixes = if (display.showMixes) View.VISIBLE else View.GONE
+        mixesLabel.visibility = mixes; mixesRow.visibility = mixes
+        syncWaves()
     }
 
     @Suppress("DEPRECATION")
@@ -329,7 +423,8 @@ class MainActivity : Activity() {
                 imageTintList = ColorStateList.valueOf(if (on) BG else MUTED)
                 contentDescription = "Wellen ${Mixer.COLORS[i].name} " + if (on) "aus" else "ein"
             }
-            waveBoxes[i]?.visibility = if (on) View.VISIBLE else View.GONE
+            waveBtns[i]?.visibility = if (display.showWaves) View.VISIBLE else View.GONE
+            waveBoxes[i]?.visibility = if (Display.waveBoxVisible(on, display.showWaves)) View.VISIBLE else View.GONE
         }
     }
 

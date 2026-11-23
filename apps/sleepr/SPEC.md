@@ -14,6 +14,7 @@ Rauschgenerator zum Abschirmen von Störgeräuschen, Konzentrieren und Einschlaf
 - Hintergrund: Foreground-Service `mediaPlayback` mit MediaSession und Benachrichtigung (Mischung, Timer, Stopp; auch am Sperrbildschirm). Audio-Fokus: Verlust (auch kurzzeitig, z. B. Anruf) = Stopp.
 - Mischung, Lautstärke, Höhen und Timer überstehen Neustart (SharedPreferences). Nach Prozess-Tod spielt nichts von selbst.
 - Hoch- und Querformat, lesbar bei 200 % Schrift. Edge-to-edge, Inhalt im sicheren Bereich.
+- Einstellungen hinter dem Zahnrad oben rechts: „Wellen-Schalter anzeigen“ und „Mischungen anzeigen“ (beide Standard an, SharedPreferences `app`, überstehen Drehen und Neustart). Aus = nur die Bedienelemente verschwinden, laufende Wellen und Mischung bleiben. Mischungen lassen sich dort immer laden. Dazu Erklärungen zu Rauschfarben, Wellen, Mischungen und Timer sowie die Info-Seite (Version, Versprechen, Quellcode, Datenschutz, GPLv3). Zurück-Taste/-Geste schließt Info bzw. Einstellungen.
 
 ## Berechtigungen
 | Berechtigung | Grund |
@@ -22,10 +23,11 @@ Rauschgenerator zum Abschirmen von Störgeräuschen, Konzentrieren und Einschlaf
 | `POST_NOTIFICATIONS` | Stopp in der Benachrichtigung bzw. am Sperrbildschirm (Android 13+, einmal vor dem ersten Start mit Erklärung gefragt; abgelehnt läuft es trotzdem). |
 | `WAKE_LOCK` | CPU bleibt wach, damit der Audio-Thread den Puffer rechtzeitig füllt. Nur während der Wiedergabe, höchstens 12 h. |
 
-Kein INTERNET, kein VIBRATE (sleepr nutzt `core/ui` nicht). Haptik wie `press()` aus `core/ui`: Touch-Feedback über die View (`KEYBOARD_TAP`) für Start/Stopp, Mischungen, Timer und Wellen-Schalter; folgt der System-Touch-Haptik.
+Kein INTERNET, kein VIBRATE (sleepr nutzt `core/ui` nicht). Haptik wie `press()` aus `core/ui`: Touch-Feedback über die View (`KEYBOARD_TAP`) für Start/Stopp, Mischungen, Timer, Wellen-Schalter, Zahnrad und Zeilen in den Einstellungen; folgt der System-Touch-Haptik.
 
 ## Technik
 - Views und Canvas (`SpectrumView`), kein Compose und kein `core/ui`. Das gehört so, nicht umbauen.
+- Look der aapps als Views nachgebaut (`Look.kt`: Farben, Schriften Space Grotesk/Inter als Kopie in `res/font`, Kopfzeile, Gruppen, Schalter; `Pages.kt`: Einstellungen und Info wie `SettingsScreen`/`AboutScreen`). Ein Activity, Bildschirm im Instance-State.
 - Signalverarbeitung in `domain/Dsp.kt` ohne Android-Imports (RBJ-Biquads, Rauschfarben je Kanal, RMS-Normierung).
 - Oberfläche derzeit nur Deutsch.
 
@@ -34,7 +36,9 @@ Kein INTERNET, kein VIBRATE (sleepr nutzt `core/ui` nicht). Haptik wie `press()`
 - Kein Ausblenden fremder Apps (das macht dozr).
 
 ## Screens
-1. **Mixer**: Titel und Kurztext; Karte „Spektrum der Mischung“; Mischungen als Chips; Karte Rauschfarben (Farbpunkt, Name, Steigung, Hinweis, Wellen-Schalter, Wert, Regler, bei aktiven Wellen Regler für die Wellenlänge); Karte Lautstärke und Höhen; Timer-Chips; Hinweistext. Hauptaktion START/STOP als Pille unten mittig mit Glow, Status („Bereit“, „Läuft · noch m:ss“, „Blendet aus · …“) und Mischung darüber. Hochformat: Leiste unten fest, Inhalt scrollt darüber und blendet weich aus. Querformat: Titel, Status und Pille links, Inhalt rechts.
+1. **Mixer**: Kopfzeile wie die anderen aapps (64 dp, „sleepr“ in Inter SemiBold 18 sp links, Zahnrad rechts); Karte „Spektrum der Mischung“; Mischungen als Chips; Karte Rauschfarben (Farbpunkt, Name, Steigung, Hinweis, Wellen-Schalter, Wert, Regler, bei aktiven Wellen Regler für die Wellenlänge); Karte Lautstärke und Höhen; Timer-Chips; Hinweistext. Hauptaktion START/STOP als Pille unten mittig mit Glow, Status („Bereit“, „Läuft · noch m:ss“, „Blendet aus · …“) und Mischung darüber. Hochformat: Leiste unten fest, Inhalt scrollt darüber und blendet weich aus. Querformat: Kopfzeile über die ganze Breite, darunter Status und Pille links, Inhalt rechts.
+2. **Einstellungen**: Gruppen Anzeige (zwei Schalter), Mischungen (Kurztext, sechs Mischungen mit Zusammensetzung, aktive mit Haken), Rauschfarben, Wellen, Timer (Erklärtexte), Info.
+3. **Info**: App-Icon, Name, Version (BuildConfig aus `version.txt`), Kurztext, Versprechen (keine Werbung, kein Tracking, keine Internet-Berechtigung), Quellcode-Link, Hinweise Datenschutz und Hintergrund, Lizenz, Schriften.
 
 ## Screenshot-Zustände (Roborazzi, `apps/sleepr/screenshots/`)
 | Name | Inhalt |
@@ -42,10 +46,14 @@ Kein INTERNET, kein VIBRATE (sleepr nutzt `core/ui` nicht). Haptik wie `press()`
 | `idle` | Standardmischung (Rosa 20, Braun 60), gestoppt |
 | `playing` | läuft, Timer mit Restzeit |
 | `idle_land`, `idle_font200`, `idle_tablet` | Querformat, 200 % Schrift, Tablet 800 × 1280 dp |
+| `idle_plain`, `idle_plain_land` | Wellen-Schalter und Mischungen ausgeblendet |
+| `settings`, `settings_land`, `settings_font200`, `settings_tablet`, `settings_plain` | Einstellungen, Varianten, beide Schalter aus |
+| `about`, `about_font200` | Info-Seite |
 | `icon_masks`, `icon_store_512` | App-Icon in Masken, Store-Icon |
 
 Standard Pixel 7.
 
 ## Abnahmekriterien
+- Unit-Tests für Anzeige-Einstellungen (Standard, Speichern, Sichtbarkeit), Mischungs-Erkennung, Einstellungen (Zahnrad, Zurück, Drehen, Schalter als Switch, Mischung laden).
 - Unit-Tests für die Signalverarbeitung: Tiefpass (Durchlass, −3 dB an der Grenze, Sperrbereich), Peak-Filter-Verstärkung, Weiß im Bereich ±1, gleiche RMS aller Farben nach Normierung, deterministisch bei gleichem Seed.
 - `:apps:sleepr:check`, `verifyRoborazziDebug`, `assembleRelease` grün; nur die 4 Berechtigungen oben; Release-APK < 4 MB.

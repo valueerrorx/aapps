@@ -44,9 +44,19 @@ object Mixer {
         else -> "${f.toInt()} Hz"
     }
 
-    fun summary(): String {
-        val a = COLORS.indices.filter { levels[it] > 0 }.sortedByDescending { levels[it] }
-        return if (a.isEmpty()) "Alle Regler auf null" else a.joinToString(" · ") { "${COLORS[it].name} ${levels[it]}" + if (waves[it]) " ∿" else "" }
+    fun summary(): String = describe(levels, waves)
+
+    // Zusammensetzung einer Mischung, lauteste Farbe zuerst
+    fun describe(p: Preset): String = describe(IntArray(5) { p.levels[it] ?: 0 }, BooleanArray(5) { p.waves.containsKey(it) })
+
+    private fun describe(lv: IntArray, wv: BooleanArray): String {
+        val a = COLORS.indices.filter { lv[it] > 0 }.sortedByDescending { lv[it] }
+        return if (a.isEmpty()) "Alle Regler auf null" else a.joinToString(" · ") { "${COLORS[it].name} ${lv[it]}" + if (wv[it]) " ∿" else "" }
+    }
+
+    /** true, solange die aktuelle Einstellung genau dieser Mischung entspricht */
+    fun matches(p: Preset): Boolean = tone == p.tone && levels.indices.all { i ->
+        levels[i] == (p.levels[i] ?: 0) && waves[i] == p.waves.containsKey(i) && (p.waves[i] ?: waveSec[i]) == waveSec[i]
     }
 
     fun applyPreset(p: Preset) {

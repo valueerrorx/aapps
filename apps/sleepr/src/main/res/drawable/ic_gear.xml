@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Zahnrad wie AappsIcons.Gear aus core/ui (sleepr nutzt core/ui nicht) -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="24dp" android:height="24dp" android:viewportWidth="24" android:viewportHeight="24">
+    <path android:strokeColor="#FFFFFFFF" android:strokeWidth="1.8" android:strokeLineCap="round" android:strokeLineJoin="round" android:fillColor="#00000000"
+        android:pathData="M12.00,2.40L13.87,2.58 14.83,5.16 16.11,5.85 18.79,5.21 19.98,6.67 18.84,9.17 19.26,10.56 21.60,12.00 21.42,13.87 18.84,14.83 18.15,16.11 18.79,18.79 17.33,19.98 14.83,18.84 13.44,19.26 12.00,21.60 10.13,21.42 9.17,18.84 7.89,18.15 5.21,18.79 4.02,17.33 5.16,14.83 4.74,13.44 2.40,12.00 2.58,10.13 5.16,9.17 5.85,7.89 5.21,5.21 6.67,4.02 9.17,5.16 10.56,4.74ZM15.2,12a3.2,3.2 0 1,1 -6.4,0a3.2,3.2 0 1,1 6.4,0z" />
+</vector>
