@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Timer-Ring: rechts Glut (Arbeit), links Eis (Pause), kleiner Spalt oben und unten, Knopf oben -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- etwas kleiner und tiefer: Knopf bleibt in jeder Maske sichtbar -->
+    <group android:pivotX="54" android:pivotY="54" android:scaleX="0.88" android:scaleY="0.88" android:translateY="1.5">
+        <!-- Lichthof -->
+        <path android:pathData="M20,56a34,34 0 1,0 68,0a34,34 0 1,0 -68,0z">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:type="radial"
+                    android:centerX="54"
+                    android:centerY="56"
+                    android:gradientRadius="34"
+                    android:startColor="#40FF6B3D"
+                    android:endColor="#00FF6B3D" />
+            </aapt:attr>
+        </path>
+        <!-- Knopf -->
+        <path
+            android:pathData="M54,24.5L54,28.5M50,22.5L58,22.5"
+            android:strokeWidth="3.2"
+            android:strokeColor="#FFDCE3E8"
+            android:strokeLineCap="round" />
+        <!-- Arbeit -->
+        <path
+            android:pathData="M59.32,34.65A22,22 0 0,1 59.32,77.35"
+            android:strokeWidth="8"
+            android:strokeColor="#FFFF6B3D"
+            android:strokeLineCap="round" />
+        <!-- Pause -->
+        <path
+            android:pathData="M48.68,77.35A22,22 0 0,1 48.68,34.65"
+            android:strokeWidth="8"
+            android:strokeColor="#FF4FC3F7"
+            android:strokeLineCap="round" />
+        <!-- Reflex -->
+        <path
+            android:pathData="M62.5,38.5A17.5,17.5 0 0,1 70.5,48"
+            android:strokeWidth="1.2"
+            android:strokeColor="#66FFFFFF"
+            android:strokeLineCap="round" />
+    </group>
+</vector>

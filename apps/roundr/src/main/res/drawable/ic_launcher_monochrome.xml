@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ring in zwei Haelften, Knopf oben -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- etwas kleiner und tiefer: Knopf bleibt in jeder Maske sichtbar -->
+    <group android:pivotX="54" android:pivotY="54" android:scaleX="0.88" android:scaleY="0.88" android:translateY="1.5">
+        <path
+            android:pathData="M54,24.5L54,28.5M50,22.5L58,22.5"
+            android:strokeWidth="3.2"
+            android:strokeColor="#FF000000"
+            android:strokeLineCap="round" />
+        <path
+            android:pathData="M59.32,34.65A22,22 0 0,1 59.32,77.35M48.68,77.35A22,22 0 0,1 48.68,34.65"
+            android:strokeWidth="8"
+            android:strokeColor="#FF000000"
+            android:strokeLineCap="round" />
+    </group>
+</vector>
