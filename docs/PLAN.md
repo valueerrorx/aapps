@@ -1,6 +1,7 @@
 # aapps – Plan (Entwurf 21.11.2026, wartet auf Thomas' OK)
 
-9 Geschwister-Apps von sleepr: tunr, pulsr, levlr, nordr, loudr, roundr, spinr, scorr, focusr.
+9 neue Apps im Stil von sleepr: tunr, pulsr, levlr, nordr, loudr, roundr, spinr, scorr, focusr.
+Nachtrag 23.11.2026: sleepr ist jetzt selbst Teil des Monorepos (`apps/sleepr`), kein eigenes Repo mehr. Aktueller Stand aller Apps: README.
 Ideen und Recherche: `research/ideen.md`.
 
 ## Repo
@@ -14,7 +15,7 @@ Ideen und Recherche: `research/ideen.md`.
 - Empfehlung: das Repo öffentlich machen (GPLv3 wie sleepr). Dann ist CI kostenlos, privat wären die Actions-Minuten schnell aufgebraucht.
 
 ## Stack
-- Kotlin + Jetpack Compose. sleepr nutzt dagegen Views/Canvas.
+- Kotlin + Jetpack Compose. Ausnahme sleepr: Views/Canvas, bleibt so.
 - Aktuelle stabile Versionen: AGP/Gradle/Kotlin, compileSdk 37, targetSdk 36, minSdk 26, JDK 17.
 - Erlaubte Abhängigkeiten: Compose BOM, activity/lifecycle, core-ktx, kotlinx-serialization (nur wo nötig). Ausnahme: androidx.webkit nur für moovr und glidr.
 - Verboten: Hilt, Navigation, Room, Firebase, Play Services, INTERNET.

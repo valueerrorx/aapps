@@ -15,11 +15,9 @@
     "shot": "img/sleepr-shot.webp",
     "card": "cards/00-sleepr.png",
     "source": {
-      "repo": "SLEEPR_DIR",
-      "ref": "feat/play-button-bottom",
-      "shot": "env:SLEEPR_SHOT",
-      "shotNote": "UI-Screenshot idle.png (Start-Button unten) von feat/play-button-bottom, nicht im sleepr-Repo eingecheckt",
-      "icon": "vector:ic_launcher_fg"
+      "ref": "main",
+      "icon": "apps/sleepr/screenshots/icon_store_512.png",
+      "shot": "apps/sleepr/screenshots/idle.png"
     }
   },
   {

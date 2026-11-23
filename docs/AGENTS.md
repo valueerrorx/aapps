@@ -24,6 +24,7 @@ Robolectric läuft mit SDK 34 (`src/test/resources/robolectric.properties`), wei
 - Faustregel: Folgt die Rückmeldung direkt auf einen Finger, dann `step`/`press`.
 
 ## Regeln
+- sleepr ist Views/Canvas statt Compose und nutzt `core/ui` nicht; nicht auf Compose umbauen. Haptik dort direkt über die View (`KEYBOARD_TAP` wie `press()`).
 - Erlaubt: Compose BOM, activity, lifecycle, core-ktx, kotlinx-serialization (nur wo nötig).
 - Ausnahme: androidx.webkit nur für die Spiele moovr und glidr (WebViewAssetLoader für die Spiel-Assets).
 - Verboten: Hilt, Navigation, Room, Firebase, Play Services, INTERNET.
