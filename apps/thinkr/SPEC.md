@@ -1,9 +1,9 @@
-# thinkr – SPEC (Phase 1: Gerüst + Echo, Phase 2: Weichen, Phase 3: Sternbild, Tinte, Schwarm = Release 1)
+# thinkr – SPEC (Phase 1: Gerüst + Echo, Phase 2: Weichen, Phase 3: Sternbild, Tinte, Schwarm = Release 1, Phase 4: Bande, Tropfen, Rundblick, Slalom)
 
 ## Aufgabe
 Kurze Denkspiele für zwischendurch, je etwa eine Minute. Offline, ohne Werbung, ohne Abo, ohne Konto. Jeden Tag stellt thinkr bis zu drei Spiele als Tagestraining zusammen. Unterhaltung, keine Gesundheitsversprechen.
 
-Erster Release: 5 Spiele (Echo, Weichen, Sternbild, Tinte, Schwarm), die übrigen 4 (Bande, Tropfen, Rundblick, Slalom) danach. Phase 1 enthält das Gerüst und Echo, Phase 2 Weichen.
+Erster Release: 5 Spiele (Echo, Weichen, Sternbild, Tinte, Schwarm), die übrigen 4 (Bande, Tropfen, Rundblick, Slalom) danach (Phase 4). Phase 1 enthält das Gerüst und Echo, Phase 2 Weichen.
 
 ## Rechtliche Linie
 - Nur die Spiel-Prinzipien sind übernommen (klassische Psychologie-Aufgaben wie n-back). Eigene Namen, Figuren, Optik, Texte und Töne.
@@ -22,7 +22,8 @@ Erster Release: 5 Spiele (Echo, Weichen, Sternbild, Tinte, Schwarm), die übrige
 - Tageswechsel wird beim Öffnen (`ON_START`) übernommen, nicht mitten im Spiel.
 - Serie: Tage mit erledigtem Tagestraining. Ein verpasster Tag wird still überbrückt, wenn der letzte überbrückte mindestens 7 Tage zurückliegt. Zwei Lücken in Folge beenden die Serie, ohne Schuld-Text („Neue Serie beginnt heute"). Heute offen zählt nicht als Lücke.
 - Speicher: SharedPreferences, ein Text-Blob `thinkr1` (Zeilen mit `|`): Fortschritt `P`, Runden `R` (max. 1000, max. 400 Tage), erledigte Tage `D`. Kaputte Zeilen werden übersprungen.
-- Haptik: Tipp/Wisch `press()`; Multiplikator-Aufstieg `tick()`; Rundenende `confirm()`; neuer Bestwert `tick()`. Fehler nur optisch (Wackeln, Bernstein-Rand), kein Vibrieren.
+- Haptik: Tipp/Wisch `press()`; Multiplikator-Aufstieg `tick()`; Rundenende `confirm()`; neuer Bestwert `tick()`. Fehler nur optisch (Wackeln, Bernstein-Rand), kein Vibrieren. Spiele melden zusätzlich `Play.steps` (Raster, z. B. Abprall → `step()`) und `Play.jolts` (harter Stoß, z. B. Zusammenstoß → `confirm()`).
+- Runde vor der Zeit beenden: `Round.end()` (Becken voll, Leben weg). `GameDef.timed = false`: keine Zeitleiste, das Spiel zeigt seinen Stand selbst (Tropfen).
 - Töne (Standard aus): im Code erzeugt, richtig / falsch / Rundenende, dezent.
 - Keine Benachrichtigungen, keine Berechtigung außer VIBRATE (aus `core/ui`).
 
@@ -84,6 +85,31 @@ Erster Release: 5 Spiele (Echo, Weichen, Sternbild, Tinte, Schwarm), die übrige
 - Punkte: 40 × Multiplikator.
 - Optik: richtig zieht der Schwarm in Wischrichtung mit langen Schweifen ab, falsch wackelt er bernstein und verblasst. Keine Vögel, nur abstrakte Kometen. TalkBack-Aktionen für die vier Richtungen.
 
+## Bande
+- Feld 5×5 bis 8×8 aus dunklem Glas, ringsum Randlaschen (Pfeile nach außen). Glas-Prismen („/" oder „\") leuchten nach 0,45 s auf, stehen 3 s (−100 ms je Stufe, min. 1,8 s, Gemächlich ×1,5) und verschwinden. Dann sitzt eine Lichtkugel an einem Randfeld; Tipp auf die Lasche, an der das Licht austritt (löst beim Aufsetzen aus; knapp im Feld zählt die nächste Kante, Ecken nicht).
+- Danach läuft die Kugel sichtbar (9 Felder/s), getroffene Prismen leuchten beim Abprall auf (`steps` → `step()`), der Weg gestrichelt in Akzent. Gewertet wird, wenn das Licht draußen ist (endet die Zeit vorher, trotzdem). Richtig: Weg leuchtet, Lasche pulst. Falsch: Bernstein-X an der getippten Lasche, alle Prismen gedimmt sichtbar.
+- Stufe 1–14: Raster 5 (1–3), 6 (4–7), 7 (8–11), 8 (12–14); Prismen 2 + (Stufe−1)·2/3; der Generator verlangt, dass das Licht mindestens min(Prismen, 1 + Stufe/3) verschiedene trifft. Treppe: richtig +1, falsch gleich, zwei falsch in Folge −1.
+- Punkte: 20 je getroffenem Prisma × Multiplikator. Farbfilter-Prismen (Stufe 12+) bewusst nicht (Plan: erst nach Review).
+
+## Tropfen
+- Rechentropfen (Glas, Rechnung in Space Grotesk mit tnum) fallen in ein Becken. Ziffernfeld 3×4 (1–9, Löschen, 0, Eingabe), Tasten ≥ 52 dp, lösen beim Aufsetzen aus. Ergebnis löst automatisch aus, sobald es eindeutig ist (kein längeres Ergebnis beginnt so), sonst mit Eingabe. Falsche Eingabe: Fehler, Anzeige wackelt bernstein.
+- Gleiche Ergebnisse platzen gemeinsam (+10 je weiterem Tropfen), goldener Leuchttropfen (ab Stufe 3, 6 %) räumt den Himmel ab. Jeder Aufschlag hebt das Wasser (Feder, Schwappen) und zählt als Fehler; beim dritten ist das Becken voll und die Runde aus. Keine Uhr, keine Zeitleiste (Sicherheitsnetz 15 min).
+- Stufe 1–14: + bis 10 → + bis 20 → +/− → bis 50 → × (≤5) → × (≤10) → ÷ → bis 100 → zweistellig × einstellig (ab 10) → bis 200 (ab 12). Fallzeit 9 s × 0,94 je Stufe, gleichzeitig 2 / 3 (ab 4) / 4 (ab 8) / 5 (ab 12). In der Runde: 4 gelöste Tropfen → Stufe +1 (auf 14: 4 % schneller), Aufschlag → −1. Gemächlich: Fallen und Takt ×1,5.
+- Punkte: 10 (klein) / 15 (größer) / 20 (×, ÷) / 30 (zweistellig ×) × Multiplikator. Jeder geplatzte Tropfen ist ein Treffer (`tick()`).
+- Tropfen-Text wächst mit der Systemschrift bis 160 %, darüber wird der Tropfen größer; breite Rechnungen werden kleiner statt umzubrechen. Ereignisse laufen streng nach Zeit (Ergebnis unabhängig von der Bildrate).
+
+## Rundblick
+- Sternenfeld mit 1–3 Positionsringen (8 Stellen je Ring, Ring 2 versetzt; Radien am kürzeren Maß). Fixierkreuz 0,6–0,95 s, dann blitzen gleichzeitig in der Mitte Kreis oder Raute und am Ring ein Stern auf, danach 0,3 s Rauschmaske an Mitte und allen Stellen. Antwort: Form über zwei Tasten (Kreis/Raute), Stelle per Tipp, beliebige Reihenfolge, je einmal. Nur beides richtig zählt.
+- Anzeigezeit in Frames (60 Hz): Leiter 30, 26, 22, 19, 16, 14, 12, 10, 9, 8, 7, 6, 5, 4, 3. Zwei richtig in Folge eine Sprosse kürzer, falsch eine länger. Die Maske kommt im ersten Frame, in dem die Zielzeit bis auf einen halben Frame erreicht ist (gemessene Frame-Dauer); bei 120 Hz also doppelt so viele Frames. Weicht die gemessene Anzeigedauer um mehr als ¾ Frame ab, zählt die Aufgabe nicht („Blitz war ungenau").
+- Stufe = Band der Anzeigezeit (500 ms × 0,72 je Stufe): 1 Ring (1–6), 2 Ringe (7–12), 3 Ringe mit Ködern (vierzackige Funken, 1–3) ab 13, max. 18; höchstens eine Spielart je Runde hinauf. Gemächlich: Frames ×1,5, mindestens 9 (150 ms).
+- Punkte: 60 × Multiplikator + 15 je Ring nach außen. Auflösung: Treffer pulst und zieht eine Linie zur Mitte; sonst Bernstein-X und das echte Ziel gestrichelt.
+
+## Slalom
+- Gleiter (Deltaflügel in Akzent, Leuchtschweif) in einer Kristallschlucht bei Nacht: Pseudo-3D aus flachen Ebenen (Fluchtpunkt, Spurstriche und Querlinien wandern mit der Welt, gezackte Kristallwände, Mond). Hindernisse: Kristallsäulen (kühles Blau) und Felsbrocken, ab Stufe 6 rutschen manche seitlich in ihre Spur. Keine Autos, keine Wüste.
+- Tipp auf linke/rechte Hälfte wechselt die Spur (160 ms, Feder-Neigung); gezählt wird ab der Hälfte des Wechsels. Zusammenstoß: Leben −1 (3), Tempo ×0,9, `confirm()`, Bernstein-Ring, kurzer Rückstoß, 0,9 s Schonzeit. Nach dem dritten ist die Runde aus, sonst nach 60 s.
+- Tempo 14 Einheiten/s × 1,06 je Stufe; je 10 s ohne Treffer ×1,06. Spuren 3 (1–4), 4 (5–9), 5 (10–14). Reihen: Abstand ≥ Tempo × (0,62 s + 0,34 s je Spur Versatz) zur garantiert freien Spur; mehr gesperrte Spuren mit der Stufe, enge Tore ab 10. Stufe nach der Runde = Tempo-Band, je Runde höchstens +3 bzw. −2. Gemächlich: Tempo ⅔, gleich bewertet.
+- Punkte: je sauber passierter Reihe 10 × Tempo-Faktor × Multiplikator; knapp ausgewichen (gesperrte Nachbarspur, Wechsel in den letzten 0,7 s) +15 und `tick()`. Ereignisse (Durchfahrten, Tempostufen, neue Reihen) laufen streng nach Zeit.
+
 ## Screens
 1. **Heute**: Datum, oben Spiele und Zahnrad. Hero: Tagesbild aus bis zu 3 Lichtkugeln (Spielsymbol, Name, Stufe), verbunden durch Linien, erledigt = Akzent mit Haken. Darunter Serie und Woche Mo–So. Pille „Start" / „Weiter" / „Fertig für heute".
 2. **Spiele**: alle Spiele mit Stufe und Bestwert, Tipp startet.
@@ -92,7 +118,7 @@ Erster Release: 5 Spiele (Echo, Weichen, Sternbild, Tinte, Schwarm), die übrige
 5. **Einstellungen**: Gemächlich, Farbenblind-Modus, Haptik, Töne, Stufe zurücksetzen je Spiel (zweimal tippen), Info.
 6. **Info**: wie alle aapps, plus Spielregeln, Tagestraining, Hinweis zu TalkBack, Gesundheits-Satz.
 
-Verlauf-Screen kommt in einer späteren Phase.
+Verlauf-Screen kommt in einer späteren Phase. Tagestraining und Listen enthalten alle neun Spiele (Wochenrotation: jedes ≥ 2× je Woche, keines an zwei Tagen in Folge).
 
 ## Akzent und Icon
 - Akzent Orchidee `#F27BE8`.
@@ -131,7 +157,15 @@ Tinte: `ink_play` (4 Farben), `ink_wrong` (falsch, alte Karte wackelt hinaus), `
 
 Schwarm: `swarm_play` (7 Kometen, gemischt), `swarm_hollow` (Stufe 12, hohl, fliegt), `swarm_leaving` (richtig gewischt, zieht ab), `swarm_countdown`, `swarm_paused`; Varianten `swarm_play_de`, `_land`, `_360dp` (9 Kometen), `swarm_hollow_land`, `swarm_countdown_hollow_de_font200`.
 
+Bande: `bounce_show`, `bounce_answer`, `bounce_solve` (Licht unterwegs), `bounce_wrong`, `bounce_big` (8×8), `bounce_countdown`, `bounce_paused`; Varianten `bounce_show_land`, `bounce_show_360dp`, `bounce_answer_de`, `bounce_countdown_de_font200`.
+
+Tropfen: `drops_play`, `drops_busy` (Stufe 12, zwei Aufschläge), `drops_countdown`, `drops_paused`; Varianten `drops_play_de`, `_land`, `_font200`, `_360dp`, `drops_countdown_de_font200`.
+
+Rundblick: `glance_fix`, `glance_flash`, `glance_flash_decoys`, `glance_mask`, `glance_answer`, `glance_solved`, `glance_missed`, `glance_countdown`, `glance_paused`; Varianten `glance_flash_land`, `glance_answer_de`, `_360dp`, `_font200`, `glance_countdown_de_font200`.
+
+Slalom: `slalom_play` (Neigung im Wechsel), `slalom_fast` (Stufe 12, 5 Spuren), `slalom_crash`, `slalom_countdown`, `slalom_paused`; Varianten `slalom_play_de`, `_land`, `_360dp`, `slalom_countdown_de_font200`.
+
 ## Abnahme
-- Domain ohne Android-Imports; Unit-Tests für Kette, Treppe, Frist-Bänder, Runde, Echo (Kartenfolge, Frist, Ablauf, Wechsel-Sperre, Punkte, Stufen), Sternbild (Muster, Linien-Baum, Phasen, Treppe, Punkte), Tinte (Kartenfolge, Anteile, Farbenblind-Palette, Frist), Schwarm (Formationen, Verteilung, Hohl-Regel, Frist), Tagestraining, Serie, Fortschritt und Codec (inkl. kaputter Daten). Farbwörter DE/EN per Robolectric.
+- Domain ohne Android-Imports; Unit-Tests für Kette, Treppe, Frist-Bänder, Runde, Echo (Kartenfolge, Frist, Ablauf, Wechsel-Sperre, Punkte, Stufen), Sternbild (Muster, Linien-Baum, Phasen, Treppe, Punkte), Tinte (Kartenfolge, Anteile, Farbenblind-Palette, Frist), Schwarm (Formationen, Verteilung, Hohl-Regel, Frist), Bande (Strahlverfolgung, Umkehrbarkeit, Mindesttreffer, Treppe, Wertung erst nach dem Lauf), Tropfen (Rechnungen ganzzahlig, Eindeutigkeit, Ketten, Leuchttropfen, Becken, Bildraten-Unabhängigkeit), Rundblick (Frames bei 60/120 Hz, ungültige Blitze, Phasen, Treppe, Ringe/Köder), Slalom (freie Spur erreichbar, perfekter Fahrer ohne Treffer, Tempo-Treppe, Leben, Bildraten-Unabhängigkeit), Tagestraining, Serie, Fortschritt und Codec (inkl. kaputter Daten). Farbwörter DE/EN per Robolectric.
 - Pause bei `ON_STOP` (Robolectric-Test).
 - `:apps:thinkr:check`, `assembleDebug`, `verifyRoborazziDebug` grün. Manifest nur mit VIBRATE.
