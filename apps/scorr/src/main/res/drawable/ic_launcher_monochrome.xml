@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tafeln als Umriss, Ziffern und Doppelpunkt voll -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:pathData="M29,34h18a4,4 0 0,1 4,4v32a4,4 0 0,1 -4,4h-18a4,4 0 0,1 -4,-4v-32a4,4 0 0,1 4,-4zM61,34h18a4,4 0 0,1 4,4v32a4,4 0 0,1 -4,4h-18a4,4 0 0,1 -4,-4v-32a4,4 0 0,1 4,-4z"
+        android:strokeWidth="2"
+        android:strokeColor="#FF000000" />
+    <path
+        android:pathData="M25,54h26M57,54h26"
+        android:strokeWidth="1.4"
+        android:strokeColor="#FF000000" />
+    <path
+        android:pathData="M32,44C32,39.5 35,38 38,38C41.5,38 44,40.5 44,44C44,48.5 39.5,52.5 32,67L44.5,67M64.5,43L70.5,38L70.5,67"
+        android:strokeWidth="3.4"
+        android:strokeColor="#FF000000"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M52.3,48.5a1.7,1.7 0 1,0 3.4,0a1.7,1.7 0 1,0 -3.4,0zM52.3,59.5a1.7,1.7 0 1,0 3.4,0a1.7,1.7 0 1,0 -3.4,0z" />
+</vector>
