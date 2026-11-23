@@ -5,7 +5,8 @@
 
 :root {
   --bg: #0b1014; --card: #10161b; --fg: #dce3e8; --fg2: #c3ccd3; --muted: #8a97a2;
-  --shot-h: 520px; /* einheitliche Höhe der Hochformat-Screenshots */
+  --head-h: 88px;  /* Kopf: Name 42 + 6 + 2 Kategoriezeilen à 19,5 */
+  --shot-h: 520px; /* Bildbereich, für Hoch- und Querformat gleich */
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
@@ -34,29 +35,32 @@ body {
     var(--card);
   border: 1px solid rgba(255, 255, 255, 0.06);
 }
-.card header { display: flex; align-items: center; gap: 16px; }
+/* Kopf mit fester Höhe (Platz für 2 Kategoriezeilen), damit der Text überall gleich tief beginnt */
+.card header { display: flex; align-items: center; gap: 16px; height: var(--head-h); flex: none; }
 .icon {
   width: 68px; height: 68px; border-radius: 17px; flex: none;
   box-shadow: 0 0 24px color-mix(in srgb, var(--a) 45%, transparent), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
 }
 .title { min-width: 0; }
 .card h2 { margin: 0; font: 700 42px/1 "Space Grotesk", system-ui, sans-serif; letter-spacing: -0.01em; }
-.cat { margin: 6px 0 0; color: var(--a); font-weight: 600; font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; }
+.cat {
+  margin: 6px 0 0; color: var(--a); font-weight: 600; font-size: 13px; line-height: 1.5; letter-spacing: 0.16em; text-transform: uppercase;
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
+}
 .nr { position: absolute; top: 24px; right: 26px; color: var(--muted); font-weight: 600; font-size: 14px; }
 
-/* Hochformat: alle Screenshots gleich hoch, Breite folgt dem eigenen Seitenverhältnis (width/height im HTML) */
-.shot { margin: 0; display: flex; justify-content: center; }
+/* Bildbereich: feste Höhe für alle Karten, Bild darin zentriert und unverzerrt */
+.shot { margin: 0; height: var(--shot-h); flex: none; display: flex; align-items: center; justify-content: center; }
 .shot img {
-  display: block; height: var(--shot-h); width: auto; max-width: 100%;
+  display: block; height: 100%; width: auto; max-width: 100%;
   object-fit: contain; border-radius: 22px;
   box-shadow: 0 0 46px color-mix(in srgb, var(--a) 35%, transparent), 0 0 0 1px rgba(255, 255, 255, 0.12);
 }
-/* Querformat: volle Breite, nie höher als der Hochformat-Rahmen, im freien Platz zentriert */
-.wide .shot { flex: 1; align-items: center; }
-.wide .shot img { width: 100%; height: auto; max-height: var(--shot-h); border-radius: 16px; }
+/* Querformat: volle Breite, vertikal zentriert im Bildbereich */
+.wide .shot img { width: 100%; height: auto; max-height: 100%; border-radius: 16px; }
 
-/* Text immer unten bündig */
-.card ul { list-style: none; margin: auto 0 0; padding: 0 0 0 22px; display: grid; gap: 10px; }
+/* Text beginnt direkt unter dem Bildbereich, Leerraum darf unten bleiben */
+.card ul { list-style: none; margin: 0; padding: 0 0 0 22px; display: grid; gap: 10px; }
 .card li { position: relative; color: var(--fg2); }
 .card li:first-child { color: var(--fg); font-weight: 600; }
 .card li::before {

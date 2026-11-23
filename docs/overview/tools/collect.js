@@ -1,5 +1,5 @@
 // Holt Icons und Screenshots aus den App-Branches nach docs/overview/img
-// Aufruf: node collect.js [app,...]   (sleepr braucht SLEEPR_DIR = Checkout des sleepr-Repos)
+// Aufruf: node collect.js [app,...]   (sleepr braucht SLEEPR_SHOT = Pfad zum Screenshot, siehe apps.json)
 const fs = require('fs');
 const path = require('path');
 const { OV, canvas, gitFile, apps } = require('./lib.js');
@@ -28,10 +28,11 @@ async function collect(a) {
   const s = a.source;
   let icon, shot;
   if (s.repo === 'SLEEPR_DIR') {
-    const dir = process.env.SLEEPR_DIR;
-    if (!dir) { console.warn('sleepr übersprungen: SLEEPR_DIR nicht gesetzt'); return; }
+    // "env:NAME" = Bilddatei aus Umgebungsvariable, sonst Pfad im sleepr-Checkout
+    const file = s.shot.startsWith('env:') ? process.env[s.shot.slice(4)] : process.env.SLEEPR_DIR && path.join(process.env.SLEEPR_DIR, s.shot);
+    if (!file) { console.warn(`sleepr übersprungen: ${s.shot.startsWith('env:') ? s.shot.slice(4) : 'SLEEPR_DIR'} nicht gesetzt`); return; }
     icon = await loadImage(Buffer.from(SLEEPR_ICON));
-    shot = await loadImage(fs.readFileSync(path.join(dir, s.shot)));
+    shot = await loadImage(fs.readFileSync(file));
   } else {
     icon = await loadImage(gitFile(s.ref, s.icon));
     shot = s.shot.startsWith('level:') ? (await renderLevel(s.shot.slice(6))).canvas : await loadImage(gitFile(s.ref, s.shot));
