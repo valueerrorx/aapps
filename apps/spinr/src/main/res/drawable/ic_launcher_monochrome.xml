@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Rad mit Speichen und einem gefuellten Segment unter dem Zeiger (keine Dreiblatt-Form) -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:pivotX="54"
+        android:pivotY="54"
+        android:scaleY="0.9"
+        android:translateY="3">
+        <path
+            android:pathData="M29,54a25,25 0 1,0 50,0a25,25 0 1,0 -50,0z"
+            android:strokeWidth="2"
+            android:strokeColor="#FF000000" />
+        <group
+            android:pivotX="54"
+            android:pivotY="54"
+            android:rotation="14">
+            <path
+                android:pathData="M54,54L54,32M54,54L73.05,43M54,54L73.05,65M54,54L54,76M54,54L34.95,65M54,54L34.95,43"
+                android:strokeWidth="1.6"
+                android:strokeColor="#FF000000"
+                android:strokeLineCap="round" />
+            <path android:fillColor="#FF000000" android:pathData="M54,54L54,32A22,22 0 0,1 73.05,43Z" />
+        </group>
+        <path
+            android:fillColor="#FF000000"
+            android:pathData="M50,54a4,4 0 1,0 8,0a4,4 0 1,0 -8,0z" />
+    </group>
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M54,41L50.2,31.6A4.1,4.1 0 1,1 57.8,31.6Z" />
+</vector>

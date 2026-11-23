@@ -20,3 +20,4 @@ rootProject.name = "aapps"
 include(":core:ui")
 include(":apps:levlr")
 include(":apps:nordr")
+include(":apps:spinr")
