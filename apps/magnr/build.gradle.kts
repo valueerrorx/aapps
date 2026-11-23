@@ -3,7 +3,7 @@ plugins {
     alias(libs.plugins.roborazzi)
 }
 
-// Keine Berechtigungen: Haptik ueber die View, Ton ueber AudioTrack (SPEC.md)
+// Keine eigenen Berechtigungen: VIBRATE kommt aus core/ui, Ton ueber AudioTrack (SPEC.md)
 
 dependencies {
     implementation(project(":core:ui"))

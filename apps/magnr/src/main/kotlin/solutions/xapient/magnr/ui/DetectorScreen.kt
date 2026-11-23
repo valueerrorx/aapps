@@ -130,7 +130,7 @@ fun DetectorScreen(
             AappsPillButton(
                 stringResource(R.string.zero),
                 {
-                    haptics?.confirm()
+                    haptics?.press()
                     onZero()
                 },
                 Modifier.widthIn(min = 160.dp),
