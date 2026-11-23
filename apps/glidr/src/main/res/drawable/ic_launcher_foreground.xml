@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Kuh aus Cool Cows on Ice schlittert schraeg ueber eine Eisscholle -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Lichthof -->
+    <path android:pathData="M24,56a31,31 0 1,0 62,0a31,31 0 1,0 -62,0z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="radial"
+                android:centerX="55"
+                android:centerY="56"
+                android:gradientRadius="31"
+                android:startColor="#38CDE6FF"
+                android:endColor="#00CDE6FF" />
+        </aapt:attr>
+    </path>
+    <!-- Eisscholle -->
+    <path
+        android:fillColor="#FF1E2932"
+        android:pathData="M29.5,74.6L37.5,69.6L50,69.2L56.5,67.4L70,67.6L82.5,72.2L77,77.4L61,80.6L42,80.2Z" />
+    <path android:pathData="M29.5,74.6L37.5,69.6L50,69.2L56.5,67.4L70,67.6L82.5,72.2L77,77.4L61,80.6L42,80.2Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="56"
+                android:startY="67"
+                android:endX="56"
+                android:endY="81"
+                android:startColor="#73CDE6FF"
+                android:endColor="#14CDE6FF" />
+        </aapt:attr>
+    </path>
+    <path
+        android:pathData="M29.5,74.6L37.5,69.6L50,69.2L56.5,67.4L70,67.6L82.5,72.2L77,77.4L61,80.6L42,80.2Z"
+        android:strokeWidth="2"
+        android:strokeColor="#FFCDE6FF"
+        android:strokeLineJoin="round" />
+    <!-- Glanz -->
+    <path
+        android:pathData="M36,73.4L42.5,71M64,77.6L72.5,76.4"
+        android:strokeWidth="1.1"
+        android:strokeAlpha="0.6"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeLineCap="round" />
+    <!-- Fahrtstriche -->
+    <path
+        android:pathData="M27,55h7"
+        android:strokeWidth="2.2"
+        android:strokeColor="#FFCDE6FF"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M24.5,61.5h9"
+        android:strokeWidth="2.2"
+        android:strokeAlpha="0.7"
+        android:strokeColor="#FFCDE6FF"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M28,68h5.5"
+        android:strokeWidth="2.2"
+        android:strokeAlpha="0.42"
+        android:strokeColor="#FFCDE6FF"
+        android:strokeLineCap="round" />
+    <!-- Kuh, zurueckgelehnt -->
+    <group
+        android:pivotX="54"
+        android:pivotY="54"
+        android:rotation="-16"
+        android:scaleX="0.86"
+        android:scaleY="0.86"
+        android:translateX="5">
+        <!-- Hoerner -->
+        <path
+            android:pathData="M44,36C42,32.5 42.5,29.5 45,27.5M64,36C66,32.5 65.5,29.5 63,27.5"
+            android:strokeWidth="2.6"
+            android:strokeColor="#FFCDE6FF"
+            android:strokeLineCap="round" />
+        <!-- Ohren -->
+        <path
+            android:fillColor="#33CDE6FF"
+            android:pathData="M41,42C36,39.5 31.5,40.5 30,43.5C33,46 37,46.5 41,46M67,42C72,39.5 76.5,40.5 78,43.5C75,46 71,46.5 67,46"
+            android:strokeWidth="2.4"
+            android:strokeColor="#FFCDE6FF"
+            android:strokeLineJoin="round"
+            android:strokeLineCap="round" />
+        <!-- Kopf -->
+        <path
+            android:fillColor="#FF1E2932"
+            android:pathData="M40,53C38,42 44,34.5 54,34.5C64,34.5 70,42 68,53z"
+            android:strokeWidth="2.6"
+            android:strokeColor="#FFCDE6FF"
+            android:strokeLineJoin="round" />
+        <!-- Fleck -->
+        <path
+            android:fillColor="#55CDE6FF"
+            android:pathData="M56.5,37.4C60.5,36.6 64.6,39 65.3,43.2C61.6,43.8 57.8,41.6 56.5,37.4z" />
+        <!-- Reflex -->
+        <path
+            android:pathData="M43.8,40.6C45.3,38.4 47.4,37.2 49.6,36.7"
+            android:strokeWidth="1.2"
+            android:strokeAlpha="0.45"
+            android:strokeColor="#FFFFFFFF"
+            android:strokeLineCap="round" />
+        <!-- Augen, erschrocken nach oben -->
+        <path
+            android:fillColor="#FFF4F9FF"
+            android:pathData="M42.6,46a5.4,5.4 0 1,0 10.8,0a5.4,5.4 0 1,0 -10.8,0zM54.6,46a5.4,5.4 0 1,0 10.8,0a5.4,5.4 0 1,0 -10.8,0z" />
+        <path
+            android:fillColor="#FF10161B"
+            android:pathData="M46.6,44.2a2.4,2.4 0 1,0 4.8,0a2.4,2.4 0 1,0 -4.8,0zM58.6,44.2a2.4,2.4 0 1,0 4.8,0a2.4,2.4 0 1,0 -4.8,0z" />
+        <!-- Maul -->
+        <path
+            android:fillColor="#FF1E2932"
+            android:pathData="M39,60.5a15,9.5 0 1,0 30,0a15,9.5 0 1,0 -30,0z" />
+        <path
+            android:fillColor="#2ECDE6FF"
+            android:pathData="M39,60.5a15,9.5 0 1,0 30,0a15,9.5 0 1,0 -30,0z"
+            android:strokeWidth="2.6"
+            android:strokeColor="#FFCDE6FF" />
+        <!-- Nasenloecher und ein kleines Oh -->
+        <path
+            android:fillColor="#FFCDE6FF"
+            android:pathData="M47.6,59a1.9,2.5 0 1,0 3.8,0a1.9,2.5 0 1,0 -3.8,0zM56.6,59a1.9,2.5 0 1,0 3.8,0a1.9,2.5 0 1,0 -3.8,0z" />
+        <path
+            android:pathData="M52.3,65.2a1.7,1.5 0 1,0 3.4,0a1.7,1.5 0 1,0 -3.4,0z"
+            android:strokeWidth="1.4"
+            android:strokeColor="#FFCDE6FF" />
+    </group>
+    <!-- Eisglitzern -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:fillAlpha="0.85"
+        android:pathData="M74.5,28.5C74.9,31.2 75.8,32.1 78.5,32.5C75.8,32.9 74.9,33.8 74.5,36.5C74.1,33.8 73.2,32.9 70.5,32.5C73.2,32.1 74.1,31.2 74.5,28.5z" />
+</vector>
