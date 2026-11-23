@@ -126,7 +126,7 @@ fun PulseScreen(
             onRotate = {
                 if (onNudge(it)) {
                     atLimit = false
-                    haptics?.tick()
+                    haptics?.step()
                 } else if (!atLimit) {
                     atLimit = true
                     if (haptics != null) view.performHapticFeedback(if (Build.VERSION.SDK_INT >= 30) HapticFeedbackConstants.REJECT else HapticFeedbackConstants.LONG_PRESS)
@@ -142,7 +142,7 @@ fun PulseScreen(
     val main: @Composable () -> Unit = {
         AappsPillButton(
             stringResource(if (playing) R.string.stop else R.string.start),
-            { haptics?.confirm(); onToggle() },
+            { haptics?.press(); onToggle() },
             Modifier.widthIn(min = 176.dp),
             icon = if (playing) PulsrIcons.Stop else PulsrIcons.Play,
             active = !playing,
@@ -280,13 +280,13 @@ private fun StepButton(icon: ImageVector, desc: String, enabled: Boolean, haptic
                         if (!on) return@awaitEachGesture
                         pressed = true
                         step()
-                        haptics?.tick()
+                        haptics?.press()
                         val repeat = launch {
                             delay(420)
                             var gap = 120L
                             while (on) {
                                 step()
-                                haptics?.tick()
+                                haptics?.step()
                                 delay(gap)
                                 gap = (gap * 0.88).toLong().coerceAtLeast(35)
                             }
@@ -362,7 +362,7 @@ private fun SubPicker(current: Subdivision, haptics: Haptics?, onSub: (Subdivisi
                     .background(bg)
                     .selectable(sel, indication = null, interactionSource = null, role = Role.RadioButton) {
                         if (!sel) {
-                            haptics?.tick()
+                            haptics?.step()
                             onSub(sub)
                         }
                     }

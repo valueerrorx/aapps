@@ -23,7 +23,7 @@ Metronom zum Üben: Tempo einstellen, Start drücken, sauberer Klick ohne Schwan
 | `POST_NOTIFICATIONS` | Stopp in der Benachrichtigung (Android 13+, einmal vor dem ersten Start gefragt; abgelehnt spielt es trotzdem). |
 | `WAKE_LOCK` | CPU bleibt wach, damit der Audio-Thread den Puffer rechtzeitig füllt. Nur während des Spielens. Bleibt, weil die Android-Doku für Hintergrund-Wiedergabe einen Wakelock verlangt; dass AudioFlinger bei aktivem Track die CPU auch für den App-Thread wach hält, ist nicht dokumentiert zugesichert. |
 
-Kein INTERNET, kein VIBRATE (Haptik über die View).
+Kein INTERNET. VIBRATE kommt aus `core/ui` (normal, ohne Rückfrage); pulsr nutzt nur Touch-Haptik über die View (`step` für Drehrad, Unterteilung und Halten der Taktart-Pfeile, `press` für Tasten).
 
 ## Nicht
 - Keine Presets/Setlists, kein Trainer (Tempo-Rampen), keine Pendel-Physik, kein Blitz-Modus, keine Betonung pro Schlag, keine ungeraden Nenner (x/8).
@@ -48,4 +48,4 @@ Varianten (Standard Pixel 7, en): `_de`, `_land`, `_font200`, `_land_font200` f�
 ## Abnahmekriterien
 - Domain ohne Android-Imports, Unit-Tests für Sample-Positionen (Abstand, Unterteilung, Betonung, kein Drift über 10 min, Tempowechsel mitten im Schlag), Mischen (Onset auf dem Sample), Audio-Uhr (Schlag/Phase aus Frame-Position; Eigenschaftstest: am Klick-Frame kippt die Uhr, auch bei zufälligen Wechseln), Tap-Tempo (Mittelwert, Ausreißer, Neustart nach Pause), Rad-Winkel, Tempobezeichnung, Speicher, Kontrast (WCAG AA gemessen; gestoppte Segmente ≥ 3:1, beim Spielen laufender zu ruhendem Schlag ≥ 2,5:1).
 - Gesten (Robolectric): Rad drehen, −/+ und Halten, Tap, Start/Stopp. Im Leerlauf keine Animations-Frames.
-- `:apps:pulsr:check`, `verifyRoborazziDebug`, `assembleRelease` grün; nur die 4 Berechtigungen oben; Release-APK < 4 MB.
+- `:apps:pulsr:check`, `verifyRoborazziDebug`, `assembleRelease` grün; nur die 4 Berechtigungen oben plus VIBRATE aus `core/ui`; Release-APK < 4 MB.
