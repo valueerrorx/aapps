@@ -3,7 +3,7 @@ package solutions.xapient.thinkr.ui.swarm
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
-import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -57,6 +57,9 @@ private const val OUT_MS = 420.0
 // Abstand zwischen Kometen in Kometen-Einheiten
 private const val SPACING = 1.5f
 
+// Flugzeit, fuer die Platz eingeplant wird (laengste Frist der Hohl-Stufen ohne Gemaechlich)
+private const val DRIFT_SPAN_S = 3.2f
+
 // Schwarm-Brett: Wisch in eine von vier Richtungen; alle Bewegung haengt an der Spielzeit
 @Composable
 fun SwarmBoard(s: SwarmState, live: Boolean, count: Int, onSwipe: (Dir) -> Unit) {
@@ -66,7 +69,7 @@ fun SwarmBoard(s: SwarmState, live: Boolean, count: Int, onSwipe: (Dir) -> Unit)
     val desc = stringResource(R.string.swarm_board)
     val labels = Dir.entries.associateWith { stringResource(dirLabel(it)) }
     val dust = remember { Random(57).let { r -> List(60) { floatArrayOf(r.nextFloat(), r.nextFloat(), r.nextFloat()) } } }
-    BoxWithConstraints(Modifier.fillMaxSize().padding(horizontal = 12.dp).padding(bottom = 16.dp)) {
+    Box(Modifier.fillMaxSize().padding(horizontal = 12.dp).padding(bottom = 16.dp)) {
         val maxUnit = with(LocalDensity.current) { 56.dp.toPx() }
         Canvas(
             Modifier
@@ -150,11 +153,14 @@ private fun DrawScope.drawFlock(
     val spots = Formations.spots(f.formation, f.size)
     val ex = spots.maxOf { abs(it.x) } * u * SPACING + u * 1.3f
     val ey = spots.maxOf { abs(it.y) } * u * SPACING + u * 1.3f
-    val cx = if (size.width > 2 * ex) ex + f.x * (size.width - 2 * ex) else size.width / 2
-    val cy = if (size.height > 2 * ey) ey + f.y * (size.height - 2 * ey) else size.height / 2
+    // Startpunkt so, dass auch der fliegende Schwarm im Brett bleibt
+    val span = u * SwarmRules.DRIFT_SPEED.toFloat() * DRIFT_SPAN_S * (if (s.relaxed) SwarmRules.RELAXED.toFloat() else 1f)
+    val dv = f.drift?.vec() ?: Offset.Zero
+    val cx = place(f.x, ex + span * maxOf(0f, -dv.x), size.width - ex - span * maxOf(0f, dv.x), size.width)
+    val cy = place(f.y, ey + span * maxOf(0f, -dv.y), size.height - ey - span * maxOf(0f, dv.y), size.height)
     // Flug des ganzen Schwarms (nur mit Hohl-Regel), bis zur Antwort
     val flown = ((until - shownAt) / 1000.0).coerceAtLeast(0.0).toFloat()
-    val drift = (f.drift?.vec() ?: Offset.Zero) * (u * SwarmRules.DRIFT_SPEED.toFloat() * flown)
+    val drift = dv * (u * SwarmRules.DRIFT_SPEED.toFloat() * flown)
     val enter = if (out == null) Spring.step(now - shownAt, hz = 3.0, damping = 0.7).toFloat() else 1f
     val p = if (out != null) ((now - out.at) / OUT_MS).toFloat().coerceIn(0f, 1f) else 0f
     val good = out?.correct == true
@@ -183,6 +189,12 @@ private fun DrawScope.drawFlock(
             drawCircle(accent.copy(alpha = 0.9f * alpha), u * 0.72f, pos, style = Stroke(1.8.dp.toPx()))
         }
     }
+}
+
+// f (0..1) im Bereich lo..hi; passt es nicht, mittig zwischen lo und hi, notfalls Brettmitte
+private fun place(f: Float, lo: Float, hi: Float, full: Float): Float = when {
+    hi >= lo -> lo + f * (hi - lo)
+    else -> ((lo + hi) / 2).coerceIn(0f, full)
 }
 
 // Einheitsvektor von a nach b drehen (kuerzester Winkel), t = 0..1
