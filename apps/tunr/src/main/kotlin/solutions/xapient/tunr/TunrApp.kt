@@ -28,8 +28,11 @@ import solutions.xapient.aapps.core.ui.AappsTheme
 import solutions.xapient.aapps.core.ui.KeepScreenOn
 import solutions.xapient.aapps.core.ui.rememberHaptics
 import solutions.xapient.tunr.audio.AudioRecordMic
+import solutions.xapient.tunr.audio.AudioTrackTone
+import solutions.xapient.tunr.audio.TonePlayer
 import solutions.xapient.tunr.audio.Mic
 import solutions.xapient.tunr.domain.MicAccess
+import solutions.xapient.tunr.domain.Notes
 import solutions.xapient.tunr.domain.Settings
 import solutions.xapient.tunr.domain.micAccess
 import solutions.xapient.tunr.ui.InstrumentScreen
@@ -63,7 +66,7 @@ private class Ask {
 private const val INSTANT_MS = 500L
 
 @Composable
-fun TunrApp(micFactory: (Context) -> Mic = ::AudioRecordMic) {
+fun TunrApp(toneFactory: () -> TonePlayer = ::AudioTrackTone, micFactory: (Context) -> Mic = ::AudioRecordMic) {
     val context = LocalContext.current
     val activity = LocalActivity.current
     val prefs = remember { Prefs(context) }
@@ -73,6 +76,7 @@ fun TunrApp(micFactory: (Context) -> Mic = ::AudioRecordMic) {
     var locked by rememberSaveable { mutableIntStateOf(-1) }
     val state = remember { TunerState(settings.a4, settings.instrument) }
     val mic = remember { micFactory(context) }
+    val tone = remember { toneFactory() }
 
     fun change(s: Settings) {
         val next = s.sane()
@@ -119,6 +123,10 @@ fun TunrApp(micFactory: (Context) -> Mic = ::AudioRecordMic) {
         val haptics = rememberHaptics(settings.haptics)
         when (screen) {
             Screen.TUNER -> {
+                // Referenzton nur am Stimm-Bildschirm und im Vordergrund
+                LifecycleStartEffect(tone) {
+                    onStopOrDispose { tone.stop() }
+                }
                 val listening = access == MicAccess.GRANTED && !micError
                 if (listening) {
                     KeepScreenOn()
@@ -143,6 +151,12 @@ fun TunrApp(micFactory: (Context) -> Mic = ::AudioRecordMic) {
                     locked = locked,
                     haptics = haptics,
                     onLock = { locked = it },
+                    onPlay = { i ->
+                        settings.instrument.strings.getOrNull(i)?.let { midi ->
+                            tone.play(Notes.hz(midi, settings.a4.toFloat()))
+                            state.reference(i)
+                        }
+                    },
                     onInstrument = { screen = Screen.INSTRUMENT },
                     onSettings = { screen = Screen.SETTINGS },
                     onMicAction = {

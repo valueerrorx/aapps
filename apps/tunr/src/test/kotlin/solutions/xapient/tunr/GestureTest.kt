@@ -26,7 +26,9 @@ import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
 import solutions.xapient.aapps.core.ui.AappsTheme
+import androidx.compose.ui.semantics.SemanticsActions
 import solutions.xapient.tunr.audio.Mic
+import solutions.xapient.tunr.audio.TonePlayer
 import solutions.xapient.tunr.domain.Frame
 import solutions.xapient.tunr.domain.Instrument
 import solutions.xapient.tunr.domain.Reading
@@ -89,6 +91,41 @@ class GestureTest {
         rule.onNodeWithContentDescription("String 2, A2").performClick()
         rule.waitForIdle()
         assertEquals(-1, locked)
+    }
+
+    // Tippen spielt den Ton der Saite (Kammerton beachtet), Mikrofon zaehlt waehrenddessen nicht
+    @Test fun tapStringPlaysReference() {
+        shadowOf(RuntimeEnvironment.getApplication()).grantPermissions(Manifest.permission.RECORD_AUDIO)
+        val ctx = RuntimeEnvironment.getApplication()
+        Prefs(ctx).settings = Settings(a4 = 442, instrument = Instrument.GUITAR)
+        val mic = FakeMic()
+        val tone = FakeTone()
+        show { TunrApp({ tone }) { mic } }
+        val node = rule.onNodeWithContentDescription("String 2, A2")
+        assertEquals("Play A2", node.fetchSemanticsNode().config[SemanticsActions.OnClick].label)
+        node.performClick()
+        rule.waitForIdle()
+        assertEquals(1, tone.played.size)
+        assertEquals(hz(45) * 442f / 440f, tone.played[0], 0.01f)
+        // eigener Ton im Mikrofon (8 Cent unter A2 bei 442 Hz): keine Messung, nur die festgehaltene Saite
+        rule.runOnUiThread { repeat(20) { mic.sink!!(Frame(hz(45), -30f)) } }
+        rule.waitForIdle()
+        rule.onNodeWithContentDescription("Tuner").assertExistsWithState("A2")
+        // Bildschirm verlassen: Ton aus
+        rule.onNodeWithContentDescription("Settings").performClick()
+        rule.waitForIdle()
+        assertEquals(1, tone.stops)
+    }
+
+    private class FakeTone : TonePlayer {
+        val played = mutableListOf<Float>()
+        var stops = 0
+        override fun play(hz: Float) {
+            played += hz
+        }
+        override fun stop() {
+            stops++
+        }
     }
 
     // Leerlauf: keine Frames; Ton: Bildschleife laeuft; nach dem Ton schlaeft sie wieder ein

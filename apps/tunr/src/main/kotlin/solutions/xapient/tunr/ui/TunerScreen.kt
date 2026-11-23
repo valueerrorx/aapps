@@ -1,6 +1,8 @@
 package solutions.xapient.tunr.ui
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -33,6 +35,7 @@ import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
@@ -81,6 +84,7 @@ fun TunerScreen(
     onSettings: () -> Unit,
     onMicAction: () -> Unit,
     animate: Boolean = true,
+    onPlay: (Int) -> Unit = {},
 ) {
     if (animate) {
         // Bildschleife nur, solange sich etwas bewegt; sonst wartet sie auf neue Werte
@@ -119,7 +123,7 @@ fun TunerScreen(
     // Platz fuer die Saiten immer reserviert, damit Ring und Zustand beim Moduswechsel nicht springen
     val strings: @Composable () -> Unit = {
         Box(Modifier.height(StringSlot), contentAlignment = Alignment.TopCenter) {
-            if (!settings.instrument.chromatic) StringRow(settings.instrument, settings.notation, state.coarse, locked, haptics, onLock)
+            if (!settings.instrument.chromatic) StringRow(settings.instrument, settings.notation, state.coarse, state.tone, locked, haptics, onLock, onPlay)
         }
     }
     val top: @Composable (Modifier) -> Unit = { m ->
@@ -179,6 +183,9 @@ fun TunerScreen(
     }
 }
 
+// Leuchten des Referenztons: kritisch gedaempft, klingt in ~3 s aus wie die Saite
+private val ToneDecay = spring<Float>(dampingRatio = 1f, stiffness = 4f, visibilityThreshold = 0.005f)
+
 // Hoehe der Saitenreihe: Kreis 52 + Abstand 5 + Punkt 5
 private val StringSlot = 62.dp
 
@@ -224,15 +231,17 @@ private fun StatusLine(coarse: Coarse, modifier: Modifier = Modifier) {
     }
 }
 
-// Saiten des Instruments: naechste hervorgehoben, gestimmt gruen gefuellt, Tippen haelt fest
+// Saiten des Instruments: naechste hervorgehoben, gestimmt gruen gefuellt; Tippen spielt den Ton und haelt fest
 @Composable
 private fun StringRow(
     instrument: Instrument,
     notation: Notation,
     coarse: Coarse,
+    tone: ToneMark,
     locked: Int,
     haptics: Haptics?,
     onLock: (Int) -> Unit,
+    onPlay: (Int) -> Unit,
 ) {
     val c = Aapps.colors
     val held = stringResource(R.string.string_locked)
@@ -259,21 +268,39 @@ private fun StringRow(
                 },
                 Springs.gentle(), label = "stringInk",
             )
-            val edge = when {
-                isLocked -> c.accent
-                current -> c.fgMuted
-                else -> c.line
+            // Referenzton: leuchtet beim Anschlag auf und klingt mit dem Ton ab
+            val lit = remember { Animatable(if (tone.string == i && tone.pose >= 0f) tone.pose else 0f) }
+            LaunchedEffect(tone) {
+                when {
+                    tone.string != i -> lit.animateTo(0f, Springs.gentle())
+                    tone.pose >= 0f -> lit.snapTo(tone.pose)
+                    else -> {
+                        lit.snapTo(1f)
+                        lit.animateTo(0f, ToneDecay)
+                    }
+                }
             }
+            val glowLevel = lit.value
+            val edge = lerp(
+                when {
+                    isLocked -> c.accent
+                    current -> c.fgMuted
+                    else -> c.line
+                },
+                c.accent, glowLevel,
+            )
             val desc = stringResource(R.string.string_desc, i + 1, name.toString())
+            val playLabel = stringResource(R.string.play_tone, name.toString())
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Box(
                     Modifier
                         .size(52.dp)
-                        .glow(c.accent, 44.dp, if (tuned) 0.4f else 0f)
-                        .background(fill, CircleShape)
+                        .glow(c.accent, 44.dp, maxOf(if (tuned) 0.4f else 0f, 0.45f * glowLevel))
+                        .background(lerp(fill, c.accent, 0.14f * glowLevel), CircleShape)
                         .border(if (isLocked) 2.dp else 1.dp, edge, CircleShape)
-                        .clickable(interactionSource = null, indication = null, role = Role.Button) {
+                        .clickable(interactionSource = null, indication = null, role = Role.Button, onClickLabel = playLabel) {
                             haptics?.press()
+                            onPlay(i)
                             onLock(if (isLocked) -1 else i)
                         }
                         .semantics {

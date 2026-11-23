@@ -37,6 +37,7 @@
     <string name="string_desc">String %1$d, %2$s</string>
     <string name="string_locked">held</string>
     <string name="string_auto">automatic</string>
+    <string name="play_tone">Play %1$s</string>
 
     <string name="group_tuning">Tuning</string>
     <string name="a4_title">Concert pitch A4</string>

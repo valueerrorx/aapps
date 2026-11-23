@@ -50,8 +50,11 @@ class TunrScreenshotTest {
     )
 
     @Composable
-    private fun Screen(s: Settings, r: Reading = Reading(), mic: MicUi = MicUi.ON, strobe: Float = 0f, shine: Float = 1f, locked: Int = -1) {
-        val state = TunerState(s.a4, s.instrument).apply { show(r, strobe, shine) }
+    private fun Screen(s: Settings, r: Reading = Reading(), mic: MicUi = MicUi.ON, strobe: Float = 0f, shine: Float = 1f, locked: Int = -1, tone: Int = -1) {
+        val state = TunerState(s.a4, s.instrument).apply {
+            show(r, strobe, shine)
+            if (tone >= 0) showTone(tone, 0.8f)
+        }
         TunerScreen(state, s, mic, locked, null, {}, {}, {}, {}, animate = false)
     }
 
@@ -78,6 +81,11 @@ class TunrScreenshotTest {
     @Test fun flat_guitar_land() = shot("flat_guitar_land", "+land") { FlatGuitar() }
     @Test fun flat_guitar_font200() = shot("flat_guitar_font200", fontScale = 2f) { FlatGuitar() }
     @Test fun flat_guitar_land_font200() = shot("flat_guitar_land_font200", "+land", fontScale = 2f) { FlatGuitar() }
+
+    // Referenzton A2 klingt, Saite festgehalten, Anzeige pausiert
+    @Test fun reference_tone() = shot("reference_tone") {
+        Screen(guitar, Reading(heard = true, target = 45, string = 1), locked = 1, tone = 1)
+    }
 
     @Test fun sharp() = shot("sharp") { Screen(chromatic, tone(54, 38f), strobe = 40f) }
 

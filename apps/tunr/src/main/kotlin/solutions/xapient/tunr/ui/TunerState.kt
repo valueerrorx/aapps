@@ -10,6 +10,7 @@ import solutions.xapient.tunr.domain.Frame
 import solutions.xapient.tunr.domain.Instrument
 import solutions.xapient.tunr.domain.Notes
 import solutions.xapient.tunr.domain.PitchTracker
+import solutions.xapient.tunr.domain.Pluck
 import solutions.xapient.tunr.domain.Reading
 import solutions.xapient.tunr.domain.TunerMotion
 import kotlin.math.roundToInt
@@ -27,6 +28,9 @@ data class Coarse(
     // Abweichung in 5-Cent-Schritten (Ansage, Zustandszeile); 0 ohne Ton
     val cents5: Int = 0,
 )
+
+// Referenzton-Saite (-1 = keiner); pose >= 0 = festes Leuchten statt Abklingen
+data class ToneMark(val string: Int = -1, val id: Int = 0, val pose: Float = -1f)
 
 // Anzeige-Zustand auf dem Main-Thread; Feinwerte nur in der Zeichenphase lesen (frame)
 @Stable
@@ -49,6 +53,22 @@ class TunerState(a4: Int = Notes.A4_DEFAULT, instrument: Instrument = Instrument
     // Mikrofon liefert nur Nullen (systemweit gesperrt oder von anderer App belegt)
     var micSilent by mutableStateOf(false)
         private set
+
+    // Referenzton: welche Saite gerade klingt; id zaehlt jeden Anschlag (Leuchten neu starten)
+    var tone by mutableStateOf(ToneMark())
+        private set
+
+    // eigener Ton klingt: Anzeige aus, Mikrofon zaehlt erst nach dem Ausklingen wieder
+    fun reference(string: Int) {
+        tracker.hush(Pluck.HUSH_FRAMES)
+        tone = ToneMark(string, tone.id + 1)
+        update(tracker.reading)
+    }
+
+    // festes Leuchten ohne Bewegung, z. B. fuer Screenshots
+    fun showTone(string: Int, level: Float) {
+        tone = ToneMark(string, tone.id + 1, level)
+    }
 
     fun push(f: Frame) {
         if (f.dead != micSilent) micSilent = f.dead
