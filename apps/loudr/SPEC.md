@@ -27,7 +27,7 @@ Lautstärke-Messer: App öffnen, sofort sehen, wie laut es ist, mit Alltagsvergl
 |---|---|
 | `RECORD_AUDIO` | Pegel messen. Nur im Vordergrund, nichts wird gespeichert oder gesendet. |
 
-Kein INTERNET, kein Dienst.
+Kein INTERNET, kein Dienst. VIBRATE kommt aus `core/ui` (normal, ohne Rückfrage); loudr nutzt nur Touch-Haptik (`press`) für Tasten.
 
 ## Nicht
 - Kein Spektrum/Wasserfall, kein Export (PNG/CSV), keine C-/Z-Bewertung, kein Peak-Pegel, keine Aufnahme.
@@ -55,4 +55,4 @@ Varianten (Standard Pixel 7, en): `_de`, `_land`, `_font200`, `_land_font200` f�
 ## Abnahmekriterien
 - Domain ohne Android-Imports, Unit-Tests für A-Filter (Frequenzgang gegen Sollkurve, Sinus im Zeitbereich), dB-Rechnung (Bezugspunkt), Zeitbewertung (Zeitkonstanten), Leq, Min/Max/Reset, Einschwingen, Verlauf, Sichern/Wiederherstellen, Kalibrierung, Vergleich/Zonen, Feder, Halten, Speicher, Kontrast (WCAG AA gemessen, auch pausiert und Zonen-Rand ≥ 3:1).
 - Gesten (Robolectric): Pause/Weiter, Zurücksetzen, Mikrofon-Aktion, Kalibrier-Schritte. Pausiert keine Frames.
-- `:apps:loudr:check`, `verifyRoborazziDebug`, `assembleRelease` grün; nur `RECORD_AUDIO`; Release-APK < 4 MB.
+- `:apps:loudr:check`, `verifyRoborazziDebug`, `assembleRelease` grün; nur `RECORD_AUDIO` und VIBRATE aus `core/ui`; Release-APK < 4 MB.

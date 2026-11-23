@@ -125,7 +125,7 @@ private fun CalibrationRow(offset: Float, live: () -> Float, haptics: Haptics?, 
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Step(LoudrIcons.Minus, stringResource(R.string.lower), offset > Calibration.MIN) {
-                haptics?.tick()
+                haptics?.press()
                 onOffset(Calibration.step(offset, -1))
             }
             BasicText(
@@ -136,7 +136,7 @@ private fun CalibrationRow(offset: Float, live: () -> Float, haptics: Haptics?, 
                 autoSize = TextAutoSize.StepBased(minFontSize = 10.sp, maxFontSize = 22.sp, stepSize = 0.5.sp),
             )
             Step(LoudrIcons.Plus, stringResource(R.string.raise), offset < Calibration.MAX) {
-                haptics?.tick()
+                haptics?.press()
                 onOffset(Calibration.step(offset, +1))
             }
         }

@@ -129,7 +129,7 @@ fun MeterScreen(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             AappsIconButton(LoudrIcons.Reset, stringResource(R.string.reset), {
-                haptics?.confirm()
+                haptics?.press()
                 onReset()
                 version.intValue++
             })
@@ -250,7 +250,7 @@ private fun MainAction(
     AappsPillButton(
         stringResource(text),
         {
-            haptics?.confirm()
+            haptics?.press()
             if (mic == MicState.READY) onToggle() else onMic()
         },
         if (fill) Modifier.fillMaxWidth() else Modifier.widthIn(min = 176.dp),
