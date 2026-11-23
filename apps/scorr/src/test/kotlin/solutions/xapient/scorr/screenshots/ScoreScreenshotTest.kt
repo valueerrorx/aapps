@@ -181,7 +181,7 @@ class ScoreScreenshotTest {
     @Composable
     private fun Settings() {
         ScorrSettings(
-            playerNames = "Lena, Max, Sophie, Jonas", target = 100, onTarget = {}, rule = WinRule.MOST, onRule = {},
+            playerNames = "Lena, Max, Sophie, Jonas", target = 3, onTarget = {}, rule = WinRule.MOST, onRule = {},
             rounds = true, onRounds = {}, scoring = Scoring.WINS, onScoring = {}, haptics = true, onHaptics = {}, keepOn = true, onKeepOn = {},
             onPlayers = {}, onNewGame = {}, onAbout = {}, onBack = {},
         )
