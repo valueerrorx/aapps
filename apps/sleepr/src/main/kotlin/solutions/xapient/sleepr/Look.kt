@@ -166,7 +166,7 @@ class Look(private val ctx: Context) {
             imageTintList = ColorStateList.valueOf(if (checked) accent else muted)
             importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
         }, LinearLayout.LayoutParams(20.dp, 20.dp).apply { leftMargin = 12.dp })
-        if (checked) stateDescriptionCompat(this, "aktiv")
+        if (checked) stateDescriptionCompat(this, ctx.getString(R.string.state_active))
         asButton(this)
         setOnClickListener { press(it); onClick() }
     }

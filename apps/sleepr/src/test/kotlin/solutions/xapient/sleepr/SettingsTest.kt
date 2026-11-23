@@ -14,9 +14,11 @@ import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
+import org.robolectric.annotation.Config
 
-// Einstellungen: Schalter, Zurück, Drehen, Mischung laden
+// Einstellungen: Schalter, Zurück, Drehen, Mischung laden (deutsche Oberfläche)
 @RunWith(RobolectricTestRunner::class)
+@Config(qualifiers = "de")
 class SettingsTest {
     private lateinit var levels: IntArray
     private lateinit var waves: BooleanArray
@@ -94,6 +96,6 @@ class SettingsTest {
         a.show(MainActivity.Screen.SETTINGS)
         clickText(a, "Einschlafen")
         assertEquals(MainActivity.Screen.MAIN, a.screen)
-        assertTrue(Mixer.matches(Mixer.PRESETS.first { it.name == "Einschlafen" }))
+        assertTrue(Mixer.matches(Mixer.preset("sleep")))
     }
 }

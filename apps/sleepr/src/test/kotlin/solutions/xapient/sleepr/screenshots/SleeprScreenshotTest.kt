@@ -49,11 +49,16 @@ class SleeprScreenshotTest {
     @Test fun about() = shot("about", screen = MainActivity.Screen.ABOUT)
     @Test fun about_font200() = shot("about_font200", fontScale = 2f, screen = MainActivity.Screen.ABOUT)
 
+    // Grundsprache Englisch
+    @Test fun idle_en() = shot("idle_en", lang = "en")
+    @Test fun settings_en() = shot("settings_en", lang = "en", screen = MainActivity.Screen.SETTINGS)
+
     private fun plain() = Display(RuntimeEnvironment.getApplication()).run { showWaves = false; showMixes = false }
 
-    // Hauptbildschirm als Ganzes rendern (Views, kein Compose)
-    private fun shot(name: String, qualifiers: String? = null, fontScale: Float = 1f, screen: MainActivity.Screen = MainActivity.Screen.MAIN) {
+    // Hauptbildschirm als Ganzes rendern (Views, kein Compose); Standard deutsch wie bisher, _en englisch
+    private fun shot(name: String, qualifiers: String? = null, fontScale: Float = 1f, screen: MainActivity.Screen = MainActivity.Screen.MAIN, lang: String = "de") {
         if (qualifiers != null) RuntimeEnvironment.setQualifiers(qualifiers)
+        RuntimeEnvironment.setQualifiers("+$lang")
         if (fontScale != 1f) RuntimeEnvironment.setFontScale(fontScale)
         val activity = Robolectric.buildActivity(MainActivity::class.java).setup().get()
         if (screen != MainActivity.Screen.MAIN) activity.show(screen)

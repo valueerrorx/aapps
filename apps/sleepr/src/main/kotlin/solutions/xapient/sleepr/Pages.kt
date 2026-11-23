@@ -46,13 +46,14 @@ class Pages(private val a: Activity, private val look: Look) {
                     addView(small(a.getString(R.string.explain_mixes)).apply { setPadding(dp(18), dp(14), dp(18), dp(4)) })
                     Mixer.PRESETS.forEach { p ->
                         addView(divider())
-                        addView(actionRow(p.name, Mixer.describe(p), Mixer.matches(p)) { onPreset(p) })
+                        addView(actionRow(a.getString(p.name), Mixer.describe(a, p), Mixer.matches(p)) { onPreset(p) })
                     }
                 }
                 group(a.getString(R.string.group_colors), this@page).apply {
                     addView(body(a.getString(R.string.explain_colors), muted).apply { setPadding(dp(18), dp(16), dp(18), dp(4)) })
                     val hints = intArrayOf(R.string.explain_white, R.string.explain_pink, R.string.explain_brown, R.string.explain_grey, R.string.explain_green)
                     Mixer.COLORS.forEachIndexed { i, c ->
+                        val name = a.getString(c.name); val slope = a.getString(c.slope)
                         addView(LinearLayout(a).apply {
                             orientation = LinearLayout.HORIZONTAL
                             setPadding(dp(18), dp(10), dp(18), if (i == 4) dp(16) else dp(2))
@@ -60,12 +61,12 @@ class Pages(private val a: Activity, private val look: Look) {
                                 LinearLayout.LayoutParams(dp(10), dp(10)).apply { topMargin = dp(6); rightMargin = dp(12) })
                             addView(LinearLayout(a).apply {
                                 orientation = LinearLayout.VERTICAL
-                                addView(body("${c.name} · ${c.slope}"))
+                                addView(body("$name · $slope"))
                                 addView(small(a.getString(hints[i])))
                             }, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
                             // Farbe als eine Ansage
                             isFocusable = true
-                            contentDescription = "${c.name}, ${c.slope}: ${a.getString(hints[i])}"
+                            contentDescription = "$name, $slope: ${a.getString(hints[i])}"
                         })
                     }
                 }

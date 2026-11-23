@@ -77,7 +77,7 @@ class SpectrumView(ctx: Context) : View(ctx) {
         val mx = sum.maxOrNull() ?: 0.0
         if (mx <= 0) {
             p.color = muted; p.textAlign = Paint.Align.CENTER; p.textSize = 13 * dp
-            c.drawText("Alle Regler auf null", l + pw / 2, t + ph / 2, p); return
+            c.drawText(context.getString(R.string.all_zero),l + pw / 2, t + ph / 2, p); return
         }
         fun db(v: Double) = max(-60.0, 10 * log10(max(v, 1e-30) / mx))
         fun build(a: DoubleArray) { path.reset(); for (i in 0 until FN) { val px = x(F[i]); val py = y(db(a[i])); if (i == 0) path.moveTo(px, py) else path.lineTo(px, py) } }

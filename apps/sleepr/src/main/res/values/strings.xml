@@ -1,38 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">sleepr</string>
-    <!-- Oberflaeche derzeit nur Deutsch; Formulierungen wie core/ui (aapps_*) -->
-    <string name="settings">Einstellungen</string>
-    <string name="about">Info</string>
-    <string name="back">Zurück</string>
+    <string name="app_name" translatable="false">sleepr</string>
+    <!-- Info und Einstellungen: Formulierungen wie core/ui (aapps_*) -->
+    <string name="settings">Settings</string>
+    <string name="about">About</string>
+    <string name="back">Back</string>
     <string name="version">Version %1$s</string>
-    <string name="promise_ads">Keine Werbung</string>
-    <string name="promise_tracking">Kein Tracking</string>
-    <string name="promise_internet">Keine Internet-Berechtigung</string>
-    <string name="source">Quellcode</string>
-    <string name="license">Freie Software unter der GNU GPLv3. Du darfst sie nutzen, untersuchen, weitergeben und verändern.</string>
-    <string name="fonts">Schriften: Space Grotesk und Inter, SIL Open Font License 1.1.</string>
+    <string name="promise_ads">No ads</string>
+    <string name="promise_tracking">No tracking</string>
+    <string name="promise_internet">No internet permission</string>
+    <string name="source">Source code</string>
+    <string name="license">Free software under the GNU GPLv3. You may use, study, share and change it.</string>
+    <string name="fonts">Fonts: Space Grotesk and Inter, SIL Open Font License 1.1.</string>
+    <string name="state_active">Active</string>
 
-    <string name="tagline">Farbiges Rauschen zum Abschirmen und Runterkommen. Mischen, Timer setzen, laufen lassen.</string>
-    <string name="note_privacy">Alles wird live am Gerät berechnet. sleepr sammelt keine Daten und sendet nichts.</string>
-    <string name="note_background">Rauscht bei gesperrtem Bildschirm weiter. In der Benachrichtigung lässt es sich stoppen.</string>
+    <string name="tagline">Coloured noise to mask sounds and wind down. Mix, set a timer, let it play.</string>
+    <string name="note_privacy">Everything is computed live on the device. sleepr collects no data and sends nothing.</string>
+    <string name="note_background">Keeps playing with the screen locked. The notification lets you stop it.</string>
 
-    <string name="group_display">Anzeige</string>
-    <string name="show_waves">Wellen-Schalter anzeigen</string>
-    <string name="show_waves_sub">Ausgeblendet laufen Wellen weiter</string>
-    <string name="show_mixes">Mischungen anzeigen</string>
-    <string name="show_mixes_sub">Laden geht auch immer hier</string>
-    <string name="group_mixes">Mischungen</string>
-    <string name="group_colors">Rauschfarben</string>
-    <string name="group_waves">Wellen</string>
+    <!-- Mixer -->
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+    <string name="play_desc">Play</string>
+    <string name="stop_desc">Stop</string>
+    <string name="state_ready">Ready</string>
+    <string name="state_playing">Playing</string>
+    <string name="state_left">Playing · %1$s left</string>
+    <string name="state_fading">Fading out · %1$s</string>
+    <string name="spectrum">Spectrum of the mix</string>
+    <string name="spectrum_unit">Power/Hz · dB</string>
+    <string name="all_zero">All sliders at zero</string>
+    <string name="colors">Noise colours</string>
+    <string name="wave_length">∿ Wave length  short ↔ long</string>
+    <string name="waves_on">Turn on waves for %1$s</string>
+    <string name="waves_off">Turn off waves for %1$s</string>
+    <string name="volume">Volume</string>
+    <string name="treble">Treble</string>
+    <string name="treble_hint">Left duller, right brighter</string>
+    <string name="treble_open">open</string>
+    <string name="timer_label">Timer with gentle fade-out</string>
+    <string name="timer_off">Off</string>
+    <string name="timer_chip">%1$d min</string>
+    <string name="with_timer">%1$s · Timer %2$d min</string>
+    <plurals name="timer_minutes">
+        <item quantity="one">Timer %1$d minute</item>
+        <item quantity="other">Timer %1$d minutes</item>
+    </plurals>
+    <!-- reine Zahlenformate, sprachunabhängig -->
+    <string name="level" translatable="false">%1$d</string>
+    <string name="level_live" translatable="false">~%1$d</string>
+    <string name="wave_sec" translatable="false">~%1$d s</string>
+    <string name="percent" translatable="false">%1$d %%</string>
+    <string name="hint">Quiet is enough: noises should blur, it need not be louder than a calm conversation. For children, a speaker is better than headphones.\n\nGrey and green are approximations: grey roughly evens out how the ear hears loudness, green brings out the middle range around 500 Hz.</string>
+
+    <!-- Rauschfarben: Name, Steigung, Kurzhinweis -->
+    <string name="white">White</string>
+    <string name="pink">Pink</string>
+    <string name="brown">Brown</string>
+    <string name="grey">Grey</string>
+    <string name="green">Green</string>
+    <string name="slope_white">0 dB/oct</string>
+    <string name="slope_pink">−3 dB/oct</string>
+    <string name="slope_brown">−6 dB/oct</string>
+    <string name="slope_grey">ear-matched</string>
+    <string name="slope_green">mid ~500 Hz</string>
+    <string name="hint_white">bright, hissing</string>
+    <string name="hint_pink">balanced, like rain</string>
+    <string name="hint_brown">deep, like surf</string>
+    <string name="hint_grey">sounds equally loud everywhere</string>
+    <string name="hint_green">soft, natural</string>
+
+    <!-- Mischungen -->
+    <string name="mix_ocean">Ocean</string>
+    <string name="mix_focus">Focus</string>
+    <string name="mix_sleep">Sleep</string>
+    <string name="mix_mask">Mask</string>
+    <string name="mix_nature">Nature</string>
+    <string name="mix_white">Classic white</string>
+
+    <!-- Benachrichtigung -->
+    <string name="notify_channel">Playback</string>
+    <string name="notify_title">sleepr is playing</string>
+    <string name="notify_stop">Stop</string>
+    <string name="notif_title">Allow notifications?</string>
+    <string name="notif_text">To keep the noise playing with the screen locked, Android requires a persistent notification while sleepr plays.\n\nIt lets you stop playback right from the lock screen.\n\nsleepr sends no other notifications and has no internet access.\n\nWithout permission the sound still plays, only the stop button in the notification is missing.</string>
+    <string name="notif_continue">Continue</string>
+    <string name="notif_skip">Without notification</string>
+
+    <!-- Einstellungen -->
+    <string name="group_display">Display</string>
+    <string name="show_waves">Show wave buttons</string>
+    <string name="show_waves_sub">Hidden waves keep running</string>
+    <string name="show_mixes">Show mixes</string>
+    <string name="show_mixes_sub">You can always load them here</string>
+    <string name="group_mixes">Mixes</string>
+    <string name="group_colors">Noise colours</string>
+    <string name="group_waves">Waves</string>
     <string name="group_timer">Timer</string>
 
-    <string name="explain_mixes">Fertige Mischungen als Startpunkt. Danach kannst du jeden Regler weiter anpassen.</string>
-    <string name="explain_colors">Jede Farbe hat ihren eigenen Regler, du kannst sie frei mischen. Alle sind gleich laut eingestellt, sie unterscheiden sich nur im Klang.</string>
-    <string name="explain_white">hell und zischend, alle Frequenzen gleich stark</string>
-    <string name="explain_pink">ausgewogen, wie Regen; Höhen leiser als bei Weiß</string>
-    <string name="explain_brown">tief, wie Brandung; noch weniger Höhen</string>
-    <string name="explain_grey">gleicht grob aus, wie das Ohr Höhen und Tiefen hört, und wirkt so überall gleich laut</string>
-    <string name="explain_green">betont die Mitte um 500 Hz, weich und naturnah</string>
-    <string name="explain_waves">Der Wellen-Knopf neben einer Farbe lässt sie an- und abschwellen wie Meereswellen: anschwellen, brechen, auslaufen, jede Welle etwas anders. Darunter stellst du ein, wie lang die Wellen im Schnitt sind (3 bis 20 s). Beim Abspielen bewegt sich der Regler mit.</string>
-    <string name="explain_timer">Der Timer blendet am Ende sanft aus statt hart zu stoppen, bei langen Timern über bis zu 2 Minuten. Wechselst du ihn während des Abspielens, beginnt er von vorn.</string>
+    <string name="explain_mixes">Ready-made mixes as a starting point. Then adjust any slider as you like.</string>
+    <string name="explain_colors">Each colour has its own slider, mix them freely. All are set equally loud, they differ only in sound.</string>
+    <string name="explain_white">bright and hissing, all frequencies equally strong</string>
+    <string name="explain_pink">balanced, like rain; softer highs than white</string>
+    <string name="explain_brown">deep, like surf; even fewer highs</string>
+    <string name="explain_grey">roughly evens out how the ear hears highs and lows, so it sounds equally loud everywhere</string>
+    <string name="explain_green">brings out the middle around 500 Hz, soft and natural</string>
+    <string name="explain_waves">The wave button next to a colour makes it swell and fade like ocean waves: rising, breaking, running out, each wave a little different. Below it you set how long the waves are on average (3 to 20 s). While playing, the slider moves along.</string>
+    <string name="explain_timer">The timer fades out gently at the end instead of stopping hard, over up to 2 minutes for long timers. If you change it while playing, it starts over.</string>
 </resources>

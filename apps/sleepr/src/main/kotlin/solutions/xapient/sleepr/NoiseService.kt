@@ -52,7 +52,7 @@ class NoiseService : Service() {
         super.onCreate()
         audio = getSystemService(AudioManager::class.java)
         getSystemService(NotificationManager::class.java).createNotificationChannel(
-            NotificationChannel(CHANNEL, "Wiedergabe", NotificationManager.IMPORTANCE_LOW)
+            NotificationChannel(CHANNEL, getString(R.string.notify_channel), NotificationManager.IMPORTANCE_LOW)
         )
         session = MediaSession(this, "sleepr").apply {
             setCallback(object : MediaSession.Callback() {
@@ -84,8 +84,8 @@ class NoiseService : Service() {
         wake = getSystemService(PowerManager::class.java)
             .newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "sleepr:play").apply { acquire(12 * 60 * 60 * 1000L) }
         session.setMetadata(MediaMetadata.Builder()
-            .putString(MediaMetadata.METADATA_KEY_TITLE, "sleepr")
-            .putString(MediaMetadata.METADATA_KEY_ARTIST, Mixer.summary()).build())
+            .putString(MediaMetadata.METADATA_KEY_TITLE, getString(R.string.app_name))
+            .putString(MediaMetadata.METADATA_KEY_ARTIST, Mixer.summary(this)).build())
         session.setPlaybackState(PlaybackState.Builder()
             .setActions(PlaybackState.ACTION_PAUSE or PlaybackState.ACTION_STOP or PlaybackState.ACTION_PLAY_PAUSE)
             .setState(PlaybackState.STATE_PLAYING, PlaybackState.PLAYBACK_POSITION_UNKNOWN, 1f).build())
@@ -118,12 +118,12 @@ class NoiseService : Service() {
             Intent(this, NoiseService::class.java).setAction(ACTION_STOP), PendingIntent.FLAG_IMMUTABLE)
         val n = Notification.Builder(this, CHANNEL)
             .setSmallIcon(R.drawable.ic_notif)
-            .setContentTitle("sleepr läuft")
-            .setContentText(Mixer.summary() + if (Mixer.timer > 0) " · Timer ${Mixer.timer} min" else "")
+            .setContentTitle(getString(R.string.notify_title))
+            .setContentText(Mixer.summary(this).let { if (Mixer.timer > 0) getString(R.string.with_timer, it, Mixer.timer) else it })
             .setContentIntent(open)
             .setOngoing(true)
             .setCategory(Notification.CATEGORY_TRANSPORT)
-            .addAction(Notification.Action.Builder(Icon.createWithResource(this, R.drawable.ic_stop), "Stopp", stop).build())
+            .addAction(Notification.Action.Builder(Icon.createWithResource(this, R.drawable.ic_stop), getString(R.string.notify_stop), stop).build())
             .setStyle(Notification.MediaStyle().setMediaSession(session.sessionToken).setShowActionsInCompactView(0))
             .build()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)

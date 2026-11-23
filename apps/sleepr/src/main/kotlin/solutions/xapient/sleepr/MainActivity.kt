@@ -43,6 +43,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
+import java.util.Locale
 
 class MainActivity : Activity() {
     private companion object { const val KEY_SCREEN = "screen" }
@@ -120,7 +121,7 @@ class MainActivity : Activity() {
         }
 
         // Player: Status über der Hauptaktion (Pille unten mittig wie in den aapps)
-        status = text("Bereit", 17f, FG, bold = true).apply { gravity = Gravity.CENTER }
+        status = text(getString(R.string.state_ready), 17f, FG, bold = true).apply { gravity = Gravity.CENTER }
         sub = text("", 13f, MUTED).apply { gravity = Gravity.CENTER; maxLines = 2; ellipsize = TextUtils.TruncateAt.END }
         play = pill()
         val bar = LinearLayout(this).apply {
@@ -137,19 +138,19 @@ class MainActivity : Activity() {
         // Spektrum
         spectrum = SpectrumView(this).apply { accent = ACCENT; grid = LINE; muted = MUTED }
         add(card().apply {
-            addView(row(label("Spektrum der Mischung"), text("Leistung/Hz · dB", 11f, MUTED)))
+            addView(row(label(getString(R.string.spectrum)), text(getString(R.string.spectrum_unit), 11f, MUTED)))
             addView(spectrum, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 150.dp).apply { topMargin = 8.dp })
         }, 4)
 
         // Presets
-        mixesLabel = label("Mischungen")
-        mixesRow = chipRow(Mixer.PRESETS.map { p -> chip(p.name) { Mixer.applyPreset(p); changed() } })
+        mixesLabel = label(getString(R.string.group_mixes))
+        mixesRow = chipRow(Mixer.PRESETS.map { p -> chip(getString(p.name)) { Mixer.applyPreset(p); changed() } })
         add(mixesLabel, 22)
         add(mixesRow, 8)
 
         // Rauschfarben
         add(card().apply {
-            addView(label("Rauschfarben"))
+            addView(label(getString(R.string.colors)))
             Mixer.COLORS.forEachIndexed { i, c ->
                 val v = text("", 13f, FG).apply { typeface = Typeface.MONOSPACE; gravity = Gravity.END }
                 values[i] = v
@@ -161,10 +162,10 @@ class MainActivity : Activity() {
                         orientation = LinearLayout.VERTICAL
                         addView(LinearLayout(this@MainActivity).apply {
                             orientation = LinearLayout.HORIZONTAL; gravity = Gravity.BOTTOM
-                            addView(text(c.name, 16f, FG, bold = true))
-                            addView(text("  " + c.slope, 11f, MUTED).apply { typeface = Typeface.MONOSPACE })
+                            addView(text(getString(c.name), 16f, FG, bold = true))
+                            addView(text("  " + getString(c.slope), 11f, MUTED).apply { typeface = Typeface.MONOSPACE })
                         })
-                        addView(text(c.hint, 12f, MUTED))
+                        addView(text(getString(c.hint), 12f, MUTED))
                     }
                     addView(names, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
                     val wb = ImageButton(this@MainActivity).apply {
@@ -194,7 +195,7 @@ class MainActivity : Activity() {
                 val box = LinearLayout(this@MainActivity).apply {
                     orientation = LinearLayout.VERTICAL
                     setPadding(22.dp, 0, 0, 0)
-                    addView(row(text("∿ Wellenlänge  kurz ↔ lang", 12f, MUTED), sv))
+                    addView(row(text(getString(R.string.wave_length), 12f, MUTED), sv))
                     addView(ss)
                 }
                 waveBoxes[i] = box
@@ -208,27 +209,28 @@ class MainActivity : Activity() {
         masterSeek = seek(ACCENT) { Mixer.master = it }
         toneSeek = seek(ACCENT) { Mixer.tone = it }
         add(card().apply {
-            addView(row(text("Lautstärke", 16f, FG, bold = true), masterVal))
+            addView(row(text(getString(R.string.volume), 16f, FG, bold = true), masterVal))
             addView(masterSeek, lp(2))
-            addView(row(text("Höhen", 16f, FG, bold = true), toneVal), lp(14))
-            addView(text("links dumpfer, rechts heller", 12f, MUTED))
+            addView(row(text(getString(R.string.treble), 16f, FG, bold = true), toneVal), lp(14))
+            addView(text(getString(R.string.treble_hint), 12f, MUTED))
             addView(toneSeek, lp(2))
         })
 
         // Timer
-        add(label("Timer mit sanftem Ausblenden"), 22)
+        add(label(getString(R.string.timer_label)), 22)
         add(chipRow(Mixer.TIMERS.map { t ->
-            chip(if (t == 0) "Aus" else "$t min") {
+            chip(if (t == 0) getString(R.string.timer_off) else getString(R.string.timer_chip, t)) {
                 Mixer.timer = t; Mixer.save(this); syncTimers()
                 NoiseService.engine?.restartTimer(); render()
                 NoiseService.send(this, NoiseService.ACTION_UPDATE)
-            }.also { timerChips += t to it }
+            }.also {
+                // TalkBack liest volle Minuten statt "min"
+                if (t > 0) it.contentDescription = resources.getQuantityString(R.plurals.timer_minutes, t, t)
+                timerChips += t to it
+            }
         }), 8)
 
-        add(text("Leise reicht: Störgeräusche sollen verschwimmen, lauter als ein ruhiges Gespräch muss es nicht sein. " +
-                "Bei Kindern lieber über Lautsprecher als über Kopfhörer.\n\n" +
-                "Grau und Grün sind Näherungen: Grau gleicht die Lautheitswahrnehmung des Ohrs grob aus, Grün betont den mittleren Bereich um 500 Hz.",
-            13f, MUTED), 26)
+        add(text(getString(R.string.hint), 13f, MUTED), 26)
 
         val scroll = ScrollView(this).apply { setBackgroundColor(BG); isFillViewport = true; addView(col) }
         val match = ViewGroup.LayoutParams.MATCH_PARENT
@@ -376,13 +378,10 @@ class MainActivity : Activity() {
 
     private fun explainNotifications() {
         AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert)
-            .setTitle("Benachrichtigung erlauben?")
-            .setMessage("Damit das Rauschen auch bei gesperrtem Bildschirm weiterläuft, verlangt Android eine dauerhafte Benachrichtigung, solange sleepr spielt.\n\n" +
-                "Darüber kannst du die Wiedergabe direkt vom Sperrbildschirm aus stoppen.\n\n" +
-                "sleepr schickt keine anderen Benachrichtigungen und hat keinen Internetzugriff.\n\n" +
-                "Ohne Erlaubnis läuft der Ton trotzdem, nur der Stopp-Knopf in der Benachrichtigung fehlt.")
-            .setPositiveButton("Weiter") { _, _ -> requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 1) }
-            .setNegativeButton("Ohne Benachrichtigung") { _, _ -> startPlay() }
+            .setTitle(R.string.notif_title)
+            .setMessage(R.string.notif_text)
+            .setPositiveButton(R.string.notif_continue) { _, _ -> requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 1) }
+            .setNegativeButton(R.string.notif_skip) { _, _ -> startPlay() }
             .setOnCancelListener { startPlay() }
             .show()
     }
@@ -400,13 +399,13 @@ class MainActivity : Activity() {
     private fun syncInputs() {
         syncing = true
         for (i in 0..4) {
-            seeks[i]?.progress = Mixer.levels[i]; values[i]?.text = Mixer.levels[i].toString()
+            seeks[i]?.progress = Mixer.levels[i]; values[i]?.text = getString(R.string.level, Mixer.levels[i])
             waveSeeks[i]?.progress = Mixer.waveSec[i] - Mixer.WAVE_MIN
-            waveVals[i]?.text = "~${Mixer.waveSec[i]} s"
+            waveVals[i]?.text = getString(R.string.wave_sec, Mixer.waveSec[i])
         }
         syncWaves()
-        masterSeek.progress = Mixer.master; masterVal.text = "${Mixer.master} %"
-        toneSeek.progress = Mixer.tone; toneVal.text = Mixer.fmtHz(Mixer.toneHz())
+        masterSeek.progress = Mixer.master; masterVal.text = getString(R.string.percent, Mixer.master)
+        toneSeek.progress = Mixer.tone; toneVal.text = Mixer.fmtHz(this, Mixer.toneHz())
         syncing = false
         spectrum.invalidate()
     }
@@ -421,7 +420,7 @@ class MainActivity : Activity() {
                     setColor(if (on) c else SURFACE); setStroke(1.dp, if (on) c else LINE)
                 }
                 imageTintList = ColorStateList.valueOf(if (on) BG else MUTED)
-                contentDescription = "Wellen ${Mixer.COLORS[i].name} " + if (on) "aus" else "ein"
+                contentDescription = getString(if (on) R.string.waves_off else R.string.waves_on, getString(Mixer.COLORS[i].name))
             }
             waveBtns[i]?.visibility = if (display.showWaves) View.VISIBLE else View.GONE
             waveBoxes[i]?.visibility = if (Display.waveBoxVisible(on, display.showWaves)) View.VISIBLE else View.GONE
@@ -437,9 +436,9 @@ class MainActivity : Activity() {
             if (s === touching) continue
             if (live != null && Mixer.waves[i] && Mixer.levels[i] > 0) {
                 val l = live[i].toInt()
-                s.progress = l; values[i]?.text = "~$l"
+                s.progress = l; values[i]?.text = getString(R.string.level_live, l)
             } else if (s.progress != Mixer.levels[i]) {
-                s.progress = Mixer.levels[i]; values[i]?.text = Mixer.levels[i].toString()
+                s.progress = Mixer.levels[i]; values[i]?.text = getString(R.string.level, Mixer.levels[i])
             }
         }
     }
@@ -453,16 +452,17 @@ class MainActivity : Activity() {
         val e = NoiseService.engine
         stylePill(!on)
         status.text = when {
-            !on -> "Bereit"
-            e != null && e.remainingMs() >= 0 -> (if (e.fading()) "Blendet aus · " else "Läuft · noch ") + fmtT(e.remainingMs())
-            else -> "Läuft"
+            !on -> getString(R.string.state_ready)
+            e != null && e.remainingMs() >= 0 -> getString(if (e.fading()) R.string.state_fading else R.string.state_left, fmtT(e.remainingMs()))
+            else -> getString(R.string.state_playing)
         }
-        sub.text = Mixer.summary() + if (Mixer.timer > 0 && !on) " · Timer ${Mixer.timer} min" else ""
+        val sum = Mixer.summary(this)
+        sub.text = if (Mixer.timer > 0 && !on) getString(R.string.with_timer, sum, Mixer.timer) else sum
     }
 
     private fun fmtT(ms: Long): String {
         val s = (ms + 999) / 1000; val h = s / 3600; val m = s % 3600 / 60; val x = s % 60
-        return if (h > 0) "%d:%02d:%02d".format(h, m, x) else "%d:%02d".format(m, x)
+        return if (h > 0) "%d:%02d:%02d".format(Locale.ROOT, h, m, x) else "%d:%02d".format(Locale.ROOT, m, x)
     }
 
     // ---------- kleine UI-Helfer ----------
@@ -514,8 +514,8 @@ class MainActivity : Activity() {
         playIcon.setImageResource(if (active) R.drawable.ic_play else R.drawable.ic_stop)
         playIcon.imageTintList = ColorStateList.valueOf(fg)
         playLabel.setTextColor(fg)
-        playLabel.text = if (active) "START" else "STOP"
-        play.contentDescription = if (active) "Abspielen" else "Stoppen"
+        playLabel.text = getString(if (active) R.string.start else R.string.stop).uppercase(resources.configuration.locales[0])
+        play.contentDescription = getString(if (active) R.string.play_desc else R.string.stop_desc)
         // weicher Halo nur im Bereit-Zustand
         glow.colors = if (active) intArrayOf(alpha(ACCENT, 0.28f), alpha(ACCENT, 0.07f), alpha(ACCENT, 0f)) else intArrayOf(0, 0)
         glow.gradientRadius = 72.dp.toFloat()

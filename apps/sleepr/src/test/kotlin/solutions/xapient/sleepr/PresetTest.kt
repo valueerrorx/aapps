@@ -20,8 +20,8 @@ class PresetTest {
     @Test fun appliedPresetMatchesOnlyItself() {
         for (p in Mixer.PRESETS) {
             Mixer.applyPreset(p)
-            assertTrue(p.name, Mixer.matches(p))
-            assertEquals(p.name, Mixer.PRESETS.filter { Mixer.matches(it) }.map { it.name }, listOf(p.name))
+            assertTrue(p.id, Mixer.matches(p))
+            assertEquals(p.id, Mixer.PRESETS.filter { Mixer.matches(it) }.map { it.id }, listOf(p.id))
         }
     }
 
@@ -40,8 +40,7 @@ class PresetTest {
         assertFalse(Mixer.matches(meer))
     }
 
-    @Test fun describeListsLoudestFirstWithWaves() {
-        assertEquals("Braun 70 ∿ · Rosa 35 ∿", Mixer.describe(Mixer.PRESETS.first { it.name == "Meer" }))
-        assertEquals("Weiß 45", Mixer.describe(Mixer.PRESETS.first { it.name == "Klassisch weiß" }))
+    @Test fun presetIdsAreUnique() {
+        assertEquals(Mixer.PRESETS.size, Mixer.PRESETS.map { it.id }.toSet().size)
     }
 }

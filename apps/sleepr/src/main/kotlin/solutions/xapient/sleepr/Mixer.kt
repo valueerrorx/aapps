@@ -1,28 +1,31 @@
 package solutions.xapient.sleepr
 
 import android.content.Context
+import androidx.annotation.StringRes
 import kotlin.math.pow
 
-data class NoiseColor(val name: String, val slope: String, val hint: String, val color: Int)
-data class Preset(val name: String, val levels: Map<Int, Int>, val tone: Int, val waves: Map<Int, Int> = emptyMap())
+data class NoiseColor(@StringRes val name: Int, @StringRes val slope: Int, @StringRes val hint: Int, val color: Int)
+// id ist stabil, name nur Anzeige
+data class Preset(val id: String, @StringRes val name: Int, val levels: Map<Int, Int>, val tone: Int, val waves: Map<Int, Int> = emptyMap())
 
 /** Gemeinsamer Zustand von UI und Audio-Thread, in SharedPreferences gespeichert */
 object Mixer {
     val COLORS = listOf(
-        NoiseColor("Weiß", "0 dB/Okt", "hell, zischend", 0xFFE9EDF0.toInt()),
-        NoiseColor("Rosa", "−3 dB/Okt", "ausgewogen, wie Regen", 0xFFD99AA3.toInt()),
-        NoiseColor("Braun", "−6 dB/Okt", "tief, wie Brandung", 0xFFB08465.toInt()),
-        NoiseColor("Grau", "gehörangepasst", "wirkt überall gleich laut", 0xFF9BA3AA.toInt()),
-        NoiseColor("Grün", "Mitte ~500 Hz", "weich, naturnah", 0xFF86B38D.toInt())
+        NoiseColor(R.string.white, R.string.slope_white, R.string.hint_white, 0xFFE9EDF0.toInt()),
+        NoiseColor(R.string.pink, R.string.slope_pink, R.string.hint_pink, 0xFFD99AA3.toInt()),
+        NoiseColor(R.string.brown, R.string.slope_brown, R.string.hint_brown, 0xFFB08465.toInt()),
+        NoiseColor(R.string.grey, R.string.slope_grey, R.string.hint_grey, 0xFF9BA3AA.toInt()),
+        NoiseColor(R.string.green, R.string.slope_green, R.string.hint_green, 0xFF86B38D.toInt())
     )
     val PRESETS = listOf(
-        Preset("Meer", mapOf(2 to 70, 1 to 35), 70, waves = mapOf(2 to 9, 1 to 13)),
-        Preset("Fokus", mapOf(1 to 55, 2 to 35), 100),
-        Preset("Einschlafen", mapOf(2 to 70), 55),
-        Preset("Abschirmen", mapOf(3 to 50, 1 to 40), 100),
-        Preset("Natur", mapOf(4 to 60, 2 to 25), 85),
-        Preset("Klassisch weiß", mapOf(0 to 45), 80)
+        Preset("ocean", R.string.mix_ocean, mapOf(2 to 70, 1 to 35), 70, waves = mapOf(2 to 9, 1 to 13)),
+        Preset("focus", R.string.mix_focus, mapOf(1 to 55, 2 to 35), 100),
+        Preset("sleep", R.string.mix_sleep, mapOf(2 to 70), 55),
+        Preset("mask", R.string.mix_mask, mapOf(3 to 50, 1 to 40), 100),
+        Preset("nature", R.string.mix_nature, mapOf(4 to 60, 2 to 25), 85),
+        Preset("white", R.string.mix_white, mapOf(0 to 45), 80)
     )
+    fun preset(id: String) = PRESETS.first { it.id == id }
     val TIMERS = intArrayOf(0, 15, 30, 45, 60, 90)
 
     val levels = intArrayOf(0, 20, 60, 0, 0)
@@ -38,20 +41,25 @@ object Mixer {
     fun gain(v: Double) = (v / 100.0).pow(2)
     fun toneHz(v: Int = tone) = 400.0 * 50.0.pow(v / 100.0) // 400 Hz … 20 kHz log
 
-    fun fmtHz(f: Double) = when {
-        f >= 19000 -> "offen"
-        f >= 1000 -> String.format(java.util.Locale.GERMAN, if (f < 10000) "%.1f kHz" else "%.0f kHz", f / 1000)
-        else -> "${f.toInt()} Hz"
+    // Dezimaltrennzeichen nach Oberflächensprache
+    fun fmtHz(ctx: Context, f: Double): String {
+        val loc = ctx.resources.configuration.locales[0]
+        return when {
+            f >= 19000 -> ctx.getString(R.string.treble_open)
+            f >= 1000 -> String.format(loc, if (f < 10000) "%.1f kHz" else "%.0f kHz", f / 1000)
+            else -> String.format(loc, "%d Hz", f.toInt())
+        }
     }
 
-    fun summary(): String = describe(levels, waves)
+    fun summary(ctx: Context): String = describe(ctx, levels, waves)
 
     // Zusammensetzung einer Mischung, lauteste Farbe zuerst
-    fun describe(p: Preset): String = describe(IntArray(5) { p.levels[it] ?: 0 }, BooleanArray(5) { p.waves.containsKey(it) })
+    fun describe(ctx: Context, p: Preset): String = describe(ctx, IntArray(5) { p.levels[it] ?: 0 }, BooleanArray(5) { p.waves.containsKey(it) })
 
-    private fun describe(lv: IntArray, wv: BooleanArray): String {
+    private fun describe(ctx: Context, lv: IntArray, wv: BooleanArray): String {
         val a = COLORS.indices.filter { lv[it] > 0 }.sortedByDescending { lv[it] }
-        return if (a.isEmpty()) "Alle Regler auf null" else a.joinToString(" · ") { "${COLORS[it].name} ${lv[it]}" + if (wv[it]) " ∿" else "" }
+        return if (a.isEmpty()) ctx.getString(R.string.all_zero)
+        else a.joinToString(" · ") { "${ctx.getString(COLORS[it].name)} ${lv[it]}" + if (wv[it]) " ∿" else "" }
     }
 
     /** true, solange die aktuelle Einstellung genau dieser Mischung entspricht */

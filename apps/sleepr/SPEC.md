@@ -6,7 +6,7 @@ Rauschgenerator zum Abschirmen von Störgeräuschen, Konzentrieren und Einschlaf
 ## Muss
 - Fünf Rauschfarben, live am Gerät berechnet (keine Audiodateien, keine Schleifen): Weiß (0 dB/Okt), Rosa (−3 dB/Okt), Braun (−6 dB/Okt), Grau (gehörangepasst: Weiß durch Low-Shelf 250 Hz +10 dB, Peak 3,5 kHz −6 dB, High-Shelf 10 kHz +4 dB), Grün (Rosa durch Hochpass 60 Hz, Peak 500 Hz +10 dB, Tiefpass 5 kHz). Jede Farbe hat einen eigenen Regler 0–100, alle Farben werden auf denselben RMS-Pegel normiert.
 - Wellen-Modus je Farbe: zufällige Meereswellen (Anschwellen, Brechen, Auslaufen; Tal 40 %, Kamm bis 130 % des Reglerwerts), mittlere Wellenlänge 3–20 s, Länge und Höhe jeder Welle zufällig. Ein-/Ausschalten blendet über 1,5 s weich über. Die Regler folgen den Wellen sichtbar, solange niemand sie anfasst.
-- Mischungen (Presets): Meer, Fokus, Einschlafen, Abschirmen, Natur, Klassisch weiß.
+- Mischungen (Presets): Meer, Fokus, Einschlafen, Abschirmen, Natur, Klassisch weiß (EN: Ocean, Focus, Sleep, Mask, Nature, Classic white).
 - Lautstärke 0–100 (quadratische Kurve), Höhen = Tiefpass 400 Hz – 20 kHz logarithmisch („offen“ ab 19 kHz).
 - Spektrumanzeige: theoretisches Leistungsspektrum der Mischung in dB über log-Frequenz (20 Hz – 20 kHz), Summe gefüllt, bei mehreren Farben die Anteile gestrichelt in ihrer Farbe.
 - Timer Aus/15/30/45/60/90 min mit sanftem Ausblenden (Dauer t × 12 s, höchstens 2 min). Timer-Wechsel im Lauf startet ihn neu.
@@ -29,7 +29,8 @@ Kein INTERNET, kein VIBRATE (sleepr nutzt `core/ui` nicht). Haptik wie `press()`
 - Views und Canvas (`SpectrumView`), kein Compose und kein `core/ui`. Das gehört so, nicht umbauen.
 - Look der aapps als Views nachgebaut (`Look.kt`: Farben, Schriften Space Grotesk/Inter als Kopie in `res/font`, Kopfzeile, Gruppen, Schalter; `Pages.kt`: Einstellungen und Info wie `SettingsScreen`/`AboutScreen`). Ein Activity, Bildschirm im Instance-State.
 - Signalverarbeitung in `domain/Dsp.kt` ohne Android-Imports (RBJ-Biquads, Rauschfarben je Kanal, RMS-Normierung).
-- Oberfläche derzeit nur Deutsch.
+- Sprache folgt dem Handy: Englisch als Grundsprache (`res/values`), Deutsch als Übersetzung (`res/values-de`). Alle Texte in Ressourcen, Minuten über `<plurals>`, Info-Texte wörtlich wie `core/ui` (`aapps_*`).
+- Mischungen haben eine feste ID (`ocean`, `focus`, `sleep`, `mask`, `nature`, `white`), der Name ist nur Anzeige. Gespeichert werden Reglerwerte, nie Namen; die aktive Mischung wird über die Werte erkannt.
 
 ## Nicht
 - Keine Audiodateien oder Schleifen, alles wird live berechnet.
@@ -49,11 +50,14 @@ Kein INTERNET, kein VIBRATE (sleepr nutzt `core/ui` nicht). Haptik wie `press()`
 | `idle_plain`, `idle_plain_land` | Wellen-Schalter und Mischungen ausgeblendet |
 | `settings`, `settings_land`, `settings_font200`, `settings_tablet`, `settings_plain` | Einstellungen, Varianten, beide Schalter aus |
 | `about`, `about_font200` | Info-Seite |
+| `idle_en`, `settings_en` | Mixer und Einstellungen auf Englisch |
 | `icon_masks`, `icon_store_512` | App-Icon in Masken, Store-Icon |
 
-Standard Pixel 7.
+Standard Pixel 7, deutsch (`+de`); `_en` englisch.
 
 ## Abnahmekriterien
+- Robolectric-Test beider Sprachen (`LocaleTest`): Mixer und Einstellungen ohne Absturz, Schlüsseltexte EN/DE, Zahlformat (1.5 kHz / 1,5 kHz).
+- Lint ohne MissingTranslation, ExtraTranslation, HardcodedText, SetTextI18n.
 - Unit-Tests für Anzeige-Einstellungen (Standard, Speichern, Sichtbarkeit), Mischungs-Erkennung, Einstellungen (Zahnrad, Zurück, Drehen, Schalter als Switch, Mischung laden).
 - Unit-Tests für die Signalverarbeitung: Tiefpass (Durchlass, −3 dB an der Grenze, Sperrbereich), Peak-Filter-Verstärkung, Weiß im Bereich ±1, gleiche RMS aller Farben nach Normierung, deterministisch bei gleichem Seed.
 - `:apps:sleepr:check`, `verifyRoborazziDebug`, `assembleRelease` grün; nur die 4 Berechtigungen oben; Release-APK < 4 MB.
