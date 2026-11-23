@@ -18,7 +18,7 @@
 ## Woher die Bilder kommen
 - `collect.js` liest Icons und Screenshots per `git show <ref>:<pfad>` direkt aus den App-Branches (`source.ref` in `apps.json`, z. B. `feat/levlr`). Kein Auschecken und keine Worktree-Pfade nötig. Das Repo wird relativ zu diesem Ordner gefunden (`../../..`), abweichend per `AAPPS_REPO=/pfad/zum/aapps`.
 - Sind die Apps später nach `main` gemergt, in `apps.json` einfach `source.ref` auf `main` ändern.
-- sleepr liegt wie alle anderen unter `apps/sleepr`: Screenshot `idle.png` und Store-Icon aus `apps/sleepr/screenshots/` (UI nur Deutsch, daher ohne `_de`).
+- sleepr liegt wie alle anderen unter `apps/sleepr`: Screenshot `idle.png` und Store-Icon aus `apps/sleepr/screenshots/` (bei sleepr sind Screenshots ohne Suffix deutsch, englische heißen `_en`).
 - moovr: Spielgrafik `clumsy-cheatsheet.jpg` aus den Assets (die App hat keine Spiel-Screenshots).
 - glidr: `source.shot = "level:23"` rendert Level 23 mit `glidr-level.js` nach.
 
