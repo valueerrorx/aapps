@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tagline">Ein visueller Timer. Die verbleibende Zeit siehst du als Lichtscheibe, die langsam kleiner wird.</string>
+    <string name="note_gestures">Zieh rund um die Scheibe, um die Zeit einzustellen, sie rastet an den Strichen ein. Das geht auch, während der Timer läuft.</string>
+
+    <string name="start">Start</string>
+    <string name="pause">Pause</string>
+    <string name="resume">Weiter</string>
+    <string name="again">Nochmal</string>
+    <string name="reset">Zurücksetzen</string>
+
+    <string name="state_ready">Bereit</string>
+    <string name="state_ends">Endet um %1$s</string>
+    <string name="state_paused">Pausiert</string>
+    <string name="state_done">Zeit um</string>
+    <string name="state_zero">Scheibe ziehen, um Zeit einzustellen</string>
+
+    <string name="dial_desc">Timer</string>
+    <plurals name="minutes_n">
+        <item quantity="one">%1$d Minute</item>
+        <item quantity="other">%1$d Minuten</item>
+    </plurals>
+    <plurals name="seconds_n">
+        <item quantity="one">%1$d Sekunde</item>
+        <item quantity="other">%1$d Sekunden</item>
+    </plurals>
+
+    <string name="group_timer">Timer</string>
+    <string name="group_end">Wenn die Zeit um ist</string>
+    <string name="group_device">Gerät</string>
+    <string name="scale">Zifferblatt in Minuten</string>
+    <string name="sound">Glockenton</string>
+    <string name="vibrate">Vibrieren</string>
+    <string name="haptics">Haptik beim Einstellen</string>
+    <string name="keep_on">Bildschirm an, solange er läuft</string>
+    <string name="notifications">Benachrichtigungen erlauben</string>
+    <string name="notifications_sub">Zeigt den Countdown und „Zeit um“, wenn focusr im Hintergrund ist</string>
+
+    <string name="channel_done">Zeit um</string>
+    <string name="channel_running">Laufender Timer</string>
+    <string name="notif_done_text">%1$s sind vorbei</string>
+    <string name="notif_running_text">Endet um %1$s</string>
+</resources>
