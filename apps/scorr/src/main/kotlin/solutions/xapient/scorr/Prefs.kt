@@ -18,10 +18,6 @@ class Prefs(context: Context) {
             if (b == null) remove("before") else putString("before", b)
         }
 
-    var rounds: Boolean
-        get() = sp.getBoolean("rounds", true)
-        set(v) = sp.edit { putBoolean("rounds", v) }
-
     var haptics: Boolean
         get() = sp.getBoolean("haptics", true)
         set(v) = sp.edit { putBoolean("haptics", v) }

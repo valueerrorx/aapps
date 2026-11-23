@@ -37,7 +37,6 @@ fun ScorrApp() {
     var session by remember { mutableStateOf(prefs.session) }
     // nur zum Anzeigen; Aenderungen lesen immer session.game (kein veralteter Stand)
     val game = session.game
-    var rounds by remember { mutableStateOf(prefs.rounds) }
     var hapticsOn by remember { mutableStateOf(prefs.haptics) }
     var keepOn by remember { mutableStateOf(prefs.keepOn) }
     var screen by rememberSaveable { mutableStateOf(Screen.BOARD) }
@@ -70,11 +69,10 @@ fun ScorrApp() {
                 if (entry >= 0) BackHandler { entry = -1 }
                 ScoreScreen(
                     game = game,
-                    rounds = rounds,
                     haptics = haptics,
                     onScore = { p, d -> update(session.game.score(p, d, System.currentTimeMillis())) },
                     onEnter = { entry = it },
-                    onUndo = { save(session.undo(rounds)) },
+                    onUndo = { save(session.undo()) },
                     onNextRound = { update(session.game.endRound()) },
                     onNewGame = { newGame() },
                     onHistory = { screen = Screen.HISTORY },
@@ -87,7 +85,7 @@ fun ScorrApp() {
                             EntryOverlay(
                                 name = displayName(game, i),
                                 color = playerColor(game.players[i].color),
-                                score = game.scores[i],
+                                score = game.tileValues[i],
                                 onApply = { d ->
                                     update(session.game.enter(i, d, System.currentTimeMillis()))
                                     haptics.press()
@@ -101,7 +99,7 @@ fun ScorrApp() {
             }
             Screen.HISTORY -> {
                 BackHandler { screen = Screen.BOARD }
-                HistoryScreen(game, rounds) { screen = Screen.BOARD }
+                HistoryScreen(game) { screen = Screen.BOARD }
             }
             Screen.PLAYERS -> {
                 BackHandler { screen = Screen.SETTINGS }
@@ -122,8 +120,10 @@ fun ScorrApp() {
                     onTarget = { update(session.game.withTarget(it), keepUndo = true) },
                     rule = game.rule,
                     onRule = { update(session.game.withRule(it), keepUndo = true) },
-                    rounds = rounds,
-                    onRounds = { rounds = it; prefs.rounds = it },
+                    rounds = game.rounds,
+                    onRounds = { update(session.game.withRounds(it), keepUndo = true) },
+                    scoring = game.scoring,
+                    onScoring = { update(session.game.withScoring(it), keepUndo = true) },
                     haptics = hapticsOn,
                     onHaptics = { hapticsOn = it; prefs.haptics = it },
                     keepOn = keepOn,

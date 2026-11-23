@@ -1,7 +1,9 @@
 package solutions.xapient.scorr.domain
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class GameCodecTest {
@@ -15,6 +17,24 @@ class GameCodecTest {
         assertEquals(66, back.target)
         assertEquals(WinRule.FEWEST, back.rule)
         assertEquals(g.scores, back.scores)
+    }
+
+    @Test fun roundsAndScoringRoundTrip() {
+        val g = Game.initial().withScoring(Scoring.POINTS).score(0, 3, 0).endRound()
+        val back = GameCodec.decode(GameCodec.encode(g))
+        assertTrue(back.rounds)
+        assertEquals(Scoring.POINTS, back.scoring)
+        assertEquals(listOf(1, 0), back.wins)
+        val off = GameCodec.decode(GameCodec.encode(g.withRounds(false)))
+        assertFalse(off.rounds)
+    }
+
+    @Test fun missingOrBrokenRoundLinesGiveDefaults() {
+        val g = GameCodec.decode("scorr1\nN|\nW|NOPE\nP|0|a\nS|0|2\nE")
+        assertTrue(g.rounds)
+        assertEquals(Scoring.WINS, g.scoring)
+        assertEquals(listOf(1), g.wins)
+        assertTrue(GameCodec.decode("scorr1\nP|0|a").rounds)
     }
 
     @Test fun noTargetRoundTrips() {

@@ -59,7 +59,8 @@ fun ListScreen(title: String, onBack: () -> Unit, content: @Composable ColumnSco
 
 // Verlauf: Rangliste mit Summen, darunter die Runden (neueste oben)
 @Composable
-fun HistoryScreen(game: Game, rounds: Boolean, onBack: () -> Unit) {
+fun HistoryScreen(game: Game, onBack: () -> Unit) {
+    val rounds = game.rounds
     val title = if (rounds) stringResource(R.string.round_n, game.round) else stringResource(R.string.history)
     ListScreen(title, onBack) {
         Totals(game)
@@ -79,16 +80,19 @@ fun HistoryScreen(game: Game, rounds: Boolean, onBack: () -> Unit) {
 private fun Totals(game: Game) {
     val c = Aapps.colors
     val scores = game.scores
-    val order = scores.indices.sortedWith(
-        if (game.rule == WinRule.MOST) compareByDescending { scores[it] } else compareBy { scores[it] },
-    )
+    val wins = game.wins
+    // Reihenfolge nach Wertung, bei gleichen Siegen nach Punkten
+    val byPoints: Comparator<Int> = if (game.rule == WinRule.MOST) compareByDescending { scores[it] } else compareBy { scores[it] }
+    val order = scores.indices.sortedWith(if (game.countsWins) compareByDescending<Int> { wins[it] }.then(byPoints) else byPoints)
     val crowned = if (game.finished) game.winners else game.leaders
-    SettingsGroup(stringResource(R.string.total)) {
+    SettingsGroup(stringResource(if (game.rounds) R.string.standings else R.string.total)) {
         order.forEachIndexed { rank, i ->
             if (rank > 0) SettingsDivider()
             val color = playerColor(game.players[i].color)
             val name = displayName(game, i)
-            val desc = stringResource(R.string.tile_desc, name, Board.format(scores[i]))
+            val desc = if (game.rounds) {
+                stringResource(R.string.tile_desc_rounds, name, Board.format(scores[i]), wins[i])
+            } else stringResource(R.string.tile_desc, name, Board.format(scores[i]))
             Row(
                 Modifier.fillMaxWidth().heightIn(min = 64.dp).padding(horizontal = 18.dp, vertical = 10.dp)
                     .semantics(mergeDescendants = true) { contentDescription = desc },
@@ -101,6 +105,13 @@ private fun Totals(game: Game) {
                     AappsIcon(ScorrIcons.Crown, null, color, size = 20.dp)
                     Spacer(Modifier.width(10.dp))
                 }
+                // Rundensiege vor der Summe
+                if (game.rounds) {
+                    AappsIcon(ScorrIcons.Trophy, null, c.fgMuted, size = 18.dp)
+                    Spacer(Modifier.width(4.dp))
+                    BasicText("${wins[i]}", style = Aapps.type.number.copy(color = c.fgMuted, fontSize = 17.sp), maxLines = 1)
+                    Spacer(Modifier.width(16.dp))
+                }
                 BasicText(Board.format(scores[i]), style = Aapps.type.headline.copy(color = color, fontFeatureSettings = "tnum"), maxLines = 1)
             }
         }
@@ -112,6 +123,8 @@ private fun Totals(game: Game) {
 private fun RoundTable(game: Game) {
     val c = Aapps.colors
     val table = game.roundTable()
+    val won = game.roundWinners
+    val wonLabel = stringResource(R.string.round_won)
     val fs = LocalDensity.current.fontScale.coerceIn(1f, 2f)
     val first = 64.dp * fs
     val col = 68.dp * fs
@@ -141,13 +154,20 @@ private fun RoundTable(game: Game) {
                         BasicText(stringResource(R.string.round_short, r + 1), style = Aapps.type.number.copy(color = if (running) c.accent else c.fgMuted, fontSize = 15.sp))
                         if (running) BasicText(stringResource(R.string.running).uppercase(), style = Aapps.type.label.copy(color = c.fgFaint, fontSize = 10.sp))
                     }
-                    table[r].forEach { v ->
-                        BasicText(
-                            if (v == 0) "·" else Board.formatDelta(v),
-                            Modifier.width(col),
-                            style = cell.copy(color = if (v == 0) c.fgFaint else c.fg),
-                            maxLines = 1,
-                        )
+                    table[r].forEachIndexed { i, v ->
+                        // Rundensieger: Pokal und Spielerfarbe
+                        val winner = i in won.getOrElse(r) { emptySet() }
+                        Row(Modifier.width(col), horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically) {
+                            if (winner) {
+                                AappsIcon(ScorrIcons.Trophy, wonLabel, playerColor(game.players[i].color), size = 14.dp)
+                                Spacer(Modifier.width(3.dp))
+                            }
+                            BasicText(
+                                if (v == 0) "·" else Board.formatDelta(v),
+                                style = cell.copy(color = when { winner -> playerColor(game.players[i].color); v == 0 -> c.fgFaint; else -> c.fg }),
+                                maxLines = 1,
+                            )
+                        }
                     }
                 }
             }

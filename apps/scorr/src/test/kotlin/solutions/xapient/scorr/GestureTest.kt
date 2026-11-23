@@ -29,8 +29,13 @@ class GestureTest {
 
     private fun tile() = rule.onNodeWithContentDescription("Player 1")
 
-    private fun points(n: Int) =
-        tile().assert(SemanticsMatcher.expectValue(SemanticsProperties.StateDescription, "${Board.format(n)} points"))
+    // neues Spiel hat Runden an: Rundenpunkte = Summe in Runde 1
+    private fun points(n: Int) = tile().assert(
+        SemanticsMatcher.expectValue(
+            SemanticsProperties.StateDescription,
+            "${Board.format(n)} points this round, round wins: 0, total: ${Board.format(n)} points",
+        ),
+    )
 
     @Test fun tapTopAddsTapBottomSubtracts() {
         points(0)

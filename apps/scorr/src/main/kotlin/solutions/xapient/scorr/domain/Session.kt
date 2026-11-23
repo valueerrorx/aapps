@@ -8,8 +8,8 @@ data class Session(val game: Game, val before: List<Action>? = null) {
     fun newGame(): Session = if (game.actions.isEmpty()) this else Session(game.newGame(), game.actions)
 
     // nur die Zuege kommen zurueck; Namen, Farben, Ziel bleiben wie jetzt
-    fun undo(rounds: Boolean = true): Session = when {
-        game.canUndo -> Session(game.undo(rounds))
+    fun undo(): Session = when {
+        game.canUndo -> Session(game.undo())
         before != null -> Session(game.copy(actions = before, lastAt = Long.MIN_VALUE))
         else -> this
     }

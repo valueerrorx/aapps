@@ -7,6 +7,7 @@ import com.github.takahirom.roborazzi.captureRoboImage
 import solutions.xapient.aapps.core.ui.AappsTheme
 import solutions.xapient.scorr.domain.Game
 import solutions.xapient.scorr.domain.Player
+import solutions.xapient.scorr.domain.Scoring
 import solutions.xapient.scorr.domain.WinRule
 import solutions.xapient.scorr.ui.EntryOverlay
 import solutions.xapient.scorr.ui.HistoryScreen
@@ -49,12 +50,13 @@ class ScoreScreenshotTest {
         return if (endRound) g.endRound() else g
     }
 
-    private fun two() = Game(listOf(Player("Anna", 0), Player("Ben", 2)))
+    // Runde 3, Anna fuehrt mit zwei Rundensiegen
+    private fun two() = Game(listOf(Player("Anna", 0), Player("Ben", 2)), rounds = true)
         .play(0 to 7, 1 to 5, endRound = true)
-        .play(0 to 6, 1 to 9, endRound = true)
+        .play(0 to 9, 1 to 6, endRound = true)
         .play(0 to 8, 1 to 3)
 
-    private fun four() = Game(listOf(Player("Lena", 1), Player("Max", 2), Player("Sophie", 3), Player("Jonas", 4)))
+    private fun four() = Game(listOf(Player("Lena", 1), Player("Max", 2), Player("Sophie", 3), Player("Jonas", 4)), rounds = true)
         .play(0 to 12, 1 to 9, 2 to 15, 3 to 4, endRound = true)
         .play(0 to 10, 1 to 14, 2 to 11, 3 to 6, endRound = true)
         .play(0 to 9, 1 to 8, 2 to 13, 3 to 5, endRound = true)
@@ -63,19 +65,28 @@ class ScoreScreenshotTest {
     private fun eight() = Game((0 until 8).map { Player("", it) })
         .play(0 to 14, 1 to 9, 2 to -3, 3 to 22, 4 to 7, 5 to 11, 6 to 0, 7 to 5)
 
-    private fun finishedGame() = Game(listOf(Player("Lena", 1), Player("Max", 2), Player("Sophie", 3)))
+    // Wertung Punkte gesamt: Ziel 100 sofort erreicht
+    private fun finishedGame() = Game(listOf(Player("Lena", 1), Player("Max", 2), Player("Sophie", 3)), rounds = true)
+        .withScoring(Scoring.POINTS)
         .withTarget(100)
         .play(0 to 34, 1 to 28, 2 to 30, endRound = true)
         .play(0 to 31, 1 to 40, 2 to 22, endRound = true)
         .play(0 to 39, 1 to 25, 2 to 27)
 
+    // Wertung Rundensiege: Ziel 2 Siege nach Runde 3 erreicht
+    private fun finishedByWins() = Game(listOf(Player("Lena", 1), Player("Max", 2), Player("Sophie", 3)), rounds = true)
+        .withTarget(2)
+        .play(0 to 34, 1 to 28, 2 to 30, endRound = true)
+        .play(0 to 31, 1 to 40, 2 to 22, endRound = true)
+        .play(0 to 39, 1 to 25, 2 to 27, endRound = true)
+
     @Composable
     private fun Board(
-        g: Game, scrub: Pair<Int, Int>? = null, shine: Float = -1f, rounds: Boolean = true, confirm: Boolean = false,
+        g: Game, scrub: Pair<Int, Int>? = null, shine: Float = -1f, confirm: Boolean = false,
         overlay: @Composable () -> Unit = {},
     ) {
         ScoreScreen(
-            g, rounds, haptics = null, onScore = { _, _ -> }, onEnter = {}, onUndo = {}, onNextRound = {}, onNewGame = {},
+            g, haptics = null, onScore = { _, _ -> }, onEnter = {}, onUndo = {}, onNextRound = {}, onNewGame = {},
             onHistory = {}, onSettings = {}, clock = { g.lastAt + 400 }, animate = false, scrubPreview = scrub, shineAt = shine,
             confirmNew = confirm, overlay = overlay,
         )
@@ -99,14 +110,19 @@ class ScoreScreenshotTest {
     @Test fun board4() = shot("board4") { Four() }
     @Test fun board4_land() = shot("board4_land", "+land") { Four() }
 
-    @Composable private fun Eight() = Board(eight().settled(), rounds = false)
+    @Composable private fun Eight() = Board(eight().settled())
 
     @Test fun board8() = shot("board8") { Eight() }
     @Test fun board8_land() = shot("board8_land", "+land") { Eight() }
 
     // Grenzwerte: laengste Zahl darf nie abgeschnitten werden
     @Test fun board8_land_extreme() = shot("board8_land_extreme", "+land") {
-        Board(eight().play(1 to -1_000_000, 3 to 999_999).settled(), rounds = false)
+        Board(eight().play(1 to -1_000_000, 3 to 999_999).settled())
+    }
+
+    // kompakte Kacheln mit Runden: unten nur die Siege
+    @Test fun board8_rounds() = shot("board8_rounds") {
+        Board(eight().withRounds(true).endRound().play(3 to 4, 5 to 2).settled())
     }
 
     @Test fun scrub() = shot("scrub") { Board(two().settled(), scrub = 1 to 7) }
@@ -125,12 +141,13 @@ class ScoreScreenshotTest {
     @Test fun winner_land() = shot("winner_land", "+land") { Winner() }
     @Test fun winner_font200() = shot("winner_font200", fontScale = 2f) { Winner() }
     @Test fun winner_land_font200() = shot("winner_land_font200", "+land", fontScale = 2f) { Winner() }
+    @Test fun winner_wins() = shot("winner_wins") { Board(finishedByWins().settled()) }
 
     @Composable
     private fun Entry() {
         val g = four().settled()
         Board(g) {
-            EntryOverlay("Sophie", playerColor(3), g.scores[2], {}, {}, initial = "37", focus = false)
+            EntryOverlay("Sophie", playerColor(3), g.tileValues[2], {}, {}, initial = "37", focus = false)
         }
     }
 
@@ -140,14 +157,14 @@ class ScoreScreenshotTest {
     @Test fun entry_font200() = shot("entry_font200", fontScale = 2f) { Entry() }
     @Test fun entry_land_font200() = shot("entry_land_font200", "+land", fontScale = 2f) { Entry() }
 
-    @Composable private fun History() = HistoryScreen(four().settled(), rounds = true) {}
+    @Composable private fun History() = HistoryScreen(four().settled()) {}
 
     @Test fun history() = shot("history") { History() }
     @Test fun history_de() = shot("history_de", "+de") { History() }
     @Test fun history_land() = shot("history_land", "+land") { History() }
     @Test fun history_font200() = shot("history_font200", fontScale = 2f) { History() }
     @Test fun history_land_font200() = shot("history_land_font200", "+land", fontScale = 2f) { History() }
-    @Test fun history_eight() = shot("history_eight") { HistoryScreen(eight().settled().endRound().play(3 to 4), rounds = true) {} }
+    @Test fun history_eight() = shot("history_eight") { HistoryScreen(eight().withRounds(true).settled().endRound().play(3 to 4)) {} }
 
     @Composable
     private fun Players() {
@@ -165,7 +182,7 @@ class ScoreScreenshotTest {
     private fun Settings() {
         ScorrSettings(
             playerNames = "Lena, Max, Sophie, Jonas", target = 100, onTarget = {}, rule = WinRule.MOST, onRule = {},
-            rounds = true, onRounds = {}, haptics = true, onHaptics = {}, keepOn = true, onKeepOn = {},
+            rounds = true, onRounds = {}, scoring = Scoring.WINS, onScoring = {}, haptics = true, onHaptics = {}, keepOn = true, onKeepOn = {},
             onPlayers = {}, onNewGame = {}, onAbout = {}, onBack = {},
         )
     }

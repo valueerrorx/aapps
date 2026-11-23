@@ -8,6 +8,8 @@ object GameCodec {
         appendLine(VERSION)
         appendLine("T|${g.target ?: ""}")
         appendLine("R|${g.rule.name}")
+        appendLine("N|${if (g.rounds) 1 else 0}")
+        appendLine("W|${g.scoring.name}")
         g.players.forEach { appendLine("P|${it.color}|${Game.clean(it.name)}") }
         g.actions.forEach {
             when (it) {
@@ -34,6 +36,9 @@ object GameCodec {
         if (lines.firstOrNull() != VERSION) return Game.initial()
         var target: Int? = null
         var rule = WinRule.MOST
+        // fehlt die Zeile, gilt der Standard eines neuen Spiels
+        var rounds = Game.initial().rounds
+        var scoring = Scoring.WINS
         val players = mutableListOf<Player>()
         val raw = mutableListOf<Action>()
         for (line in lines.drop(1)) {
@@ -41,6 +46,8 @@ object GameCodec {
             when (f[0]) {
                 "T" -> target = Game.validTarget(f.getOrNull(1)?.toIntOrNull())
                 "R" -> rule = WinRule.entries.firstOrNull { it.name == f.getOrNull(1) } ?: WinRule.MOST
+                "N" -> rounds = f.getOrNull(1) != "0"
+                "W" -> scoring = Scoring.entries.firstOrNull { it.name == f.getOrNull(1) } ?: Scoring.WINS
                 "P" -> if (players.size < Game.MAX_PLAYERS) {
                     val color = f.getOrNull(1)?.toIntOrNull() ?: continue
                     players += Player(Game.clean(f.getOrNull(2) ?: ""), color.mod(Game.COLORS))
@@ -55,6 +62,6 @@ object GameCodec {
         }
         if (players.isEmpty()) return Game.initial()
         val actions = raw.filter { it !is Action.Score || it.player in players.indices }
-        return Game(players, actions, target, rule)
+        return Game(players, actions, target, rule, rounds = rounds, scoring = scoring)
     }
 }

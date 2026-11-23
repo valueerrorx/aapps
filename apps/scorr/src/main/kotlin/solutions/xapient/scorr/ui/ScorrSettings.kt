@@ -49,6 +49,7 @@ import solutions.xapient.aapps.core.ui.SettingsScreen
 import solutions.xapient.aapps.core.ui.SettingsToggle
 import solutions.xapient.scorr.R
 import solutions.xapient.scorr.domain.Board
+import solutions.xapient.scorr.domain.Scoring
 import solutions.xapient.scorr.domain.WinRule
 import kotlinx.coroutines.delay
 
@@ -61,6 +62,8 @@ fun ScorrSettings(
     onRule: (WinRule) -> Unit,
     rounds: Boolean,
     onRounds: (Boolean) -> Unit,
+    scoring: Scoring,
+    onScoring: (Scoring) -> Unit,
     haptics: Boolean,
     onHaptics: (Boolean) -> Unit,
     keepOn: Boolean,
@@ -77,7 +80,7 @@ fun ScorrSettings(
         SettingsGroup(stringResource(R.string.group_game)) {
             SettingsAction(stringResource(R.string.players), playerNames, onClick = onPlayers)
             SettingsDivider()
-            TargetRow(target, onTarget)
+            TargetRow(target, rounds && scoring == Scoring.WINS, onTarget)
             SettingsDivider()
             SettingsChoice(
                 stringResource(R.string.rule),
@@ -86,6 +89,15 @@ fun ScorrSettings(
             )
             SettingsDivider()
             SettingsToggle(stringResource(R.string.rounds), rounds, onRounds, stringResource(R.string.rounds_sub))
+            // Wertung nur mit Runden
+            if (rounds) {
+                SettingsDivider()
+                SettingsChoice(
+                    stringResource(R.string.scoring),
+                    listOf(Scoring.WINS to stringResource(R.string.scoring_wins), Scoring.POINTS to stringResource(R.string.scoring_points)),
+                    scoring, onScoring,
+                )
+            }
         }
         SettingsGroup(stringResource(R.string.group_device)) {
             SettingsToggle(stringResource(R.string.haptics), haptics, onHaptics)
@@ -110,12 +122,12 @@ fun ScorrSettings(
     }
 }
 
-// Zielpunktzahl als Zahlenfeld; leer = kein Ziel
+// Ziel als Zahlenfeld (Punkte oder Rundensiege); leer = kein Ziel
 @Composable
-private fun TargetRow(target: Int?, onTarget: (Int?) -> Unit) {
+private fun TargetRow(target: Int?, wins: Boolean, onTarget: (Int?) -> Unit) {
     val c = Aapps.colors
     var text by rememberSaveable { mutableStateOf(target?.toString() ?: "") }
-    val title = stringResource(R.string.target)
+    val title = stringResource(if (wins) R.string.target_wins else R.string.target)
     val off = stringResource(R.string.target_off)
     val style = Aapps.type.number.copy(color = c.accent, textAlign = TextAlign.End, fontSize = Aapps.type.body.fontSize * 1.15f)
     val fs = LocalDensity.current.fontScale.coerceIn(1f, 2f)
@@ -131,7 +143,7 @@ private fun TargetRow(target: Int?, onTarget: (Int?) -> Unit) {
         Column(m) {
             BasicText(title, style = Aapps.type.body.copy(color = c.fg))
             Spacer(Modifier.height(2.dp))
-            BasicText(stringResource(R.string.target_sub), style = Aapps.type.body.copy(color = c.fgMuted, fontSize = Aapps.type.label.fontSize * 1.1f))
+            BasicText(stringResource(if (wins) R.string.target_wins_sub else R.string.target_sub), style = Aapps.type.body.copy(color = c.fgMuted, fontSize = Aapps.type.label.fontSize * 1.1f))
         }
     }
     val field: @Composable () -> Unit = {

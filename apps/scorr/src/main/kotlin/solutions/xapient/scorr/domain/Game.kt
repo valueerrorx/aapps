@@ -11,6 +11,9 @@ sealed interface Action {
 
 enum class WinRule { MOST, FEWEST }
 
+// Wertung bei Runden: Rundensiege oder Punkte gesamt
+enum class Scoring { WINS, POINTS }
+
 // Ganzes Spiel, unveraenderlich; lastAt = Zeitpunkt des letzten Zugs (nicht gespeichert)
 data class Game(
     val players: List<Player>,
@@ -18,12 +21,37 @@ data class Game(
     val target: Int? = null,
     val rule: WinRule = WinRule.MOST,
     val lastAt: Long = Long.MIN_VALUE,
+    val rounds: Boolean = false,
+    val scoring: Scoring = Scoring.WINS,
 ) {
     val scores: List<Int> by lazy {
         val s = IntArray(players.size)
         actions.forEach { if (it is Action.Score && it.player in s.indices) s[it.player] = clamp(s[it.player].toLong() + it.delta) }
         s.toList()
     }
+
+    private val table: List<List<Int>> by lazy { roundTable() }
+
+    // Punkte der laufenden Runde
+    val roundPoints: List<Int> get() = table.last()
+
+    // Sieger je abgeschlossener Runde
+    val roundWinners: List<Set<Int>> by lazy { table.dropLast(1).map { winnersOf(it) } }
+
+    // Rundensiege je Spieler
+    val wins: List<Int> by lazy { players.indices.map { p -> roundWinners.count { p in it } } }
+
+    // Sieger der laufenden Runde, falls sie jetzt endet
+    val pendingRoundWinners: Set<Int> get() = winnersOf(roundPoints)
+
+    // Wertung nach Rundensiegen: nur mit Runden
+    val countsWins: Boolean get() = rounds && scoring == Scoring.WINS
+
+    // Stand fuer Krone, Ziel und Gewinner
+    val standings: List<Int> get() = if (countsWins) wins else scores
+
+    // Grosse Zahl auf der Kachel: Rundenpunkte, ohne Runden bzw. nach Spielende der Stand
+    val tileValues: List<Int> get() = if (rounds && !finished) roundPoints else standings
 
     // Laufende Runde, ab 1
     val round: Int get() = actions.count { it == Action.EndRound } + 1
@@ -44,18 +72,27 @@ data class Game(
         return rows.map { it.toList() }
     }
 
-    // Ziel erreicht: Spiel vorbei
-    val finished: Boolean get() = target != null && scores.any { it >= target }
+    // Ziel erreicht: Spiel vorbei; Siege zaehlen erst mit dem Rundenende
+    val finished: Boolean get() = target != null && standings.any { it >= target }
 
     // Gewinner nach Spielende, sonst leer; Gleichstand = mehrere
     val winners: Set<Int> get() = if (finished) best() else emptySet()
 
     // Fuehrung waehrend des Spiels; leer, wenn alle gleich
-    val leaders: Set<Int> get() = if (players.size < 2 || scores.distinct().size < 2) emptySet() else best()
+    val leaders: Set<Int> get() = if (players.size < 2 || standings.distinct().size < 2) emptySet() else best()
 
+    // Siege: immer die meisten; Punkte nach Regel
     private fun best(): Set<Int> {
-        val b = if (rule == WinRule.MOST) scores.max() else scores.min()
-        return scores.indices.filter { scores[it] == b }.toSet()
+        val s = standings
+        val b = if (countsWins || rule == WinRule.MOST) s.max() else s.min()
+        return s.indices.filter { s[it] == b }.toSet()
+    }
+
+    // Rundensieger nach Regel, Gleichstand = alle; Nullrunde ohne Sieger
+    private fun winnersOf(row: List<Int>): Set<Int> {
+        if (row.isEmpty() || row.all { it == 0 }) return emptySet()
+        val b = if (rule == WinRule.MOST) row.max() else row.min()
+        return row.indices.filter { row[it] == b }.toSet()
     }
 
     // Letzter Zug dieses Spielers, solange er noch zusammengefasst wird
@@ -86,7 +123,7 @@ data class Game(
     fun endRound(): Game = copy(actions = actions + Action.EndRound, lastAt = Long.MIN_VALUE)
 
     // ohne Runden sind Rundenenden unsichtbar und werden mit zurueckgenommen
-    fun undo(rounds: Boolean = true): Game {
+    fun undo(): Game {
         val a = if (rounds) actions else actions.dropLastWhile { it == Action.EndRound }
         return copy(actions = a.dropLast(1), lastAt = Long.MIN_VALUE)
     }
@@ -96,6 +133,11 @@ data class Game(
     fun withTarget(t: Int?): Game = copy(target = validTarget(t))
 
     fun withRule(r: WinRule): Game = copy(rule = r)
+
+    fun withRounds(on: Boolean): Game = copy(rounds = on, lastAt = Long.MIN_VALUE)
+
+    // Wechsel rechnet alles aus den gespeicherten Zuegen neu
+    fun withScoring(s: Scoring): Game = copy(scoring = s)
 
     fun rename(i: Int, name: String): Game = edit(i) { it.copy(name = clean(name)) }
 
@@ -135,7 +177,7 @@ data class Game(
         const val MAX = 999_999
         const val MERGE_MS = 2000L
 
-        fun initial(): Game = Game(listOf(Player("", 0), Player("", 2)))
+        fun initial(): Game = Game(listOf(Player("", 0), Player("", 2)), rounds = true)
 
         // Ziel <= 0 waere sofort erreicht: gilt als kein Ziel
         fun validTarget(t: Int?): Int? = t?.takeIf { it > 0 }?.coerceAtMost(MAX)

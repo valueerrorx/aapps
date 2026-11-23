@@ -66,9 +66,9 @@ class GameTest {
 
     @Test fun undoWithoutRoundsTakesHiddenRoundEnds() {
         val g = two().score(0, 3, 0).endRound().score(1, 2, 5000).endRound().endRound()
-        assertEquals(listOf(Action.Score(0, 3), Action.EndRound), g.undo(rounds = false).actions)
-        assertEquals(listOf(3, 2), g.undo().scores)
-        assertEquals(emptyList<Action>(), two().endRound().undo(rounds = false).actions)
+        assertEquals(listOf(Action.Score(0, 3), Action.EndRound), g.undo().actions)
+        assertEquals(listOf(3, 2), g.withRounds(true).undo().scores)
+        assertEquals(emptyList<Action>(), two().endRound().undo().actions)
     }
 
     @Test fun targetZeroOrBelowMeansNone() {
@@ -107,7 +107,7 @@ class GameTest {
     }
 
     @Test fun undoReopensRound() {
-        val g = two().score(0, 3, 0).endRound()
+        val g = two().withRounds(true).score(0, 3, 0).endRound()
         assertEquals(2, g.round)
         assertEquals(1, g.undo().round)
         assertEquals(listOf(3, 0), g.undo().scores)

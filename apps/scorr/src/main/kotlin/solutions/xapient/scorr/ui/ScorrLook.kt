@@ -49,6 +49,17 @@ object ScorrIcons {
         }
     }
 
+    val Trophy: ImageVector by lazy {
+        line("trophy") {
+            moveTo(7.5f, 4.5f); lineTo(16.5f, 4.5f); lineTo(16.5f, 9.5f)
+            arcTo(4.5f, 4.5f, 0f, false, true, 7.5f, 9.5f); close()
+            moveTo(7.5f, 6f); lineTo(4.5f, 6f); quadTo(4.5f, 10.5f, 8f, 11f)
+            moveTo(16.5f, 6f); lineTo(19.5f, 6f); quadTo(19.5f, 10.5f, 16f, 11f)
+            moveTo(12f, 14f); lineTo(12f, 19.5f)
+            moveTo(8.5f, 19.5f); lineTo(15.5f, 19.5f)
+        }
+    }
+
     val Plus: ImageVector by lazy {
         line("plus") { moveTo(12f, 5f); lineTo(12f, 19f); moveTo(5f, 12f); lineTo(19f, 12f) }
     }

@@ -56,4 +56,17 @@
     <string name="new_game_sub">Punkte und Verlauf werden gelöscht, die Spieler bleiben</string>
     <string name="new_game_confirm">Nochmal tippen zum Löschen</string>
     <string name="new_game_again">Nochmal tippen</string>
+    <string name="tile_state_rounds">%1$s Punkte in dieser Runde, Rundensiege: %2$d, gesamt: %3$s Punkte</string>
+    <string name="tile_desc_rounds">%1$s, %2$s Punkte, Rundensiege: %3$d</string>
+    <string name="round_won">Rundensieg</string>
+    <string name="standings">Stand</string>
+    <string name="scoring">Wertung</string>
+    <string name="scoring_wins">Rundensiege</string>
+    <string name="scoring_points">Punkte gesamt</string>
+    <string name="target_wins">Siege zum Gewinnen</string>
+    <string name="target_wins_sub">Das Spiel endet nach der Runde, in der jemand sie erreicht</string>
+    <plurals name="target_short_wins">
+        <item quantity="one">bis %1$s Sieg</item>
+        <item quantity="other">bis %1$s Siege</item>
+    </plurals>
 </resources>

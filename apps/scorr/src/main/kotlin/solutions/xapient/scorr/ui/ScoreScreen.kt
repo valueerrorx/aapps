@@ -65,6 +65,7 @@ import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.CustomAccessibilityAction
 import androidx.compose.ui.semantics.LiveRegionMode
@@ -113,7 +114,6 @@ private const val CONFIRM_MS = 3000L
 @Composable
 fun ScoreScreen(
     game: Game,
-    rounds: Boolean,
     haptics: Haptics?,
     onScore: (player: Int, delta: Int) -> Unit,
     onEnter: (player: Int) -> Unit,
@@ -160,6 +160,7 @@ fun ScoreScreen(
     if (confirm && animate) LaunchedEffect(Unit) { delay(CONFIRM_MS); confirm = false }
     LaunchedEffect(finished) { if (!finished) confirm = false }
 
+    val rounds = game.rounds
     AappsScaffold {
         val landscape = LocalWindowInfo.current.containerSize.let { it.width > it.height }
         // grosse Schrift im Querformat: Bedienspalte breiter, Hauptaktion ohne Icon, damit sie einzeilig bleibt
@@ -189,7 +190,13 @@ fun ScoreScreen(
                     icon = if (plainAction) null else AappsIcons.Rotate, active = true,
                 )
                 rounds -> AappsPillButton(
-                    stringResource(R.string.next_round), { haptics?.press(); onNextRound() },
+                    stringResource(R.string.next_round),
+                    {
+                        haptics?.press()
+                        // Rundensieg ist ein Ereignis
+                        if (game.pendingRoundWinners.isNotEmpty()) haptics?.confirm()
+                        onNextRound()
+                    },
                     Modifier.widthIn(min = 176.dp), icon = if (plainAction) null else ScorrIcons.Plus,
                 )
             }
@@ -263,7 +270,10 @@ private fun RoundChip(game: Game, rounds: Boolean, onClick: () -> Unit) {
     val source = remember { MutableInteractionSource() }
     val pressed by source.collectIsPressedAsState()
     val title = (if (rounds) stringResource(R.string.round_n, game.round) else stringResource(R.string.history)).uppercase()
-    val target = game.target?.let { stringResource(R.string.target_short, Board.format(it)).uppercase() }
+    val target = game.target?.let {
+        if (game.countsWins) pluralStringResource(R.plurals.target_short_wins, it, Board.format(it)).uppercase()
+        else stringResource(R.string.target_short, Board.format(it)).uppercase()
+    }
     val style = Aapps.type.label.copy(color = c.fg, fontSize = Aapps.type.label.fontSize * 1.1f)
     val measurer = rememberTextMeasurer()
     val density = LocalDensity.current
@@ -359,7 +369,7 @@ private fun TileGrid(
         val availW = with(density) { (cellW - pad * 2).toPx() }
         val availH = with(density) { (cellH - numberBand(density.fontScale) * 2).toPx().coerceAtLeast(24.dp.toPx()) }
         val maxPx = with(density) { 320.dp.toPx() }
-        val common = widest(game.scores.map { Board.format(it) }.maxBy { it.length })
+        val common = widest(game.tileValues.map { Board.format(it) }.maxBy { it.length })
         val fit: (String) -> TextUnit = { text ->
             val ref = if (text.length > common.length) widest(text) else common
             val probe = 100.sp
@@ -432,7 +442,9 @@ private fun Tile(
 ) {
     val player = game.players[index]
     val base = playerColor(player.color)
-    val score = game.scores[index]
+    val score = game.tileValues[index]
+    // klein: Rundensiege und Gesamtpunkte, nur mit Runden
+    val stats = if (game.rounds) game.wins[index] to game.scores[index] else null
     val finished = game.finished
     val isWinner = index in game.winners
     val isLeader = !finished && index in game.leaders
@@ -468,7 +480,9 @@ private fun Tile(
     val minusLabel = stringResource(R.string.action_minus)
     val enterLabel = stringResource(R.string.action_enter)
     val desc = if (isWinner) stringResource(R.string.tile_desc_winner, name) else name
-    val points = stringResource(R.string.points_n, Board.format(score))
+    val points = if (stats != null) {
+        stringResource(R.string.tile_state_rounds, Board.format(game.roundPoints[index]), stats.first, Board.format(stats.second))
+    } else stringResource(R.string.points_n, Board.format(score))
 
     Box(
         modifier
@@ -585,7 +599,7 @@ private fun Tile(
                 }
             },
     ) {
-        TileContent(name, score, scrub, burst, isLeader, isWinner, finished, compact, base, dim, fit)
+        TileContent(name, score, stats, scrub, burst, isLeader, isWinner, finished, compact, base, dim, fit)
     }
 }
 
@@ -593,6 +607,7 @@ private fun Tile(
 private fun TileContent(
     name: String,
     score: Int,
+    stats: Pair<Int, Int>?,
     scrub: MutableIntState,
     burst: Int?,
     isLeader: Boolean,
@@ -643,6 +658,25 @@ private fun TileContent(
             Modifier.align(Alignment.BottomEnd).padding(bottom = pad - 2.dp, end = pad - 4.dp).graphicsLayer { alpha = minusAlpha },
             size = 20.dp,
         )
+
+        // Siege und Summe unten links; weicht Zug-Anzeige und Plakette wie das Minus
+        if (stats != null) {
+            val statsAlpha by animateFloatAsState(if (badge != null || plaque) 0f else 1f, Springs.gentle(), label = "stats")
+            val fs = density.fontScale
+            // waechst nur bis 150 %, sonst stoesst es an Plakette und Minus
+            val statSize = 15.sp * (min(fs, 1.5f) / fs)
+            Row(
+                Modifier.align(Alignment.BottomStart).padding(start = pad, bottom = pad).graphicsLayer { alpha = statsAlpha },
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                // auf der dunklen Verliererkarte hell wie die Schrift
+                AappsIcon(ScorrIcons.Trophy, null, lerp(Ink.copy(alpha = 0.7f), bright, dim.value), size = 16.dp * min(fs, 1.5f))
+                Spacer(Modifier.width(4.dp))
+                // kompakt nur die Siege
+                val text = if (compact) "${stats.first}" else "${stats.first}  ·  ${Board.format(stats.second)}"
+                BasicText(text, style = Aapps.type.number.copy(fontSize = statSize), maxLines = 1, softWrap = false, color = ink(0.78f))
+            }
+        }
 
         // Zahl: gleiche Groesse auf allen Kacheln, gemessen statt geschaetzt
         val numberStyle: TextStyle = Aapps.type.display.copy(fontSize = fit(Board.format(shown)), lineHeight = 1.em)

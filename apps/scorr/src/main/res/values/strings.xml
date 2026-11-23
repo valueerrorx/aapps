@@ -58,4 +58,17 @@
     <string name="new_game_sub">Scores and history are cleared, players stay</string>
     <string name="new_game_confirm">Tap again to clear</string>
     <string name="new_game_again">Tap again</string>
+    <string name="tile_state_rounds">%1$s points this round, round wins: %2$d, total: %3$s points</string>
+    <string name="tile_desc_rounds">%1$s, %2$s points, round wins: %3$d</string>
+    <string name="round_won">Round win</string>
+    <string name="standings">Standings</string>
+    <string name="scoring">Scoring</string>
+    <string name="scoring_wins">Round wins</string>
+    <string name="scoring_points">Total points</string>
+    <string name="target_wins">Wins needed</string>
+    <string name="target_wins_sub">The game ends after the round in which someone reaches it</string>
+    <plurals name="target_short_wins">
+        <item quantity="one">to %1$s win</item>
+        <item quantity="other">to %1$s wins</item>
+    </plurals>
 </resources>
