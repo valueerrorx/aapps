@@ -23,6 +23,7 @@ Ein Werkzeug, ein Hero. Das Hero-Element nimmt mindestens 60 % der Fläche ein, 
 
 ## Bewegung
 - Nur Federn (`Springs` für Compose, eigene Physik als reines Kotlin im Domain), nie linear. Physik-Schleifen schlafen ein, sobald alles ruht.
+- Ausnahme: Endlosschleifen in Anleitungs-Animationen (z. B. die Acht im nordr-Kalibrierhinweis) laufen linear, weil eine Feder keinen gleichmäßigen Umlauf hat. Sie laufen nur, solange sie sichtbar sind.
 - Jede Rastung = Haptik (`Haptics.confirm`/`tick`), ohne VIBRATE-Berechtigung.
 
 ## Layout
