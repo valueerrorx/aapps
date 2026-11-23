@@ -8,6 +8,7 @@
     <string name="note_ink">Ink: does the meaning of the word on the left match the ink colour of the word on the right? Only the colour on the right counts, not what it says. Ink lives on colour and is only partly playable with strong colour blindness. Colour-blind mode keeps it to four colours that stay apart with red-green weakness.</string>
     <string name="note_swarm">Swarm: a swarm of comets shows up somewhere on the screen. Swipe the way the middle one with the ring points, whatever the others do. From level 10 the swarm also flies: if the middle one is hollow, swipe the way the swarm flies instead.</string>
     <string name="note_bounce">Bounce: glass prisms light up on the field for a moment and vanish. Then a light appears at the edge. Tap the edge where it will come out: every prism turns it by 90 degrees. A right answer moves you up a level, two wrong ones in a row move you down.</string>
+    <string name="note_drops">Drops: sums fall into the water. Type the answer on the keypad, the drop bursts. Drops with the same answer burst together, a golden drop clears the whole sky. Three drops in the water fill the basin and end the round, there is no clock. Solved drops make it faster, splashes slower.</string>
     <string name="note_daily">Every day thinkr picks up to three games for you. A game counts as soon as you have played a round of it today. One missed day per week does not break your streak.</string>
     <string name="note_relaxed">Relaxed gives you half again as much time, with slower cards and lights, and keeps its own levels and best scores.</string>
     <string name="note_access">The games run against the clock and are hardly playable with a screen reader.</string>
@@ -19,6 +20,7 @@
     <string name="game_ink">Ink</string>
     <string name="game_swarm">Swarm</string>
     <string name="game_bounce">Bounce</string>
+    <string name="game_drops">Drops</string>
 
     <string name="date_pattern">EEEE, MMMM d</string>
     <string name="games">Games</string>
@@ -88,6 +90,11 @@
     <string name="bounce_prompt">Remember the prisms, then tap where the light comes out</string>
     <string name="bounce_ask">Where does it exit?</string>
     <string name="bounce_board">Prism field, %1$d by %2$d, tap the edge</string>
+
+    <string name="drops_prompt">Type the answer before the drop hits the water</string>
+    <string name="drops_board">%1$d drops falling, room for %2$d more in the basin</string>
+    <string name="drops_delete">Delete</string>
+    <string name="drops_enter">Enter</string>
 
     <string name="accuracy">Hits</string>
     <string name="tally_desc">%1$d of %2$d on target</string>

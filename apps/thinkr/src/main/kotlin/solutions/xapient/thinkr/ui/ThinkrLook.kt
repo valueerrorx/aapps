@@ -199,6 +199,27 @@ object ThinkrIcons {
         }
     }
 
+    // Tropfen: kleiner Tropfen ueber einer Welle, daneben ein Plus
+    val Drops: ImageVector by lazy {
+        line("drops") {
+            moveTo(10f, 3.5f)
+            curveTo(10f, 3.5f, 6f, 8f, 6f, 10.5f)
+            arcTo(4f, 4f, 0f, false, false, 14f, 10.5f)
+            curveTo(14f, 8f, 10f, 3.5f, 10f, 3.5f)
+            close()
+            moveTo(17.5f, 4.5f); lineTo(17.5f, 9.5f); moveTo(15f, 7f); lineTo(20f, 7f)
+            moveTo(3.5f, 19f); curveTo(6f, 16.8f, 8.5f, 16.8f, 11f, 19f); curveTo(13.5f, 21.2f, 16f, 21.2f, 20.5f, 18.2f)
+        }
+    }
+
+    // Loeschen: Taste mit Pfeil nach links
+    val Erase: ImageVector by lazy {
+        line("erase") {
+            moveTo(9f, 6f); lineTo(19.5f, 6f); lineTo(19.5f, 18f); lineTo(9f, 18f); lineTo(3.5f, 12f); close()
+            moveTo(11.5f, 9.5f); lineTo(16.5f, 14.5f); moveTo(16.5f, 9.5f); lineTo(11.5f, 14.5f)
+        }
+    }
+
     val Yes: ImageVector by lazy {
         line("yes") { moveTo(5f, 12.5f); lineTo(10f, 17.5f); lineTo(19f, 7f) }
     }

@@ -93,6 +93,7 @@ fun ThinkrAbout(versionName: String, onBack: () -> Unit) {
             stringResource(R.string.note_ink),
             stringResource(R.string.note_swarm),
             stringResource(R.string.note_bounce),
+            stringResource(R.string.note_drops),
             stringResource(R.string.note_daily),
             stringResource(R.string.note_relaxed),
             stringResource(R.string.note_access),

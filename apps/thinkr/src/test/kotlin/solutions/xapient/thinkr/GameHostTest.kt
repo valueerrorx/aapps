@@ -138,6 +138,29 @@ class GameHostTest {
 
     @Test fun bouncePausesAndEndsOnce() = pauseThenFinish(Games.Bounce)
 
+    // Tropfen: keine Uhr, die Runde endet beim dritten Aufschlag; Pause haelt die Tropfen an
+    @Test fun dropsEndsWhenBasinIsFull() {
+        launch(Games.Drops)
+        countIn()
+        rule.mainClock.advanceTimeBy(3_000)
+        settle()
+        rule.onNodeWithContentDescription("Pause").performClick()
+        settle()
+        rule.mainClock.advanceTimeBy(70_000)
+        settle()
+        assertTrue(finished.isEmpty())
+        rule.onNodeWithText("RESUME").performClick()
+        settle()
+        countIn()
+        rule.mainClock.advanceTimeBy(60_000)
+        settle()
+        assertEquals(1, finished.size)
+        val r = finished[0].round
+        assertEquals(3, r.wrong)
+        assertTrue(r.isOver)
+        assertTrue(r.now < Round.DURATION_MS)
+    }
+
     // Weichen: 90 s Spielzeit, Pause haelt auch die Perlen an
     @Test fun switchesRoundLastsNinetySeconds() {
         launch(Games.Switches)
