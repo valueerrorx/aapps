@@ -222,6 +222,15 @@ object ThinkrIcons {
         }
     }
 
+    // Slalom: Gleiter zwischen zwei Kristallen
+    val Slalom: ImageVector by lazy {
+        line("slalom") {
+            moveTo(12f, 9f); lineTo(15.5f, 18.5f); lineTo(12f, 16.5f); lineTo(8.5f, 18.5f); close()
+            moveTo(4.5f, 13f); lineTo(6f, 5.5f); lineTo(7.5f, 13f)
+            moveTo(16.5f, 10.5f); lineTo(18f, 3.5f); lineTo(19.5f, 10.5f)
+        }
+    }
+
     // Loeschen: Taste mit Pfeil nach links
     val Erase: ImageVector by lazy {
         line("erase") {

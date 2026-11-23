@@ -140,6 +140,19 @@ class GameHostTest {
 
     @Test fun glancePausesAndEndsOnce() = pauseThenFinish(Games.Glance)
 
+    // Slalom ohne Steuern: drei Treffer beenden die Runde vor der Zeit, genau einmal
+    @Test fun slalomEndsAfterThreeHits() {
+        launch(Games.Slalom)
+        countIn()
+        rule.mainClock.advanceTimeBy(Round.DURATION_MS + 1_000)
+        settle()
+        assertEquals(1, finished.size)
+        val r = finished[0].round
+        assertTrue(r.isOver)
+        assertEquals(3, r.wrong)
+        assertTrue(r.now < Round.DURATION_MS)
+    }
+
     // Tropfen: keine Uhr, die Runde endet beim dritten Aufschlag; Pause haelt die Tropfen an
     @Test fun dropsEndsWhenBasinIsFull() {
         launch(Games.Drops)

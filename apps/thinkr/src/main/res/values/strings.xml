@@ -10,6 +10,7 @@
     <string name="note_bounce">Bounce: glass prisms light up on the field for a moment and vanish. Then a light appears at the edge. Tap the edge where it will come out: every prism turns it by 90 degrees. A right answer moves you up a level, two wrong ones in a row move you down.</string>
     <string name="note_drops">Drops: sums fall into the water. Type the answer on the keypad, the drop bursts. Drops with the same answer burst together, a golden drop clears the whole sky. Three drops in the water fill the basin and end the round, there is no clock. Solved drops make it faster, splashes slower.</string>
     <string name="note_glance">Glance: keep your eyes on the cross in the middle. For a split second a shape flashes there and a star somewhere on the rings around it. Pick the shape with the two buttons and tap where the star was, in any order. Only both right counts. Two right answers make the flash shorter, a wrong one makes it longer. Short flashes depend on the screen: if a flash was shown noticeably too long or too short, the task does not count. On tablets and in landscape the field is bigger and feels different.</string>
+    <string name="note_slalom">Slalom: your glider races through a crystal canyon at night. Tap the left or right half of the screen to switch lanes and dodge pillars and rocks, some of them slide sideways. Three hits end the round early. Every ten seconds without a hit it gets faster, a hit slows it down. A close dodge earns a bonus.</string>
     <string name="note_daily">Every day thinkr picks up to three games for you. A game counts as soon as you have played a round of it today. One missed day per week does not break your streak.</string>
     <string name="note_relaxed">Relaxed gives you half again as much time, with slower cards and lights, and keeps its own levels and best scores.</string>
     <string name="note_access">The games run against the clock and are hardly playable with a screen reader.</string>
@@ -23,6 +24,7 @@
     <string name="game_bounce">Bounce</string>
     <string name="game_drops">Drops</string>
     <string name="game_glance">Glance</string>
+    <string name="game_slalom" translatable="false">Slalom</string>
 
     <string name="date_pattern">EEEE, MMMM d</string>
     <string name="games">Games</string>
@@ -104,6 +106,9 @@
     <string name="glance_ask_spot">Where was the star?</string>
     <string name="glance_void">Flash was off, does not count</string>
     <string name="glance_board">Field with %1$d places around the middle</string>
+
+    <string name="slalom_prompt">Tap left or right to switch lanes and dodge</string>
+    <string name="slalom_board">Canyon with %1$d lanes, glider in lane %2$d, %3$d lives</string>
 
     <string name="accuracy">Hits</string>
     <string name="tally_desc">%1$d of %2$d on target</string>
