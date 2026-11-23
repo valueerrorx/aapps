@@ -71,9 +71,50 @@ class History(val slices: Int = SLICES, private val sliceNanos: Long = 100_000_0
     }
 }
 
+// Mittel von B und |B|² der Rohwerte beim Einschwingen/Nullen: Grundwert fuer jeden Versatz neu rechenbar
+class BaselineRef {
+    private val sum = DoubleArray(4)
+    private var n = 0
+    val valid: Boolean get() = n > 0
+
+    fun reset() {
+        sum.fill(0.0)
+        n = 0
+    }
+
+    fun add(x: Float, y: Float, z: Float) {
+        if (x.isNaN() || y.isNaN() || z.isNaN()) return
+        sum[0] += x
+        sum[1] += y
+        sum[2] += z
+        sum[3] += x * x + y * y + z * z
+        n++
+    }
+
+    // quadratisches Mittel von |B - o| ueber die Bezugswerte
+    fun norm(ox: Float, oy: Float, oz: Float): Float {
+        if (n == 0) return Float.NaN
+        val q = (sum[3] - 2 * (sum[0] * ox + sum[1] * oy + sum[2] * oz)) / n + ox * ox + oy * oy + oz * oz
+        return sqrt(q.coerceAtLeast(0.0)).toFloat()
+    }
+
+    fun save(): FloatArray = if (n == 0) FloatArray(SIZE) { Float.NaN } else FloatArray(SIZE) { (sum[it] / n).toFloat() }
+
+    fun restore(s: FloatArray) {
+        reset()
+        if (s.size < SIZE || s.any { it.isNaN() }) return
+        for (i in 0 until SIZE) sum[i] = s[i].toDouble()
+        n = 1
+    }
+
+    companion object {
+        const val SIZE = 4
+    }
+}
+
 /**
  * Magnetfeld-Messer: Betrag glaetten, Grundwert, Abweichung, Ausschlag, Stufe, Spitze, Verlauf.
- * Erwartet kalibrierte Werte in µT (Hart-Eisen-Versatz schon abgezogen), siehe SPEC.md.
+ * Erwartet kalibrierte Werte in µT; den Rest-Versatz schaetzt es aus Drehungen nach (onRotation), siehe SPEC.md.
  */
 class FieldMeter(
     var sensitivity: Sensitivity = Sensitivity.MEDIUM,
@@ -85,6 +126,11 @@ class FieldMeter(
     private val accuracy = AccuracyWatch()
     private val history = History()
     private val saturation = SaturationWatch()
+    private val track = RotationTrack()
+    private val offset = OffsetEstimator()
+    // Rohwerte, aus denen der Grundwert entstand: Grundwert folgt einem neuen Versatz
+    private val ref = BaselineRef()
+    private val lastRaw = FloatArray(3) { Float.NaN }
     private var level = Level.QUIET
     private var lastNanos = 0L
     // Beginn der laufenden Pause in Sekunden seit Boot, NaN = misst
@@ -97,13 +143,32 @@ class FieldMeter(
     var rose = false
         private set
 
+    // Lage Handy -> Welt als Einheitsquaternion (Game Rotation Vector, ohne Magnetometer)
+    fun onRotation(w: Float, x: Float, y: Float, z: Float, timestampNanos: Long) = track.add(w, x, y, z, timestampNanos)
+
     // x, y, z in µT; maxRange <= 0 = unbekannt
     fun onSample(x: Float, y: Float, z: Float, maxRange: Float, status: Int, timestampNanos: Long): Reading {
         val dt = if (lastNanos == 0L) 0f else ((timestampNanos - lastNanos) / 1e9f).coerceIn(0f, 0.5f)
         lastNanos = timestampNanos
-        val m = smooth.step(sqrt(x * x + y * y + z * z), dt)
+        val o = offset.offset
+        val before0 = o[0]
+        val before1 = o[1]
+        val before2 = o[2]
+        val r = track.at(timestampNanos)
+        if (r != null && offset.add(x, y, z, r, timestampNanos)) {
+            // neuer Versatz: Glaettung und Grundwert in derselben Lage nachziehen, kein Sprung
+            smooth.shift(norm(x, y, z, o) - norm(x, y, z, before0, before1, before2))
+            if (baseline.settled && ref.valid) {
+                baseline.shift(ref.norm(o[0], o[1], o[2]) - ref.norm(before0, before1, before2))
+            }
+        }
+        val m = smooth.step(norm(x, y, z, o), dt)
+        val settling = !baseline.settled
+        if (settling) ref.add(x, y, z)
         // Drift nur in Ruhe: ein Fund wird nie zum Grundwert
         baseline.update(m, dt, timestampNanos, drift && level == Level.QUIET, sensitivity.quietBand)
+        // eingeschwungen: Grundwert mit dem jetzigen Versatz aus allen Rohwerten der Einschwingzeit
+        if (settling && baseline.settled) baseline.set(ref.norm(o[0], o[1], o[2]))
         val base = baseline.value
         val dev = m - base
         val s = sensitivity.strength(dev)
@@ -115,6 +180,9 @@ class FieldMeter(
             peak.update(dev, timestampNanos)
             history.add(s, timestampNanos)
         }
+        lastRaw[0] = x
+        lastRaw[1] = y
+        lastRaw[2] = z
         reading = Reading(
             total = m,
             baseline = base,
@@ -136,10 +204,13 @@ class FieldMeter(
         level = Level.QUIET
         if (m.isNaN()) {
             baseline.reset()
+            ref.reset()
             reading = reading.copy(baseline = Float.NaN, peak = Float.NaN)
             return
         }
         baseline.set(m)
+        ref.reset()
+        ref.add(lastRaw[0], lastRaw[1], lastRaw[2])
         reading = reading.copy(baseline = m, dev = 0f, strength = 0f, level = Level.QUIET, peak = Float.NaN)
     }
 
@@ -151,6 +222,9 @@ class FieldMeter(
         peak.reset()
         accuracy.reset()
         saturation.reset()
+        track.reset()
+        offset.restart()
+        lastRaw.fill(Float.NaN)
         history.pause()
         level = Level.QUIET
         rose = false
@@ -162,6 +236,7 @@ class FieldMeter(
         val away = nowSeconds - pausedAt
         if (!pausedAt.isNaN() && (away > STALE_SECONDS || away < 0f)) {
             baseline.reset()
+            ref.reset()
             reading = reading.copy(baseline = Float.NaN)
         }
         pausedAt = Float.NaN
@@ -178,14 +253,16 @@ class FieldMeter(
         reading = reading.copy(strength = s.strength(dev), level = level, peak = Float.NaN)
     }
 
-    // Grundwert, Pausenbeginn und Verlauf ueberstehen Prozess-Tod
-    fun save(): FloatArray = floatArrayOf(baseline.value, pausedAt) + history.snapshot
+    // Grundwert, Pausenbeginn, Bezugswert, Versatz-Schaetzung und Verlauf ueberstehen Prozess-Tod
+    fun save(): FloatArray = floatArrayOf(baseline.value, pausedAt) + ref.save() + offset.save() + history.snapshot
 
     fun restore(state: FloatArray) {
-        if (state.size < 2) return
+        if (state.size < HEAD) return
         if (!state[0].isNaN()) baseline.set(state[0])
         pausedAt = state[1]
-        history.restore(state.copyOfRange(2, state.size))
+        ref.restore(state.copyOfRange(2, 2 + BaselineRef.SIZE))
+        offset.restore(state.copyOfRange(2 + BaselineRef.SIZE, HEAD))
+        history.restore(state.copyOfRange(HEAD, state.size))
         history.pause()
         reading = Reading(baseline = baseline.value, history = history.snapshot)
     }
@@ -194,5 +271,15 @@ class FieldMeter(
         const val SMOOTH_TAU = 0.12f
         // laenger weg: Handy steht vermutlich woanders, neu einschwingen
         const val STALE_SECONDS = 60f
+        const val HEAD = 2 + BaselineRef.SIZE + OffsetEstimator.SIZE
+
+        fun norm(x: Float, y: Float, z: Float, o: FloatArray) = norm(x, y, z, o[0], o[1], o[2])
+
+        fun norm(x: Float, y: Float, z: Float, ox: Float, oy: Float, oz: Float): Float {
+            val a = x - ox
+            val b = y - oy
+            val c = z - oz
+            return sqrt(a * a + b * b + c * c)
+        }
     }
 }

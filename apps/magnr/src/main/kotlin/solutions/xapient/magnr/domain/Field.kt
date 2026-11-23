@@ -50,6 +50,11 @@ class Smoother(private val tauSeconds: Float) {
         value = if (value.isNaN()) x else value + (x - value) * (1f - exp(-dtSeconds / tauSeconds))
         return value
     }
+
+    // Wert in derselben Lage neu berechnet (neuer Versatz)
+    fun shift(d: Float) {
+        if (!value.isNaN()) value += d
+    }
 }
 
 // Erdfeld am Ort: Mittel der ersten Messungen, Nullen von Hand, langsame Drift nur im Ruhebereich
@@ -75,6 +80,11 @@ class Baseline(
     fun set(v: Float) {
         reset()
         value = v
+    }
+
+    // Grundwert in der Bezugslage neu berechnet (neuer Versatz)
+    fun shift(d: Float) {
+        if (settled) value += d
     }
 
     // quietBand: Drift nur, solange |Abweichung| darunter bleibt (an die Rauschschwelle gekoppelt)
