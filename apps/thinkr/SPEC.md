@@ -66,7 +66,9 @@ Verlauf-Screen kommt in einer späteren Phase.
 | `settings`, `about` | Einstellungen, Info |
 | `icon_masks`, `icon_store_512` | App-Icon |
 
-Varianten: `_de`, `_land`, `_font200` für home, games, echo_play, result_best; dazu `home_360dp`, `settings_de`, `about_de`.
+Varianten: `_de`, `_land`, `_font200` für home, games, echo_play, result_best; dazu `home_360dp`, `echo_countdown_de_font200`, `result_best_shine`, `settings_de`, `settings_font200`, `about_de`.
+
+`preview_home3`, `preview_home3_land`: Layout-Vorschau des Tagesbilds mit drei Kugeln (Platzhalter „Echo"), bis weitere Spiele da sind.
 
 ## Abnahme
 - Domain ohne Android-Imports; Unit-Tests für Kette, Treppe, Runde, Echo (Kartenfolge, Frist, Ablauf, Wechsel-Sperre, Punkte, Stufen), Tagestraining, Serie, Fortschritt und Codec (inkl. kaputter Daten).
