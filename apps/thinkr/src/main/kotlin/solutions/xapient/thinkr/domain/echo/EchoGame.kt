@@ -1,11 +1,10 @@
 package solutions.xapient.thinkr.domain.echo
 
+import solutions.xapient.thinkr.domain.Bands
 import solutions.xapient.thinkr.domain.MiniGame
 import solutions.xapient.thinkr.domain.Play
 import solutions.xapient.thinkr.domain.Round
 import solutions.xapient.thinkr.domain.Staircase
-import kotlin.math.min
-import kotlin.math.pow
 import kotlin.random.Random
 
 // Stufen und Fristen an einer Stelle, damit das Tuning nach dem Geraetetest leicht faellt
@@ -22,43 +21,21 @@ object EchoRules {
     const val DECK = 400
 
     // Spielart: 1-back (1–9), 2-back (10–13), 2-back mit aehnlichen Formen (14–20)
-    fun modeStart(level: Int): Int = when {
-        level >= SIMILAR -> SIMILAR
-        level >= TWO_BACK -> TWO_BACK
-        else -> 1
-    }
+    val bands = Bands(listOf(1, TWO_BACK, SIMILAR), listOf(2400.0, 3000.0, 2800.0), MAX_LEVEL, STEP)
 
-    fun modeEnd(start: Int): Int = when (start) {
-        SIMILAR -> MAX_LEVEL
-        TWO_BACK -> SIMILAR - 1
-        else -> TWO_BACK - 1
-    }
+    fun modeStart(level: Int): Int = bands.modeStart(level)
+
+    fun modeEnd(start: Int): Int = bands.modeEnd(start)
 
     fun nBack(start: Int): Int = if (start >= TWO_BACK) 2 else 1
 
     fun similar(start: Int): Boolean = start >= SIMILAR
 
-    private fun base(start: Int): Double = when (start) {
-        SIMILAR -> 2800.0
-        TWO_BACK -> 3000.0
-        else -> 2400.0
-    }
+    fun deadline(start: Int, level: Int): Double = bands.deadline(start, level)
 
-    // Frist zu Beginn einer Stufe (Band-Obergrenze) innerhalb der Spielart ab start
-    fun deadline(start: Int, level: Int): Double = base(start) * STEP.pow(level - start)
+    fun levelOf(start: Int, ms: Double): Int = bands.levelOf(start, ms)
 
-    // Stufe zur aktuellen Frist; hoechstens eine ueber das Ende bzw. eine unter den Beginn der Spielart
-    fun levelOf(start: Int, ms: Double): Int {
-        val top = min(modeEnd(start) + 1, MAX_LEVEL)
-        var level = (start - 1).coerceAtLeast(1)
-        for (x in start..top) if (deadline(start, x) >= ms - 1e-6) level = x
-        return level
-    }
-
-    fun stairFor(start: Int, level: Int): Staircase {
-        val top = min(modeEnd(start) + 1, MAX_LEVEL)
-        return Staircase(deadline(start, level), min = deadline(start, top) * 0.9, max = deadline(start, start) * 1.3)
-    }
+    fun stairFor(start: Int, level: Int): Staircase = bands.stairFor(start, level)
 }
 
 // Letzte Auswertung fuer die Optik; said = null: Frist abgelaufen
@@ -90,10 +67,7 @@ data class EchoState(
 // Echo: ist die Form gleich wie die vorige (ab Stufe 10: wie die vor zwei)? Eingabe true = gleich
 object EchoGame : MiniGame<EchoState, Boolean> {
     // Aufwaermen ueberschreitet nie den Beginn der Spielart
-    override fun startLevel(saved: Int): Int {
-        val s = saved.coerceIn(1, EchoRules.MAX_LEVEL)
-        return maxOf(EchoRules.modeStart(s), s - 2)
-    }
+    override fun startLevel(saved: Int): Int = EchoRules.bands.warmUp(saved)
 
     override fun start(seed: Long, level: Int, relaxed: Boolean): EchoState {
         val l = level.coerceIn(1, EchoRules.MAX_LEVEL)

@@ -6,10 +6,7 @@ import androidx.compose.animation.core.animate
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.gestures.awaitEachGesture
-import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
-import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -39,19 +36,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.onClick
-import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
@@ -59,7 +51,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import kotlinx.coroutines.launch
 import solutions.xapient.aapps.core.ui.Aapps
-import solutions.xapient.aapps.core.ui.AappsIcon
 import solutions.xapient.aapps.core.ui.Springs
 import solutions.xapient.aapps.core.ui.drawGlow
 import solutions.xapient.thinkr.R
@@ -67,7 +58,7 @@ import solutions.xapient.thinkr.domain.echo.EchoAnswer
 import solutions.xapient.thinkr.domain.echo.EchoState
 import solutions.xapient.thinkr.domain.echo.Glyph
 import solutions.xapient.thinkr.ui.Amber
-import solutions.xapient.thinkr.ui.ThinkrIcons
+import solutions.xapient.thinkr.ui.AnswerButton
 import solutions.xapient.thinkr.ui.drawGlass
 import solutions.xapient.thinkr.ui.drawGlyph
 import kotlin.math.PI
@@ -359,52 +350,5 @@ private fun DeadlineLine(s: EchoState, visible: Boolean, side: Dp) {
         val x0 = (size.width - w) / 2
         drawLine(c.line, Offset(0f, y), Offset(size.width, y), 3.dp.toPx(), StrokeCap.Round)
         if (w > 0f) drawLine(if (f < 0.3f) Amber else c.accent, Offset(x0, y), Offset(x0 + w, y), 3.dp.toPx(), StrokeCap.Round)
-    }
-}
-
-// Antwort-Taste: loest beim Aufsetzen aus (Reaktionszeit), Glas mit kurzem Aufleuchten
-@Composable
-private fun AnswerButton(yes: Boolean, enabled: Boolean, flash: Float, flashColor: Color, onClick: () -> Unit, modifier: Modifier) {
-    val c = Aapps.colors
-    var pressed by remember { mutableStateOf(false) }
-    val click by rememberUpdatedState(onClick)
-    val scale by animateFloatAsState(if (pressed) 0.95f else 1f, Springs.bouncy(), label = "answerScale")
-    val dim by animateFloatAsState(if (enabled) 1f else 0.4f, Springs.gentle(), label = "answerDim")
-    val label = stringResource(if (yes) R.string.yes else R.string.no)
-    Box(
-        modifier
-            .graphicsLayer { scaleX = scale; scaleY = scale; alpha = dim }
-            .semantics {
-                role = Role.Button
-                contentDescription = label
-                if (enabled) onClick { click(); true }
-            }
-            .pointerInput(enabled) {
-                if (!enabled) return@pointerInput
-                awaitEachGesture {
-                    awaitFirstDown()
-                    click()
-                    pressed = true
-                    try {
-                        waitForUpOrCancellation()
-                    } finally {
-                        pressed = false
-                    }
-                }
-            }
-            .drawBehind {
-                val r = 26.dp.toPx()
-                drawGlass(Offset.Zero, size, r, if (flash > 0.01f) flashColor.copy(alpha = 0.3f + 0.7f * flash) else c.line)
-                if (flash > 0.01f) {
-                    drawRoundRect(flashColor.copy(alpha = 0.16f * flash), cornerRadius = CornerRadius(r, r))
-                }
-            },
-        contentAlignment = Alignment.Center,
-    ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(vertical = 12.dp)) {
-            AappsIcon(if (yes) ThinkrIcons.Yes else ThinkrIcons.No, null, if (yes) c.accent else c.fg, size = 30.dp)
-            Spacer(Modifier.height(6.dp))
-            BasicText(label.uppercase(), style = Aapps.type.label.copy(color = c.fgMuted, fontSize = Aapps.type.label.fontSize * 1.1f))
-        }
     }
 }

@@ -1,23 +1,14 @@
 package solutions.xapient.thinkr.ui.switches
 
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -33,7 +24,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import solutions.xapient.aapps.core.ui.Aapps
 import solutions.xapient.aapps.core.ui.drawGlow
@@ -44,6 +34,7 @@ import solutions.xapient.thinkr.domain.switches.Net
 import solutions.xapient.thinkr.domain.switches.Pt
 import solutions.xapient.thinkr.domain.switches.SwitchesState
 import solutions.xapient.thinkr.ui.Amber
+import solutions.xapient.thinkr.ui.CountOverlay
 import kotlin.math.PI
 import kotlin.math.atan2
 import kotlin.math.cos
@@ -151,26 +142,7 @@ fun SwitchesBoard(s: SwitchesState, live: Boolean, count: Int, onSwitch: (Int) -
         ) {
             drawNet(s, layout, c.accent)
         }
-        if (count > 0) {
-            Box(Modifier.fillMaxSize().background(c.bg.copy(alpha = 0.62f)), contentAlignment = Alignment.Center) {
-                // eigener Grund, damit die Frage nicht auf den Schienen liegt
-                Column(
-                    Modifier
-                        .padding(24.dp)
-                        .background(c.bg.copy(alpha = 0.92f), RoundedCornerShape(28.dp))
-                        .padding(horizontal = 24.dp, vertical = 20.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    BasicText(
-                        stringResource(R.string.switches_prompt),
-                        style = Aapps.type.title.copy(color = c.fg, textAlign = TextAlign.Center),
-                        maxLines = 3,
-                    )
-                    Spacer(Modifier.height(12.dp))
-                    BasicText(count.toString(), style = Aapps.type.display.copy(color = c.accent, fontSize = Aapps.type.display.fontSize * 0.8f))
-                }
-            }
-        }
+        if (count > 0) CountOverlay(stringResource(R.string.switches_prompt), count)
     }
 }
 

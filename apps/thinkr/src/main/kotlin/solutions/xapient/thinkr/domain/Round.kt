@@ -58,6 +58,9 @@ data class Round(
 
     fun miss(): Round = copy(combo = combo.miss(), wrong = wrong + 1)
 
+    // Zusatzpunkte mit dem aktuellen Multiplikator, zaehlt nicht als Antwort
+    fun bonus(points: Int): Round = copy(score = score + points * combo.mult)
+
     companion object {
         const val DURATION_MS = 60_000L
     }
@@ -70,6 +73,9 @@ interface Play {
 
     // Stufe nach dem aktuellen Stand (am Rundenende = neue Stufe)
     val level: Int
+
+    // Zaehler fuer Spiel-Ereignisse mit Haptik (z. B. perfekter Durchgang); steigt er, gibt der Rahmen tick()
+    val cheers: Int get() = 0
 }
 
 // Ein Spiel: rein, deterministisch per Seed, Zeit nur ueber t (Spielzeit in ms)
@@ -77,6 +83,9 @@ interface MiniGame<S : Play, I> {
     fun startLevel(saved: Int): Int = (saved - 2).coerceAtLeast(1)
 
     fun start(seed: Long, level: Int, relaxed: Boolean): S
+
+    // safeColors: nur farbenblind-sichere Farben (nur Spiele mit Farbe als Merkmal werten das aus)
+    fun start(seed: Long, level: Int, relaxed: Boolean, safeColors: Boolean): S = start(seed, level, relaxed)
 
     fun tick(s: S, t: Long): S
 

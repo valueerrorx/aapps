@@ -82,8 +82,9 @@ fun <S : Play, I> GameHost(
     initialPhase: Phase = Phase.COUNTDOWN,
     frozen: Boolean = false,
     initialCount: Int = COUNT_FROM,
+    safeColors: Boolean = false,
 ) {
-    var state by remember { mutableStateOf(initial ?: def.game.start(seed, level, relaxed)) }
+    var state by remember { mutableStateOf(initial ?: def.game.start(seed, level, relaxed, safeColors)) }
     var phase by remember { mutableStateOf(initialPhase) }
     var count by remember { mutableIntStateOf(if (initialPhase == Phase.COUNTDOWN) initialCount else 0) }
     // Spielzeit in ns; steht ausserhalb von PLAYING
@@ -93,8 +94,9 @@ fun <S : Play, I> GameHost(
     fun update(next: S) {
         val a = state.round
         val b = next.round
+        val cheer = next.cheers > state.cheers
         state = next
-        if (b.combo.mult > a.combo.mult || (def.tickOnHit && b.correct > a.correct)) haptics?.tick()
+        if (cheer || b.combo.mult > a.combo.mult || (def.tickOnHit && b.correct > a.correct)) haptics?.tick()
         if (b.correct > a.correct) tones?.play(Tones.Kind.HIT) else if (b.wrong > a.wrong) tones?.play(Tones.Kind.MISS)
         if (b.isOver && phase == Phase.PLAYING) phase = Phase.OVER
     }
