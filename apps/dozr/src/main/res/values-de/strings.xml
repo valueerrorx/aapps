@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tagline">Ein Einschlaf-Timer für jede App. Musik, Podcasts oder Videos werden sanft leiser und stoppen, danach ist deine Lautstärke wieder wie vorher.</string>
+    <string name="note_how">Zieh den Mond hoch, um die Zeit einzustellen. Während der Timer läuft, geht der Mond langsam unter. Am Ende senkt dozr die Medienlautstärke entlang der Kurve, bittet andere Player zu pausieren und stellt danach deine Lautstärke wieder her. Drehst du beim Ausblenden selbst an der Lautstärke, lässt dozr sie in Ruhe.</string>
+
+    <string name="start">Start</string>
+    <string name="stop">Stopp</string>
+    <string name="extend">+10 min</string>
+
+    <string name="state_stops">Ende %1$s</string>
+    <string name="state_fading">Blendet aus</string>
+    <string name="state_done">Gestoppt um %1$s</string>
+
+    <string name="dial_desc">Einschlaf-Timer</string>
+    <plurals name="minutes_n">
+        <item quantity="one">%1$d Minute</item>
+        <item quantity="other">%1$d Minuten</item>
+    </plurals>
+    <plurals name="seconds_n">
+        <item quantity="one">%1$d Sekunde</item>
+        <item quantity="other">%1$d Sekunden</item>
+    </plurals>
+    <string name="time_left">noch %1$s %2$s</string>
+    <string name="unit_min">min</string>
+    <string name="unit_s">s</string>
+    <string name="notify_why">dozr zeigt die Restzeit mit +10 min und Stopp in einer Benachrichtigung. Bitte erlaube sie im nächsten Schritt.</string>
+    <string name="notify_ok">Weiter</string>
+    <string name="notif_resume_title">Einschlaf-Timer läuft noch</string>
+    <string name="notif_resume_text">Tippe, um dozr zu öffnen, damit der Timer ausblenden kann.</string>
+
+    <string name="fade_title_m">Ausblenden · %1$d min</string>
+    <string name="fade_desc">Lautstärke wird von %1$s bis %2$s ausgeblendet</string>
+
+    <string name="group_end">Ausblenden</string>
+    <string name="group_timer">Timer</string>
+    <string name="fade_length">Dauer des Ausblendens</string>
+    <string name="len_1m">1 min</string>
+    <string name="len_3m">3 min</string>
+    <string name="len_5m">5 min</string>
+    <string name="shake">Schütteln: 10 Minuten mehr</string>
+    <string name="shake_sub">Nur solange der Timer läuft, bestätigt mit kurzem Vibrieren</string>
+    <string name="haptics">Haptik beim Einstellen</string>
+    <string name="notifications">Benachrichtigungen erlauben</string>
+    <string name="notifications_sub">Zeigt die Restzeit mit +10 min und Stopp, solange dozr läuft</string>
+    <string name="add_tile">Kachel in Schnelleinstellungen</string>
+    <string name="add_tile_sub">Startet mit einem Tipp mit der letzten Zeit</string>
+
+    <string name="channel_run">Laufender Timer</string>
+    <string name="channel_info">Hinweise</string>
+    <string name="notif_stops_at">Stoppt um %1$s</string>
+    <string name="notif_fade_from">Blendet ab %1$s aus</string>
+    <string name="notif_fading">Blendet aus …</string>
+    <string name="notif_muted_title">Wiedergabe lief weiter</string>
+    <string name="notif_muted_text">Die Medienlautstärke bleibt für die Nacht aus. Öffne dozr, um sie zurückzuholen.</string>
+
+    <string name="tile_minutes">%1$d min</string>
+    <string name="tile_until">Bis %1$s</string>
+</resources>
