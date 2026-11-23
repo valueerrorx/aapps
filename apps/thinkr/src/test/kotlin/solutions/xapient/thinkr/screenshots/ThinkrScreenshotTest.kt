@@ -1,6 +1,7 @@
 package solutions.xapient.thinkr.screenshots
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import com.github.takahirom.roborazzi.RobolectricDeviceQualifiers
 import com.github.takahirom.roborazzi.RoborazziOptions
 import com.github.takahirom.roborazzi.captureRoboImage
@@ -13,7 +14,7 @@ import org.robolectric.annotation.GraphicsMode
 import solutions.xapient.aapps.core.ui.AappsTheme
 import solutions.xapient.thinkr.Games
 import solutions.xapient.thinkr.R
-import solutions.xapient.thinkr.domain.GameId
+import solutions.xapient.thinkr.domain.Daily
 import solutions.xapient.thinkr.domain.echo.EchoGame
 import solutions.xapient.thinkr.domain.echo.EchoState
 import solutions.xapient.thinkr.ui.DailyItem
@@ -52,12 +53,16 @@ class ThinkrScreenshotTest {
     private val week = listOf(true, true, false, false, false, false, false)
     private val weekDone = listOf(true, true, true, false, false, false, false)
 
+    // Tagesbild aus der echten Auswahl fuer heute (drei der fuenf Spiele); done = wie viele schon erledigt
     @Composable
-    private fun Home(done: Boolean = false) = HomeScreen(
+    private fun Home(done: Int = 0) = HomeScreen(
         today = today,
-        items = listOf(DailyItem(GameId.ECHO, "Echo", ThinkrIcons.Echo, 6, done)),
-        streak = if (done) 5 else 4,
-        week = if (done) weekDone else week,
+        items = Daily.pick(today, Games.ids).mapIndexed { i, id ->
+            val def = Games.of(id)!!
+            DailyItem(id, stringResource(def.name), def.icon, listOf(6, 3, 4)[i], i < done)
+        },
+        streak = if (done == 3) 5 else 4,
+        week = if (done == 3) weekDone else week,
         haptics = null, onPlay = {}, onGames = {}, onSettings = {},
     )
 
@@ -66,29 +71,16 @@ class ThinkrScreenshotTest {
     @Test fun home_land() = shot("home_land", "+land") { Home() }
     @Test fun home_font200() = shot("home_font200", fontScale = 2f) { Home() }
     @Test fun home_360dp() = shot("home_360dp", "w360dp-h740dp-normal-long-notround-any-xhdpi-keyshidden-nonav") { Home() }
-    @Test fun home_done() = shot("home_done") { Home(done = true) }
-
-    // Layout-Vorschau mit drei Kugeln: Platzhalter, bis weitere Spiele da sind
-    @Composable
-    private fun Home3() = HomeScreen(
-        today = today,
-        items = listOf(
-            DailyItem(GameId.ECHO, "Echo", ThinkrIcons.Echo, 6, true),
-            DailyItem(GameId.SWITCHES, "Switches", ThinkrIcons.Switches, 3, false),
-            DailyItem(GameId.STARS, "Echo", ThinkrIcons.Echo, 1, false),
-        ),
-        streak = 0, week = List(7) { false }, haptics = null, onPlay = {}, onGames = {}, onSettings = {},
-    )
-
-    @Test fun preview_home3() = shot("preview_home3") { Home3() }
-    @Test fun preview_home3_land() = shot("preview_home3_land", "+land") { Home3() }
+    @Test fun home_partly() = shot("home_partly") { Home(done = 1) }
+    @Test fun home_partly_land() = shot("home_partly_land", "+land") { Home(done = 2) }
+    @Test fun home_done() = shot("home_done") { Home(done = 3) }
 
     @Composable
     private fun GamesList() = GamesScreen(
-        listOf(
-            GameItem(GameId.ECHO, "Echo", ThinkrIcons.Echo, 6, 4280, daily = true, doneToday = false),
-            GameItem(GameId.SWITCHES, "Switches", ThinkrIcons.Switches, 3, 1840, daily = true, doneToday = true),
-        ),
+        Games.all.mapIndexed { i, def ->
+            val daily = def.id in Daily.pick(today, Games.ids)
+            GameItem(def.id, stringResource(def.name), def.icon, listOf(6, 3, 4, 5, 2)[i], listOf(4280, 1840, 2310, 3650, 0)[i], daily = daily, doneToday = daily && i == 0)
+        },
         onPlay = {}, onBack = {},
     )
 
@@ -150,7 +142,7 @@ class ThinkrScreenshotTest {
     @Composable
     private fun Settings() = ThinkrSettings(
         relaxed = false, onRelaxed = {}, safeColors = false, onSafeColors = {}, haptics = true, onHaptics = {}, sound = false, onSound = {},
-        levels = listOf(LevelItem(GameId.ECHO, "Echo", 6), LevelItem(GameId.SWITCHES, "Switches", 3)), onReset = {}, onAbout = {}, onBack = {},
+        levels = Games.all.mapIndexed { i, def -> LevelItem(def.id, stringResource(def.name), listOf(6, 3, 4, 5, 1)[i]) }, onReset = {}, onAbout = {}, onBack = {},
     )
 
     @Test fun settings() = shot("settings") { Settings() }
