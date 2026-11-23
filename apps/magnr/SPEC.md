@@ -5,8 +5,15 @@ Metalldetektor und Magnetfeld-Messer: Schrauben, Nägel, Stahlträger und Magnet
 
 ## Muss
 - Sensor `TYPE_MAGNETIC_FIELD` (kalibriert), 50 Hz (`samplingPeriodUs = 20 000`, ≙ `SENSOR_DELAY_GAME`): flott genug für Ton und Ausschlag, UI-Rate (~16 Hz) wäre zu träge.
-  - Warum nicht `UNCALIBRATED`: dort steckt der Hart-Eisen-Versatz des Handys selbst (Lautsprecher, Kamera, oft 20–200 µT) im Wert. Der Betrag ändert sich dann schon beim Drehen des Handys, jeder Schwenk wäre ein Fehlalarm. Kalibriert ist der Betrag lageunabhängig, nur Metall in der Nähe ändert ihn. Nachteil: Die Online-Kalibrierung des Systems springt gelegentlich. Das fangen Nullen und der automatische Grundwert ab.
-- Messgröße ist der Betrag |B| (lageunabhängig), geglättet exponentiell mit τ = 0,12 s.
+  - Warum nicht `UNCALIBRATED`: dort steckt der Hart-Eisen-Versatz des Handys selbst (Lautsprecher, Kamera, oft 20–200 µT) im Wert. Der Betrag ändert sich dann schon beim Drehen des Handys, jeder Schwenk wäre ein Fehlalarm. Kalibriert ist der Betrag weitgehend lageunabhängig, bis auf einen Rest-Versatz (siehe unten). Nachteil: Die Online-Kalibrierung des Systems springt gelegentlich. Das fangen Nullen und der automatische Grundwert ab.
+- Rest-Versatz (Feldtest Pixel: Fächer füllt sich beim Kippen ohne Metall, Acht hilft nicht):
+  - Ursache: Die Systemkalibrierung lässt einen Rest-Versatz o (Hart-Eisen) übrig. Dann ändert sich |B| beim Kippen um bis zu 2·|o|, bei 10–15 µT also mehrere Bögen.
+  - Abhilfe: zusätzlich `TYPE_GAME_ROTATION_VECTOR` (Lage aus Gyro und Beschleunigung, ohne Magnetometer), 50 Hz, auf den Zeitpunkt des Magnetwerts interpoliert.
+  - Ohne Metall dreht sich B − o starr mit dem Handy: (I − ΔR)·o = B_t − ΔR·B_k, ΔR = R_tᵀ·R_k. Eine Gleichung je ≥ 15° Drehung innerhalb 1 s, kleinste Quadrate mit Vergessen (0,98 je Gleichung) und Ridge 0,05 (nicht beobachtete Richtungen bleiben 0).
+  - Reines Verschieben (Überstreichen einer Wand) liefert keine Gleichung, Metall stört die Schätzung also kaum. Gleichungen mit Rest > 15 µT (Metall im Gefälle, Kalibriersprung) fallen weg, |o| höchstens 100 µT.
+  - Neuer Versatz: Glättung und Grundwert werden in ihrer Lage neu gerechnet (Bezugsrohwert beim Einschwingen/Nullen), kein Sprung.
+  - Ohne Lagesensor: wie bisher (o = 0).
+- Messgröße ist der Betrag |B − o| (lageunabhängig), geglättet exponentiell mit τ = 0,12 s.
 - Grundwert (Erdfeld am Ort):
   - automatisch: Mittel der ersten 0,5 s nach dem Start.
   - Kurze Pause (≤ 60 s, auch Einstellungen oder App-Wechsel): Er bleibt, sonst würde ein gerade gehaltener Fund zum Grundwert. Längere Pause, Prozess-Tod über 60 s oder Neustart des Geräts: Er schwingt neu ein, weil das Handy vermutlich woanders steht. Der Pausenbeginn (elapsedRealtime) wird mitgesichert.
@@ -34,15 +41,15 @@ Metalldetektor und Magnetfeld-Messer: Schrauben, Nägel, Stahlträger und Magnet
 - TalkBack: Fächer und Werte haben einen Zustandstext (Δ, Stufe, Feld, Spitze), neu höchstens einmal pro Sekunde.
 - Kein Magnetometer: klarer Hinweis statt Messung, kein Absturz.
 - Zustand übersteht Drehung und Prozess-Tod:
-  - per SavedState: Grundwert, Verlauf, Pause.
+  - per SavedState: Grundwert, Bezugsrohwert, Versatz-Schätzung, Verlauf, Pause.
   - per SharedPreferences: Einstellungen, Einführung gesehen.
 - Bildschirm bleibt beim Messen an (abschaltbar). Hoch- und Querformat, Englisch und Deutsch, lesbar bei 200 % Schrift.
 
 ## Berechtigungen
-Keine. Haptik über die View, Ton über AudioTrack. Kein INTERNET, kein Dienst.
+Keine (Lagesensor braucht keine). Haptik über die View, Ton über AudioTrack. Kein INTERNET, kein Dienst.
 
 ## Nicht
-- Keine „Gold-/Schatzsuche“, keine EMF-/Strahlungs- oder Gesundheitsaussagen, keine Richtungs-/Vektoranzeige, kein Export, keine Kalibrierung im eigenen Code (macht das System).
+- Keine „Gold-/Schatzsuche“, keine EMF-/Strahlungs- oder Gesundheitsaussagen, keine Richtungs-/Vektoranzeige, kein Export, keine eigene volle Kalibrierung (macht das System, magnr schätzt nur den Rest-Versatz nach).
 
 ## Screens
 1. **Detektor** (Hero ≥ 60 %):
@@ -78,6 +85,7 @@ Varianten (Standard Pixel 7, en): `near_de`, `near_land`, `near_font200`, `near_
 ## Abnahmekriterien
 - Domain ohne Android-Imports. Unit-Tests für:
   - Glättung (Zeitkonstante), Grundwert (Einschwingen, Nullen, Drift nur im Ruhebereich)
+  - Rest-Versatz: Kippen ohne Metall (Erdfeld ~49 µT + 15 µT Versatz) bleibt nach dem ersten Kippen je Achse ruhig, Metall danach klar „nah“, Verschieben ohne Drehen liefert keine Gleichung, Schätzung übersteht Sichern
   - Ausschlag/Empfindlichkeit, Stufen mit Hysterese, Spitze halten
   - Verlauf mit Lücke, Anschlag (Grenze und klebende Achse), Genauigkeit mit Wartezeit
   - Sichern/Wiederherstellen inklusive veraltetem Grundwert nach langer Pause, Tonabbildung (Tonhöhe, Abstand, Stille), Piep-Synthese (Frequenz, keine Sprünge)

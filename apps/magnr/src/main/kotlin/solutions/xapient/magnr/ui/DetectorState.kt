@@ -54,7 +54,15 @@ class DetectorState(val meter: FieldMeter, private val maxRange: () -> Float = {
             else -> null
         }
 
-    val listener = FieldListener { x, y, z, status, t ->
+    val listener = object : FieldListener {
+        override fun onField(x: Float, y: Float, z: Float, status: Int, timestampNanos: Long) =
+            onSample(x, y, z, status, timestampNanos)
+
+        override fun onRotation(w: Float, x: Float, y: Float, z: Float, timestampNanos: Long) =
+            meter.onRotation(w, x, y, z, timestampNanos)
+    }
+
+    private fun onSample(x: Float, y: Float, z: Float, status: Int, t: Long) {
         val r = meter.onSample(x, y, z, maxRange(), status, t)
         seconds = (t % 1_000_000_000_000L) / 1e9f
         if (meter.rose || r.level < shown.level || t - shownAt >= HOLD_NS || shownAt == 0L) {
