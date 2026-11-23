@@ -18,6 +18,7 @@ dependencyResolutionManagement {
 rootProject.name = "aapps"
 
 include(":core:ui")
+include(":apps:sleepr")
 include(":apps:levlr")
 include(":apps:nordr")
 include(":apps:spinr")
