@@ -109,6 +109,33 @@ class GameHostTest {
         assertTrue(finished[0].round.wrong > 10)
     }
 
+    // Sternbild, Tinte, Schwarm: Pause haelt die Spielzeit an, Ende genau einmal nach 60 s Spielzeit
+    private fun pauseThenFinish(def: GameDef<*, *>) {
+        launch(def)
+        countIn()
+        rule.mainClock.advanceTimeBy(20_000)
+        settle()
+        rule.onNodeWithContentDescription("Pause").performClick()
+        settle()
+        rule.mainClock.advanceTimeBy(70_000)
+        settle()
+        assertTrue(finished.isEmpty())
+        rule.onNodeWithText("RESUME").performClick()
+        settle()
+        countIn()
+        rule.mainClock.advanceTimeBy(Round.DURATION_MS)
+        settle()
+        assertEquals(1, finished.size)
+        assertEquals(Round.DURATION_MS, finished[0].round.now)
+        assertEquals(0, finished[0].round.score)
+    }
+
+    @Test fun starsPausesAndEndsOnce() = pauseThenFinish(Games.Stars)
+
+    @Test fun inkPausesAndEndsOnce() = pauseThenFinish(Games.Ink)
+
+    @Test fun swarmPausesAndEndsOnce() = pauseThenFinish(Games.Swarm)
+
     // Weichen: 90 s Spielzeit, Pause haelt auch die Perlen an
     @Test fun switchesRoundLastsNinetySeconds() {
         launch(Games.Switches)
