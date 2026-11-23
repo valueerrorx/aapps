@@ -1762,7 +1762,7 @@
  "tilesets":[
         {
          "firstgid":1,
-         "image":"..\/ownCloud\/WEBROOT\/cowsonice-backup-RC10\/assets\/tilesets\/bush-spritesheet.png",
+         "image":"..\/tilesets\/bush-spritesheet.png",
          "imageheight":1440,
          "imagewidth":168,
          "margin":0,
@@ -1777,7 +1777,7 @@
         }, 
         {
          "firstgid":11,
-         "image":"..\/ownCloud\/WEBROOT\/cowsonice-backup-RC10\/assets\/tilesets\/grass-spritesheet.png",
+         "image":"..\/tilesets\/grass-spritesheet.png",
          "imageheight":960,
          "imagewidth":96,
          "margin":0,
@@ -1792,7 +1792,7 @@
         }, 
         {
          "firstgid":21,
-         "image":"..\/ownCloud\/WEBROOT\/cowsonice-backup-RC10\/assets\/tilesets\/longplants-spritesheet.png",
+         "image":"..\/tilesets\/longplants-spritesheet.png",
          "imageheight":960,
          "imagewidth":216,
          "margin":0,
@@ -1807,7 +1807,7 @@
         }, 
         {
          "firstgid":31,
-         "image":"..\/ownCloud\/WEBROOT\/cowsonice-backup-RC10\/assets\/tilesets\/ground-spritesheet.png",
+         "image":"..\/tilesets\/ground-spritesheet.png",
          "imageheight":1920,
          "imagewidth":192,
          "margin":0,
@@ -1822,7 +1822,7 @@
         }, 
         {
          "firstgid":41,
-         "image":"..\/ownCloud\/WEBROOT\/cowsonice-backup-RC10\/assets\/tilesets\/cowsonice-tileset-64.png",
+         "image":"..\/tilesets\/cowsonice-tileset-64.png",
          "imageheight":48,
          "imagewidth":1968,
          "margin":0,
@@ -1837,7 +1837,7 @@
         }, 
         {
          "firstgid":82,
-         "image":"..\/ownCloud\/WEBROOT\/cowsonice-backup-RC10\/assets\/tilesets\/cowsonice-tileset-32.png",
+         "image":"..\/tilesets\/cowsonice-tileset-32.png",
          "imageheight":120,
          "imagewidth":192,
          "margin":0,
@@ -1852,7 +1852,7 @@
         }, 
         {
          "firstgid":122,
-         "image":"..\/ownCloud\/WEBROOT\/cowsonice-backup-RC10\/assets\/tilesets\/ice-terrain.png",
+         "image":"..\/tilesets\/ice-terrain.png",
          "imageheight":1776,
          "imagewidth":1536,
          "margin":0,

@@ -1,12 +1,14 @@
 package solutions.xapient.glidr
 
 import android.net.Uri
+import android.os.SystemClock
 import android.view.WindowManager
 import android.webkit.WebResourceRequest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
@@ -20,6 +22,49 @@ import solutions.xapient.glidr.domain.UrlPolicy
 class MainActivityTest {
 
     private fun start(): ActivityController<MainActivity> = Robolectric.buildActivity(MainActivity::class.java).setup()
+
+    @Before
+    fun resetRendererWindow() {
+        MainActivity.lastRendererRestart = null
+    }
+
+    @Test
+    fun rendererCrashRestartsOnceThenFinishes() {
+        val first = start()
+        var restarts = 0
+        first.get().restart = { restarts++ }
+        val client = first.get().webView.webViewClient as GameWebViewClient
+        assertTrue(client.onRenderProcessGone(first.get().webView, null))
+        assertEquals(1, restarts)
+        assertFalse(first.get().isFinishing)
+
+        // zerstoerte WebView wird bei Pause/Resume nicht mehr angefasst
+        val shadow = shadowOf(first.get().webView)
+        val evaluated = shadow.lastEvaluatedJavascript
+        first.pause()
+        assertFalse(shadow.wasOnPauseCalled())
+        assertEquals(evaluated, shadow.lastEvaluatedJavascript)
+        first.resume()
+        assertEquals(evaluated, shadow.lastEvaluatedJavascript)
+
+        // zweiter Absturz im 30-s-Fenster: beenden statt Schleife
+        val second = start()
+        second.get().restart = { restarts++ }
+        (second.get().webView.webViewClient as GameWebViewClient).onRenderProcessGone(second.get().webView, null)
+        assertEquals(1, restarts)
+        assertTrue(second.get().isFinishing)
+    }
+
+    @Test
+    fun rendererCrashAfterWindowRestartsAgain() {
+        MainActivity.lastRendererRestart = SystemClock.elapsedRealtime() - MainActivity.RENDERER_RESTART_WINDOW_MS
+        val controller = start()
+        var restarts = 0
+        controller.get().restart = { restarts++ }
+        (controller.get().webView.webViewClient as GameWebViewClient).onRenderProcessGone(controller.get().webView, null)
+        assertEquals(1, restarts)
+        assertFalse(controller.get().isFinishing)
+    }
 
     private fun request(url: String, mainFrame: Boolean = true, gesture: Boolean = false) = object : WebResourceRequest {
         override fun getUrl(): Uri = Uri.parse(url)
@@ -67,8 +112,8 @@ class MainActivityTest {
         val levels = client.shouldInterceptRequest(null, request("https://appassets.androidplatform.net/assets/assets/levels/levels.js"))
         assertTrue(levels.data.readBytes().decodeToString().contains("var levels"))
 
-        // fehlendes Asset: AssetLoader liefert Antwort ohne Daten, WebView meldet 404
-        assertNull(client.shouldInterceptRequest(null, request("https://appassets.androidplatform.net/assets/nope.js")).data)
+        // fehlendes Asset: echte 404 statt leerer AssetLoader-Antwort
+        assertEquals(404, client.shouldInterceptRequest(null, request("https://appassets.androidplatform.net/assets/nope.js")).statusCode)
         assertEquals(403, client.shouldInterceptRequest(null, request("https://example.com/x.js")).statusCode)
         assertEquals(403, client.shouldInterceptRequest(null, request("https://appassets.androidplatform.net/res/x")).statusCode)
     }

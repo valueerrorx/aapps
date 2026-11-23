@@ -23,7 +23,9 @@ class GameWebViewClient(
 
     fun intercept(url: Uri): WebResourceResponse {
         if (!UrlPolicy.isOwnAsset(url.toString())) return status(403, "Forbidden")
-        return assetLoader.shouldInterceptRequest(url) ?: status(404, "Not Found")
+        // fehlendes Asset liefert der AssetLoader als Antwort ohne Daten
+        val res = assetLoader.shouldInterceptRequest(url)
+        return if (res?.data != null) res else status(404, "Not Found")
     }
 
     override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest): Boolean {

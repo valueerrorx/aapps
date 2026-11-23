@@ -1,4 +1,4 @@
-moovr (Clumsy Cow) - third-party notices
+glidr (Cool Cows on Ice) - third-party notices
 
 Game code, graphics, sounds and music: (c) Thomas Michael Weissel, GPLv3 (see LICENSE of the aapps repository).
 
