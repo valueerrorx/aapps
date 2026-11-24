@@ -65,6 +65,9 @@ object Money {
         return f.format(BigDecimal.valueOf(kotlin.math.abs(minor)).movePointLeft(d))
     }
 
+    // Fremdwaehrung kompakt: „12.000,00 HUF"
+    fun withCode(minor: Long, code: String, locale: Locale): String = plain(minor, code, locale) + "\u00A0" + code
+
     // „1.834,20 €" bzw. „€1,834.20"; signed = immer mit Vorzeichen (echtes Minus)
     fun format(minor: Long, code: String, locale: Locale, signed: Boolean = false): String {
         val f = DecimalFormat.getCurrencyInstance(locale) as DecimalFormat

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Muenze in zwei Haelften, leicht versetzt (geteilt) -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Lichthof -->
+    <path android:pathData="M18,54a36,36 0 1,0 72,0a36,36 0 1,0 -72,0z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="radial"
+                android:centerX="54"
+                android:centerY="54"
+                android:gradientRadius="36"
+                android:startColor="#3A6EE87A"
+                android:endColor="#006EE87A" />
+        </aapt:attr>
+    </path>
+    <!-- linke Muenzhaelfte -->
+    <path
+        android:fillColor="#226EE87A"
+        android:pathData="M51,34A22,22 0 0,0 51,78Z"
+        android:strokeWidth="3.2"
+        android:strokeColor="#FF6EE87A"
+        android:strokeLineJoin="round" />
+    <path
+        android:pathData="M51,41A15,15 0 0,0 51,71"
+        android:strokeWidth="2"
+        android:strokeColor="#996EE87A"
+        android:strokeLineCap="round" />
+    <!-- rechte Haelfte, versetzt -->
+    <path
+        android:fillColor="#226EE87A"
+        android:pathData="M57,30A22,22 0 0,1 57,74Z"
+        android:strokeWidth="3.2"
+        android:strokeColor="#FF6EE87A"
+        android:strokeLineJoin="round" />
+    <path
+        android:pathData="M57,37A15,15 0 0,1 57,67"
+        android:strokeWidth="2"
+        android:strokeColor="#996EE87A"
+        android:strokeLineCap="round" />
+    <!-- Reflex -->
+    <path
+        android:pathData="M44,38.5A19,19 0 0,0 36,46"
+        android:strokeWidth="1.2"
+        android:strokeColor="#AAFFFFFF"
+        android:strokeLineCap="round" />
+</vector>

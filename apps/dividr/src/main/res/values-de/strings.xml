@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tagline">Gruppenausgaben teilen ohne Konto, Server oder Internet. Die Handys tauschen alles per QR-Code.</string>
+    <string name="note_sync">Jeder Code enthält alles, was dein Handy von der Gruppe kennt. Vor der Abrechnung einmal mit einem Handy hin und zurück abgleichen.</string>
+    <string name="note_privacy">Der Code zeigt Namen, Beträge und Titel der Gruppe. Keine Screenshots davon posten.</string>
+
+    <string name="start_hint">Leg eine Gruppe an oder scanne den Code von jemandem, der schon eine hat.</string>
+    <string name="groups">Gruppen</string>
+    <string name="groups_sub">Gruppe wechseln oder neu anlegen</string>
+    <string name="new_group">Neue Gruppe</string>
+    <string name="scan_code">Code scannen</string>
+    <string name="group_name">Gruppenname</string>
+    <string name="group_name_hint">Segeln in den Kornaten</string>
+    <string name="your_name">Dein Name</string>
+    <string name="your_name_hint">Anna</string>
+    <string name="currency">Währung</string>
+    <string name="other_currency">Andere, z. B. NZD</string>
+    <string name="currency_note">Ausgaben in anderen Währungen gehen mit Wechselkurs.</string>
+    <string name="create">Anlegen</string>
+
+    <string name="you_get">Du bekommst</string>
+    <string name="you_owe">Du schuldest</string>
+    <string name="you_are_even">Du bist ausgeglichen</string>
+    <string name="total_spent">Gesamtausgaben</string>
+    <string name="total_line">Gruppe gesamt %1$s</string>
+    <string name="settle_hint">Abrechnen</string>
+    <string name="empty_title">Noch keine Ausgaben</string>
+    <string name="empty_hint">Trag die erste ein oder lass die anderen deinen Code scannen.</string>
+    <string name="today">Heute</string>
+    <string name="yesterday">Gestern</string>
+    <string name="expense">Ausgabe</string>
+    <string name="payment">Zahlung</string>
+    <string name="paid_for_all">%1$s zahlte · für alle</string>
+    <string name="paid_for">%1$s zahlte · für %2$s</string>
+    <string name="paid_to">%1$s → %2$s</string>
+    <string name="add_expense">Ausgabe</string>
+    <string name="scan">Scannen</string>
+    <string name="scan_sub">Ausgaben der anderen holen</string>
+    <string name="my_code">Dein Gruppen-Code</string>
+    <string name="show_code">Code groß zeigen</string>
+    <string name="too_big_short">Gruppe zu groß für einen Code</string>
+    <string name="too_big">Diese Gruppe ist zu groß für QR-Codes. Teile die Abrechnung stattdessen als Text.</string>
+    <plurals name="parts_tap">
+        <item quantity="one">%1$d Teil – antippen</item>
+        <item quantity="other">%1$d Teile – antippen</item>
+    </plurals>
+    <string name="up_to_date">Schon auf dem neuesten Stand</string>
+
+    <string name="new_entry">Neuer Eintrag</string>
+    <string name="edit_entry">Eintrag ändern</string>
+    <string name="amount">Betrag</string>
+    <string name="rate">Kurs</string>
+    <string name="title_hint">Wofür? (optional)</string>
+    <string name="paid_by">Bezahlt von</string>
+    <string name="paid_for_label">Für</string>
+    <string name="paid_to_label">An</string>
+    <string name="everyone">Alle</string>
+    <string name="date">Datum</string>
+    <string name="day_before">Tag davor</string>
+    <string name="day_after">Tag danach</string>
+    <string name="save">Speichern</string>
+    <string name="delete">Löschen</string>
+    <string name="delete_confirm">Nochmal auf Löschen tippen, dann verschwindet der Eintrag auf allen Handys.</string>
+
+    <string name="let_them_scan">Lass das andere Handy diesen Code scannen</string>
+    <string name="now_scan_me">Übernommen. Jetzt scannt das andere Handy dich, dann sind beide gleich.</string>
+    <string name="scan_aim">Auf den Code am anderen Handy richten</string>
+    <string name="part_of">Teil %1$d von %2$d</string>
+    <string name="not_ours">Das ist kein dividr-Code</string>
+    <string name="newer_code">Dieser Code kommt von einer neueren dividr-Version. Bitte aktualisieren.</string>
+    <string name="broken_code">Code nicht lesbar. Etwas näher nochmal versuchen.</string>
+    <string name="camera_why">Zum Lesen des Codes vom anderen Handy braucht dividr die Kamera. Es wird nichts gespeichert oder gesendet.</string>
+    <string name="camera_blocked">Kamera-Zugriff ist aus. Erlaube ihn in den App-Einstellungen, um zu scannen.</string>
+    <string name="camera_error">Die Kamera lässt sich gerade nicht öffnen.</string>
+    <string name="allow_camera">Kamera erlauben</string>
+    <string name="open_settings">Einstellungen öffnen</string>
+
+    <string name="import_title">Übernehmen</string>
+    <string name="only_people">Neue Personen</string>
+    <plurals name="n_new">
+        <item quantity="one">%1$d neu</item>
+        <item quantity="other">%1$d neu</item>
+    </plurals>
+    <plurals name="n_changed">
+        <item quantity="one">%1$d geändert</item>
+        <item quantity="other">%1$d geändert</item>
+    </plurals>
+    <plurals name="n_deleted">
+        <item quantity="one">%1$d gelöscht</item>
+        <item quantity="other">%1$d gelöscht</item>
+    </plurals>
+    <string name="new_person">Neu: %1$s</string>
+    <string name="same_person">Dieselbe Person wie dein %1$s?</string>
+    <string name="from_start">Von Anfang an</string>
+    <string name="from_now">Ab jetzt</string>
+    <plurals name="counts_in">
+        <item quantity="one">%1$s zahlt bei %2$d Ausgabe für alle mit.</item>
+        <item quantity="other">%1$s zahlt bei %2$d Ausgaben für alle mit.</item>
+    </plurals>
+    <string name="payment_line">%1$s → %2$s</string>
+    <string name="paid_by_short">bezahlt von %1$s</string>
+    <string name="apply">Übernehmen</string>
+    <string name="cancel">Abbrechen</string>
+
+    <string name="join_title">Gruppe beitreten</string>
+    <plurals name="n_people">
+        <item quantity="one">%1$d Person</item>
+        <item quantity="other">%1$d Personen</item>
+    </plurals>
+    <plurals name="n_expenses">
+        <item quantity="one">%1$d Eintrag</item>
+        <item quantity="other">%1$d Einträge</item>
+    </plurals>
+    <string name="who_are_you">Wer bist du?</string>
+    <string name="just_watching">Nur zuschauen</string>
+    <string name="or_new">Oder neu in der Gruppe</string>
+    <string name="or_merge">Doppelt angelegt?</string>
+    <string name="merge_with">Mit deiner Gruppe %1$s zusammenlegen</string>
+    <string name="merge">Zusammenlegen</string>
+    <string name="join">Beitreten</string>
+
+    <string name="settle">Abrechnung</string>
+    <string name="share">Teilen</string>
+    <string name="balances">Salden</string>
+    <string name="transfers">Überweisungen</string>
+    <string name="all_square">Alles ausgeglichen</string>
+    <string name="you_pay">Du zahlst %1$s</string>
+    <string name="pays_you">%1$s zahlt dir</string>
+    <string name="pays">%1$s zahlt %2$s</string>
+    <string name="done">Bezahlt</string>
+    <string name="settle_note">„Bezahlt“ legt eine Zahlung an. Haben alle abgeglichen, zeigt jedes Handy denselben Plan.</string>
+    <string name="share_total">Gesamt: %1$s</string>
+    <string name="share_footer">Abgerechnet mit dividr</string>
+
+    <string name="people">Personen</string>
+    <string name="name_of">Name von %1$s</string>
+    <string name="you">Du</string>
+    <string name="counts_from_now">nur Ausgaben ab Beitritt</string>
+    <string name="options_for">Optionen für %1$s</string>
+    <string name="this_is_me">Das bin ich</string>
+    <string name="remove">Entfernen</string>
+    <string name="merge_into">Dieselbe Person wie</string>
+    <string name="merged">Zusammengelegt</string>
+    <string name="merged_line">%1$s → %2$s</string>
+    <string name="separate">Trennen</string>
+    <string name="add_person">Person hinzufügen</string>
+
+    <string name="group">Gruppe</string>
+    <string name="device">Gerät</string>
+    <string name="haptics">Vibration</string>
+    <string name="leave">Gruppe verlassen</string>
+    <string name="leave_sub">Löscht die Gruppe nur auf diesem Handy</string>
+    <string name="leave_confirm">Nochmal tippen zum Löschen</string>
+</resources>
