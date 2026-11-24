@@ -1,0 +1,1 @@
+Split group expenses without accounts or internet: phones swap by QR code.

@@ -1,0 +1,18 @@
+dividr splits expenses in a group, on a sailing trip, on holiday or in a shared flat. No account, no server, no internet: phones swap everything by QR code. One person creates the group, the others scan the code and join.
+
+Features
+• Expenses for everyone or for selected people, split evenly
+• Payments to settle up, other currencies with an exchange rate
+• People who join later share from the start or only from now on
+• Anyone can edit any entry, the import shows every change and deletion
+• Settle up with as few transfers as possible, the same plan on every phone
+• Share the settlement as text via any messenger
+• Guests without a phone, merge duplicate people
+• Several groups, portrait and landscape, English and German
+
+A code contains everything your phone knows about the group. Scan each other and you are on the same page.
+
+dividr only uses the camera to scan the codes.
+
+No ads, no tracking, no account. dividr has no internet permission, everything stays on your devices.
+Free software under the GNU GPLv3. Source code: https://github.com/valueerrorx/aapps

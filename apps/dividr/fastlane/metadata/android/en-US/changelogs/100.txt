@@ -1,0 +1,1 @@
+First version: split group expenses offline, sync by QR code, other currencies, settle up with minimal transfers and share as text.
