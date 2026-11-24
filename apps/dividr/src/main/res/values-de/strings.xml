@@ -37,13 +37,9 @@
     <string name="scan">Scannen</string>
     <string name="scan_sub">Ausgaben der anderen holen</string>
     <string name="my_code">Dein Gruppen-Code</string>
-    <string name="show_code">Code groß zeigen</string>
+    <string name="show_my_code">Eigenen QR-Code zeigen</string>
     <string name="too_big_short">Gruppe zu groß für einen Code</string>
     <string name="too_big">Diese Gruppe ist zu groß für QR-Codes. Teile die Abrechnung stattdessen als Text.</string>
-    <plurals name="parts_tap">
-        <item quantity="one">%1$d Teil – antippen</item>
-        <item quantity="other">%1$d Teile – antippen</item>
-    </plurals>
     <string name="up_to_date">Schon auf dem neuesten Stand</string>
 
     <string name="new_entry">Neuer Eintrag</string>

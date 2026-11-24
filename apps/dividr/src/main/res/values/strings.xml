@@ -38,13 +38,9 @@
     <string name="scan">Scan</string>
     <string name="scan_sub">Get the others\' expenses</string>
     <string name="my_code">Your group code</string>
-    <string name="show_code">Show code large</string>
+    <string name="show_my_code">Show your own QR code</string>
     <string name="too_big_short">Group too big for a code</string>
     <string name="too_big">This group is too big for QR codes. Share the settlement as text instead.</string>
-    <plurals name="parts_tap">
-        <item quantity="one">%1$d part – tap</item>
-        <item quantity="other">%1$d parts – tap</item>
-    </plurals>
     <string name="up_to_date">Already up to date</string>
 
     <string name="new_entry">New entry</string>

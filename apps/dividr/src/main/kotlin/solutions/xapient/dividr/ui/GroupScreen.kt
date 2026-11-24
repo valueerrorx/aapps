@@ -11,7 +11,6 @@ import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -35,9 +34,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalWindowInfo
-import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.heading
@@ -66,7 +65,6 @@ import solutions.xapient.dividr.domain.isFallback
 import solutions.xapient.dividr.domain.resolve
 import solutions.xapient.dividr.domain.totalSpent
 import solutions.xapient.dividr.domain.visibleEntries
-import solutions.xapient.dividr.qr.QrPreview
 import solutions.xapient.dividr.qr.QrMatrix
 import java.util.Locale
 
@@ -328,42 +326,17 @@ private val TILE_HEIGHT = 104.dp
 
 @Composable
 private fun QrCard(codes: List<QrMatrix>, onQr: () -> Unit, modifier: Modifier) {
-    val c = Aapps.colors
-    val source = remember { MutableInteractionSource() }
-    val pressed by source.collectIsPressedAsState()
-    Box(
-        modifier
-            .fillMaxHeight()
-            .pressScale(pressed, 0.96f)
-            .clip(RoundedCornerShape(24.dp))
-            .background(c.surface)
-            .border(1.dp, c.accent.copy(alpha = 0.45f), RoundedCornerShape(24.dp))
-            .glow(c.accent, 90.dp, 0.10f)
-            .clickable(source, indication = null, role = Role.Button, onClickLabel = stringResource(R.string.show_code), onClick = onQr)
-            .padding(14.dp),
-        contentAlignment = Alignment.Center,
-    ) {
-        when (codes.size) {
-            1 -> QrPreview(codes[0], c.accent, stringResource(R.string.my_code), Modifier.fillMaxHeight())
-            else -> {
-                val text = if (codes.isEmpty()) stringResource(R.string.too_big_short)
-                else pluralStringResource(R.plurals.parts_tap, codes.size, codes.size)
-                ColumnCenter {
-                    AappsIcon(DividrIcons.Scan, null, c.accent, size = 24.dp)
-                    Spacer(Modifier.height(6.dp))
-                    BasicText(text, style = Aapps.type.body.copy(color = c.fg, textAlign = TextAlign.Center), maxLines = 2, overflow = TextOverflow.Ellipsis)
-                }
-            }
-        }
-    }
+    val label = if (codes.isEmpty()) stringResource(R.string.too_big_short) else stringResource(R.string.share).uppercase()
+    ActionTile(DividrIcons.Qr, label, stringResource(R.string.show_my_code), onQr, modifier)
 }
 
 @Composable
-private fun ColumnCenter(content: @Composable ColumnScope.() -> Unit) =
-    Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center, content = content)
+private fun ScanTile(onScan: () -> Unit, modifier: Modifier) =
+    ActionTile(DividrIcons.Camera, stringResource(R.string.scan).uppercase(), stringResource(R.string.scan_sub), onScan, modifier)
 
+// Gemeinsame Kachel: Icon im Kreis, darunter Beschriftung
 @Composable
-private fun ScanTile(onScan: () -> Unit, modifier: Modifier) {
+private fun ActionTile(icon: ImageVector, label: String, clickLabel: String, onClick: () -> Unit, modifier: Modifier) {
     val c = Aapps.colors
     val source = remember { MutableInteractionSource() }
     val pressed by source.collectIsPressedAsState()
@@ -375,15 +348,20 @@ private fun ScanTile(onScan: () -> Unit, modifier: Modifier) {
             .background(c.surface)
             .border(1.dp, c.accent.copy(alpha = 0.45f), RoundedCornerShape(24.dp))
             .glow(c.accent, 90.dp, 0.10f)
-            .clickable(source, indication = null, role = Role.Button, onClickLabel = stringResource(R.string.scan_sub), onClick = onScan)
+            .clickable(source, indication = null, role = Role.Button, onClickLabel = clickLabel, onClick = onClick)
             .padding(10.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Box(Modifier.size(44.dp).background(c.accent.copy(alpha = 0.14f), CircleShape), contentAlignment = Alignment.Center) {
-            AappsIcon(DividrIcons.Camera, null, c.accent, size = 24.dp)
+            AappsIcon(icon, null, c.accent, size = 24.dp)
         }
         Spacer(Modifier.height(8.dp))
-        BasicText(stringResource(R.string.scan).uppercase(), style = Aapps.type.label.copy(color = c.accent, fontSize = Aapps.type.label.fontSize * 1.15f), maxLines = 1)
+        BasicText(
+            label,
+            style = Aapps.type.label.copy(color = c.accent, fontSize = Aapps.type.label.fontSize * 1.15f, textAlign = TextAlign.Center),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
     }
 }

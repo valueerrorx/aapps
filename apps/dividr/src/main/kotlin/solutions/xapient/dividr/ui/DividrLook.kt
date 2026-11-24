@@ -77,6 +77,17 @@ object DividrIcons {
         }
     }
 
+    // Drei Suchmuster und ein paar Module
+    val Qr: ImageVector by lazy {
+        line("qr") {
+            moveTo(4f, 4f); lineTo(10f, 4f); lineTo(10f, 10f); lineTo(4f, 10f); close()
+            moveTo(14f, 4f); lineTo(20f, 4f); lineTo(20f, 10f); lineTo(14f, 10f); close()
+            moveTo(4f, 14f); lineTo(10f, 14f); lineTo(10f, 20f); lineTo(4f, 20f); close()
+            moveTo(14f, 14f); lineTo(14f, 16.5f); moveTo(17f, 14f); lineTo(20f, 14f)
+            moveTo(17f, 17f); lineTo(17f, 20f); moveTo(20f, 17.5f); lineTo(20f, 20f)
+        }
+    }
+
     val People: ImageVector by lazy {
         line("people") {
             circle(9f, 8.5f, 3f)

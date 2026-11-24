@@ -16,7 +16,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
@@ -31,10 +30,10 @@ class QrMatrix(val size: Int, val version: Int, private val dark: BooleanArray) 
     operator fun get(x: Int, y: Int) = dark[y * size + x]
 
     // 1 Pixel je Modul, inkl. Ruhezone von 4 Modulen; gross gezeichnet ohne Glaettung = scharf
-    fun bitmap(fg: Int = BLACK, bg: Int = WHITE, quiet: Int = QUIET): ImageBitmap {
-        val n = size + 2 * quiet
-        val px = IntArray(n * n) { bg }
-        for (y in 0 until size) for (x in 0 until size) if (this[x, y]) px[(y + quiet) * n + x + quiet] = fg
+    fun bitmap(): ImageBitmap {
+        val n = size + 2 * QUIET
+        val px = IntArray(n * n) { WHITE }
+        for (y in 0 until size) for (x in 0 until size) if (this[x, y]) px[(y + QUIET) * n + x + QUIET] = BLACK
         return Bitmap.createBitmap(px, n, n, Bitmap.Config.ARGB_8888).asImageBitmap()
     }
 
@@ -74,14 +73,3 @@ fun QrImage(matrix: QrMatrix, description: String, modifier: Modifier = Modifier
     }
 }
 
-// Nur Vorschau: Module in Farbe auf transparentem Grund, nicht zum Scannen gedacht
-@Composable
-fun QrPreview(matrix: QrMatrix, color: Color, description: String, modifier: Modifier = Modifier) {
-    val argb = color.toArgb()
-    val img = remember(matrix, argb) { matrix.bitmap(fg = argb, bg = 0, quiet = 0) }
-    Canvas(modifier.aspectRatio(1f).semantics { contentDescription = description }) {
-        val side = minOf(size.width, size.height).toInt()
-        val off = IntOffset((size.width.toInt() - side) / 2, (size.height.toInt() - side) / 2)
-        drawImage(img, srcSize = IntSize(img.width, img.height), dstOffset = off, dstSize = IntSize(side, side), filterQuality = FilterQuality.None)
-    }
-}
