@@ -8,6 +8,7 @@ import androidx.compose.foundation.text.BasicText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Rule
@@ -72,7 +73,8 @@ class TrialGatedTest {
     @Test fun restoreUnlocks() {
         start(TrialPolicy.TRIAL_MS * 3)
         owned = Owned.PURCHASED
-        compose.onNodeWithText("RESTORE PURCHASE").performClick()
+        // Knopf liegt unter dem Rand des kleinen Robolectric-Bildschirms
+        compose.onNodeWithText("RESTORE PURCHASE").performScrollTo().performClick()
         compose.onNodeWithText("APP").assertExists()
     }
 
