@@ -5,15 +5,24 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.LayerDrawable
+import android.graphics.drawable.StateListDrawable
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ScrollView
+import android.widget.Space
+import android.widget.TextView
+import androidx.core.graphics.drawable.toDrawable
 import androidx.core.net.toUri
+import solutions.xapient.aapps.core.billing.GateState
+import solutions.xapient.aapps.core.billing.Notice
+import solutions.xapient.aapps.core.billing.R as BR
 
 const val SOURCE_URL = "https://github.com/valueerrorx/aapps"
+private const val ON_ACCENT = 0xFF0D1A20.toInt()
 
 /** Einstellungen und Info als Views, Aufbau wie SettingsScreen/AboutScreen aus core/ui */
 class Pages(private val a: Activity, private val look: Look) {
@@ -100,13 +109,7 @@ class Pages(private val a: Activity, private val look: Look) {
                     for (s in intArrayOf(R.string.promise_ads, R.string.promise_tracking, R.string.promise_internet)) addView(promise(a.getString(s)))
                 }
                 group(null, this@page).apply {
-                    addView(actionRow(a.getString(R.string.source), SOURCE_URL.removePrefix("https://")) {
-                        try {
-                            a.startActivity(Intent(Intent.ACTION_VIEW, SOURCE_URL.toUri()))
-                        } catch (_: ActivityNotFoundException) {
-                            // kein Browser installiert: nichts tun
-                        }
-                    })
+                    addView(actionRow(a.getString(R.string.source), SOURCE_URL.removePrefix("https://")) { openSource() })
                 }
                 var top = 28
                 for (s in intArrayOf(R.string.note_privacy, R.string.note_background, R.string.license, R.string.fonts)) {
@@ -114,6 +117,124 @@ class Pages(private val a: Activity, private val look: Look) {
                 }
             }
         }
+
+    /** Dankes-Bildschirm nach der Testphase, Aufbau wie ThanksScreen aus core/ui */
+    fun thanks(state: GateState, onBuy: () -> Unit, onRestore: () -> Unit): View =
+        page(Space(a), 24) {
+            gravity = Gravity.CENTER_HORIZONTAL
+            setPadding(paddingLeft, dp(32), paddingRight, paddingBottom)
+            with(look) {
+                fun center(v: TextView) = v.apply { gravity = Gravity.CENTER; maxWidth = dp(480) }
+                // Hero: Schloss im Akzent-Halo
+                addView(ImageView(a).apply {
+                    setImageResource(R.drawable.ic_unlock)
+                    scaleType = ImageView.ScaleType.FIT_CENTER
+                    setPadding(dp(32), dp(32), dp(32), dp(32))
+                    imageTintList = ColorStateList.valueOf(accent)
+                    background = LayerDrawable(arrayOf(
+                        GradientDrawable().apply { gradientType = GradientDrawable.RADIAL_GRADIENT; gradientRadius = dp(56).toFloat()
+                            colors = intArrayOf(alpha(accent, 0.3f), alpha(accent, 0f)) },
+                        GradientDrawable().apply { shape = GradientDrawable.OVAL; setColor(surface); setStroke(dp(1) + dp(1) / 2, accent) },
+                    ))
+                    importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
+                }, LinearLayout.LayoutParams(dp(112), dp(112)))
+                addView(label(a.getString(R.string.app_name), accent), lp(w = ViewGroup.LayoutParams.WRAP_CONTENT, top = 24))
+                addView(center(headline(a.getString(BR.string.billing_title))).apply { accessibilityHeading() },
+                    lp(w = ViewGroup.LayoutParams.WRAP_CONTENT, top = 6))
+                addView(center(body(a.getString(BR.string.billing_text), muted)), lp(w = ViewGroup.LayoutParams.WRAP_CONTENT, top = 14))
+                group(null, this@page, 24).apply {
+                    setPadding(0, dp(6), 0, dp(6))
+                    addView(point(R.drawable.ic_shield, a.getString(BR.string.billing_point_data)))
+                    addView(point(R.drawable.ic_offline, a.getString(BR.string.billing_point_offline)))
+                    addView(point(R.drawable.ic_code, a.getString(BR.string.billing_point_source), SOURCE_URL.removePrefix("https://")) { openSource() })
+                }
+                val price = state.price
+                val canBuy = price != null && !state.pending
+                addView(pill(if (price != null) a.getString(BR.string.billing_unlock_price, price) else a.getString(BR.string.billing_unlock), canBuy, onBuy),
+                    lp(w = ViewGroup.LayoutParams.WRAP_CONTENT, top = 28))
+                val hint = when {
+                    state.pending -> BR.string.billing_hint_pending
+                    state.notice == Notice.OFFLINE -> BR.string.billing_hint_offline
+                    state.notice == Notice.NOT_FOUND -> BR.string.billing_hint_notfound
+                    state.notice == Notice.UNAVAILABLE -> BR.string.billing_hint_unavailable
+                    price == null -> BR.string.billing_hint_noprice
+                    else -> null
+                }
+                if (hint != null) addView(center(body(a.getString(hint))), lp(w = ViewGroup.LayoutParams.WRAP_CONTENT, top = 14))
+                addView(label(a.getString(if (state.busy) BR.string.billing_restoring else BR.string.billing_restore)).apply {
+                    gravity = Gravity.CENTER; minHeight = dp(48); setPadding(dp(16), dp(15), dp(16), dp(15))
+                    isClickable = true; isFocusable = true
+                    springPress(this, 0.94f); asButton(this)
+                    setOnClickListener { press(it); if (!state.busy) onRestore() }
+                }, lp(w = ViewGroup.LayoutParams.WRAP_CONTENT, top = 8))
+                addView(center(small(a.getString(BR.string.billing_once))), lp(w = ViewGroup.LayoutParams.WRAP_CONTENT, top = 12))
+            }
+        }
+
+    private fun openSource() {
+        try {
+            a.startActivity(Intent(Intent.ACTION_VIEW, SOURCE_URL.toUri()))
+        } catch (_: ActivityNotFoundException) {
+            // kein Browser installiert: nichts tun
+        }
+    }
+
+    // Zeile mit Icon; mit Link: Untertitel, Pfeil und Klick wie actionRow
+    private fun point(icon: Int, text: String, sub: String? = null, onClick: (() -> Unit)? = null) = LinearLayout(a).apply {
+        orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL
+        minimumHeight = dp(48)
+        setPadding(dp(18), dp(10), dp(18), dp(10))
+        addView(ImageView(a).apply {
+            setImageResource(icon)
+            scaleType = ImageView.ScaleType.FIT_CENTER
+            setPadding(dp(7), dp(7), dp(7), dp(7))
+            imageTintList = ColorStateList.valueOf(look.accent)
+            background = GradientDrawable().apply { shape = GradientDrawable.OVAL; setColor(look.alpha(look.accent, 0.14f)) }
+            importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
+        }, LinearLayout.LayoutParams(dp(32), dp(32)).apply { rightMargin = dp(14) })
+        addView(LinearLayout(a).apply {
+            orientation = LinearLayout.VERTICAL
+            addView(look.body(text))
+            if (sub != null) addView(look.small(sub, look.accent))
+        }, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+        if (onClick != null) {
+            addView(ImageView(a).apply {
+                setImageResource(R.drawable.ic_chevron)
+                imageTintList = ColorStateList.valueOf(look.faint)
+                importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
+            }, LinearLayout.LayoutParams(dp(20), dp(20)).apply { leftMargin = dp(12) })
+            isClickable = true; isFocusable = true
+            background = StateListDrawable().apply {
+                addState(intArrayOf(android.R.attr.state_pressed), look.surfaceHigh.toDrawable())
+                addState(intArrayOf(android.R.attr.state_focused), look.surfaceHigh.toDrawable())
+            }
+            look.asButton(this)
+            setOnClickListener { look.press(it); onClick() }
+        }
+    }
+
+    // Hauptaktion wie AappsPillButton: Akzent gefuellt, wenn kaufbar
+    private fun pill(text: String, enabled: Boolean, onClick: () -> Unit) = LinearLayout(a).apply {
+        orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER
+        minimumHeight = dp(52)
+        setPadding(dp(24), dp(12), dp(24), dp(12))
+        val fg = if (enabled) ON_ACCENT else look.faint
+        background = GradientDrawable().apply {
+            cornerRadius = dp(100).toFloat()
+            setColor(if (enabled) look.accent else look.surface); setStroke(dp(1), if (enabled) look.accent else look.line)
+        }
+        val fs = a.resources.configuration.fontScale.coerceAtMost(2f)
+        addView(ImageView(a).apply {
+            setImageResource(R.drawable.ic_unlock)
+            imageTintList = ColorStateList.valueOf(fg)
+            importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
+        }, LinearLayout.LayoutParams((dp(20) * fs).toInt(), (dp(20) * fs).toInt()).apply { rightMargin = dp(10) })
+        addView(look.label(text, fg).apply { textSize = 13.8f })
+        isEnabled = enabled; isClickable = enabled; isFocusable = true
+        contentDescription = text
+        look.springPress(this, 0.95f); look.asButton(this)
+        setOnClickListener { look.press(it); onClick() }
+    }
 
     private fun promise(text: String) = LinearLayout(a).apply {
         orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL

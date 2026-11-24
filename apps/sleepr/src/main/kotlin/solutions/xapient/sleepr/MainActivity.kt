@@ -43,6 +43,8 @@ import androidx.annotation.RequiresApi
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
+import solutions.xapient.aapps.core.billing.Access
+import solutions.xapient.aapps.core.billing.TrialGate
 import java.util.Locale
 
 class MainActivity : Activity() {
@@ -87,6 +89,10 @@ class MainActivity : Activity() {
     internal var screen = Screen.MAIN
         private set
     private var backCallback: Any? = null
+    // Testphase + Kauf; im Test per TrialGate.factory ersetzbar
+    private lateinit var gate: TrialGate
+    internal val locked get() = gate.state.access == Access.EXPIRED
+    private var shownLocked = false
 
     enum class Screen { MAIN, SETTINGS, ABOUT }
 
@@ -95,6 +101,7 @@ class MainActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Mixer.load(this)
+        gate = TrialGate.factory(this).also { it.handleDebug(intent) }
         look = Look(this)
         display = Display(this)
         // Edge-to-edge (ab targetSdk 35 Pflicht), Inhalt per Insets in den sicheren Bereich
@@ -265,6 +272,8 @@ class MainActivity : Activity() {
         }
         mainRoot = safeArea(root)
         syncInputs(); syncTimers(); render()
+        // Neu zeichnen nur bei gesperrt oder Wechsel der Sperre
+        gate.onChange = { if (locked || shownLocked) show(screen) }
         show(savedInstanceState?.getString(KEY_SCREEN)?.let { runCatching { Screen.valueOf(it) }.getOrNull() } ?: Screen.MAIN)
     }
 
@@ -280,9 +289,22 @@ class MainActivity : Activity() {
 
     /** Wechselt zwischen Mixer, Einstellungen und Info; der Mixer bleibt erhalten */
     internal fun show(s: Screen) {
-        screen = s
         val pages = Pages(this, look)
-        val v = when (s) {
+        // Testphase vorbei: Dankes-Bildschirm statt Mixer, Einstellungen und Info
+        screen = if (locked) Screen.MAIN else s
+        shownLocked = locked
+        val v = when {
+            locked -> safeArea(pages.thanks(gate.state, onBuy = { gate.buy(this) }, onRestore = { gate.restore() }))
+            else -> page(pages, s)
+        }
+        (v.parent as? ViewGroup)?.removeView(v)
+        setContentView(v)
+        ViewCompat.requestApplyInsets(v)
+        updateBackCallback()
+    }
+
+    private fun page(pages: Pages, s: Screen): View =
+        when (s) {
             Screen.MAIN -> { applyDisplay(); mainRoot }
             Screen.SETTINGS -> safeArea(pages.settings(display,
                 onPreset = { p -> Mixer.applyPreset(p); changed(); show(Screen.MAIN) },
@@ -291,11 +313,6 @@ class MainActivity : Activity() {
                 onBack = { goBack() }))
             Screen.ABOUT -> safeArea(pages.about { goBack() })
         }
-        (v.parent as? ViewGroup)?.removeView(v)
-        setContentView(v)
-        ViewCompat.requestApplyInsets(v)
-        updateBackCallback()
-    }
 
     private fun goBack() = show(if (screen == Screen.ABOUT) Screen.SETTINGS else Screen.MAIN)
 
@@ -342,6 +359,10 @@ class MainActivity : Activity() {
 
     // Tasten-Haptik ueber die View, folgt der System-Touch-Haptik (wie press() in core/ui)
     private fun press(v: View) = v.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+
+    // Bei jedem Start Kaufstatus abfragen
+    override fun onStart() { super.onStart(); gate.refresh() }
+    override fun onDestroy() { gate.close(); super.onDestroy() }
 
     override fun onResume() { super.onResume(); syncInputs(); syncTimers(); tick.run() }
     override fun onPause() { super.onPause(); ui.removeCallbacks(tick) }

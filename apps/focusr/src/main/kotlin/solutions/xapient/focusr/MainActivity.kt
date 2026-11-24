@@ -6,6 +6,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import solutions.xapient.aapps.core.ui.TrialGated
+import solutions.xapient.focusr.ui.FocusrAccent
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -17,7 +19,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         // Alarm fuer einen laufenden Timer sicherheitshalber neu setzen (z. B. nach Update)
         EndAlarm.sync(this, Prefs(this).timer)
-        setContent { FocusrApp() }
+        setContent { TrialGated(FocusrAccent) { FocusrApp() } }
     }
 
     override fun onStart() {

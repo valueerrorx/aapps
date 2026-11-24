@@ -1,5 +1,7 @@
 package solutions.xapient.sleepr.screenshots
 
+import android.app.Activity
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.view.View
@@ -16,6 +18,10 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
+import solutions.xapient.aapps.core.billing.Owned
+import solutions.xapient.aapps.core.billing.PurchaseSource
+import solutions.xapient.aapps.core.billing.TrialGate
+import solutions.xapient.aapps.core.billing.TrialPolicy
 import solutions.xapient.sleepr.Display
 import solutions.xapient.sleepr.MainActivity
 import solutions.xapient.sleepr.NoiseEngine
@@ -31,7 +37,10 @@ class SleeprScreenshotTest {
         compareOptions = RoborazziOptions.CompareOptions(changeThreshold = 0.01f),
     )
 
-    @After fun reset() = setEngine(null)
+    @After fun reset() {
+        setEngine(null)
+        TrialGate.factory = defaultFactory
+    }
 
     @Test fun idle() = shot("idle")
     @Test fun playing() { setEngine(fakeEngine()); shot("playing") }
@@ -56,6 +65,30 @@ class SleeprScreenshotTest {
     // Grundsprache Englisch
     @Test fun idle_en() = shot("idle_en", lang = "en")
     @Test fun settings_en() = shot("settings_en", lang = "en", screen = MainActivity.Screen.SETTINGS)
+
+    // Testphase abgelaufen: Dankes-Bildschirm (Preis da bzw. offline)
+    @Test fun thanks() { expired("0,99 €"); shot("thanks") }
+    @Test fun thanks_en() { expired("€0.99"); shot("thanks_en", lang = "en") }
+    @Test fun thanks_offline() { expired(null); shot("thanks_offline") }
+    @Test fun thanks_font200() { expired("0,99 €"); shot("thanks_font200", fontScale = 2f) }
+
+    private val defaultFactory = TrialGate.factory
+
+    private fun expired(price: String?) {
+        TrialGate.factory = { ctx ->
+            val prefs = ctx.getSharedPreferences("trial-test", Context.MODE_PRIVATE)
+            prefs.edit().putLong(TrialGate.KEY_FIRST, 0L).commit()
+            TrialGate(prefs, FixedPurchases(price)) { TrialPolicy.TRIAL_MS }
+        }
+    }
+
+    private class FixedPurchases(private val p: String?) : PurchaseSource {
+        override var onUpdate: ((Owned) -> Unit)? = null
+        override fun query(onResult: (Owned?) -> Unit) = onResult(if (p == null) null else Owned.NONE)
+        override fun price(onResult: (String?) -> Unit) = onResult(p)
+        override fun buy(activity: Activity) = false
+        override fun close() = Unit
+    }
 
     private fun plain() = Display(RuntimeEnvironment.getApplication()).run { showWaves = false; showMixes = false }
 
