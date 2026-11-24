@@ -41,6 +41,7 @@
     <string name="best">Bestwert</string>
     <string name="today">Heute</string>
     <string name="today_done">Erledigt</string>
+    <string name="all_games">Alle Spiele</string>
 
     <string name="pause">Pause</string>
     <string name="resume">Weiter</string>

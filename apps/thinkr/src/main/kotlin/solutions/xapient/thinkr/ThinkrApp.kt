@@ -117,26 +117,29 @@ fun ThinkrApp(clock: () -> LocalDate = LocalDate::now) {
 
     AappsTheme(ThinkrAccent) {
         val haptics = rememberHaptics(hapticsOn)
+        // Start (Pfad) und Spiele-Menue zeigen dieselben Eintraege
+        val gameItems = Games.all.map {
+            val p = journal.progress(it.id, relaxed)
+            GameItem(it.id, stringResource(it.name), it.icon, p.level, p.best, it.id in daily, it.id in done)
+        }
         when (shown) {
             Screen.HOME -> HomeScreen(
                 today = today,
                 items = daily.mapNotNull { id ->
                     Games.of(id)?.let { DailyItem(id, stringResource(it.name), it.icon, journal.progress(id, relaxed).level, id in done) }
                 },
+                games = gameItems,
                 streak = Streak.count(journal.dailyDone, today),
                 week = Streak.week(journal.dailyDone, today),
                 haptics = haptics,
-                onPlay = { start(it, true, Screen.HOME) },
+                onPlay = { start(it, it in daily, Screen.HOME) },
                 onGames = { screen = Screen.GAMES },
                 onSettings = { screen = Screen.SETTINGS },
             )
             Screen.GAMES -> {
                 BackHandler { screen = Screen.HOME }
                 GamesScreen(
-                    items = Games.all.map {
-                        val p = journal.progress(it.id, relaxed)
-                        GameItem(it.id, stringResource(it.name), it.icon, p.level, p.best, it.id in daily, it.id in done)
-                    },
+                    items = gameItems,
                     onPlay = { haptics.press(); start(it, it in daily, Screen.GAMES) },
                     onBack = { screen = Screen.HOME },
                 )

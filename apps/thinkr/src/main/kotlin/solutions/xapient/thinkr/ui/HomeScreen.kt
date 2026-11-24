@@ -21,6 +21,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
@@ -30,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -63,22 +67,26 @@ import solutions.xapient.thinkr.domain.Days
 import solutions.xapient.thinkr.domain.GameId
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
+import kotlin.math.sin
 import kotlin.random.Random
 
 data class DailyItem(val id: GameId, val name: String, val icon: ImageVector, val level: Int, val done: Boolean)
 
-// Heute: Tagesbild als Hero, darunter Serie und Woche, unten die eine Hauptaktion
+// Heute: Tagesbild als Hero, darunter Serie und Woche, beim Scrollen alle Spiele als Pfad; unten die eine Hauptaktion
 @Composable
 fun HomeScreen(
     today: Int,
     items: List<DailyItem>,
+    games: List<GameItem>,
     streak: Int,
     week: List<Boolean>,
     haptics: Haptics?,
     onPlay: (GameId) -> Unit,
     onGames: () -> Unit,
     onSettings: () -> Unit,
+    scroll: ScrollState = rememberScrollState(),
 ) {
+    val c = Aapps.colors
     val next = items.firstOrNull { !it.done }
     val allDone = items.isNotEmpty() && next == null
     val landscape = LocalWindowInfo.current.containerSize.let { it.width > it.height }
@@ -100,23 +108,44 @@ fun HomeScreen(
     }
     val play: (GameId) -> Unit = { haptics?.press(); onPlay(it) }
     AappsScaffold {
-        if (landscape) {
-            Row(Modifier.fillMaxSize()) {
-                Column(Modifier.weight(0.42f).fillMaxHeight().padding(start = 12.dp, bottom = 16.dp)) {
-                    Header(today, onGames, onSettings)
-                    Spacer(Modifier.weight(1f))
-                    StreakRow(streak, week, today, Modifier.padding(start = 12.dp, end = 8.dp))
-                    Spacer(Modifier.height(20.dp))
-                    Box(Modifier.padding(start = 8.dp)) { action() }
+        BoxWithConstraints(Modifier.fillMaxSize()) {
+            val viewH = maxHeight
+            if (landscape) {
+                Row(Modifier.fillMaxSize()) {
+                    Column(Modifier.weight(0.42f).fillMaxHeight().padding(start = 12.dp, bottom = 16.dp)) {
+                        Header(today, onGames, onSettings)
+                        Spacer(Modifier.weight(1f))
+                        StreakRow(streak, week, today, Modifier.padding(start = 12.dp, end = 8.dp))
+                        Spacer(Modifier.height(20.dp))
+                        Box(Modifier.padding(start = 8.dp)) { action() }
+                    }
+                    Column(Modifier.weight(0.58f).fillMaxHeight().verticalScroll(scroll)) {
+                        // Pfadtitel lugt unten hervor: zeigt, dass es weitergeht
+                        Constellation(items, next?.id, play, Modifier.fillMaxWidth().height(viewH - 44.dp).padding(12.dp))
+                        PathTitle()
+                        GamePath(games, play, Modifier.padding(bottom = 24.dp))
+                    }
                 }
-                Constellation(items, next?.id, play, Modifier.weight(0.58f).fillMaxHeight().padding(12.dp))
-            }
-        } else {
-            Column(Modifier.fillMaxSize()) {
-                Box(Modifier.padding(start = 12.dp)) { Header(today, onGames, onSettings) }
-                Constellation(items, next?.id, play, Modifier.weight(1f).fillMaxWidth().padding(horizontal = 12.dp))
-                StreakRow(streak, week, today, Modifier.padding(horizontal = 28.dp))
-                Box(Modifier.fillMaxWidth().padding(top = 22.dp, bottom = 20.dp), contentAlignment = Alignment.Center) { action() }
+            } else {
+                // Hero wie bisher, nur so viel kuerzer, dass der Pfad ueber der Pille hervorlugt
+                val heroH = (viewH - 64.dp - 76.dp - 98.dp - 64.dp).coerceAtLeast(300.dp)
+                Column(Modifier.fillMaxSize().verticalScroll(scroll)) {
+                    Box(Modifier.padding(start = 12.dp)) { Header(today, onGames, onSettings) }
+                    Constellation(items, next?.id, play, Modifier.fillMaxWidth().height(heroH).padding(horizontal = 12.dp))
+                    StreakRow(streak, week, today, Modifier.padding(horizontal = 28.dp))
+                    Spacer(Modifier.height(36.dp))
+                    PathTitle()
+                    GamePath(games, play, Modifier.padding(bottom = 112.dp))
+                }
+                // Pille schwebt ueber dem Pfad, weicher Uebergang statt harter Kante
+                Box(
+                    Modifier
+                        .align(Alignment.BottomCenter)
+                        .fillMaxWidth()
+                        .background(Brush.verticalGradient(0f to c.bg.copy(alpha = 0f), 0.45f to c.bg.copy(alpha = 0.92f), 1f to c.bg))
+                        .padding(top = 30.dp, bottom = 20.dp),
+                    contentAlignment = Alignment.Center,
+                ) { action() }
             }
         }
     }
@@ -225,45 +254,7 @@ private fun Orb(item: DailyItem, isNext: Boolean, size: Dp, onClick: () -> Unit,
             .clickable(source, indication = null, role = Role.Button, onClick = onClick),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Box(Modifier.size(size).pressScale(pressed, 0.94f), contentAlignment = Alignment.Center) {
-            Canvas(Modifier.size(size)) {
-                val r = this.size.minDimension / 2
-                when {
-                    item.done -> drawGlow(c.accent, center, r * 1.9f, 0.32f)
-                    isNext -> drawGlow(c.accent, center, r * 1.8f, 0.2f)
-                }
-                drawCircle(
-                    Brush.radialGradient(listOf(c.surfaceHigh, c.bg), center = center.copy(y = center.y - r * 0.35f), radius = r * 1.3f),
-                    r, center,
-                )
-                val edge = when {
-                    item.done -> c.accent
-                    isNext -> c.accent.copy(alpha = 0.6f)
-                    else -> c.line
-                }
-                drawCircle(edge, r - 0.75.dp.toPx(), center, style = Stroke(1.5.dp.toPx()))
-                // Reflex oben
-                drawArc(
-                    c.fg.copy(alpha = 0.16f), 215f, 110f, false,
-                    topLeft = Offset(center.x - r * 0.78f, center.y - r * 0.78f),
-                    size = androidx.compose.ui.geometry.Size(r * 1.56f, r * 1.56f),
-                    style = Stroke(1.2.dp.toPx(), cap = StrokeCap.Round),
-                )
-            }
-            AappsIcon(item.icon, null, if (item.done) c.accent else c.fg, size = size * 0.36f)
-            if (item.done) {
-                Box(
-                    Modifier
-                        .align(Alignment.BottomEnd)
-                        .offset(x = (-size * 0.04f), y = (-size * 0.04f))
-                        .size(30.dp)
-                        .background(c.accent, CircleShape),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    AappsIcon(AappsIcons.Check, null, c.onAccent, size = 18.dp)
-                }
-            }
-        }
+        OrbFace(item.icon, item.done, isNext, size, Modifier.pressScale(pressed, 0.94f))
         Spacer(Modifier.height(12.dp))
         BasicText(
             item.name, style = Aapps.type.title.copy(color = c.fg, textAlign = TextAlign.Center),
@@ -275,6 +266,151 @@ private fun Orb(item: DailyItem, isNext: Boolean, size: Dp, onClick: () -> Unit,
             style = Aapps.type.label.copy(color = if (item.done) c.accent else c.fgMuted, textAlign = TextAlign.Center),
             maxLines = 1,
         )
+    }
+}
+
+// Glaskugel mit Symbol; lit = hervorgehoben (naechstes bzw. heute dran), done = Akzent und Haken
+@Composable
+private fun OrbFace(icon: ImageVector, done: Boolean, lit: Boolean, size: Dp, modifier: Modifier = Modifier) {
+    val c = Aapps.colors
+    Box(modifier.size(size), contentAlignment = Alignment.Center) {
+        Canvas(Modifier.size(size)) {
+            val r = this.size.minDimension / 2
+            when {
+                done -> drawGlow(c.accent, center, r * 1.9f, 0.32f)
+                lit -> drawGlow(c.accent, center, r * 1.8f, 0.2f)
+            }
+            drawCircle(
+                Brush.radialGradient(listOf(c.surfaceHigh, c.bg), center = center.copy(y = center.y - r * 0.35f), radius = r * 1.3f),
+                r, center,
+            )
+            val edge = when {
+                done -> c.accent
+                lit -> c.accent.copy(alpha = 0.6f)
+                else -> c.line
+            }
+            drawCircle(edge, r - 0.75.dp.toPx(), center, style = Stroke(1.5.dp.toPx()))
+            // Reflex oben
+            drawArc(
+                c.fg.copy(alpha = 0.16f), 215f, 110f, false,
+                topLeft = Offset(center.x - r * 0.78f, center.y - r * 0.78f),
+                size = androidx.compose.ui.geometry.Size(r * 1.56f, r * 1.56f),
+                style = Stroke(1.2.dp.toPx(), cap = StrokeCap.Round),
+            )
+        }
+        AappsIcon(icon, null, if (done) c.accent else c.fg, size = size * 0.36f)
+        if (done) {
+            val badge = (size * 0.3f).coerceIn(22.dp, 30.dp)
+            Box(
+                Modifier
+                    .align(Alignment.BottomEnd)
+                    .offset(x = (-size * 0.04f), y = (-size * 0.04f))
+                    .size(badge)
+                    .background(c.accent, CircleShape),
+                contentAlignment = Alignment.Center,
+            ) {
+                AappsIcon(AappsIcons.Check, null, c.onAccent, size = badge * 0.6f)
+            }
+        }
+    }
+}
+
+@Composable
+private fun PathTitle() {
+    val c = Aapps.colors
+    BasicText(
+        stringResource(R.string.all_games).uppercase(),
+        Modifier.fillMaxWidth().padding(horizontal = 28.dp),
+        style = Aapps.type.label.copy(color = c.fgMuted),
+    )
+}
+
+// Waagrechte Lage der Stationen: sanfte S-Kurve Mitte, rechts, rechts, Mitte, links, links ...
+private fun pathX(i: Int): Float = 0.5f + 0.26f * sin(i * 1.05f)
+
+// Alle Spiele als geschwungener Pfad; Tipp startet frei
+@Composable
+private fun GamePath(games: List<GameItem>, onPlay: (GameId) -> Unit, modifier: Modifier) {
+    val c = Aapps.colors
+    val fs = LocalDensity.current.fontScale.coerceIn(1f, 2f)
+    val node = 76.dp
+    val step = 116.dp + 28.dp * (fs - 1f)
+    val top = 40.dp
+    // eigener Sternenstaub, gleich ruhig wie im Hero
+    val dust = remember { Random(41).let { r -> List(40) { Triple(r.nextFloat(), r.nextFloat(), r.nextFloat()) } } }
+    BoxWithConstraints(modifier.fillMaxWidth().height(top * 2 + step * (games.size - 1).coerceAtLeast(0) + node)) {
+        val w = maxWidth
+        val cx = { i: Int -> w * pathX(i) }
+        val cy = { i: Int -> top + node / 2 + step * i }
+        Canvas(Modifier.fillMaxSize()) {
+            dust.forEach { (x, y, a) ->
+                drawCircle(c.fg.copy(alpha = 0.05f + 0.13f * a), (0.6f + 1.0f * a).dp.toPx(), Offset(x * size.width, y * size.height))
+            }
+            if (games.size < 2) return@Canvas
+            val pts = games.indices.map { Offset(cx(it).toPx(), cy(it).toPx()) }
+            val path = Path().apply {
+                moveTo(pts[0].x, pts[0].y)
+                pts.zipWithNext().forEach { (a, b) ->
+                    val dy = (b.y - a.y) / 2
+                    cubicTo(a.x, a.y + dy, b.x, b.y - dy, b.x, b.y)
+                }
+            }
+            // breites, ruhiges Band als Weg, darauf die gestrichelte Spur wie im Sternbild
+            drawPath(path, c.surface, style = Stroke(18.dp.toPx(), cap = StrokeCap.Round))
+            drawPath(
+                path, c.fgFaint,
+                style = Stroke(1.5.dp.toPx(), cap = StrokeCap.Round, pathEffect = PathEffect.dashPathEffect(floatArrayOf(2.dp.toPx(), 7.dp.toPx()))),
+            )
+        }
+        games.forEachIndexed { i, g ->
+            // Beschriftung auf die freie Seite: weg von der Kurve zur naechsten Station
+            val bias = (pathX(i) - 0.5f) + (pathX(i + 1) - 0.5f) * 0.5f
+            val labelLeft = bias > 0f
+            val gap = 14.dp
+            val labelW = if (labelLeft) cx(i) - node / 2 - gap - 20.dp else w - cx(i) - node / 2 - gap - 20.dp
+            val x = if (labelLeft) cx(i) - node / 2 - gap - labelW else cx(i) - node / 2
+            PathNode(g, node, labelLeft, labelW, gap, { onPlay(g.id) }, Modifier.offset(x, cy(i) - node / 2))
+        }
+    }
+}
+
+@Composable
+private fun PathNode(item: GameItem, node: Dp, labelLeft: Boolean, labelW: Dp, gap: Dp, onClick: () -> Unit, modifier: Modifier) {
+    val c = Aapps.colors
+    val source = remember { MutableInteractionSource() }
+    val pressed by source.collectIsPressedAsState()
+    val desc = stringResource(if (item.doneToday) R.string.orb_done else R.string.orb_open, item.name, item.level) +
+        if (item.daily && !item.doneToday) ", " + stringResource(R.string.today) else ""
+    val level = stringResource(R.string.level_n, item.level)
+    val tag = when {
+        item.doneToday -> stringResource(R.string.today_done) + "  ·  " + level
+        item.daily -> stringResource(R.string.today) + "  ·  " + level
+        else -> level
+    }
+    val align = if (labelLeft) TextAlign.End else TextAlign.Start
+    val label: @Composable () -> Unit = {
+        Column(Modifier.width(labelW.coerceAtLeast(0.dp))) {
+            BasicText(
+                item.name, Modifier.fillMaxWidth(), style = Aapps.type.title.copy(color = c.fg, textAlign = align),
+                maxLines = 2, overflow = TextOverflow.Ellipsis,
+            )
+            Spacer(Modifier.height(2.dp))
+            BasicText(
+                tag.uppercase(), Modifier.fillMaxWidth(),
+                style = Aapps.type.label.copy(color = if (item.daily) c.accent else c.fgMuted, textAlign = align),
+                maxLines = 2,
+            )
+        }
+    }
+    Row(
+        modifier
+            .semantics(mergeDescendants = true) { contentDescription = desc }
+            .clickable(source, indication = null, role = Role.Button, onClick = onClick),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        if (labelLeft) { label(); Spacer(Modifier.width(gap)) }
+        OrbFace(item.icon, item.doneToday, item.daily, node, Modifier.pressScale(pressed, 0.94f))
+        if (!labelLeft) { Spacer(Modifier.width(gap)); label() }
     }
 }
 
