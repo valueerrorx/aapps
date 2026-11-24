@@ -92,6 +92,37 @@ object AappsIcons {
         }
     }
 
+    // Schild: keine Daten
+    val Shield: ImageVector by lazy {
+        line("shield") {
+            moveTo(12f, 3f); lineTo(19f, 6f); lineTo(19f, 11.5f)
+            curveTo(19f, 16f, 16f, 19.3f, 12f, 21f)
+            curveTo(8f, 19.3f, 5f, 16f, 5f, 11.5f)
+            lineTo(5f, 6f); close()
+            moveTo(9f, 12f); lineTo(11.2f, 14.2f); lineTo(15.2f, 9.8f)
+        }
+    }
+
+    // Funkwellen durchgestrichen: offline
+    val Offline: ImageVector by lazy {
+        line("offline") {
+            moveTo(3.5f, 9.5f); curveTo(8f, 5.5f, 16f, 5.5f, 20.5f, 9.5f)
+            moveTo(6.5f, 12.8f); curveTo(9.5f, 10.4f, 14.5f, 10.4f, 17.5f, 12.8f)
+            moveTo(9.5f, 16f); curveTo(11f, 15f, 13f, 15f, 14.5f, 16f)
+            circle(12f, 19f, 0.6f)
+            moveTo(4f, 4f); lineTo(20f, 20f)
+        }
+    }
+
+    // Spitze Klammern: Quellcode
+    val Code: ImageVector by lazy {
+        line("code") {
+            moveTo(8.5f, 7f); lineTo(3.5f, 12f); lineTo(8.5f, 17f)
+            moveTo(15.5f, 7f); lineTo(20.5f, 12f); lineTo(15.5f, 17f)
+            moveTo(13.5f, 5f); lineTo(10.5f, 19f)
+        }
+    }
+
     private fun PathBuilder.circle(cx: Float, cy: Float, r: Float) {
         moveTo(cx + r, cy)
         arcTo(r, r, 0f, true, true, cx - r, cy)

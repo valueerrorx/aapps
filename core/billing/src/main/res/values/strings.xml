@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="billing_title">Thank you!</string>
+    <string name="billing_text">Thank you for trying this app! If you want to keep using it and all future updates without ads and without tracking, please unlock it with a one-time purchase.</string>
+    <string name="billing_point_data">No data collected, no tracking</string>
+    <string name="billing_point_offline">Works completely offline</string>
+    <string name="billing_point_source">Open source</string>
+    <string name="billing_unlock">Unlock</string>
+    <string name="billing_unlock_price">Unlock for %1$s</string>
+    <string name="billing_restore">Restore purchase</string>
+    <string name="billing_restoring">Checking …</string>
+    <string name="billing_once">One-time purchase, no subscription. Only the purchase goes through Google Play, the app itself never goes online.</string>
+    <string name="billing_hint_noprice">The price appears as soon as Google Play is reachable.</string>
+    <string name="billing_hint_pending">Your purchase is pending. The app unlocks as soon as the payment is confirmed.</string>
+    <string name="billing_hint_notfound">No purchase found for this Google account.</string>
+    <string name="billing_hint_offline">Google Play is not reachable right now. Please try again later.</string>
+    <string name="billing_hint_unavailable">The purchase cannot be started right now. Please try again later.</string>
+</resources>

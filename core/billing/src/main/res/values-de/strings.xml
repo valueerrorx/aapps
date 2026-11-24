@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="billing_title">Danke!</string>
+    <string name="billing_text">Vielen Dank, dass du diese App getestet hast! Wenn du sie und alle zukünftigen Updates weiterhin werbefrei und ohne Tracking nutzen willst, schalte sie bitte mit einem einmaligen Kauf frei.</string>
+    <string name="billing_point_data">Keine Daten, kein Tracking</string>
+    <string name="billing_point_offline">Funktioniert komplett offline</string>
+    <string name="billing_point_source">Open Source</string>
+    <string name="billing_unlock">Freischalten</string>
+    <string name="billing_unlock_price">Für %1$s freischalten</string>
+    <string name="billing_restore">Kauf wiederherstellen</string>
+    <string name="billing_restoring">Prüfe …</string>
+    <string name="billing_once">Einmaliger Kauf, kein Abo. Nur der Kauf läuft über Google Play, die App selbst geht nie ins Internet.</string>
+    <string name="billing_hint_noprice">Der Preis erscheint, sobald Google Play erreichbar ist.</string>
+    <string name="billing_hint_pending">Dein Kauf ist noch ausstehend. Die App wird freigeschaltet, sobald die Zahlung bestätigt ist.</string>
+    <string name="billing_hint_notfound">Für dieses Google-Konto wurde kein Kauf gefunden.</string>
+    <string name="billing_hint_offline">Google Play ist gerade nicht erreichbar. Bitte versuch es später noch einmal.</string>
+    <string name="billing_hint_unavailable">Der Kauf lässt sich gerade nicht starten. Bitte versuch es später noch einmal.</string>
+</resources>
