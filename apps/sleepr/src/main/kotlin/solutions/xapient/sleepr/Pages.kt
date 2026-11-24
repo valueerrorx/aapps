@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
-import android.graphics.drawable.StateListDrawable
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +14,6 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.Space
 import android.widget.TextView
-import androidx.core.graphics.drawable.toDrawable
 import androidx.core.net.toUri
 import solutions.xapient.aapps.core.billing.GateState
 import solutions.xapient.aapps.core.billing.Notice
@@ -146,7 +144,7 @@ class Pages(private val a: Activity, private val look: Look) {
                     setPadding(0, dp(6), 0, dp(6))
                     addView(point(R.drawable.ic_shield, a.getString(BR.string.billing_point_data)))
                     addView(point(R.drawable.ic_offline, a.getString(BR.string.billing_point_offline)))
-                    addView(point(R.drawable.ic_code, a.getString(BR.string.billing_point_source), SOURCE_URL.removePrefix("https://")) { openSource() })
+                    addView(point(R.drawable.ic_code, a.getString(BR.string.billing_point_source)))
                 }
                 val price = state.price
                 val canBuy = price != null && !state.pending
@@ -179,8 +177,7 @@ class Pages(private val a: Activity, private val look: Look) {
         }
     }
 
-    // Zeile mit Icon; mit Link: Untertitel, Pfeil und Klick wie actionRow
-    private fun point(icon: Int, text: String, sub: String? = null, onClick: (() -> Unit)? = null) = LinearLayout(a).apply {
+    private fun point(icon: Int, text: String) = LinearLayout(a).apply {
         orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL
         minimumHeight = dp(48)
         setPadding(dp(18), dp(10), dp(18), dp(10))
@@ -192,25 +189,7 @@ class Pages(private val a: Activity, private val look: Look) {
             background = GradientDrawable().apply { shape = GradientDrawable.OVAL; setColor(look.alpha(look.accent, 0.14f)) }
             importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
         }, LinearLayout.LayoutParams(dp(32), dp(32)).apply { rightMargin = dp(14) })
-        addView(LinearLayout(a).apply {
-            orientation = LinearLayout.VERTICAL
-            addView(look.body(text))
-            if (sub != null) addView(look.small(sub, look.accent))
-        }, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
-        if (onClick != null) {
-            addView(ImageView(a).apply {
-                setImageResource(R.drawable.ic_chevron)
-                imageTintList = ColorStateList.valueOf(look.faint)
-                importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
-            }, LinearLayout.LayoutParams(dp(20), dp(20)).apply { leftMargin = dp(12) })
-            isClickable = true; isFocusable = true
-            background = StateListDrawable().apply {
-                addState(intArrayOf(android.R.attr.state_pressed), look.surfaceHigh.toDrawable())
-                addState(intArrayOf(android.R.attr.state_focused), look.surfaceHigh.toDrawable())
-            }
-            look.asButton(this)
-            setOnClickListener { look.press(it); onClick() }
-        }
+        addView(look.body(text), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
     }
 
     // Hauptaktion wie AappsPillButton: Akzent gefuellt, wenn kaufbar
