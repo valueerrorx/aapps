@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="billing_title">Thank you!</string>
-    <string name="billing_text">Thank you for trying this app! If you want to keep using it and all future updates without ads and without tracking, please unlock it with a one-time purchase.</string>
+    <string name="billing_text">Thanks for trying this app! If you like it, unlock it forever with a one-time purchase – including all future updates.</string>
     <string name="billing_point_data">No data collected, no tracking</string>
     <string name="billing_point_offline">Works completely offline</string>
     <string name="billing_point_source">Open source</string>

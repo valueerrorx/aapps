@@ -67,10 +67,10 @@ class SleeprScreenshotTest {
     @Test fun settings_en() = shot("settings_en", lang = "en", screen = MainActivity.Screen.SETTINGS)
 
     // Testphase abgelaufen: Dankes-Bildschirm (Preis da bzw. offline)
-    @Test fun thanks() { expired("0,99 €"); shot("thanks") }
-    @Test fun thanks_en() { expired("€0.99"); shot("thanks_en", lang = "en") }
+    @Test fun thanks() { expired("1,49 €"); shot("thanks") }
+    @Test fun thanks_en() { expired("€1.49"); shot("thanks_en", lang = "en") }
     @Test fun thanks_offline() { expired(null); shot("thanks_offline") }
-    @Test fun thanks_font200() { expired("0,99 €"); shot("thanks_font200", fontScale = 2f) }
+    @Test fun thanks_font200() { expired("1,49 €"); shot("thanks_font200", fontScale = 2f) }
 
     private val defaultFactory = TrialGate.factory
 

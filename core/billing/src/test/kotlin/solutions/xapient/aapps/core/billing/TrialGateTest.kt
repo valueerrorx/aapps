@@ -15,7 +15,7 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 
 /** Fake ohne Play Store: Ergebnisse werden per Feld vorgegeben */
-class FakePurchases(var owned: Owned? = Owned.NONE, var priceText: String? = "0,99 €") : PurchaseSource {
+class FakePurchases(var owned: Owned? = Owned.NONE, var priceText: String? = "1,49 €") : PurchaseSource {
     override var onUpdate: ((Owned) -> Unit)? = null
     var buys = 0
     override fun query(onResult: (Owned?) -> Unit) = onResult(owned)
@@ -48,7 +48,7 @@ class TrialGateTest {
         now += TrialPolicy.TRIAL_MS
         g.refresh()
         assertEquals(Access.EXPIRED, g.state.access)
-        assertEquals("0,99 €", g.state.price)
+        assertEquals("1,49 €", g.state.price)
     }
 
     @Test fun purchaseCachedAndWorksOffline() {

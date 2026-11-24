@@ -25,7 +25,7 @@ Apps: sleepr, levlr, nordr, spinr, scorr, focusr, roundr, pulsr, loudr, tunr, ma
 - [ ] Je App zuerst ein AAB mit Billing hochladen (interner Test genügt), erst dann lässt die Console In-App-Produkte zu.
 - [ ] Monetarisieren > Produkte > In-App-Produkte (Einmalkauf): Produkt-ID exakt `full_unlock`, aktiv, nicht verbrauchbar (die App bestätigt den Kauf, verbraucht ihn nie).
 - [ ] Name/Beschreibung DE/EN, z. B. „Dauerhaft freischalten“ / „Unlock for good“, „Einmaliger Kauf, alle künftigen Updates inklusive“.
-- [?] Preis festlegen (Vorschlag wie bisher geplant: 0,55 € bzw. nächste Preisstufe), Play rechnet Landeswährungen um.
+- [ ] Preis: 1,49 € für alle Apps (Thomas), Play rechnet Landeswährungen um. Im Code nicht hartcodiert, die App zeigt den Preis aus ProductDetails.
 - [ ] Lizenztester eintragen (Einstellungen > Lizenztests, Gmail-Konten): Testkäufe ohne echte Zahlung, inkl. „langsame Testkarte“ für den ausstehenden Kauf.
 - [ ] Auf dem Gerät testen: Testphase ablaufen lassen (Debug-Build: `adb shell am start -S -n solutions.xapient.<app>/.MainActivity --es aapps_trial expire`), Preis erscheint, Kauf, App frei, Flugmodus bleibt frei, „Kauf wiederherstellen“ nach Neuinstallation, Erstattung in der Console → beim nächsten Start wieder Dankes-Bildschirm.
 - Hinweis: Die Billing-Library bringt INTERNET und ACCESS_NETWORK_STATE (über Googles datatransport) mit; beide werden im Manifest entfernt, die Apps bleiben ohne Internet-Berechtigung. Der Kauf läuft per IPC über die Play-Store-App. Darum unbedingt auf einem echten Gerät mit Lizenztester testen, bevor eine App in Produktion geht.

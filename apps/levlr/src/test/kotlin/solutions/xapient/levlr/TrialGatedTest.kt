@@ -45,7 +45,7 @@ class TrialGatedTest {
     private val fake = object : PurchaseSource {
         override var onUpdate: ((Owned) -> Unit)? = null
         override fun query(onResult: (Owned?) -> Unit) { queries++; onResult(owned) }
-        override fun price(onResult: (String?) -> Unit) = onResult("€0.99")
+        override fun price(onResult: (String?) -> Unit) = onResult("€1.49")
         override fun buy(activity: Activity) = true
         override fun close() = Unit
     }
@@ -67,7 +67,7 @@ class TrialGatedTest {
     @Test fun afterTrialShowsThanksWithPrice() {
         start(TrialPolicy.TRIAL_MS)
         compose.onNodeWithText("APP").assertDoesNotExist()
-        compose.onNodeWithText("UNLOCK FOR €0.99").assertExists()
+        compose.onNodeWithText("UNLOCK FOR €1.49").assertExists()
     }
 
     @Test fun restoreUnlocks() {

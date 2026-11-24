@@ -134,15 +134,15 @@ class LevelScreenshotTest {
     private fun Thanks(price: String?, pending: Boolean = false) =
         ThanksScreen("levlr", GateState(Access.EXPIRED, price = price, pending = pending), {}, {})
 
-    @Test fun thanks() = shot("thanks") { Thanks("€0.99") }
+    @Test fun thanks() = shot("thanks") { Thanks("€1.49") }
 
-    @Test fun thanks_de() = shot("thanks_de", "+de") { Thanks("0,99 €") }
+    @Test fun thanks_de() = shot("thanks_de", "+de") { Thanks("1,49 €") }
 
-    @Test fun thanks_font200() = shot("thanks_font200", fontScale = 2f) { Thanks("€0.99") }
+    @Test fun thanks_font200() = shot("thanks_font200", fontScale = 2f) { Thanks("€1.49") }
 
-    @Test fun thanks_land() = shot("thanks_land", "+land") { Thanks("€0.99") }
+    @Test fun thanks_land() = shot("thanks_land", "+land") { Thanks("€1.49") }
 
     @Test fun thanks_offline_de() = shot("thanks_offline_de", "+de") { Thanks(null) }
 
-    @Test fun thanks_pending() = shot("thanks_pending") { Thanks("€0.99", pending = true) }
+    @Test fun thanks_pending() = shot("thanks_pending") { Thanks("€1.49", pending = true) }
 }

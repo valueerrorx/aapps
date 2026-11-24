@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="billing_title">Danke!</string>
-    <string name="billing_text">Vielen Dank, dass du diese App getestet hast! Wenn du sie und alle zukünftigen Updates weiterhin werbefrei und ohne Tracking nutzen willst, schalte sie bitte mit einem einmaligen Kauf frei.</string>
+    <string name="billing_text">Vielen Dank, dass du diese App getestet hast! Wenn sie dir gefällt, schalte sie mit einem einmaligen Kauf dauerhaft frei – inklusive aller zukünftigen Updates.</string>
     <string name="billing_point_data">Keine Daten, kein Tracking</string>
     <string name="billing_point_offline">Funktioniert komplett offline</string>
     <string name="billing_point_source">Open Source</string>
