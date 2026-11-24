@@ -90,6 +90,21 @@ class SwitchesGameTest {
         assertEquals(1.0 * SwitchesRules.speed(1), s.progress(b), 1e-6)
     }
 
+    // Fairness: von der Abfahrt bis zur ersten Weiche bleibt Zeit zum Schauen und Stellen, in jedem Netz jeder Stufe
+    @Test fun timeToFirstSwitch() {
+        for (level in 1..SwitchesRules.MAX_LEVEL) {
+            val speed = SwitchesGame.start(0, level, false).speed
+            val min = if (level == 1) 2_500.0 else 1_800.0
+            NetBook.plans.getValue(SwitchesRules.gates(level)).forEachIndexed { i, rows ->
+                for (v in 0 until NetBook.VARIANTS) {
+                    val net = Net.parse(rows, v)
+                    val ms = net.edges[net.portalEdge].track.length / speed
+                    assertTrue("Stufe $level Netz $i/v$v: $ms ms", ms >= min)
+                }
+            }
+        }
+    }
+
     // Nur eine Perle: alle Weichen auf das Tor gate stellen und ankommen lassen
     private fun lone(seed: Long, gate: (Bead) -> Int): Pair<SwitchesState, Bead> {
         var s = SwitchesGame.tick(SwitchesGame.start(seed, 2, false), 700).let { it.copy(nextAt = 1e12) }
