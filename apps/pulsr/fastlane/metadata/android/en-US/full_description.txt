@@ -12,7 +12,10 @@ Features
 • Screen stays on while playing (can be turned off)
 • Portrait and landscape, English and German
 
-Permissions: notifications (stop button) and a foreground service so the metronome keeps playing with the screen locked. pulsr also works without notifications.
+Permissions: notifications (stop button) and a foreground service so the metronome keeps playing with the screen locked. pulsr also works without notifications. Plus Google Play billing for the one-time purchase.
 
-No ads, no tracking, no account. pulsr has no internet permission, everything stays on your device.
-Free software under the GNU GPLv3. Source code: https://github.com/valueerrorx/aapps
+Try pulsr free for 24 hours with every feature. After that, a one-time purchase unlocks it for good, including all future updates. No subscription, no ads.
+
+• Private: no tracking, no account, no data collected. pulsr does not make money from your data.
+• Completely offline: pulsr has no internet permission and works without a connection. Only the purchase goes through Google Play, the app itself never goes online.
+• Open source: free software under the GNU GPLv3. Source code: https://github.com/valueerrorx/aapps

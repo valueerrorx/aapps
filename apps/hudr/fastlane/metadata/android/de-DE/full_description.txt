@@ -14,5 +14,8 @@ Standort: hudr braucht den genauen Standort, um die Geschwindigkeit zu messen. E
 
 Hinweis: Die Anzeige ist ein Richtwert und kann vom Tacho deines Fahrzeugs abweichen. Sie ist nicht für verkehrsrechtliche Zwecke gedacht. Bediene die App nicht während der Fahrt.
 
-Ohne Werbung, ohne Tracking, ohne Konto. Alles bleibt auf deinem Gerät.
-Freie Software unter der GNU GPLv3. Quellcode: https://github.com/valueerrorx/aapps
+Teste hudr 24 Stunden lang kostenlos mit allen Funktionen. Danach schaltet ein einmaliger Kauf die App dauerhaft frei, inklusive aller künftigen Updates. Kein Abo, keine Werbung.
+
+• Privat: kein Tracking, kein Konto, es werden keine Daten gesammelt. hudr verdient nicht an deinen Daten.
+• Komplett offline: hudr hat keine Internet-Berechtigung und funktioniert ohne Verbindung. Nur der Kauf läuft über Google Play, die App selbst geht nie ins Internet.
+• Open Source: freie Software unter der GNU GPLv3. Quellcode: https://github.com/valueerrorx/aapps

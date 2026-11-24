@@ -12,7 +12,10 @@ Features
 
 spinr is not a gambling app: no stakes, no prizes, no purchases.
 
-spinr needs no permissions other than vibration.
+spinr needs no permissions other than vibration and Google Play billing.
 
-No ads, no tracking, no account. spinr has no internet permission, everything stays on your device.
-Free software under the GNU GPLv3. Source code: https://github.com/valueerrorx/aapps
+Try spinr free for 24 hours with every feature. After that, a one-time purchase unlocks it for good, including all future updates. No subscription, no ads.
+
+• Private: no tracking, no account, no data collected. spinr does not make money from your data.
+• Completely offline: spinr has no internet permission and works without a connection. Only the purchase goes through Google Play, the app itself never goes online.
+• Open source: free software under the GNU GPLv3. Source code: https://github.com/valueerrorx/aapps

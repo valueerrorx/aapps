@@ -13,7 +13,10 @@ Funktionen
 
 Praktisch zum Bilderaufhängen, Regalmontieren oder Tischausrichten. Wie genau levlr misst, hängt vom Sensor deines Handys ab. Für Vermessungsarbeiten ist levlr nicht gedacht.
 
-levlr braucht keine Berechtigungen außer Vibration.
+levlr braucht keine Berechtigungen außer Vibration und der Google-Play-Abrechnung.
 
-Ohne Werbung, ohne Tracking, ohne Konto. levlr hat keine Internet-Berechtigung, alles bleibt auf deinem Gerät.
-Freie Software unter der GNU GPLv3. Quellcode: https://github.com/valueerrorx/aapps
+Teste levlr 24 Stunden lang kostenlos mit allen Funktionen. Danach schaltet ein einmaliger Kauf die App dauerhaft frei, inklusive aller künftigen Updates. Kein Abo, keine Werbung.
+
+• Privat: kein Tracking, kein Konto, es werden keine Daten gesammelt. levlr verdient nicht an deinen Daten.
+• Komplett offline: levlr hat keine Internet-Berechtigung und funktioniert ohne Verbindung. Nur der Kauf läuft über Google Play, die App selbst geht nie ins Internet.
+• Open Source: freie Software unter der GNU GPLv3. Quellcode: https://github.com/valueerrorx/aapps

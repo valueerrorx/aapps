@@ -6,7 +6,7 @@ Store-Texte: `apps/<app>/fastlane/metadata/android/{de-DE,en-US}/`, Grafik-Liste
 ## 1. Konto und Grundlagen
 - [ ] Entwickler-Verifizierung abwarten.
 - [ ] Testpflicht für neue private Konten: geschlossener Test mit mindestens 12 Testern, 14 Tage am Stück, **je App**, bevor Produktion freigeschaltet wird. Tipp: eine Google-Gruppe als gemeinsamer Tester-Pool für alle 16 Apps, alle Tests parallel starten. Entfällt nur, falls dein Konto vor 13.11.2023 angelegt wurde.
-- [ ] Zahlungsprofil für kostenpflichtige Apps, Preis 0,55 € je App. Achtung: Eine App, die einmal gratis war, kann nie mehr kostenpflichtig werden.
+- [ ] Zahlungsprofil (Händlerkonto) für In-App-Käufe einrichten. Modell: alle Apps gratis im Store, die 14 Werkzeug-Apps mit 24-h-Testphase und einmaligem In-App-Kauf `full_unlock` (siehe 2a), moovr und glidr komplett gratis. Achtung: Eine App, die einmal gratis war, kann nie mehr kostenpflichtig werden (In-App-Kauf geht trotzdem).
 - [ ] EU-Händlerstatus (DSA) angeben; als Händler werden Kontaktdaten im Store öffentlich angezeigt.
 - [ ] Öffentliche Kontakt-E-Mail im Store eintragen (Pflicht).
 
@@ -19,6 +19,16 @@ Store-Texte: `apps/<app>/fastlane/metadata/android/{de-DE,en-US}/`, Grafik-Liste
 - [ ] Fehlende Screenshot-Sprachvarianten (je README): v. a. sleepr EN (nur 2), loudr DE (nur 2), levlr/nordr/pulsr/magnr/hertzr DE (3).
 - [ ] moovr und glidr: gar keine Spiel-Screenshots, nur vom Gerät aufnehmbar (Querformat, mind. 2).
 - [ ] Datenschutzerklärung `docs/privacy/index.html` hosten (Vorschlag: https://xapient.solutions/privacy/) und in jeder App als URL eintragen. Vorher `KONTAKT_NAME` und `KONTAKT_EMAIL` ersetzen.
+
+## 2a. In-App-Produkt `full_unlock` (alle außer moovr, glidr)
+Apps: sleepr, levlr, nordr, spinr, scorr, focusr, roundr, pulsr, loudr, tunr, magnr, dozr, hertzr, hudr (später thinkr, dividr).
+- [ ] Je App zuerst ein AAB mit Billing hochladen (interner Test genügt), erst dann lässt die Console In-App-Produkte zu.
+- [ ] Monetarisieren > Produkte > In-App-Produkte (Einmalkauf): Produkt-ID exakt `full_unlock`, aktiv, nicht verbrauchbar (die App bestätigt den Kauf, verbraucht ihn nie).
+- [ ] Name/Beschreibung DE/EN, z. B. „Dauerhaft freischalten“ / „Unlock for good“, „Einmaliger Kauf, alle künftigen Updates inklusive“.
+- [?] Preis festlegen (Vorschlag wie bisher geplant: 0,55 € bzw. nächste Preisstufe), Play rechnet Landeswährungen um.
+- [ ] Lizenztester eintragen (Einstellungen > Lizenztests, Gmail-Konten): Testkäufe ohne echte Zahlung, inkl. „langsame Testkarte“ für den ausstehenden Kauf.
+- [ ] Auf dem Gerät testen: Testphase ablaufen lassen (Debug-Build: `adb shell am start -S -n solutions.xapient.<app>/.MainActivity --es aapps_trial expire`), Preis erscheint, Kauf, App frei, Flugmodus bleibt frei, „Kauf wiederherstellen“ nach Neuinstallation, Erstattung in der Console → beim nächsten Start wieder Dankes-Bildschirm.
+- Hinweis: Die Billing-Library bringt INTERNET und ACCESS_NETWORK_STATE (über Googles datatransport) mit; beide werden im Manifest entfernt, die Apps bleiben ohne Internet-Berechtigung. Der Kauf läuft per IPC über die Play-Store-App. Darum unbedingt auf einem echten Gerät mit Lizenztester testen, bevor eine App in Produktion geht.
 
 ## 3. Kategorie
 | App | Kategorie (Vorschlag) |
@@ -43,7 +53,8 @@ Store-Texte: `apps/<app>/fastlane/metadata/android/{de-DE,en-US}/`, Grafik-Liste
 ## 4. App-Inhalte (Policy-Formulare)
 ### Datensicherheit (Data safety), alle 16 gleich
 - Erhebt oder teilt die App Nutzerdaten? **Nein.**
-- Begründung: Keine App hat die INTERNET-Berechtigung (Build-Check `check<Variant>ManifestPermissions` bricht sonst ab). Kein SDK für Werbung, Analyse oder Absturzberichte, kein Firebase, keine Play Services. Daten, die nur auf dem Gerät verarbeitet werden, gelten laut Play nicht als „erhoben“.
+- Begründung: Keine App hat die INTERNET-Berechtigung (Build-Check `check<Variant>ManifestPermissions` bricht sonst ab; die von Play Billing mitgebrachte wird entfernt). Kein SDK für Werbung, Analyse oder Absturzberichte, kein Firebase. Einzige Bibliothek von Google ist Play Billing (Kauf per IPC über die Play-Store-App). Daten, die nur auf dem Gerät verarbeitet werden, gelten laut Play nicht als „erhoben“.
+  - Kaufstatus: Die App erfährt nur „gekauft ja/nein“ und speichert das lokal; Zahlungsdaten verarbeitet Google selbst. [?] Vor dem Ausfüllen Googles aktuelle Angaben zur Play Billing Library im Data-safety-Leitfaden prüfen.
 - Je App zur Kontrolle:
   - loudr, tunr: Mikrofon nur live, nichts gespeichert oder gesendet → nicht erhoben.
   - hudr: genauer Standort nur im Vordergrund, nicht gespeichert, kann nicht gesendet werden → nicht erhoben.
@@ -59,10 +70,10 @@ Store-Texte: `apps/<app>/fastlane/metadata/android/{de-DE,en-US}/`, Grafik-Liste
 - Finanzfunktionen, Behörden-App, Nachrichten: Nein.
 
 ### Altersfreigabe (IARC-Fragebogen)
-- Apps: Kategorie „Dienstprogramm, Produktivität, Kommunikation oder andere“. Alles Nein: keine Gewalt, keine Sexualität, keine Sprache, keine Drogen, kein Glücksspiel, keine Nutzer-Interaktion, kein Teilen von Standort mit anderen, keine digitalen Käufe.
+- Apps: Kategorie „Dienstprogramm, Produktivität, Kommunikation oder andere“. Alles Nein: keine Gewalt, keine Sexualität, keine Sprache, keine Drogen, kein Glücksspiel, keine Nutzer-Interaktion, kein Teilen von Standort mit anderen. Digitale Käufe: **Ja** (Einmalkauf `full_unlock`), außer moovr und glidr.
   - spinr: kein Glücksspiel und kein simuliertes Glücksspiel (keine Einsätze, keine Gewinne).
   - hudr: nutzt Standort, teilt ihn aber nicht mit anderen Nutzern → Nein.
-- Spiele (moovr, glidr): Kategorie „Spiel“. Keine Gewalt gegen Menschen oder Tiere im eigentlichen Sinn; die Kuh kann comichaft an Stacheln oder im Wasserloch scheitern. [?] Je nach Wortlaut „keine Gewalt“ oder höchstens „Comic/Fantasy, mild“. Kein Blut, keine Käufe, keine Werbung, kein Online.
+- Spiele (moovr, glidr): Kategorie „Spiel“. Keine Gewalt gegen Menschen oder Tiere im eigentlichen Sinn; die Kuh kann comichaft an Stacheln oder im Wasserloch scheitern. [?] Je nach Wortlaut „keine Gewalt“ oder höchstens „Comic/Fantasy, mild“. Kein Blut, keine Käufe, keine Werbung, kein Online (kein Billing).
 - Erwartung: niedrigste Stufe (USK 0 / PEGI 3 / Everyone).
 
 ### Zielgruppe

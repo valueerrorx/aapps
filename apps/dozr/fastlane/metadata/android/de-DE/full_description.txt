@@ -16,7 +16,10 @@ Player, die sich an die Android-Regeln für Audio halten, pausieren dabei. Bei m
 
 dozr ist keine medizinische App.
 
-Berechtigungen: Benachrichtigungen, Vibration (Bestätigung beim Schütteln) und ein Vordergrunddienst, damit der Timer bei gesperrtem Bildschirm zuverlässig läuft.
+Berechtigungen: Benachrichtigungen, Vibration (Bestätigung beim Schütteln) und ein Vordergrunddienst, damit der Timer bei gesperrtem Bildschirm zuverlässig läuft. Dazu die Google-Play-Abrechnung für den einmaligen Kauf.
 
-Ohne Werbung, ohne Tracking, ohne Konto. dozr hat keine Internet-Berechtigung, alles bleibt auf deinem Gerät.
-Freie Software unter der GNU GPLv3. Quellcode: https://github.com/valueerrorx/aapps
+Teste dozr 24 Stunden lang kostenlos mit allen Funktionen. Danach schaltet ein einmaliger Kauf die App dauerhaft frei, inklusive aller künftigen Updates. Kein Abo, keine Werbung.
+
+• Privat: kein Tracking, kein Konto, es werden keine Daten gesammelt. dozr verdient nicht an deinen Daten.
+• Komplett offline: dozr hat keine Internet-Berechtigung und funktioniert ohne Verbindung. Nur der Kauf läuft über Google Play, die App selbst geht nie ins Internet.
+• Open Source: freie Software unter der GNU GPLv3. Quellcode: https://github.com/valueerrorx/aapps

@@ -11,5 +11,8 @@ Funktionen
 
 Mikrofon: tunr braucht die Mikrofon-Berechtigung, um den Ton zu erkennen. Das Signal wird nur live ausgewertet, nicht aufgenommen, nicht gespeichert und nicht gesendet. Das Mikrofon ist nur aktiv, solange der Stimm-Bildschirm im Vordergrund ist.
 
-Ohne Werbung, ohne Tracking, ohne Konto. tunr hat keine Internet-Berechtigung, alles bleibt auf deinem Gerät.
-Freie Software unter der GNU GPLv3. Quellcode: https://github.com/valueerrorx/aapps
+Teste tunr 24 Stunden lang kostenlos mit allen Funktionen. Danach schaltet ein einmaliger Kauf die App dauerhaft frei, inklusive aller künftigen Updates. Kein Abo, keine Werbung.
+
+• Privat: kein Tracking, kein Konto, es werden keine Daten gesammelt. tunr verdient nicht an deinen Daten.
+• Komplett offline: tunr hat keine Internet-Berechtigung und funktioniert ohne Verbindung. Nur der Kauf läuft über Google Play, die App selbst geht nie ins Internet.
+• Open Source: freie Software unter der GNU GPLv3. Quellcode: https://github.com/valueerrorx/aapps

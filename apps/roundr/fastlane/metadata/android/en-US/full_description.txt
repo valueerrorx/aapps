@@ -13,7 +13,10 @@ Features
 
 roundr is a timer. It does not record health or fitness data and gives no training advice.
 
-Permissions: notifications, vibration and a foreground service so the timer keeps running with the screen locked. The timer also works without notifications.
+Permissions: notifications, vibration and a foreground service so the timer keeps running with the screen locked. The timer also works without notifications. Plus Google Play billing for the one-time purchase.
 
-No ads, no tracking, no account. roundr has no internet permission, everything stays on your device.
-Free software under the GNU GPLv3. Source code: https://github.com/valueerrorx/aapps
+Try roundr free for 24 hours with every feature. After that, a one-time purchase unlocks it for good, including all future updates. No subscription, no ads.
+
+• Private: no tracking, no account, no data collected. roundr does not make money from your data.
+• Completely offline: roundr has no internet permission and works without a connection. Only the purchase goes through Google Play, the app itself never goes online.
+• Open source: free software under the GNU GPLv3. Source code: https://github.com/valueerrorx/aapps

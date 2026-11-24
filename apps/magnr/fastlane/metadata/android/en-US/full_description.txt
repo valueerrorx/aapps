@@ -12,7 +12,10 @@ Features
 • Calibration hint and a notice when the sensor is saturated
 • Portrait and landscape, English and German
 
-magnr needs a magnetic field sensor and no permissions other than vibration.
+magnr needs a magnetic field sensor and no permissions other than vibration and Google Play billing.
 
-No ads, no tracking, no account. magnr has no internet permission, everything stays on your device.
-Free software under the GNU GPLv3. Source code: https://github.com/valueerrorx/aapps
+Try magnr free for 24 hours with every feature. After that, a one-time purchase unlocks it for good, including all future updates. No subscription, no ads.
+
+• Private: no tracking, no account, no data collected. magnr does not make money from your data.
+• Completely offline: magnr has no internet permission and works without a connection. Only the purchase goes through Google Play, the app itself never goes online.
+• Open source: free software under the GNU GPLv3. Source code: https://github.com/valueerrorx/aapps
