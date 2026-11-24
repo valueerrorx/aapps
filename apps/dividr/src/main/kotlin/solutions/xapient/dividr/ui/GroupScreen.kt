@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -67,7 +66,7 @@ import solutions.xapient.dividr.domain.isFallback
 import solutions.xapient.dividr.domain.resolve
 import solutions.xapient.dividr.domain.totalSpent
 import solutions.xapient.dividr.domain.visibleEntries
-import solutions.xapient.dividr.qr.QrImage
+import solutions.xapient.dividr.qr.QrPreview
 import solutions.xapient.dividr.qr.QrMatrix
 import java.util.Locale
 
@@ -316,14 +315,16 @@ private fun EntryRow(group: Group, e: Entry, locale: Locale, onClick: () -> Unit
     }
 }
 
-// Unten: eigener Code (weisse Karte) links, Scannen rechts
+// Unten: eigener Code links, Scannen rechts; gleich gross und niedrig
 @Composable
 private fun Exchange(codes: List<QrMatrix>, onQr: () -> Unit, onScan: () -> Unit, modifier: Modifier = Modifier) {
-    Row(modifier.fillMaxWidth().heightIn(max = 220.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-        QrCard(codes, onQr, Modifier.weight(0.45f))
-        ScanTile(onScan, Modifier.weight(0.55f).aspectRatio(1.22f))
+    Row(modifier.fillMaxWidth().height(TILE_HEIGHT), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        QrCard(codes, onQr, Modifier.weight(1f))
+        ScanTile(onScan, Modifier.weight(1f))
     }
 }
+
+private val TILE_HEIGHT = 104.dp
 
 @Composable
 private fun QrCard(codes: List<QrMatrix>, onQr: () -> Unit, modifier: Modifier) {
@@ -332,24 +333,25 @@ private fun QrCard(codes: List<QrMatrix>, onQr: () -> Unit, modifier: Modifier) 
     val pressed by source.collectIsPressedAsState()
     Box(
         modifier
-            .aspectRatio(1f)
+            .fillMaxHeight()
             .pressScale(pressed, 0.96f)
             .clip(RoundedCornerShape(24.dp))
-            .background(if (codes.size == 1) Color.White else c.surface)
-            .border(1.5.dp, if (codes.size == 1) Color.White.copy(alpha = 0.5f) else c.line, RoundedCornerShape(24.dp))
+            .background(c.surface)
+            .border(1.dp, c.accent.copy(alpha = 0.45f), RoundedCornerShape(24.dp))
+            .glow(c.accent, 90.dp, 0.10f)
             .clickable(source, indication = null, role = Role.Button, onClickLabel = stringResource(R.string.show_code), onClick = onQr)
-            .padding(10.dp),
+            .padding(14.dp),
         contentAlignment = Alignment.Center,
     ) {
         when (codes.size) {
-            1 -> QrImage(codes[0], stringResource(R.string.my_code), Modifier.fillMaxSize(), corner = 10.dp)
+            1 -> QrPreview(codes[0], c.accent, stringResource(R.string.my_code), Modifier.fillMaxHeight())
             else -> {
                 val text = if (codes.isEmpty()) stringResource(R.string.too_big_short)
                 else pluralStringResource(R.plurals.parts_tap, codes.size, codes.size)
                 ColumnCenter {
-                    AappsIcon(DividrIcons.Scan, null, c.accent, size = 30.dp)
-                    Spacer(Modifier.height(8.dp))
-                    BasicText(text, style = Aapps.type.body.copy(color = c.fg, textAlign = TextAlign.Center))
+                    AappsIcon(DividrIcons.Scan, null, c.accent, size = 24.dp)
+                    Spacer(Modifier.height(6.dp))
+                    BasicText(text, style = Aapps.type.body.copy(color = c.fg, textAlign = TextAlign.Center), maxLines = 2, overflow = TextOverflow.Ellipsis)
                 }
             }
         }
@@ -373,22 +375,15 @@ private fun ScanTile(onScan: () -> Unit, modifier: Modifier) {
             .background(c.surface)
             .border(1.dp, c.accent.copy(alpha = 0.45f), RoundedCornerShape(24.dp))
             .glow(c.accent, 90.dp, 0.10f)
-            .clickable(source, indication = null, role = Role.Button, onClick = onScan)
-            .padding(16.dp),
+            .clickable(source, indication = null, role = Role.Button, onClickLabel = stringResource(R.string.scan_sub), onClick = onScan)
+            .padding(10.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Box(Modifier.size(56.dp).background(c.accent.copy(alpha = 0.14f), CircleShape), contentAlignment = Alignment.Center) {
-            AappsIcon(DividrIcons.Camera, null, c.accent, size = 30.dp)
+        Box(Modifier.size(44.dp).background(c.accent.copy(alpha = 0.14f), CircleShape), contentAlignment = Alignment.Center) {
+            AappsIcon(DividrIcons.Camera, null, c.accent, size = 24.dp)
         }
-        Spacer(Modifier.height(10.dp))
-        BasicText(stringResource(R.string.scan).uppercase(), style = Aapps.type.label.copy(color = c.accent, fontSize = Aapps.type.label.fontSize * 1.15f))
-        Spacer(Modifier.height(2.dp))
-        BasicText(
-            stringResource(R.string.scan_sub),
-            style = Aapps.type.body.copy(color = c.fgMuted, fontSize = Aapps.type.label.fontSize * 1.05f, textAlign = TextAlign.Center),
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis,
-        )
+        Spacer(Modifier.height(8.dp))
+        BasicText(stringResource(R.string.scan).uppercase(), style = Aapps.type.label.copy(color = c.accent, fontSize = Aapps.type.label.fontSize * 1.15f), maxLines = 1)
     }
 }
