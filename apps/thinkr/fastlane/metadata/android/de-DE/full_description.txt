@@ -1,0 +1,29 @@
+thinkr bringt neun kurze Denkspiele für zwischendurch, jede Runde dauert etwa eine Minute. Jeden Tag stellt thinkr drei davon als Tagestraining zusammen, alle anderen spielst du frei über den Lernpfad.
+
+Die Spiele
+• Echo: Ist die Form gleich wie die vorige? Später vergleichst du mit der vor zwei.
+• Weichen: Lenke Lichtperlen über Weichen in das Tor mit ihrer Farbe und Form.
+• Sternbild: Merk dir, wo die Sterne aufgeleuchtet haben.
+• Tinte: Passt die Bedeutung des Worts zur Schriftfarbe des anderen?
+• Schwarm: Wische dorthin, wohin der mittlere Komet zeigt.
+• Bande: Wo tritt das Licht aus, nachdem es an den Prismen abgelenkt wurde?
+• Tropfen: Löse die Rechnungen, bevor sie ins Wasser fallen.
+• Rundblick: Form in der Mitte und Stern am Rand, beides im Augenblick erfasst.
+• Slalom: Weiche mit deinem Gleiter Säulen und Felsen in der Kristallschlucht aus.
+
+Funktionen
+• Stufen passen sich deinem Spiel an, Bestwerte je Spiel
+• Tagestraining mit Serie, ein verpasster Tag wird gelegentlich still überbrückt
+• Gemächlich-Modus mit mehr Zeit und eigenen Stufen
+• Farbenblind-Modus für Tinte, dezente Töne optional
+• Hoch- und Querformat, Deutsch und Englisch
+
+thinkr ist Unterhaltung. Kein Medizinprodukt, keine Gesundheitsversprechen.
+
+thinkr braucht keine Berechtigungen außer Vibration und der Google-Play-Abrechnung.
+
+Teste thinkr 24 Stunden lang kostenlos mit allen Funktionen. Danach schaltet ein einmaliger Kauf die App dauerhaft frei, inklusive aller künftigen Updates. Kein Abo, keine Werbung.
+
+• Privat: kein Tracking, kein Konto, es werden keine Daten gesammelt. thinkr verdient nicht an deinen Daten.
+• Komplett offline: thinkr hat keine Internet-Berechtigung und funktioniert ohne Verbindung. Nur der Kauf läuft über Google Play, die App selbst geht nie ins Internet.
+• Open Source: freie Software unter der GNU GPLv3. Quellcode: https://github.com/valueerrorx/aapps
