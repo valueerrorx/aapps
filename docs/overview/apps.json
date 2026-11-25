@@ -36,7 +36,7 @@
     "shot": "img/levlr-shot.webp",
     "card": "cards/01-levlr.png",
     "source": {
-      "ref": "feat/levlr",
+      "ref": "main",
       "icon": "apps/levlr/screenshots/icon_store_512.png",
       "shot": "apps/levlr/screenshots/edge_tilted_de.png"
     }
@@ -57,7 +57,7 @@
     "shot": "img/nordr-shot.webp",
     "card": "cards/02-nordr.png",
     "source": {
-      "ref": "feat/nordr",
+      "ref": "main",
       "icon": "apps/nordr/screenshots/icon_store_512.png",
       "shot": "apps/nordr/screenshots/heading_de.png"
     }
@@ -78,7 +78,7 @@
     "shot": "img/spinr-shot.webp",
     "card": "cards/03-spinr.png",
     "source": {
-      "ref": "feat/spinr",
+      "ref": "main",
       "icon": "apps/spinr/screenshots/icon_store_512.png",
       "shot": "apps/spinr/screenshots/wheel_de.png"
     }
@@ -99,7 +99,7 @@
     "shot": "img/scorr-shot.webp",
     "card": "cards/04-scorr.png",
     "source": {
-      "ref": "feat/scorr",
+      "ref": "main",
       "icon": "apps/scorr/screenshots/icon_store_512.png",
       "shot": "apps/scorr/screenshots/board_de.png"
     }
@@ -120,7 +120,7 @@
     "shot": "img/focusr-shot.webp",
     "card": "cards/05-focusr.png",
     "source": {
-      "ref": "feat/focusr",
+      "ref": "main",
       "icon": "apps/focusr/screenshots/icon_store_512.png",
       "shot": "apps/focusr/screenshots/running_de.png"
     }
@@ -141,7 +141,7 @@
     "shot": "img/roundr-shot.webp",
     "card": "cards/06-roundr.png",
     "source": {
-      "ref": "feat/roundr",
+      "ref": "main",
       "icon": "apps/roundr/screenshots/icon_store_512.png",
       "shot": "apps/roundr/screenshots/home_de.png"
     }
@@ -162,7 +162,7 @@
     "shot": "img/pulsr-shot.webp",
     "card": "cards/07-pulsr.png",
     "source": {
-      "ref": "feat/pulsr",
+      "ref": "main",
       "icon": "apps/pulsr/screenshots/icon_store_512.png",
       "shot": "apps/pulsr/screenshots/play_accent_de.png"
     }
@@ -183,7 +183,7 @@
     "shot": "img/loudr-shot.webp",
     "card": "cards/08-loudr.png",
     "source": {
-      "ref": "feat/loudr",
+      "ref": "main",
       "icon": "apps/loudr/screenshots/icon_store_512.png",
       "shot": "apps/loudr/screenshots/talk_de.png"
     }
@@ -204,7 +204,7 @@
     "shot": "img/tunr-shot.webp",
     "card": "cards/09-tunr.png",
     "source": {
-      "ref": "feat/tunr",
+      "ref": "main",
       "icon": "apps/tunr/screenshots/icon_store_512.png",
       "shot": "apps/tunr/screenshots/in_tune_de.png"
     }
@@ -225,7 +225,7 @@
     "shot": "img/magnr-shot.webp",
     "card": "cards/10-magnr.png",
     "source": {
-      "ref": "feat/magnr",
+      "ref": "main",
       "icon": "apps/magnr/screenshots/icon_store_512.png",
       "shot": "apps/magnr/screenshots/near_de.png"
     }
@@ -246,7 +246,7 @@
     "shot": "img/dozr-shot.webp",
     "card": "cards/11-dozr.png",
     "source": {
-      "ref": "feat/dozr",
+      "ref": "main",
       "icon": "apps/dozr/screenshots/icon_store_512.png",
       "shot": "apps/dozr/screenshots/running_de.png"
     }
@@ -267,7 +267,7 @@
     "shot": "img/hertzr-shot.webp",
     "card": "cards/12-hertzr.png",
     "source": {
-      "ref": "feat/hertzr",
+      "ref": "main",
       "icon": "apps/hertzr/screenshots/icon_store_512.png",
       "shot": "apps/hertzr/screenshots/idle_de.png"
     }
@@ -288,7 +288,7 @@
     "shot": "img/hudr-shot.webp",
     "card": "cards/13-hudr.png",
     "source": {
-      "ref": "feat/hudr",
+      "ref": "main",
       "icon": "apps/hudr/screenshots/icon_store_512.png",
       "shot": "apps/hudr/screenshots/drive_de.png"
     }
@@ -309,7 +309,7 @@
     "shot": "img/moovr-shot.webp",
     "card": "cards/14-moovr.png",
     "source": {
-      "ref": "feat/moovr",
+      "ref": "main",
       "icon": "apps/moovr/screenshots/icon_store_512.png",
       "shot": "apps/moovr/src/main/assets/assets/sprites/clumsy-cheatsheet.jpg"
     }
@@ -330,9 +330,51 @@
     "shot": "img/glidr-shot.webp",
     "card": "cards/15-glidr.png",
     "source": {
-      "ref": "feat/glidr",
+      "ref": "main",
       "icon": "apps/glidr/screenshots/icon_store_512.png",
       "shot": "level:23"
+    }
+  },
+  {
+    "nr": "16",
+    "id": "thinkr",
+    "cat": "Denkspiele",
+    "accent": "#F27BE8",
+    "landscape": false,
+    "caption": "Neun kurze Denkspiele für zwischendurch, je etwa eine Minute, mit Tagestraining.",
+    "text": [
+      "Neun kurze Denkspiele für zwischendurch, jede Runde dauert etwa eine Minute.",
+      "Jeden Tag stellt thinkr drei davon als Tagestraining zusammen, alle anderen spielst du frei über den Lernpfad.",
+      "Die Stufen passen sich deinem Spiel an, mit Gemächlich-Modus für mehr Zeit."
+    ],
+    "icon": "img/thinkr-icon.png",
+    "shot": "img/thinkr-shot.webp",
+    "card": "cards/16-thinkr.png",
+    "source": {
+      "ref": "main",
+      "icon": "apps/thinkr/screenshots/icon_store_512.png",
+      "shot": "apps/thinkr/screenshots/home_de.png"
+    }
+  },
+  {
+    "nr": "17",
+    "id": "dividr",
+    "cat": "Gruppenkasse",
+    "accent": "#6EE87A",
+    "landscape": false,
+    "caption": "Gruppenkasse ohne Konto und Internet: Ausgaben teilen, Handys gleichen per QR-Code ab.",
+    "text": [
+      "Teilt Ausgaben in der Gruppe, im Urlaub, beim Segeltörn oder in der WG.",
+      "Ganz ohne Konto, Server oder Internet: die Handys gleichen sich per QR-Code ab.",
+      "Die Abrechnung kommt mit möglichst wenigen Überweisungen aus und lässt sich als Text teilen."
+    ],
+    "icon": "img/dividr-icon.png",
+    "shot": "img/dividr-shot.webp",
+    "card": "cards/17-dividr.png",
+    "source": {
+      "ref": "main",
+      "icon": "apps/dividr/screenshots/icon_store_512.png",
+      "shot": "apps/dividr/screenshots/group_de.png"
     }
   }
 ]

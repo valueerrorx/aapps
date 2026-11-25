@@ -14,3 +14,5 @@ hertzr: Sauberer Tongenerator mit genau einstellbarer Frequenz und Wellenform.
 hudr: GPS-Tacho mit riesiger Anzeige und HUD-Modus, ganz ohne Internet.
 moovr: Clumsy Cow: Geschicklichkeitsspiel mit einer tollpatschigen Kuh auf Eisschollen.
 glidr: Cool Cows on Ice: Physikrätsel mit 48 Leveln und schlitternden Kühen.
+thinkr: Neun kurze Denkspiele für zwischendurch, je etwa eine Minute, mit Tagestraining.
+dividr: Gruppenkasse ohne Konto und Internet: Ausgaben teilen, Handys gleichen per QR-Code ab.
