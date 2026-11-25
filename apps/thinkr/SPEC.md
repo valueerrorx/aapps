@@ -26,6 +26,7 @@ Erster Release: 5 Spiele (Echo, Weichen, Sternbild, Tinte, Schwarm), die übrige
 - Runde vor der Zeit beenden: `Round.end()` (Becken voll, Leben weg). `GameDef.timed = false`: keine Zeitleiste, das Spiel zeigt seinen Stand selbst (Tropfen).
 - Töne (Standard aus): im Code erzeugt, richtig / falsch / Rundenende, dezent.
 - Keine Benachrichtigungen, keine Berechtigung außer VIBRATE (aus `core/ui`).
+- Reduced Motion: Animationsskala 0 im System (`ANIMATOR_DURATION_SCALE`) stoppt Deko-Bewegung (Atmen, Pulsieren, Wellen, Wackeln). Spielbewegung bleibt, sie ist die Aufgabe; Federn von Compose folgen der Skala selbst.
 
 ## Echo (Pilot)
 - Glas-Karten mit Leucht-Glyphen (Kreis, Dreieck, Raute, Stern, Welle, Ring) gleiten nacheinander in die Mitte. Frage: gleich wie die vorige? Zwei große Tasten unten: links Nein (✕), rechts Ja (✓). Wisch links/rechts zusätzlich.
