@@ -1,0 +1,1 @@
+Erste Version: Gruppenausgaben offline teilen, Abgleich per QR-Code, Fremdwährung, Abrechnung mit minimalen Überweisungen und Teilen als Text.

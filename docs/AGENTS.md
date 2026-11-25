@@ -36,6 +36,7 @@ Robolectric läuft mit SDK 34 (`src/test/resources/robolectric.properties`), wei
 - sleepr ist Views/Canvas statt Compose und nutzt `core/ui` nicht; nicht auf Compose umbauen. Haptik dort direkt über die View (`KEYBOARD_TAP` wie `press()`).
 - Erlaubt: Compose BOM, activity, lifecycle, core-ktx, kotlinx-serialization (nur wo nötig).
 - Ausnahme: androidx.webkit nur für die Spiele moovr und glidr (WebViewAssetLoader für die Spiel-Assets).
+- Ausnahme: CameraX (camera-camera2, -lifecycle, -view) und ZXing core nur für dividr (QR erzeugen und lesen), ohne ML Kit/Play Services.
 - Ausnahme: Google Play Billing Library (`com.android.billingclient:billing`) nur in `core/billing`, von Thomas freigegeben. Bringt transitiv Play-Services-Teile und datatransport mit; nichts davon direkt nutzen.
 - Verboten: Hilt, Navigation, Room, Firebase, Play Services (außer transitiv über Billing), INTERNET.
 - Code erst beim zweiten Nutzer in `core/` verschieben.
