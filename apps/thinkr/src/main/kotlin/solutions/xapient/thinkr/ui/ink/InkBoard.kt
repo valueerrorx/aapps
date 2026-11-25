@@ -42,6 +42,7 @@ import solutions.xapient.thinkr.domain.Spring
 import solutions.xapient.thinkr.domain.ink.InkCard
 import solutions.xapient.thinkr.domain.ink.InkColor
 import solutions.xapient.thinkr.domain.ink.InkState
+import solutions.xapient.thinkr.ui.Motion
 import solutions.xapient.thinkr.ui.Amber
 import solutions.xapient.thinkr.ui.AnswerButton
 import solutions.xapient.thinkr.ui.CountOverlay
@@ -186,7 +187,7 @@ private fun Face(card: InkCard, right: Boolean, w: Dp, h: Dp, flip: Float = 1f, 
                         val sc = 1f - 0.08f * out
                         scaleX = sc; scaleY = sc
                     } else {
-                        translationX = sin(out * 5f * PI.toFloat()) * (1f - out) * px * 0.06f
+                        translationX = sin(out * 5f * PI.toFloat()) * (1f - out) * px * Motion.still(0.06f)
                         translationY = out * px * 0.18f
                     }
                 }

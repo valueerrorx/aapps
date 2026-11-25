@@ -46,6 +46,7 @@ import solutions.xapient.thinkr.domain.bounce.Edge
 import solutions.xapient.thinkr.domain.bounce.Optics
 import solutions.xapient.thinkr.domain.bounce.Port
 import solutions.xapient.thinkr.domain.bounce.Prism
+import solutions.xapient.thinkr.ui.Motion
 import solutions.xapient.thinkr.ui.Amber
 import solutions.xapient.thinkr.ui.CountOverlay
 import kotlin.math.PI
@@ -194,7 +195,7 @@ private fun DrawScope.drawBounce(s: BounceState, phase: BouncePhase, accent: Col
     val start = at(sh.trace.corners.first())
     if (!sh.answered) {
         // Licht wartet am Eingang und atmet leicht
-        val breath = 1f + 0.08f * sin(now / 1000.0 * 2 * PI * 0.9).toFloat()
+        val breath = 1f + Motion.still(0.08f) * sin(now / 1000.0 * 2 * PI * 0.9).toFloat()
         drawOrb(start, cell * 0.2f * breath, accent, 1f)
         drawChevron(start + inward(sh.entry.edge) * (cell * 0.52f), opposite(sh.entry.edge), cell * 0.14f, accent, 1.8.dp.toPx())
         return

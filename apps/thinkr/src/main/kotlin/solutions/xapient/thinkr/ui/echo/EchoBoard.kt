@@ -57,6 +57,7 @@ import solutions.xapient.thinkr.R
 import solutions.xapient.thinkr.domain.echo.EchoAnswer
 import solutions.xapient.thinkr.domain.echo.EchoState
 import solutions.xapient.thinkr.domain.echo.Glyph
+import solutions.xapient.thinkr.ui.Motion
 import solutions.xapient.thinkr.ui.Amber
 import solutions.xapient.thinkr.ui.AnswerButton
 import solutions.xapient.thinkr.ui.drawGlass
@@ -318,7 +319,7 @@ private fun OutgoingCard(o: Outgoing, side: Dp, p: Float) {
                     }
                     // falsch oder Frist um: wackelt und sinkt
                     bad -> {
-                        translationX = o.fromX * (1f - p) + sin(p * 6f * PI.toFloat()) * (1f - p) * sidePx * 0.06f
+                        translationX = o.fromX * (1f - p) + sin(p * 6f * PI.toFloat()) * (1f - p) * sidePx * Motion.still(0.06f)
                         translationY = p * sidePx * 0.32f
                         alpha = 1f - p
                     }

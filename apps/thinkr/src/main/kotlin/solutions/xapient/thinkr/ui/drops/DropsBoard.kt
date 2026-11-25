@@ -67,6 +67,7 @@ import solutions.xapient.thinkr.domain.drops.Drop
 import solutions.xapient.thinkr.domain.drops.DropsKeys
 import solutions.xapient.thinkr.domain.drops.DropsRules
 import solutions.xapient.thinkr.domain.drops.DropsState
+import solutions.xapient.thinkr.ui.Motion
 import solutions.xapient.thinkr.ui.Amber
 import solutions.xapient.thinkr.ui.CountOverlay
 import solutions.xapient.thinkr.ui.ThinkrIcons
@@ -151,7 +152,7 @@ private fun DrawScope.drawSky(s: DropsState, measurer: TextMeasurer, accent: Col
     for (d in s.drops) {
         val p = d.progress(now)
         val enter = Spring.step(nowD - d.spawnAt, hz = 2.4, damping = 0.5).toFloat()
-        val sway = sin((nowD - d.spawnAt) / 1000.0 * 2 * PI * 0.7 + d.id).toFloat() * r * 0.12f
+        val sway = sin((nowD - d.spawnAt) / 1000.0 * 2 * PI * 0.7 + d.id).toFloat() * r * Motion.still(0.12f)
         val x = r * 1.2f + d.x * (w - r * 2.4f) + sway
         val y = r * 1.1f + (fallSpan - r * 1.1f) * p
         drawDrop(Offset(x, y), r * (0.6f + 0.4f * enter), d, accent, measurer, textPx, 1f)
@@ -178,13 +179,14 @@ private fun DrawScope.drawWater(surface: Float, slosh: Float, now: Double, accen
     val h = size.height
     val path = Path()
     val n = 48
-    val amp = 3.dp.toPx() + 10.dp.toPx() * slosh
+    val wt = if (Motion.reduced) 0.0 else now / 1000.0
+    val amp =3.dp.toPx() + 10.dp.toPx() * slosh
     path.moveTo(0f, h)
     for (i in 0..n) {
         val x = w * i / n
         val y = surface +
-            sin(now / 1000.0 * 1.6 + i * 0.42).toFloat() * amp * 0.6f +
-            sin(now / 1000.0 * -1.1 + i * 0.23).toFloat() * amp * 0.4f
+            sin(wt * 1.6 + i * 0.42).toFloat() * amp * 0.6f +
+            sin(wt * -1.1 + i * 0.23).toFloat() * amp * 0.4f
         path.lineTo(x, y)
     }
     path.lineTo(w, h)
@@ -194,8 +196,8 @@ private fun DrawScope.drawWater(surface: Float, slosh: Float, now: Double, accen
     for (i in 0..n) {
         val x = w * i / n
         val y = surface +
-            sin(now / 1000.0 * 1.6 + i * 0.42).toFloat() * amp * 0.6f +
-            sin(now / 1000.0 * -1.1 + i * 0.23).toFloat() * amp * 0.4f
+            sin(wt * 1.6 + i * 0.42).toFloat() * amp * 0.6f +
+            sin(wt * -1.1 + i * 0.23).toFloat() * amp * 0.4f
         if (i == 0) line.moveTo(x, y) else line.lineTo(x, y)
     }
     drawPath(line, accent.copy(alpha = 0.18f), style = Stroke(6.dp.toPx(), cap = StrokeCap.Round))

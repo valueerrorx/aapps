@@ -56,6 +56,7 @@ import solutions.xapient.thinkr.domain.glance.GlancePhase
 import solutions.xapient.thinkr.domain.glance.GlanceState
 import solutions.xapient.thinkr.domain.glance.Mark
 import solutions.xapient.thinkr.domain.glance.Spots
+import solutions.xapient.thinkr.ui.Motion
 import solutions.xapient.thinkr.ui.Amber
 import solutions.xapient.thinkr.ui.CountOverlay
 import solutions.xapient.thinkr.ui.drawGlass
@@ -199,7 +200,7 @@ private fun DrawScope.drawField(s: GlanceState, phase: GlancePhase, live: Boolea
     when (phase) {
         GlancePhase.FIX -> {
             // Fixierpunkt atmet leicht; kurz vor dem Blitz ruhig
-            val a = 0.65f + 0.35f * sin(now / 1000.0 * 2 * PI * 0.8).toFloat()
+            val a = 1f - Motion.still(0.35f) + Motion.still(0.35f) * sin(now / 1000.0 * 2 * PI * 0.8).toFloat()
             drawFixation(geo.center, geo.glyph * 0.35f, accent, a)
         }
         GlancePhase.FLASH -> if (live) {

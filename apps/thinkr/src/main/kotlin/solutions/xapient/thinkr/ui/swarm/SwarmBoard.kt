@@ -38,6 +38,7 @@ import solutions.xapient.thinkr.domain.swarm.Formations
 import solutions.xapient.thinkr.domain.swarm.SwarmAnswer
 import solutions.xapient.thinkr.domain.swarm.SwarmRules
 import solutions.xapient.thinkr.domain.swarm.SwarmState
+import solutions.xapient.thinkr.ui.Motion
 import solutions.xapient.thinkr.ui.Amber
 import solutions.xapient.thinkr.ui.CountOverlay
 import kotlin.math.PI
@@ -165,7 +166,7 @@ private fun DrawScope.drawFlock(
     val p = if (out != null) ((now - out.at) / OUT_MS).toFloat().coerceIn(0f, 1f) else 0f
     val good = out?.correct == true
     val leave = if (good && out?.said != null) out.said.vec() * (u * 7f * p * p) else Offset.Zero
-    val shake = if (out != null && !good) Offset(sin(p * 6f * PI.toFloat()) * (1f - p) * u * 0.25f, 0f) else Offset.Zero
+    val shake = if (out != null && !good) Offset(sin(p * 6f * PI.toFloat()) * (1f - p) * u * Motion.still(0.25f), 0f) else Offset.Zero
     val alpha = (if (out != null) 1f - p else enter).coerceIn(0f, 1f)
     val tint = if (out != null && !good) lerp(CometTint, Amber, 1f - p) else CometTint
     val scale = 0.7f + 0.3f * enter

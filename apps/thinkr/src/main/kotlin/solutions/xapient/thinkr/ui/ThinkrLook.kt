@@ -1,5 +1,7 @@
 package solutions.xapient.thinkr.ui
 
+import android.content.Context
+import android.provider.Settings
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -24,6 +26,15 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 val ThinkrAccent = Color(0xFFF27BE8)
+
+// System-Animationen aus (Skala 0): Deko-Bewegung wie Atmen, Wellen, Wackeln bleibt stehen
+object Motion {
+    var reduced = false
+    fun read(context: Context) {
+        reduced = Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1f) == 0f
+    }
+    fun still(v: Float): Float = if (reduced) 0f else v
+}
 
 // Warnung laut DESIGN.md, nur fuer Fehler und knappe Frist
 val Amber = Color(0xFFF2B84E)

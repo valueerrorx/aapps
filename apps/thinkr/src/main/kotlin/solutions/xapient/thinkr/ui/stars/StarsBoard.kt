@@ -43,6 +43,7 @@ import solutions.xapient.thinkr.domain.stars.Sky
 import solutions.xapient.thinkr.domain.stars.StarsPhase
 import solutions.xapient.thinkr.domain.stars.StarsRules
 import solutions.xapient.thinkr.domain.stars.StarsState
+import solutions.xapient.thinkr.ui.Motion
 import solutions.xapient.thinkr.ui.Amber
 import solutions.xapient.thinkr.ui.CountOverlay
 import kotlin.math.PI
@@ -159,7 +160,7 @@ private fun DrawScope.drawSky(s: StarsState, phase: StarsPhase, dust: List<Float
     }
 
     val r = cell * 0.36f
-    val pulse = 1f + 0.06f * sin(now / 1000.0 * 2 * PI * 1.1).toFloat()
+    val pulse = 1f + Motion.still(0.06f) * sin(now / 1000.0 * 2 * PI * 1.1).toFloat()
     when (phase) {
         StarsPhase.LEAD -> Unit
         StarsPhase.SHOW -> {
