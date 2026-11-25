@@ -1,6 +1,9 @@
 package solutions.xapient.pulsr
 
 import android.Manifest
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.activity.compose.BackHandler
@@ -34,17 +37,24 @@ fun PulsrApp() {
     val playing by store.playing.collectAsState()
     var screen by rememberSaveable { mutableStateOf(Screen.MAIN) }
 
-    // Recht fuer die Benachrichtigung einmal VOR dem ersten Start erfragen; gespielt wird auch ohne
-    val askNotify = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { store.start() }
+    // Recht fuer die Benachrichtigung VOR dem Start erfragen; gespielt wird auch ohne.
+    // Endgueltige Ablehnung erkennen: Hinweis war da und ist nach dem Nein weg. Weggetippt = beim naechsten Start wieder.
+    fun rationale(): Boolean =
+        Build.VERSION.SDK_INT >= 33 && context.activity()?.shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS) == true
+    var rationaleBefore by remember { mutableStateOf(false) }
+    val askNotify = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+        if (!granted && rationaleBefore && !rationale()) prefs.notifyBlocked = true
+        store.start()
+    }
     fun toggle() {
-        if (playing) {
+        if (store.playing.value) {
             store.stop()
             return
         }
-        if (Build.VERSION.SDK_INT >= 33 && !prefs.askedNotify &&
+        if (Build.VERSION.SDK_INT >= 33 && !prefs.notifyBlocked &&
             ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
         ) {
-            prefs.askedNotify = true
+            rationaleBefore = rationale()
             askNotify.launch(Manifest.permission.POST_NOTIFICATIONS)
             return
         }
@@ -82,4 +92,10 @@ fun PulsrApp() {
             }
         }
     }
+}
+
+private tailrec fun Context.activity(): Activity? = when (this) {
+    is Activity -> this
+    is ContextWrapper -> baseContext.activity()
+    else -> null
 }

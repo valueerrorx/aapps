@@ -20,7 +20,7 @@ Metronom zum Üben: Tempo einstellen, Start drücken, sauberer Klick ohne Schwan
 | Berechtigung | Grund |
 |---|---|
 | `FOREGROUND_SERVICE`, `FOREGROUND_SERVICE_MEDIA_PLAYBACK` | Das Metronom spielt bei gesperrtem Bildschirm weiter. Es ist Audiowiedergabe, also der passende Standardtyp. |
-| `POST_NOTIFICATIONS` | Stopp in der Benachrichtigung (Android 13+, einmal vor dem ersten Start gefragt; abgelehnt spielt es trotzdem). |
+| `POST_NOTIFICATIONS` | Stopp in der Benachrichtigung (Android 13+, vor dem Start gefragt; weggetippt = beim nächsten Start wieder, nur endgültige Ablehnung beendet das Fragen; abgelehnt spielt es trotzdem). |
 | `WAKE_LOCK` | CPU bleibt wach, damit der Audio-Thread den Puffer rechtzeitig füllt. Nur während des Spielens. Bleibt, weil die Android-Doku für Hintergrund-Wiedergabe einen Wakelock verlangt; dass AudioFlinger bei aktivem Track die CPU auch für den App-Thread wach hält, ist nicht dokumentiert zugesichert. |
 
 Kein INTERNET. VIBRATE kommt aus `core/ui` (normal, ohne Rückfrage); pulsr nutzt nur Touch-Haptik über die View (`step` für Drehrad, Unterteilung und Halten der Taktart-Pfeile, `press` für Tasten).

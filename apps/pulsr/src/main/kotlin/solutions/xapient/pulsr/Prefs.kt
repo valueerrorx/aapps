@@ -29,10 +29,10 @@ class Prefs(context: Context) {
             putBoolean("keepOn", v.keepOn)
         }
 
-    // Benachrichtigungs-Recht nur einmal erfragen
-    var askedNotify: Boolean
-        get() = sp.getBoolean("askedNotify", false)
-        set(v) = sp.edit { putBoolean("askedNotify", v) }
+    // Benachrichtigungs-Recht endgueltig abgelehnt: nicht mehr fragen
+    var notifyBlocked: Boolean
+        get() = sp.getBoolean("notifyBlocked", false)
+        set(v) = sp.edit { putBoolean("notifyBlocked", v) }
 
     private companion object {
         inline fun <reified E : Enum<E>> enumOr(name: String?, fallback: E): E =
