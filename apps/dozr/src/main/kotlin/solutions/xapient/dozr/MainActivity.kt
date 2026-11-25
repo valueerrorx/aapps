@@ -7,6 +7,8 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.mutableIntStateOf
+import solutions.xapient.aapps.core.ui.TrialGated
+import solutions.xapient.dozr.ui.DozrAccent
 
 class MainActivity : ComponentActivity() {
     // Start-Wuensche aus der Kachel (Dienst-Start dort vom System abgelehnt)
@@ -21,7 +23,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         SleepService.channels(this)
         if (savedInstanceState == null) take(intent)
-        setContent { DozrApp(startRequests.intValue) }
+        setContent { TrialGated(DozrAccent) { DozrApp(startRequests.intValue) } }
     }
 
     override fun onNewIntent(intent: Intent) {

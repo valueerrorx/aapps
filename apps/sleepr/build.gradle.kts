@@ -18,6 +18,8 @@ dependencies {
     compileOnly(libs.compose.runtime)
     testCompileOnly(libs.compose.runtime)
     implementation(libs.androidx.core.ktx)
+    // Testphase + Kauf ohne Compose (Dankes-Bildschirm als Views in Pages)
+    implementation(project(":core:billing"))
 
     testImplementation(libs.junit)
     testImplementation(libs.robolectric)

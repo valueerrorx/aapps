@@ -11,7 +11,10 @@ Funktionen
 • Bildschirm bleibt an, solange der Timer läuft (abschaltbar)
 • Hoch- und Querformat, Deutsch und Englisch, bedienbar mit TalkBack
 
-Berechtigungen: exakter Wecker (damit das Ende pünktlich kommt), Benachrichtigungen und Vibration. Der Timer funktioniert auch ohne Benachrichtigungen, Ton und Vibration kommen trotzdem.
+Berechtigungen: exakter Wecker (damit das Ende pünktlich kommt), Benachrichtigungen und Vibration. Der Timer funktioniert auch ohne Benachrichtigungen, Ton und Vibration kommen trotzdem. Dazu die Google-Play-Abrechnung für den einmaligen Kauf.
 
-Ohne Werbung, ohne Tracking, ohne Konto. focusr hat keine Internet-Berechtigung, alles bleibt auf deinem Gerät.
-Freie Software unter der GNU GPLv3. Quellcode: https://github.com/valueerrorx/aapps
+Teste focusr 24 Stunden lang kostenlos mit allen Funktionen. Danach schaltet ein einmaliger Kauf die App dauerhaft frei, inklusive aller künftigen Updates. Kein Abo, keine Werbung.
+
+• Privat: kein Tracking, kein Konto, es werden keine Daten gesammelt. focusr verdient nicht an deinen Daten.
+• Komplett offline: focusr hat keine Internet-Berechtigung und funktioniert ohne Verbindung. Nur der Kauf läuft über Google Play, die App selbst geht nie ins Internet.
+• Open Source: freie Software unter der GNU GPLv3. Quellcode: https://github.com/valueerrorx/aapps

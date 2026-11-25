@@ -11,7 +11,10 @@ Features
 • Screen stays on while the timer runs (can be turned off)
 • Portrait and landscape, English and German, works with TalkBack
 
-Permissions: exact alarm (so the end arrives on time), notifications and vibration. The timer also works without notifications, sound and vibration still play.
+Permissions: exact alarm (so the end arrives on time), notifications and vibration. The timer also works without notifications, sound and vibration still play. Plus Google Play billing for the one-time purchase.
 
-No ads, no tracking, no account. focusr has no internet permission, everything stays on your device.
-Free software under the GNU GPLv3. Source code: https://github.com/valueerrorx/aapps
+Try focusr free for 24 hours with every feature. After that, a one-time purchase unlocks it for good, including all future updates. No subscription, no ads.
+
+• Private: no tracking, no account, no data collected. focusr does not make money from your data.
+• Completely offline: focusr has no internet permission and works without a connection. Only the purchase goes through Google Play, the app itself never goes online.
+• Open source: free software under the GNU GPLv3. Source code: https://github.com/valueerrorx/aapps

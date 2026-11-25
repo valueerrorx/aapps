@@ -4,7 +4,10 @@ import androidx.compose.runtime.Composable
 import com.github.takahirom.roborazzi.RobolectricDeviceQualifiers
 import com.github.takahirom.roborazzi.RoborazziOptions
 import com.github.takahirom.roborazzi.captureRoboImage
+import solutions.xapient.aapps.core.billing.Access
+import solutions.xapient.aapps.core.billing.GateState
 import solutions.xapient.aapps.core.ui.AappsTheme
+import solutions.xapient.aapps.core.ui.ThanksScreen
 import solutions.xapient.levlr.LevlrAccent
 import solutions.xapient.levlr.domain.AngleUnit
 import solutions.xapient.levlr.domain.Bias
@@ -125,4 +128,21 @@ class LevelScreenshotTest {
     @Test fun about() = shot("about") { LevlrAbout("0.1.0") {} }
 
     @Test fun about_de() = shot("about_de", "+de") { LevlrAbout("0.1.0") {} }
+
+    // Dankes-Bildschirm nach der Testphase (core/ui ThanksScreen, gleich in allen Apps)
+    @Composable
+    private fun Thanks(price: String?, pending: Boolean = false) =
+        ThanksScreen("levlr", GateState(Access.EXPIRED, price = price, pending = pending), {}, {})
+
+    @Test fun thanks() = shot("thanks") { Thanks("€1.49") }
+
+    @Test fun thanks_de() = shot("thanks_de", "+de") { Thanks("1,49 €") }
+
+    @Test fun thanks_font200() = shot("thanks_font200", fontScale = 2f) { Thanks("€1.49") }
+
+    @Test fun thanks_land() = shot("thanks_land", "+land") { Thanks("€1.49") }
+
+    @Test fun thanks_offline_de() = shot("thanks_offline_de", "+de") { Thanks(null) }
+
+    @Test fun thanks_pending() = shot("thanks_pending") { Thanks("€1.49", pending = true) }
 }

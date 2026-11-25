@@ -12,7 +12,10 @@ Features
 
 Player names and scores are stored only on your device.
 
-scorr needs no permissions other than vibration.
+scorr needs no permissions other than vibration and Google Play billing.
 
-No ads, no tracking, no account. scorr has no internet permission, everything stays on your device.
-Free software under the GNU GPLv3. Source code: https://github.com/valueerrorx/aapps
+Try scorr free for 24 hours with every feature. After that, a one-time purchase unlocks it for good, including all future updates. No subscription, no ads.
+
+• Private: no tracking, no account, no data collected. scorr does not make money from your data.
+• Completely offline: scorr has no internet permission and works without a connection. Only the purchase goes through Google Play, the app itself never goes online.
+• Open source: free software under the GNU GPLv3. Source code: https://github.com/valueerrorx/aapps

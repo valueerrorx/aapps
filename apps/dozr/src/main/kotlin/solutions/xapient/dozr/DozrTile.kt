@@ -10,6 +10,7 @@ import android.os.SystemClock
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
 import android.text.format.DateFormat
+import solutions.xapient.aapps.core.billing.TrialGate
 import solutions.xapient.dozr.domain.Mode
 import java.util.Date
 
@@ -25,13 +26,16 @@ class DozrTile : TileService() {
         val store = SleepStore.get(this)
         if (store.state.value.mode == Mode.RUNNING) {
             store.stop()
+        } else if (TrialGate.expired(this)) {
+            // Testphase vorbei: App zeigt den Dankes-Bildschirm
+            openApp(start = false)
         } else {
             SleepService.restorePending(this)
             store.start()
             // System lehnt den Dienst-Start ab: App oeffnen, die startet aus dem Vordergrund
             if (!SleepService.start(this)) {
                 store.stop()
-                openApp()
+                openApp(start = true)
             }
         }
         update()
@@ -39,9 +43,9 @@ class DozrTile : TileService() {
 
     // Intent-Variante nur vor Android 14, dort ist sie die einzige
     @SuppressLint("StartActivityAndCollapseDeprecated")
-    private fun openApp() {
+    private fun openApp(start: Boolean) {
         val intent = Intent(this, MainActivity::class.java)
-            .setAction(MainActivity.ACTION_START)
+            .setAction(if (start) MainActivity.ACTION_START else Intent.ACTION_MAIN)
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
         val go = {
             if (Build.VERSION.SDK_INT >= 34) {

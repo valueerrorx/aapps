@@ -11,5 +11,8 @@ Features
 
 Microphone: tunr needs the microphone permission to detect the pitch. The signal is analysed live only. It is not recorded, not stored and not sent anywhere. The microphone is only active while the tuning screen is in the foreground.
 
-No ads, no tracking, no account. tunr has no internet permission, everything stays on your device.
-Free software under the GNU GPLv3. Source code: https://github.com/valueerrorx/aapps
+Try tunr free for 24 hours with every feature. After that, a one-time purchase unlocks it for good, including all future updates. No subscription, no ads.
+
+• Private: no tracking, no account, no data collected. tunr does not make money from your data.
+• Completely offline: tunr has no internet permission and works without a connection. Only the purchase goes through Google Play, the app itself never goes online.
+• Open source: free software under the GNU GPLv3. Source code: https://github.com/valueerrorx/aapps

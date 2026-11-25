@@ -30,6 +30,7 @@ Siehe [docs/AGENTS.md](docs/AGENTS.md). Die CI (GitHub Actions) läuft vorerst n
 - Keine Werbung, kein Tracking, kein Account.
 - Keine Internet-Berechtigung: was die Apps messen, bleibt am Gerät.
 - Open Source unter GPLv3.
+- Werkzeug-Apps: 24 Stunden voll testen, danach einmaliger Kauf über Google Play (`core/billing`, Produkt `full_unlock`). moovr und glidr bleiben gratis.
 
 ## Lizenz
 GPLv3, siehe [LICENSE](LICENSE).
