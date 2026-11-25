@@ -8,6 +8,7 @@ coreKtx = "1.19.1"
 webkit = "1.18.0"
 zxing = "3.5.4"
 camerax = "1.7.0"
+billing = "9.1.0"
 junit = "4.13.2"
 robolectric = "4.18.1"
 roborazzi = "1.79.0"
@@ -22,6 +23,8 @@ zxing-core = { module = "com.google.zxing:core", version.ref = "zxing" }
 androidx-camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "camerax" }
 androidx-camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "camerax" }
 androidx-camera-view = { module = "androidx.camera:camera-view", version.ref = "camerax" }
+# Play Billing (core/billing), von Thomas freigegeben; nicht fuer moovr und glidr
+billing = { module = "com.android.billingclient:billing", version.ref = "billing" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activity" }
 androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle" }
 compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }

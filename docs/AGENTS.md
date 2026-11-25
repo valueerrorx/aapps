@@ -17,6 +17,15 @@ Robolectric läuft mit SDK 34 (`src/test/resources/robolectric.properties`), wei
 3. Screenshot-Zustände aus der SPEC als Roborazzi-Tests, PNGs in `apps/<name>/screenshots/` committen.
 4. Berechtigungen: Standard ist keine. Freigaben pro App über `aapps { allowedPermissions.add("…") }`, INTERNET ist immer verboten (`check<Variant>ManifestPermissions`).
    Ausnahme: VIBRATE kommt aus `core/ui` in jede App und ist immer frei (normale Berechtigung, keine Rückfrage).
+   Ebenso `com.android.vending.BILLING` aus `core/billing`. INTERNET und ACCESS_NETWORK_STATE, die Play Billing über datatransport mitbringt, entfernt `core/billing` per `tools:node="remove"`; der Check bricht ab, falls sie wieder auftauchen.
+5. Testphase + Kauf: `setContent { TrialGated(<App>Accent) { <App>App() } }` (kommt über `core/ui`). Einstiege ohne Activity (Kachel, Widget) vorher `TrialGate.expired(context)` prüfen.
+
+## Testphase und Kauf (`core/billing`)
+- Alle Werkzeug-Apps: 24 h ab erstem Start frei, danach Dankes-Bildschirm (`core/ui/ThanksScreen`) mit einmaligem Kauf, Produkt-ID `full_unlock` (nicht verbrauchbar). moovr und glidr: kein Billing.
+- Entscheidung als reine Funktion `TrialPolicy.decide` (Unit-Tests), Play Billing nur in `PlayPurchases`, Zustand lokal in SharedPreferences `aapps_billing`.
+- Tests: `TrialGate.factory` durch einen Fake (`PurchaseSource`) ersetzen, siehe `levlr/TrialGatedTest`.
+- Nur Debug-Builds: `adb shell am start -S -n solutions.xapient.<app>/.MainActivity --es aapps_trial expire` (Testphase vorbei) bzw. `reset`. Im Release fehlt der Schalter (`core/billing/src/release`).
+- sleepr (Views): Dankes-Bildschirm als Views in `Pages.thanks`, gleiche Texte aus `core/billing`.
 
 ## Haptik (`core/ui/Haptics`)
 - `tick()`/`confirm()`: Ereignis (Fund, Einrasten, gestimmt, Ablauf). Läuft über den Vibrator (Usage Alarm), spürbar auch bei ausgeschalteter Touch-Haptik im System, entprellt auf 120 ms.
@@ -28,7 +37,8 @@ Robolectric läuft mit SDK 34 (`src/test/resources/robolectric.properties`), wei
 - Erlaubt: Compose BOM, activity, lifecycle, core-ktx, kotlinx-serialization (nur wo nötig).
 - Ausnahme: androidx.webkit nur für die Spiele moovr und glidr (WebViewAssetLoader für die Spiel-Assets).
 - Ausnahme: CameraX (camera-camera2, -lifecycle, -view) und ZXing core nur für dividr (QR erzeugen und lesen), ohne ML Kit/Play Services.
-- Verboten: Hilt, Navigation, Room, Firebase, Play Services, INTERNET.
+- Ausnahme: Google Play Billing Library (`com.android.billingclient:billing`) nur in `core/billing`, von Thomas freigegeben. Bringt transitiv Play-Services-Teile und datatransport mit; nichts davon direkt nutzen.
+- Verboten: Hilt, Navigation, Room, Firebase, Play Services (außer transitiv über Billing), INTERNET.
 - Code erst beim zweiten Nutzer in `core/` verschieben.
 - Keystore nie ins Repo. Signierung nur über Umgebungsvariablen (`KEYSTORE_FILE`, `KEYSTORE_PASSWORD`, `KEY_PASSWORD_<APP>`, Alias = App-Name), sonst Debug-Schlüssel. Mit `-Paapps.requireReleaseKey=true` (CI bei Push auf main/Tag) bricht der Build ohne Schlüssel ab.
 - Kommentare einzeilig und kurz, Commits klein, Identität `valueerrorx`.

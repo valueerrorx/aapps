@@ -14,5 +14,8 @@ Location: hudr needs your precise location to measure speed. It is only used whi
 
 Note: the reading is a guide value and may differ from your vehicle's speedometer. It is not intended for legal or traffic enforcement purposes. Do not operate the app while driving.
 
-No ads, no tracking, no account. Everything stays on your device.
-Free software under the GNU GPLv3. Source code: https://github.com/valueerrorx/aapps
+Try hudr free for 24 hours with every feature. After that, a one-time purchase unlocks it for good, including all future updates. No subscription, no ads.
+
+• Private: no tracking, no account, no data collected. hudr does not make money from your data.
+• Completely offline: hudr has no internet permission and works without a connection. Only the purchase goes through Google Play, the app itself never goes online.
+• Open source: free software under the GNU GPLv3. Source code: https://github.com/valueerrorx/aapps

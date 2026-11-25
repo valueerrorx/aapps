@@ -12,7 +12,10 @@ Features
 
 sleepr is not a medical app. Choose a comfortable, moderate volume, especially with headphones.
 
-Permissions: notifications (stop button on the lock screen) and a foreground service so playback continues while the screen is locked. sleepr also works without notifications.
+Permissions: notifications (stop button on the lock screen) and a foreground service so playback continues while the screen is locked. sleepr also works without notifications. Plus Google Play billing for the one-time purchase.
 
-No ads, no tracking, no account. sleepr has no internet permission, everything stays on your device.
-Free software under the GNU GPLv3. Source code: https://github.com/valueerrorx/aapps
+Try sleepr free for 24 hours with every feature. After that, a one-time purchase unlocks it for good, including all future updates. No subscription, no ads.
+
+• Private: no tracking, no account, no data collected. sleepr does not make money from your data.
+• Completely offline: sleepr has no internet permission and works without a connection. Only the purchase goes through Google Play, the app itself never goes online.
+• Open source: free software under the GNU GPLv3. Source code: https://github.com/valueerrorx/aapps

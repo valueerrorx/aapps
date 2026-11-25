@@ -13,5 +13,8 @@ Handy-Mikrofone sind nicht geeicht. loudr liefert einen Schätzwert und ersetzt 
 
 Mikrofon: loudr braucht die Mikrofon-Berechtigung, um den Pegel zu messen. Das Signal wird nur live ausgewertet, nicht aufgenommen, nicht gespeichert und nicht gesendet. Gemessen wird nur, solange loudr im Vordergrund ist.
 
-Ohne Werbung, ohne Tracking, ohne Konto. loudr hat keine Internet-Berechtigung, alles bleibt auf deinem Gerät.
-Freie Software unter der GNU GPLv3. Quellcode: https://github.com/valueerrorx/aapps
+Teste loudr 24 Stunden lang kostenlos mit allen Funktionen. Danach schaltet ein einmaliger Kauf die App dauerhaft frei, inklusive aller künftigen Updates. Kein Abo, keine Werbung.
+
+• Privat: kein Tracking, kein Konto, es werden keine Daten gesammelt. loudr verdient nicht an deinen Daten.
+• Komplett offline: loudr hat keine Internet-Berechtigung und funktioniert ohne Verbindung. Nur der Kauf läuft über Google Play, die App selbst geht nie ins Internet.
+• Open Source: freie Software unter der GNU GPLv3. Quellcode: https://github.com/valueerrorx/aapps

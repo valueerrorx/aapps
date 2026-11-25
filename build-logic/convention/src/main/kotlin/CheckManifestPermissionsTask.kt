@@ -49,7 +49,7 @@ abstract class CheckManifestPermissionsTask : DefaultTask() {
     }
 
     private companion object {
-        // kommt per Manifest-Merge aus core/ui (Haptics) in jede App
-        val CORE = setOf("android.permission.VIBRATE")
+        // per Manifest-Merge: VIBRATE aus core/ui (Haptics), BILLING aus core/billing (Play Billing)
+        val CORE = setOf("android.permission.VIBRATE", "com.android.vending.BILLING")
     }
 }

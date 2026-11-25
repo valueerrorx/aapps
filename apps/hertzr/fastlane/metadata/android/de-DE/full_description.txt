@@ -15,7 +15,10 @@ Gehör und Lautsprecher schonen: hertzr startet mit −24 dB, blendet weich ein 
 
 hertzr ist ein technisches Werkzeug, ohne „Heilfrequenzen“ und ohne Gesundheitsversprechen.
 
-Berechtigungen: Benachrichtigungen (Stopp-Taste) und ein Vordergrunddienst, damit Ton und Sweep bei ausgeschaltetem Bildschirm weiterlaufen.
+Berechtigungen: Benachrichtigungen (Stopp-Taste) und ein Vordergrunddienst, damit Ton und Sweep bei ausgeschaltetem Bildschirm weiterlaufen. Dazu die Google-Play-Abrechnung für den einmaligen Kauf.
 
-Ohne Werbung, ohne Tracking, ohne Konto. hertzr hat keine Internet-Berechtigung, alles bleibt auf deinem Gerät.
-Freie Software unter der GNU GPLv3. Quellcode: https://github.com/valueerrorx/aapps
+Teste hertzr 24 Stunden lang kostenlos mit allen Funktionen. Danach schaltet ein einmaliger Kauf die App dauerhaft frei, inklusive aller künftigen Updates. Kein Abo, keine Werbung.
+
+• Privat: kein Tracking, kein Konto, es werden keine Daten gesammelt. hertzr verdient nicht an deinen Daten.
+• Komplett offline: hertzr hat keine Internet-Berechtigung und funktioniert ohne Verbindung. Nur der Kauf läuft über Google Play, die App selbst geht nie ins Internet.
+• Open Source: freie Software unter der GNU GPLv3. Quellcode: https://github.com/valueerrorx/aapps

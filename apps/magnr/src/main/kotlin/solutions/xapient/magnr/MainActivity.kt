@@ -6,6 +6,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import solutions.xapient.aapps.core.ui.TrialGated
+import solutions.xapient.magnr.ui.MagnrAccent
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -17,6 +19,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         // Lautstaerketasten regeln den Piepton
         volumeControlStream = AudioManager.STREAM_MUSIC
-        setContent { MagnrApp() }
+        setContent { TrialGated(MagnrAccent) { MagnrApp() } }
     }
 }

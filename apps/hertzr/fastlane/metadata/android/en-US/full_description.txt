@@ -15,7 +15,10 @@ Protect your ears and speakers: hertzr starts at −24 dB, fades in and out smoo
 
 hertzr is a technical tool, with no "healing frequencies" and no health claims.
 
-Permissions: notifications (stop button) and a foreground service so tones and sweeps keep playing with the screen off.
+Permissions: notifications (stop button) and a foreground service so tones and sweeps keep playing with the screen off. Plus Google Play billing for the one-time purchase.
 
-No ads, no tracking, no account. hertzr has no internet permission, everything stays on your device.
-Free software under the GNU GPLv3. Source code: https://github.com/valueerrorx/aapps
+Try hertzr free for 24 hours with every feature. After that, a one-time purchase unlocks it for good, including all future updates. No subscription, no ads.
+
+• Private: no tracking, no account, no data collected. hertzr does not make money from your data.
+• Completely offline: hertzr has no internet permission and works without a connection. Only the purchase goes through Google Play, the app itself never goes online.
+• Open source: free software under the GNU GPLv3. Source code: https://github.com/valueerrorx/aapps

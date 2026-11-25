@@ -12,7 +12,10 @@ Funktionen
 
 nordr braucht einen Magnetfeldsensor im Handy. Metall, Magnete und Elektronik in der Nähe können die Anzeige verfälschen. Für die Navigation in kritischen Situationen ist nordr nicht gedacht.
 
-nordr braucht keine Berechtigungen außer Vibration und greift nicht auf deinen Standort zu.
+nordr braucht keine Berechtigungen außer Vibration und der Google-Play-Abrechnung und greift nicht auf deinen Standort zu.
 
-Ohne Werbung, ohne Tracking, ohne Konto. nordr hat keine Internet-Berechtigung, alles bleibt auf deinem Gerät.
-Freie Software unter der GNU GPLv3. Quellcode: https://github.com/valueerrorx/aapps
+Teste nordr 24 Stunden lang kostenlos mit allen Funktionen. Danach schaltet ein einmaliger Kauf die App dauerhaft frei, inklusive aller künftigen Updates. Kein Abo, keine Werbung.
+
+• Privat: kein Tracking, kein Konto, es werden keine Daten gesammelt. nordr verdient nicht an deinen Daten.
+• Komplett offline: nordr hat keine Internet-Berechtigung und funktioniert ohne Verbindung. Nur der Kauf läuft über Google Play, die App selbst geht nie ins Internet.
+• Open Source: freie Software unter der GNU GPLv3. Quellcode: https://github.com/valueerrorx/aapps
