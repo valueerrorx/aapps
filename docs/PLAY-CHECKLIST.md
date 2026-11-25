@@ -1,27 +1,25 @@
 # Play-Store-Checkliste (aapps)
 
-Für alle 16 Apps. [x] = vorbereitet, [ ] = musst du tun, [?] = deine Entscheidung.
+Für alle 18 Apps. [x] = vorbereitet, [ ] = musst du tun, [?] = deine Entscheidung.
 Store-Texte: `apps/<app>/fastlane/metadata/android/{de-DE,en-US}/`, Grafik-Listen: `apps/<app>/fastlane/README.md`.
 
 ## 1. Konto und Grundlagen
-- [ ] Entwickler-Verifizierung abwarten.
-- [ ] Testpflicht für neue private Konten: geschlossener Test mit mindestens 12 Testern, 14 Tage am Stück, **je App**, bevor Produktion freigeschaltet wird. Tipp: eine Google-Gruppe als gemeinsamer Tester-Pool für alle 16 Apps, alle Tests parallel starten. Entfällt nur, falls dein Konto vor 13.11.2023 angelegt wurde.
-- [ ] Zahlungsprofil (Händlerkonto) für In-App-Käufe einrichten. Modell: alle Apps gratis im Store, die 14 Werkzeug-Apps mit 24-h-Testphase und einmaligem In-App-Kauf `full_unlock` (siehe 2a), moovr und glidr komplett gratis. Achtung: Eine App, die einmal gratis war, kann nie mehr kostenpflichtig werden (In-App-Kauf geht trotzdem).
+- [x] Entwickler-Verifizierung (erledigt 25.11.2026).
+- [ ] Testpflicht für neue private Konten: geschlossener Test mit mindestens 12 Testern, 14 Tage am Stück, **je App**, bevor Produktion freigeschaltet wird. Tipp: eine Google-Gruppe als gemeinsamer Tester-Pool für alle 18 Apps, alle Tests parallel starten. Entfällt nur, falls dein Konto vor 13.11.2023 angelegt wurde.
+- [ ] Zahlungsprofil (Händlerkonto) für In-App-Käufe einrichten. Modell: alle Apps gratis im Store, die 16 Apps außer den Spielen mit 24-h-Testphase und einmaligem In-App-Kauf `full_unlock` (siehe 2a), moovr und glidr komplett gratis. Achtung: Eine App, die einmal gratis war, kann nie mehr kostenpflichtig werden (In-App-Kauf geht trotzdem).
 - [ ] EU-Händlerstatus (DSA) angeben; als Händler werden Kontaktdaten im Store öffentlich angezeigt.
 - [ ] Öffentliche Kontakt-E-Mail im Store eintragen (Pflicht).
 
 ## 2. Store-Eintrag je App
 - [x] Titel, Kurz- und Langbeschreibung, Changelog DE/EN (Limits geprüft: Titel ≤ 30, kurz ≤ 80, lang ≤ 4000, Changelog ≤ 500 Zeichen).
 - [x] Changelog-Datei = versionCode aus `version.txt` (X·10000 + Y·100 + Z): `100.txt` für 0.1.0, `10000.txt` für sleepr, moovr, glidr (1.0.0). Änderst du die Version vor dem Upload, Datei umbenennen.
-- [x] Icon 512×512 bei allen 16 vorhanden (`screenshots/icon_store_512.png`). Play verlangt laut Doku 32-bit PNG mit Alpha, unsere sind RGB ohne Alpha; beim Upload prüfen, sonst als RGBA exportieren.
-- [ ] Feature-Grafik 1024×500 fehlt bei allen 16 (Pflicht). Laut PLAN aus den Roborazzi-Icons erzeugen.
-- [ ] Screenshots: Roborazzi-PNGs sind 1078×2399 (quer 2396×1076), also länger als 2:1. Play erlaubt höchstens 2:1. Vor dem Upload z. B. auf 1200×2400 mit Hintergrund #10161B auffüllen (oder auf 1078×2156 beschneiden). Ohne Alpha, als PNG oder JPEG.
-- [ ] Fehlende Screenshot-Sprachvarianten (je README): v. a. sleepr EN (nur 2), loudr DE (nur 2), levlr/nordr/pulsr/magnr/hertzr DE (3).
-- [ ] moovr und glidr: gar keine Spiel-Screenshots, nur vom Gerät aufnehmbar (Querformat, mind. 2).
+- [x] Icon 512×512 (RGBA), Feature-Grafik 1024×500 und Screenshots (auf 2:1 gebracht) bei allen 18 unter `metadata/android/<locale>/images/`, erzeugt mit `docs/overview/tools/store-images.js`, geprüft mit `--check`.
+- [ ] Optional mehr Screenshot-Sprachvarianten (je README): v. a. sleepr EN (nur 2), loudr DE (nur 2).
+- [ ] moovr und glidr: gar keine Spiel-Screenshots, nur vom Gerät aufnehmbar (Querformat, mind. 2, Pflicht vor der Veröffentlichung).
 - [ ] Datenschutzerklärung `docs/privacy/index.html` hosten (Vorschlag: https://xapient.solutions/privacy/) und in jeder App als URL eintragen. Vorher `KONTAKT_NAME` und `KONTAKT_EMAIL` ersetzen.
 
 ## 2a. In-App-Produkt `full_unlock` (alle außer moovr, glidr)
-Apps: sleepr, levlr, nordr, spinr, scorr, focusr, roundr, pulsr, loudr, tunr, magnr, dozr, hertzr, hudr (später thinkr, dividr).
+Apps: sleepr, levlr, nordr, spinr, scorr, focusr, roundr, pulsr, loudr, tunr, magnr, dozr, hertzr, hudr, thinkr, dividr.
 - [ ] Je App zuerst ein AAB mit Billing hochladen (interner Test genügt), erst dann lässt die Console In-App-Produkte zu.
 - [ ] Monetarisieren > Produkte > In-App-Produkte (Einmalkauf): Produkt-ID exakt `full_unlock`, aktiv, nicht verbrauchbar (die App bestätigt den Kauf, verbraucht ihn nie).
 - [ ] Name/Beschreibung DE/EN, z. B. „Dauerhaft freischalten“ / „Unlock for good“, „Einmaliger Kauf, alle künftigen Updates inklusive“.
@@ -49,9 +47,11 @@ Apps: sleepr, levlr, nordr, spinr, scorr, focusr, roundr, pulsr, loudr, tunr, ma
 | hudr | Karten & Navigation [?] (alternativ Auto & Fahrzeuge) |
 | moovr | Spiel: Arcade |
 | glidr | Spiel: Denkspiele (Puzzle) |
+| thinkr | Spiel: Denkspiele (Puzzle) [?] (alternativ Lernen) |
+| dividr | Finanzen [?] (alternativ Reisen & Lokales) |
 
 ## 4. App-Inhalte (Policy-Formulare)
-### Datensicherheit (Data safety), alle 16 gleich
+### Datensicherheit (Data safety), alle 18 gleich
 - Erhebt oder teilt die App Nutzerdaten? **Nein.**
 - Begründung: Keine App hat die INTERNET-Berechtigung (Build-Check `check<Variant>ManifestPermissions` bricht sonst ab; die von Play Billing mitgebrachte wird entfernt). Kein SDK für Werbung, Analyse oder Absturzberichte, kein Firebase. Einzige Bibliothek von Google ist Play Billing (Kauf per IPC über die Play-Store-App). Daten, die nur auf dem Gerät verarbeitet werden, gelten laut Play nicht als „erhoben“.
   - Kaufstatus: Die App erfährt nur „gekauft ja/nein“ und speichert das lokal; Zahlungsdaten verarbeitet Google selbst. [?] Vor dem Ausfüllen Googles aktuelle Angaben zur Play Billing Library im Data-safety-Leitfaden prüfen.
@@ -59,6 +59,8 @@ Apps: sleepr, levlr, nordr, spinr, scorr, focusr, roundr, pulsr, loudr, tunr, ma
   - loudr, tunr: Mikrofon nur live, nichts gespeichert oder gesendet → nicht erhoben.
   - hudr: genauer Standort nur im Vordergrund, nicht gespeichert, kann nicht gesendet werden → nicht erhoben.
   - scorr: Spielernamen nur lokal → nicht erhoben.
+  - dividr: Kamera nur zum QR-Scannen; Namen und Ausgaben bleiben lokal und gehen nur per QR von Handy zu Handy, Teilen als Text nur auf Tippen des Nutzers über das System-Teilen → nicht erhoben.
+  - thinkr: nur lokale Spielstände.
   - sleepr: `allowBackup=true`, Einstellungen können in die System-Sicherung des Nutzers gehen; das ist das Android-Backup, keine Erhebung durch die App.
   - alle anderen: nur Sensoren und lokale Einstellungen.
 - Sicherheit: Verschlüsselung bei Übertragung entfällt (keine Übertragung), Löschanfrage entfällt (nichts erhoben).
@@ -67,17 +69,18 @@ Apps: sleepr, levlr, nordr, spinr, scorr, focusr, roundr, pulsr, loudr, tunr, ma
 - Werbung: **Nein**, bei allen.
 - App-Zugriff: alle Funktionen ohne Anmeldung zugänglich.
 - Gesundheits-Apps: alle „keine Gesundheitsfunktionen“. [?] roundr: falls Kategorie Gesundheit & Fitness, ehrlich „Trainings-Timer, erfasst keine Gesundheitsdaten“.
-- Finanzfunktionen, Behörden-App, Nachrichten: Nein.
+- Finanzfunktionen, Behörden-App, Nachrichten: Nein. [?] dividr: rechnet nur Ausgaben einer Gruppe auf, keine Zahlungen oder Finanzdienste → „keine Finanzfunktionen“.
 
 ### Altersfreigabe (IARC-Fragebogen)
 - Apps: Kategorie „Dienstprogramm, Produktivität, Kommunikation oder andere“. Alles Nein: keine Gewalt, keine Sexualität, keine Sprache, keine Drogen, kein Glücksspiel, keine Nutzer-Interaktion, kein Teilen von Standort mit anderen. Digitale Käufe: **Ja** (Einmalkauf `full_unlock`), außer moovr und glidr.
   - spinr: kein Glücksspiel und kein simuliertes Glücksspiel (keine Einsätze, keine Gewinne).
   - hudr: nutzt Standort, teilt ihn aber nicht mit anderen Nutzern → Nein.
 - Spiele (moovr, glidr): Kategorie „Spiel“. Keine Gewalt gegen Menschen oder Tiere im eigentlichen Sinn; die Kuh kann comichaft an Stacheln oder im Wasserloch scheitern. [?] Je nach Wortlaut „keine Gewalt“ oder höchstens „Comic/Fantasy, mild“. Kein Blut, keine Käufe, keine Werbung, kein Online (kein Billing).
+- thinkr: Kategorie „Spiel“, keine Gewalt, Digitale Käufe: Ja.
 - Erwartung: niedrigste Stufe (USK 0 / PEGI 3 / Everyone).
 
 ### Zielgruppe
-- [?] Vorschlag: alle Apps **13+ oder 18+**, nicht für Kinder gezielt. Wählst du Altersgruppen unter 13 (z. B. für die Spiele oder focusr im Unterricht), gilt das Familien-Programm mit strengeren Regeln (Inhalte, Links nach außen, Prüfung).
+- [x] Entschieden: alle Apps **13+**, nicht für Kinder gezielt. Wählst du Altersgruppen unter 13 (z. B. für die Spiele oder focusr im Unterricht), gilt das Familien-Programm mit strengeren Regeln (Inhalte, Links nach außen, Prüfung).
 
 ## 5. Sonderberechtigungen (Play-Console-Erklärungen)
 Für jeden Vordergrunddienst-Typ verlangt die Console eine Beschreibung und einen **Video-Link** (z. B. nicht gelistetes Video, 30 s, Funktion bei gesperrtem Bildschirm). [ ] Videos aufnehmen.
@@ -89,6 +92,7 @@ Für jeden Vordergrunddienst-Typ verlangt die Console eine Beschreibung und eine
 | focusr | `USE_EXACT_ALARM` (+ `SCHEDULE_EXACT_ALARM` nur bis Android 12L) |
 | hudr | keine Erklärung (nur Vordergrund-Standort), aber Datenschutz-URL Pflicht |
 | loudr, tunr | keine Erklärung, aber Datenschutz-URL Pflicht (Mikrofon) |
+| dividr | keine Erklärung, aber Datenschutz-URL Pflicht (Kamera) |
 
 ### mediaPlayback – sleepr
 - DE: sleepr erzeugt Rauschen, das der Nutzer zum Einschlafen oder Abschirmen von Geräuschen startet. Die Wiedergabe muss bei gesperrtem Bildschirm weiterlaufen. Der Dienst läuft nur, solange der Nutzer abspielt, zeigt eine Benachrichtigung mit Stopp und endet bei Stopp, Timer-Ende oder Audio-Fokus-Verlust. Wird er unterbrochen, verstummt das Rauschen mitten in der Nutzung.
@@ -115,7 +119,7 @@ Für jeden Vordergrunddienst-Typ verlangt die Console eine Beschreibung und eine
 - EN: focusr is a timer app; the countdown timer is its core function. The user sets a duration and expects sound and vibration exactly at the end, even with the screen locked and the device idle. For this, exactly one exact alarm is set for the end of the timer and cancelled on pause or reset. No foreground service is used.
 
 ## 6. Signierung
-- [x] Release-Keystore mit einem Alias pro App (Alias = App-Name). Laut Stand 23.11 sind alle 16 Aliase angelegt und ein Backup existiert (Ort steht bewusst nicht im Repo).
+- [x] Release-Keystore mit einem Alias pro App (Alias = App-Name). Alle 18 Aliase angelegt (thinkr, dividr am 25.11) und ein Backup existiert (Ort steht bewusst nicht im Repo).
 - [ ] Zusätzlich ein Backup außer Haus bzw. offline (laut PLAN), getrennt vom NAS.
 - [ ] GitHub-Secrets setzen (`KEYSTORE_B64`, `KEYSTORE_PASSWORD`, `KEY_PASSWORD_<APP>`), damit die CI signiert. Wartet auf Token-Rechte.
 - [?] Play App Signing (Pflicht bei AAB): Standard ist, dass Google den App-Signaturschlüssel erzeugt und unser Key nur Upload-Key ist. Folge: Play-Installationen und GitHub-APKs haben verschiedene Signaturen, ein Wechsel zwischen beiden geht nur mit Neuinstallation. Alternative: eigenen Key als App-Signaturschlüssel hochladen (PEPK), dann bleibt die Signatur gleich.
@@ -124,7 +128,7 @@ Für jeden Vordergrunddienst-Typ verlangt die Console eine Beschreibung und eine
 ## 7. Build und Upload
 - Play verlangt AAB statt APK. Je App:
   `./gradlew :apps:<app>:bundleRelease -Paapps.requireReleaseKey=true` mit `KEYSTORE_FILE`, `KEYSTORE_PASSWORD`, `KEY_PASSWORD_<APP>` → `apps/<app>/build/outputs/bundle/release/<app>-release.aab`
-- [ ] Builds am NAS per `xapient-job` (Speicher knapp, eine App nach der anderen).
+- [x] Builds am NAS per `xapient-job` (Speicher knapp, eine App nach der anderen); signierte AABs aller 18 Apps liegen außerhalb des Repos bereit.
 - [ ] R8-Mapping (`build/outputs/mapping/release/mapping.txt`) mit hochladen, damit Absturzberichte lesbar sind.
 - [ ] Jeder weitere Upload braucht einen höheren versionCode, also `version.txt` erhöhen.
 - Optional: `fastlane supply` liest die Texte direkt aus `apps/<app>/fastlane/metadata/android`. Sonst Texte per Copy-and-paste in die Console.

@@ -1,7 +1,7 @@
 # moovr – Store-Grafiken
 
 Quelle: `apps/moovr/screenshots/`. Dort liegen nur `icon_masks.png`, `icon_store_512.png` und `splash_pre31.png`.
-Ziel für fastlane supply: `metadata/android/<locale>/images/`. Noch nicht kopiert.
+Icon und Feature-Grafik erzeugt mit `docs/overview/tools/store-images.js` nach `metadata/android/<locale>/images/`.
 
 ## Phone-Screenshots
 Fehlen. Das Spiel läuft in einer WebView, Robolectric kann es nicht rendern.
@@ -11,5 +11,5 @@ Fehlen. Das Spiel läuft in einer WebView, Robolectric kann es nicht rendern.
 - Notlösung bis dahin: `src/main/assets/assets/sprites/clumsy-cheatsheet.jpg` zeigt Spielgrafik, ist aber kein echter Screenshot.
 
 ## Icon und Feature-Grafik
-- Icon 512: ja, `screenshots/icon_store_512.png`
-- Feature-Grafik 1024×500: fehlt
+- Icon 512: `screenshots/icon_store_512.png`
+- Feature-Grafik 1024×500: erzeugt

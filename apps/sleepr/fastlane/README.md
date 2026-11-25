@@ -1,7 +1,7 @@
 # sleepr – Store-Grafiken
 
 Quelle: `apps/sleepr/screenshots/`. Achtung: bei sleepr sind Dateien ohne Suffix deutsch, `_en` englisch.
-Ziel für fastlane supply: `metadata/android/<locale>/images/` (`icon.png`, `featureGraphic.png`, `phoneScreenshots/`, `sevenInchScreenshots/`). Noch nicht kopiert.
+Erzeugt mit `docs/overview/tools/store-images.js` nach `metadata/android/<locale>/images/`.
 
 ## Phone-Screenshots
 de-DE:
@@ -18,9 +18,8 @@ en-US:
 Tablet (optional, nur DE): `idle_tablet.png`, `settings_tablet.png`.
 
 ## Icon und Feature-Grafik
-- Icon 512: ja, `screenshots/icon_store_512.png`
-- Feature-Grafik 1024×500: fehlt
+- Icon 512: `screenshots/icon_store_512.png`
+- Feature-Grafik 1024×500: erzeugt
 
 ## Offen
 - EN hat nur 2 Bilder: `playing_en`, `idle_land_en` und ein EN-Tablet-Bild aufnehmen.
-- Seitenverhältnis 1078×2399 ist über 2:1, vor dem Upload anpassen (siehe `docs/PLAY-CHECKLIST.md`).

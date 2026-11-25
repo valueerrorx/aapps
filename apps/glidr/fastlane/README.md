@@ -1,7 +1,7 @@
 # glidr – Store-Grafiken
 
 Quelle: `apps/glidr/screenshots/`. Dort liegen nur `icon_masks.png`, `icon_store_512.png` und `splash_pre31.png`.
-Ziel für fastlane supply: `metadata/android/<locale>/images/`. Noch nicht kopiert.
+Icon und Feature-Grafik erzeugt mit `docs/overview/tools/store-images.js` nach `metadata/android/<locale>/images/`.
 
 ## Phone-Screenshots
 Fehlen. Das Spiel läuft in einer WebView, Robolectric kann es nicht rendern.
@@ -10,5 +10,5 @@ Fehlen. Das Spiel läuft in einer WebView, Robolectric kann es nicht rendern.
 - Notlösung: `docs/overview/tools/glidr-level.js` rendert Level im Startzustand (ohne Spiel-UI), z. B. `node glidr-level.js 23 --out /tmp`. Echte Gerätebilder sind besser.
 
 ## Icon und Feature-Grafik
-- Icon 512: ja, `screenshots/icon_store_512.png`
-- Feature-Grafik 1024×500: fehlt
+- Icon 512: `screenshots/icon_store_512.png`
+- Feature-Grafik 1024×500: erzeugt

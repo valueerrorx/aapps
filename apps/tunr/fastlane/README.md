@@ -1,7 +1,7 @@
 # tunr – Store-Grafiken
 
 Quelle: `apps/tunr/screenshots/` (ohne Suffix = englisch, `_de` = deutsch).
-Ziel für fastlane supply: `metadata/android/<locale>/images/`. Noch nicht kopiert.
+Erzeugt mit `docs/overview/tools/store-images.js` nach `metadata/android/<locale>/images/`.
 
 ## Phone-Screenshots
 de-DE:
@@ -20,9 +20,8 @@ en-US:
 7. `settings.png` – Einstellungen
 
 ## Icon und Feature-Grafik
-- Icon 512: ja, `screenshots/icon_store_512.png`
-- Feature-Grafik 1024×500: fehlt
+- Icon 512: `screenshots/icon_store_512.png`
+- Feature-Grafik 1024×500: erzeugt
 
 ## Offen
 - DE-Varianten fehlen für `reference_tone`, `sharp`.
-- Seitenverhältnis über 2:1, vor dem Upload anpassen (siehe `docs/PLAY-CHECKLIST.md`).
