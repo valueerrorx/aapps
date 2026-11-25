@@ -12,7 +12,10 @@ Funktionen
 
 Ein Code enthält alles, was dein Handy von der Gruppe kennt. Scannt ihr euch gegenseitig, seid ihr auf demselben Stand.
 
-dividr braucht die Kamera nur zum Scannen der Codes.
+dividr braucht die Kamera nur zum Scannen der Codes. Dazu die Google-Play-Abrechnung für den einmaligen Kauf.
 
-Ohne Werbung, ohne Tracking, ohne Konto. dividr hat keine Internet-Berechtigung, alles bleibt auf euren Geräten.
-Freie Software unter der GNU GPLv3. Quellcode: https://github.com/valueerrorx/aapps
+Teste dividr 24 Stunden lang kostenlos mit allen Funktionen. Danach schaltet ein einmaliger Kauf die App dauerhaft frei, inklusive aller künftigen Updates. Kein Abo, keine Werbung.
+
+• Privat: kein Tracking, kein Konto, es werden keine Daten gesammelt. dividr verdient nicht an euren Daten.
+• Komplett offline: dividr hat keine Internet-Berechtigung und funktioniert ohne Verbindung. Nur der Kauf läuft über Google Play, die App selbst geht nie ins Internet.
+• Open Source: freie Software unter der GNU GPLv3. Quellcode: https://github.com/valueerrorx/aapps

@@ -12,7 +12,10 @@ Features
 
 A code contains everything your phone knows about the group. Scan each other and you are on the same page.
 
-dividr only uses the camera to scan the codes.
+dividr only uses the camera to scan the codes. Plus Google Play billing for the one-time purchase.
 
-No ads, no tracking, no account. dividr has no internet permission, everything stays on your devices.
-Free software under the GNU GPLv3. Source code: https://github.com/valueerrorx/aapps
+Try dividr free for 24 hours with every feature. After that, a one-time purchase unlocks it for good, including all future updates. No subscription, no ads.
+
+• Private: no tracking, no account, no data collected. dividr does not make money from your data.
+• Completely offline: dividr has no internet permission and works without a connection. Only the purchase goes through Google Play, the app itself never goes online.
+• Open source: free software under the GNU GPLv3. Source code: https://github.com/valueerrorx/aapps
