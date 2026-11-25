@@ -46,6 +46,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
@@ -382,11 +383,18 @@ private fun PathNode(item: GameItem, node: Dp, labelLeft: Boolean, labelW: Dp, g
     val desc = stringResource(if (item.doneToday) R.string.orb_done else R.string.orb_open, item.name, item.level) +
         if (item.daily && !item.doneToday) ", " + stringResource(R.string.today) else ""
     val level = stringResource(R.string.level_n, item.level)
-    val tag = when {
-        item.doneToday -> stringResource(R.string.today_done) + "  ·  " + level
-        item.daily -> stringResource(R.string.today) + "  ·  " + level
-        else -> level
-    }
+    val parts = when {
+        item.doneToday -> listOf(stringResource(R.string.today_done), level)
+        item.daily -> listOf(stringResource(R.string.today), level)
+        else -> listOf(level)
+    }.map { it.uppercase().replace(' ', ' ') }
+    val tagStyle = Aapps.type.label.copy(color = if (item.daily) c.accent else c.fgMuted)
+    // passt die Zeile nicht, je Teil eine eigene Zeile statt Umbruch mitten drin
+    val measurer = rememberTextMeasurer()
+    val labelPx = with(LocalDensity.current) { labelW.roundToPx() }
+    val oneLine = parts.joinToString("  ·  ")
+    val tag = if (parts.size < 2 || measurer.measure(oneLine, tagStyle, maxLines = 1).size.width <= labelPx) oneLine
+    else parts.joinToString("\n")
     val align = if (labelLeft) TextAlign.End else TextAlign.Start
     val label: @Composable () -> Unit = {
         Column(Modifier.width(labelW.coerceAtLeast(0.dp))) {
@@ -396,8 +404,8 @@ private fun PathNode(item: GameItem, node: Dp, labelLeft: Boolean, labelW: Dp, g
             )
             Spacer(Modifier.height(2.dp))
             BasicText(
-                tag.uppercase(), Modifier.fillMaxWidth(),
-                style = Aapps.type.label.copy(color = if (item.daily) c.accent else c.fgMuted, textAlign = align),
+                tag, Modifier.fillMaxWidth(),
+                style = tagStyle.copy(textAlign = align),
                 maxLines = 2,
             )
         }
