@@ -16,7 +16,7 @@ Store-Texte: `apps/<app>/fastlane/metadata/android/{de-DE,en-US}/`, Grafik-Liste
 - [x] Icon 512×512 (RGBA), Feature-Grafik 1024×500 und Screenshots (auf 2:1 gebracht) bei allen 18 unter `metadata/android/<locale>/images/`, erzeugt mit `docs/overview/tools/store-images.js`, geprüft mit `--check`.
 - [ ] Optional mehr Screenshot-Sprachvarianten (je README): v. a. sleepr EN (nur 2), loudr DE (nur 2).
 - [ ] moovr und glidr: gar keine Spiel-Screenshots, nur vom Gerät aufnehmbar (Querformat, mind. 2, Pflicht vor der Veröffentlichung).
-- [ ] Datenschutzerklärung `docs/privacy/index.html` hosten (Vorschlag: https://xapient.solutions/privacy/) und in jeder App als URL eintragen. Vorher `KONTAKT_NAME` und `KONTAKT_EMAIL` ersetzen.
+- [ ] Datenschutzerklärung `docs/privacy/index.html` hosten (Vorschlag: https://xapient.solutions/privacy/) und in jeder App als URL eintragen. Kontakt eingetragen (25.11).
 
 ## 2a. In-App-Produkt `full_unlock` (alle außer moovr, glidr)
 Apps: sleepr, levlr, nordr, spinr, scorr, focusr, roundr, pulsr, loudr, tunr, magnr, dozr, hertzr, hudr, thinkr, dividr.
