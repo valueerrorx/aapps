@@ -83,10 +83,11 @@ jobs:
           trap 'rm -f "$KEY"' EXIT
           printf '%s' "$ASC_KEY_P8" > "$KEY"
           AUTH=(-allowProvisioningUpdates -authenticationKeyPath "$KEY" -authenticationKeyID "$ASC_KEY_ID" -authenticationKeyIssuerID "$ASC_ISSUER_ID")
+          # unsigniert archivieren: ein Development-Profil braeuchte ein registriertes Geraet; signiert wird beim Export (App Store)
           xcodebuild archive \
             -project iosApp/levlr/levlr.xcodeproj -scheme levlr -configuration Release \
             -destination "generic/platform=iOS" -archivePath "$RUNNER_TEMP/levlr.xcarchive" \
-            DEVELOPMENT_TEAM="$APPLE_TEAM_ID" "${AUTH[@]}"
+            DEVELOPMENT_TEAM="$APPLE_TEAM_ID" CODE_SIGNING_ALLOWED=NO
           sed "s/TEAM_ID/$APPLE_TEAM_ID/" iosApp/levlr/ExportOptions.plist > "$RUNNER_TEMP/ExportOptions.plist"
           xcodebuild -exportArchive \
             -archivePath "$RUNNER_TEMP/levlr.xcarchive" \
