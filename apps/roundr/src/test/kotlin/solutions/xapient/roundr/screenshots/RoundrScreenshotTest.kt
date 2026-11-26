@@ -74,6 +74,10 @@ class RoundrScreenshotTest {
     @Test fun run_paused() = shot("run_paused") { Running(tabata, 78_000, running = false) }
     @Test fun run_paused_de() = shot("run_paused_de", "+de") { Running(tabata, 78_000, running = false, confirm = true) }
     @Test fun run_long() = shot("run_long") { Running(boxing, 29_000) }
+    // Store DE wie EN
+    @Test fun run_rest_de() = shot("run_rest_de", "+de") { Running(tabata, 68_000) }
+    @Test fun run_last3_de() = shot("run_last3_de", "+de") { Running(tabata, 88_000) }
+    @Test fun run_work_land_de() = shot("run_work_land_de", "+de-land") { Work() }
 
     @Composable private fun Done() = DoneScreen(tabata, {}, {})
 

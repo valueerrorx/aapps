@@ -88,6 +88,10 @@ class TimerScreenshotTest {
 
     @Test fun last_minute() = shot("last_minute") { Screen(running(42_000, 5 * min), pulse = 0.8f) }
     @Test fun drag() = shot("drag") { Screen(Timer(25 * min), drag = 40 * min) }
+    // Store DE wie EN
+    @Test fun last_minute_de() = shot("last_minute_de", "+de") { Screen(running(42_000, 5 * min), pulse = 0.8f) }
+    @Test fun drag_de() = shot("drag_de", "+de") { Screen(Timer(25 * min), drag = 40 * min) }
+    @Test fun running_land_de() = shot("running_land_de", "+de-land") { Running() }
     @Test fun zero() = shot("zero") { Screen(Timer(0)) }
     @Test fun zero_de_font200() = shot("zero_de_font200", "+de", fontScale = 2f) { Screen(Timer(0)) }
     @Test fun scale5() = shot("scale5") { Screen(running(3 * min + 20_000, 4 * min), Scale.MIN5) }

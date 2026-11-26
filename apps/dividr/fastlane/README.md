@@ -7,8 +7,10 @@ Erzeugt mit `docs/overview/tools/store-images.js` nach `metadata/android/<locale
 de-DE:
 1. `group_de.png` – Gruppe mit Ausgaben
 2. `settle_de.png` – Abrechnung
-3. `entry_de.png` – Ausgabe erfassen
-4. `import_new_person_de.png` – Abgleich per QR
+3. `entry_foreign_de.png` – Ausgabe in Fremdwährung
+4. `qr_fullscreen_de.png` – Teilen per QR
+5. `import_update_de.png` – Import zeigt Änderungen
+6. `group_land_de.png` – Querformat
 
 en-US:
 1. `group.png` – group with expenses

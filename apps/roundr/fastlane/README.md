@@ -7,11 +7,12 @@ Erzeugt mit `docs/overview/tools/store-images.js` nach `metadata/android/<locale
 de-DE:
 1. `run_work_de.png` – Arbeit, Runde 3/8
 2. `home_de.png` – Start mit Tabata
-3. `run_paused_de.png` – angehalten
-4. `done_de.png` – fertig
-5. `library_de.png` – Vorlagen
-6. `editor_de.png` – Bearbeiten
-7. `settings_de.png` – Einstellungen
+3. `run_rest_de.png` – Pause
+4. `run_last3_de.png` – letzte 3 Sekunden
+5. `run_work_land_de.png` – Querformat
+6. `done_de.png` – fertig
+7. `library_de.png` – Vorlagen
+8. `editor_de.png` – Bearbeiten
 
 en-US:
 1. `run_work.png` – Arbeit, Runde 3/8

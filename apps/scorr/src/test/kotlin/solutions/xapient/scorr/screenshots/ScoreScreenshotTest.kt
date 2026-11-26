@@ -127,6 +127,13 @@ class ScoreScreenshotTest {
 
     @Test fun scrub() = shot("scrub") { Board(two().settled(), scrub = 1 to 7) }
 
+    // Store DE wie EN
+    @Test fun board4_de() = shot("board4_de", "+de") { Four() }
+    @Test fun scrub_de() = shot("scrub_de", "+de") { Board(two().settled(), scrub = 1 to 7) }
+    @Test fun board8_rounds_de() = shot("board8_rounds_de", "+de") {
+        Board(eight().withRounds(true).endRound().play(3 to 4, 5 to 2).settled())
+    }
+
     // Ruhezustand nach dem Glanz; winner_shine zeigt den Glanz mitten im Lauf
     @Composable private fun Winner() = Board(finishedGame().settled())
 

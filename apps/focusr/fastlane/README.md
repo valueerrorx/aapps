@@ -7,9 +7,12 @@ Erzeugt mit `docs/overview/tools/store-images.js` nach `metadata/android/<locale
 de-DE:
 1. `idle_de.png` – 25:00 eingestellt
 2. `running_de.png` – läuft, „Endet um“
-3. `paused_de.png` – pausiert
-4. `done_de.png` – Zeit um
-5. `settings_de.png` – Einstellungen
+3. `drag_de.png` – Ziehen bei 40 min
+4. `last_minute_de.png` – letzte Minute
+5. `paused_de.png` – pausiert
+6. `done_de.png` – Zeit um
+7. `running_land_de.png` – Querformat (Beamer)
+8. `settings_de.png` – Einstellungen
 
 en-US:
 1. `idle.png` – 25:00 eingestellt
@@ -24,6 +27,3 @@ en-US:
 ## Icon und Feature-Grafik
 - Icon 512: `screenshots/icon_store_512.png`
 - Feature-Grafik 1024×500: erzeugt
-
-## Offen
-- DE-Variante für `running_land` wäre gut (Unterricht/Beamer).

@@ -9,7 +9,9 @@ de-DE:
 2. `running_de.png` – läuft
 3. `fading_de.png` – blendet aus
 4. `done_de.png` – gestoppt
-5. `settings_de.png` – Einstellungen
+5. `drag_de.png` – Mond ziehen, 90 min
+6. `running_land_de.png` – Querformat
+7. `settings_de.png` – Einstellungen
 
 en-US:
 1. `idle.png` – 30 min eingestellt

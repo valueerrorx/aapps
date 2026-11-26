@@ -7,10 +7,11 @@ Erzeugt mit `docs/overview/tools/store-images.js` nach `metadata/android/<locale
 de-DE:
 1. `home_de.png` – Tagestraining
 2. `switches_play_de.png` – Weichen
-3. `ink_play_de.png` – Tinte
-4. `drops_play_de.png` – Tropfen
-5. `result_best_de.png` – Ergebnis mit Bestwert
-6. `home_path_de.png` – Lernpfad
+3. `stars_recall_de.png` – Sternbild
+4. `slalom_play_de.png` – Slalom
+5. `echo_play_de.png` – Echo
+6. `result_best_de.png` – Ergebnis mit Bestwert
+7. `home_path_de.png` – Lernpfad
 
 en-US:
 1. `home.png` – daily session

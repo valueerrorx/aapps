@@ -6,6 +6,7 @@ build/
 .idea/
 .kotlin/
 *.iml
+node_modules/
 
 # aus dem GitHub-Initial-Commit
 *.class

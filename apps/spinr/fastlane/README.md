@@ -6,12 +6,13 @@ Erzeugt mit `docs/overview/tools/store-images.js` nach `metadata/android/<locale
 ## Phone-Screenshots
 de-DE:
 1. `wheel_de.png` – Essen-Rad
-2. `result_de.png` – Ergebnis mit Konfetti
-3. `templates_de.png` – Vorlagen
-4. `compass_de.png` – Himmelsrichtungen-Rad
-5. `letters_de.png` – Buchstaben-Rad
-6. `editor_de.png` – Rad bearbeiten
-7. `settings_de.png` – Einstellungen
+2. `spinning_de.png` – schnelle Drehung
+3. `result_de.png` – Ergebnis „Sushi“
+4. `many_de.png` – 30 Einträge
+5. `removed_de.png` – Runde mit entfernten Einträgen
+6. `wheels_de.png` – Räderliste
+7. `editor_de.png` – Rad bearbeiten
+8. `result_land_de.png` – Querformat
 
 en-US:
 1. `wheel.png` – Essen-Rad

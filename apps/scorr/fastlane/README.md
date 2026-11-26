@@ -6,11 +6,13 @@ Erzeugt mit `docs/overview/tools/store-images.js` nach `metadata/android/<locale
 ## Phone-Screenshots
 de-DE:
 1. `board_de.png` – 2 Spieler mit Runden
-2. `winner_de.png` – Gewinner
-3. `entry_de.png` – Eingabe
-4. `history_de.png` – Verlauf
-5. `players_de.png` – Spieler
-6. `settings_de.png` – Einstellungen
+2. `board4_de.png` – 4 Spieler, Zug „+3“
+3. `scrub_de.png` – Ziehen mit Vorschau
+4. `winner_de.png` – Gewinner
+5. `board8_rounds_de.png` – 8 Spieler
+6. `history_de.png` – Verlauf
+7. `entry_de.png` – Eingabe
+8. `players_de.png` – Spieler
 
 en-US:
 1. `board.png` – 2 Spieler mit Runden

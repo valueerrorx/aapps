@@ -135,6 +135,28 @@ class SpinScreenshotTest {
 
     @Test fun wheels() = shot("wheels") { Wheels() }
 
+    // Store DE wie EN
+    @Test fun wheels_de() = shot("wheels_de", "+de") { Wheels() }
+
+    @Test fun spinning_de() = shot("spinning_de", "+de") {
+        val w = food()
+        Spin(SpinState(w.labels).apply { pose(-123f, speed = 1250f, flap = 0.7f) }, w.name)
+    }
+
+    @Test fun result_land_de() = shot("result_land_de", "+de-land") { Result() }
+
+    @Test fun many_de() = shot("many_de", "+de") {
+        val labels = (1..30).map { "$it" }
+        Spin(SpinState(labels).apply { pose(WheelMath.angleFor(16, 30).toFloat(), winner = 16) }, "1 – 30")
+    }
+
+    @Test fun removed_de() = shot("removed_de", "+de") {
+        val w = food()
+        val ids = w.labels.indices.filter { it != 1 && it != 5 }
+        val colors = Palette.colors(ids, w.labels.size, SpinrPalette.size).map { SpinrPalette[it] }
+        Spin(SpinState(ids.map { w.labels[it] }, colors).apply { pose(40f) }, w.name, removed = 2)
+    }
+
     @Composable
     private fun Templates() = TemplatesScreen(templateGroups(res()), {}, {})
 

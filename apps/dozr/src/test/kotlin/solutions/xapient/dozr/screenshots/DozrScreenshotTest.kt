@@ -96,6 +96,9 @@ class DozrScreenshotTest {
     @Test fun done_land_font200() = shot("done_land_font200", "+land", fontScale = 2f) { Done() }
 
     @Test fun drag() = shot("drag") { Screen(Sleep(30), drag = 90) }
+    // Store DE wie EN
+    @Test fun drag_de() = shot("drag_de", "+de") { Screen(Sleep(30), drag = 90) }
+    @Test fun running_land_de() = shot("running_land_de", "+de-land") { Running() }
     @Test fun long() = shot("long") { Screen(Sleep(120)) }
 
     @Test fun settings() = shot("settings") { Settings() }

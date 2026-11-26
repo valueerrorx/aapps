@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import com.github.takahirom.roborazzi.RobolectricDeviceQualifiers
 import com.github.takahirom.roborazzi.RoborazziOptions
 import com.github.takahirom.roborazzi.captureRoboImage
@@ -17,6 +18,7 @@ import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
 import solutions.xapient.aapps.core.ui.AappsTheme
+import solutions.xapient.dividr.R
 import solutions.xapient.dividr.domain.Entry
 import solutions.xapient.dividr.domain.Frames
 import solutions.xapient.dividr.domain.Group
@@ -166,6 +168,14 @@ class DividrScreenshotTest {
     @Test fun entry_payment() = shot("entry_payment") { EntryShot(g.entries.values.first { it.kind == Kind.PAYMENT }) }
 
     @Test fun qr_fullscreen() = shot("qr_fullscreen") { QrScreen(Demo.codes(g), "Let the other phone scan this code", {}, animate = false) }
+
+    // Store DE wie EN
+    @Test fun qr_fullscreen_de() = shot("qr_fullscreen_de", "+de") {
+        QrScreen(Demo.codes(g), stringResource(R.string.let_them_scan), {}, animate = false)
+    }
+    @Test fun group_land_de() = shot("group_land_de", "+de-land") { Main() }
+    @Test fun entry_foreign_de() = shot("entry_foreign_de", "+de") { EntryShot(null, g.entries.values.first { it.currency == "HUF" }) }
+    @Test fun import_update_de() = shot("import_update_de", "+de") { ImportScreen(ImportSummary.of(g, Demo.incomingUpdate(g)), { _, _ -> }, {}) }
 
     @Test fun scan() = shot("scan") {
         ScanScreen(CameraUi.ON, setOf(0, 1), 4, null, {}, {}) {
