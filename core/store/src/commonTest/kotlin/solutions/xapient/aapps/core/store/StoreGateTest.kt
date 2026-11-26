@@ -36,8 +36,15 @@ class StorePolicyTest {
 
     @Test fun cacheOnlyWhenQueryFails() {
         assertEquals(StoreAccess.FULL, StorePolicy.decide(true, 0L, null, 9 * DAY).access)
-        // erfolgreiche Abfrage ohne Kauf (Erstattung) sperrt wieder
-        assertEquals(StoreAccess.EXPIRED, StorePolicy.decide(true, 0L, Entitlements(false, 0L), 9 * DAY).access)
+    }
+
+    @Test fun emptyQueryKeepsCachedPurchase() {
+        // offline nach Geraetewechsel: currentEntitlements leer, aber kein Beleg fuer Erstattung
+        assertEquals(StoreAccess.FULL, StorePolicy.decide(true, 0L, Entitlements(false, 0L), 9 * DAY).access)
+    }
+
+    @Test fun revokedLocksAgain() {
+        assertEquals(StoreAccess.EXPIRED, StorePolicy.decide(true, 0L, Entitlements(false, 0L, revoked = true), 9 * DAY).access)
     }
 }
 
@@ -80,7 +87,7 @@ class StoreGateTest {
         gate.startTrial()
         assertTrue(gate.state.busy)
         assertEquals("buyTrial", bridge.calls.last())
-        gate.onEntitlements(false, now)
+        gate.onEntitlements(false, false, now)
         assertEquals(StoreAccess.TRIAL, gate.state.access)
         assertEquals(now, cache.trialStart)
         assertFalse(gate.state.busy)
@@ -105,7 +112,7 @@ class StoreGateTest {
         cache.trialStart = 0L
         now = 2 * DAY
         gate.start()
-        gate.onEntitlements(false, 0L)
+        gate.onEntitlements(false, false, 0L)
         assertEquals(StoreAccess.EXPIRED, gate.state.access)
         assertTrue("products" in bridge.calls)
     }
@@ -115,7 +122,7 @@ class StoreGateTest {
         now = 2 * DAY
         gate.onProducts("1,49 €", true)
         gate.buy()
-        gate.onEntitlements(true, 0L)
+        gate.onEntitlements(true, false, 0L)
         assertEquals(StoreAccess.FULL, gate.state.access)
         assertTrue(cache.unlocked)
     }
@@ -143,7 +150,9 @@ class StoreGateTest {
         cache.unlocked = true
         cache.trialStart = 0L
         now = 9 * DAY
-        gate.onEntitlements(false, 0L)
+        gate.onEntitlements(false, false, 0L)
+        assertEquals(StoreAccess.FULL, gate.state.access)
+        gate.onEntitlements(false, true, 0L)
         assertEquals(StoreAccess.EXPIRED, gate.state.access)
         assertFalse(cache.unlocked)
     }
@@ -153,11 +162,11 @@ class StoreGateTest {
         now = 2 * DAY
         gate.restore()
         assertTrue(gate.state.busy)
-        gate.onEntitlements(false, 0L)
+        gate.onEntitlements(false, false, 0L)
         assertEquals(StoreNotice.NOT_FOUND, gate.state.notice)
         assertFalse(gate.state.busy)
         // normaler Refresh danach loescht den Hinweis
-        gate.onEntitlements(false, 0L)
+        gate.onEntitlements(false, false, 0L)
         assertNull(gate.state.notice)
     }
 
@@ -168,17 +177,31 @@ class StoreGateTest {
         assertFalse(gate.state.busy)
     }
 
-    @Test fun pendingUntilUnlocked() {
+    @Test fun pendingClearsOnNextQuery() {
         gate.onProducts("1,49 €", true)
         gate.buy()
         gate.onPurchasePending()
         assertTrue(gate.state.pending)
         assertFalse(gate.state.busy)
-        gate.onEntitlements(false, now)
-        assertTrue(gate.state.pending)
-        gate.onEntitlements(true, now)
+        // Ask to Buy abgelehnt: naechste Abfrage ohne Kauf gibt den Knopf wieder frei
+        gate.onEntitlements(false, false, now)
+        assertFalse(gate.state.pending)
+        gate.buy()
+        gate.onPurchasePending()
+        gate.onEntitlements(true, false, now)
         assertFalse(gate.state.pending)
         assertEquals(StoreAccess.FULL, gate.state.access)
+    }
+
+    @Test fun trialRemainingOnlyDuringTrial() {
+        assertNull(gate.trialRemainingMillis())
+        gate.onEntitlements(false, false, now)
+        assertEquals(DAY, gate.trialRemainingMillis())
+        now += DAY - 10
+        assertEquals(10L, gate.trialRemainingMillis())
+        now += 10
+        gate.refresh()
+        assertNull(gate.trialRemainingMillis())
     }
 
     @Test fun cancelAndFailure() {

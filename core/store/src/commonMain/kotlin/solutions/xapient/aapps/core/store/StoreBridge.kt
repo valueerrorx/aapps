@@ -23,9 +23,12 @@ interface StoreBridge {
     fun stop()
 }
 
-/** Rueckmeldungen von StoreKit; trialStartMillis -1 = keine Testphase */
+/**
+ * Rueckmeldungen von StoreKit. [onEntitlements]: unlocked = verifizierter Kauf da, revoked = Kauf nachweislich
+ * erstattet/widerrufen (nur dann wird ein gecachter Kauf zurueckgenommen), trialStartMillis -1 = keine Testphase
+ */
 interface StoreListener {
-    fun onEntitlements(unlocked: Boolean, trialStartMillis: Long)
+    fun onEntitlements(unlocked: Boolean, revoked: Boolean, trialStartMillis: Long)
     fun onQueryFailed()
     fun onProducts(unlockPrice: String?, trialAvailable: Boolean)
     fun onPurchasePending()

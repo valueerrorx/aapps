@@ -3,6 +3,7 @@ package solutions.xapient.aapps.core.ui
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -11,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.lifecycle.compose.LifecycleStartEffect
+import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.stringResource
 import solutions.xapient.aapps.core.store.StoreAccess
 import solutions.xapient.aapps.core.store.StoreBridge
@@ -33,6 +35,12 @@ fun StoreGated(accent: Color, appName: String, bridge: StoreBridge, debug: Strin
         gate.start()
         onStopOrDispose { }
     }
+    // Testphase laeuft auch bei offener App ab
+    LaunchedEffect(state.access) {
+        val left = gate.trialRemainingMillis() ?: return@LaunchedEffect
+        delay(left + 500)
+        gate.refresh()
+    }
     when (state.access) {
         StoreAccess.FULL, StoreAccess.TRIAL -> content()
         StoreAccess.OFFER, StoreAccess.EXPIRED -> AappsTheme(accent) { StoreScreen(appName, state, gate::startTrial, gate::buy, gate::restore) }
@@ -44,7 +52,8 @@ fun StoreGated(accent: Color, appName: String, bridge: StoreBridge, debug: Strin
 fun StoreScreen(appName: String, state: StoreState, onTrial: () -> Unit, onBuy: () -> Unit, onRestore: () -> Unit) {
     val offer = state.access == StoreAccess.OFFER
     val price = state.price
-    val canBuy = price != null && !state.pending && !state.busy
+    // auch bei ausstehendem Kauf aktiv: eine abgelehnte Kaufanfrage meldet StoreKit nicht
+    val canBuy = price != null && !state.busy
     val uri = LocalUriHandler.current
     val unlockLabel = if (price != null) stringResource(Res.string.store_unlock_price, price) else stringResource(Res.string.store_unlock)
     val hint = when {

@@ -92,14 +92,22 @@ class StoreGate(
         bridge.loadProducts()
     }
 
-    override fun onEntitlements(unlocked: Boolean, trialStartMillis: Long) {
-        val d = decide(Entitlements(unlocked, trialStartMillis.takeIf { it >= 0 }))
+    /** ms bis zum Ende der Testphase, null ausserhalb der Testphase (fuer einen Ablauf-Timer bei offener App) */
+    fun trialRemainingMillis(): Long? {
+        if (state.access != StoreAccess.TRIAL) return null
+        val start = cache.trialStart ?: return null
+        return (start + StorePolicy.TRIAL_MS - clock()).coerceAtLeast(0)
+    }
+
+    override fun onEntitlements(unlocked: Boolean, revoked: Boolean, trialStartMillis: Long) {
+        val d = decide(Entitlements(unlocked, trialStartMillis.takeIf { it >= 0 }, revoked))
         // Cache nur bei erfolgreicher Abfrage aendern, damit offline gekauft bleibt
         cache.unlocked = d.unlocked
         cache.trialStart = d.trialStart
         val notice = if (restoring && !d.unlocked) StoreNotice.NOT_FOUND else null
         restoring = false
-        set(state.copy(access = d.access, pending = state.pending && !d.unlocked, busy = false, notice = notice))
+        // ausstehender Kauf (Ask to Buy): abgelehnt oder offen sieht gleich aus, Knopf wieder frei geben
+        set(state.copy(access = d.access, pending = false, busy = false, notice = notice))
         if (d.access != StoreAccess.FULL && state.price == null) bridge.loadProducts()
     }
 
