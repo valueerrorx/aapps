@@ -56,6 +56,8 @@ Begriffe aus App Store Connect bzw. developer.apple.com auf Englisch. Mit [prüf
 7. **TestFlight**: Nach dem nächsten CI-Lauf mit Secrets erscheint der Build in App Store Connect → **TestFlight**. Unter **Internal Testing** eine Gruppe anlegen, dich hinzufügen, auf iPhone/iPad die App **TestFlight** installieren und levlr laden. Käufe in TestFlight sind Sandbox-Käufe und kosten nichts. Exportverschlüsselung ist per `ITSAppUsesNonExemptEncryption = NO` schon beantwortet.
 8. **Einreichen**: App Store Connect → App → **iOS App** Version `0.1.0` → Texte (aus `levlr/appstore/metadata`, kann ich per API füllen), Screenshots 6.9" + 13", **Build** auswählen, unter **In-App Purchases** beide Käufe hinzufügen (die ersten IAPs gehen zusammen mit einer App-Version in die Prüfung), **App Review Information** → Notes aus `metadata/review_information/notes.txt`, dann **Add for Review** → **Submit for Review**.
 
+Stand levlr: Texte, Kategorie, Altersfreigabe (4+), Preis (gratis), Verfügbarkeit, Build, IAPs und Screenshots sind per API gesetzt. Noch von Hand in App Store Connect: **App Privacy** (die API kennt diesen Fragebogen nicht) und eine **Telefonnummer** für den Review-Kontakt (Apple-Pflicht).
+
 ## Was ich mit dem API-Key automatisieren kann
 - Bundle ID registrieren, In-App-Käufe anlegen (inkl. Preis, Lokalisierung, Verfügbarkeit, Review-Screenshot)
 - Store-Texte DE/EN, Keywords, URLs, Altersfreigabe-Fragebogen

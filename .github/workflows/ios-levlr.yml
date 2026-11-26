@@ -99,6 +99,24 @@ jobs:
           node iosApp/tools/asc-iap-screenshot.mjs solutions.xapient.levlr \
             trial="$RUNNER_TEMP/iap_OFFER.png" full_unlock="$RUNNER_TEMP/iap_THANKS.png"
 
+      # App-Screenshots 6.9" + 13", EN + DE, Szenen wie im Play-Store-Listing; direkt per API, ersetzt nur Geaendertes
+      - name: App-Screenshots
+        if: env.HAS_ASC == 'true'
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+        run: |
+          export ASC_KEY_PATH="$RUNNER_TEMP/shots_key.p8"
+          trap 'rm -f "$ASC_KEY_PATH"' EXIT
+          printf '%s' "$ASC_KEY_P8" > "$ASC_KEY_PATH"
+          APP="$RUNNER_TEMP/dd/Build/Products/Debug-iphonesimulator/levlr.app"
+          SCENES="EDGE_TILTED EDGE_LEVEL FLAT_TILTED FLAT_LEVEL HELD EDGE_MM CALIBRATE"
+          bash iosApp/tools/sim-shots.sh "$APP" solutions.xapient.levlr "$RUNNER_TEMP/shots" APP_IPHONE_67 '^iPhone \d+ Pro Max$' 1320x2868 $SCENES
+          bash iosApp/tools/sim-shots.sh "$APP" solutions.xapient.levlr "$RUNNER_TEMP/shots" APP_IPAD_PRO_3GEN_129 '^iPad Pro 13-inch' 2064x2752 $SCENES
+          node iosApp/tools/asc-screenshots.mjs solutions.xapient.levlr "$RUNNER_TEMP/shots"
+          rm -rf "$RUNNER_TEMP/shots"
+
       - name: Archiv + Upload zu TestFlight
         if: env.HAS_ASC == 'true'
         env:
