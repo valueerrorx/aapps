@@ -4,7 +4,7 @@ nordr: Ruhiger, genauer Kompass, der auf Wunsch einen Kurs hält.
 spinr: Glücksrad, das sich wie ein echtes dreht und fair entscheidet.
 scorr: Punktezähler für Spieleabende mit großen Farbflächen pro Spieler.
 focusr: Visueller Timer: die Restzeit als farbige Scheibe, die langsam schrumpft.
-roundr: Intervall-Timer für HIIT, Tabata und Boxrunden, aus drei Metern lesbar.
+roundr: Intervall-Timer für Sport, Spielrunden und Lernen, aus drei Metern lesbar.
 pulsr: Metronom mit sauberem, sample-genauem Klick zum Üben.
 loudr: Lautstärke-Messer mit Alltagsvergleich und Verlauf.
 tunr: Chromatisches Stimmgerät: Ton spielen, Note und Abweichung sofort ablesen.
