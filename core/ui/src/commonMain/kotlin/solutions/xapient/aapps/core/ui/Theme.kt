@@ -8,7 +8,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.em
@@ -27,15 +26,10 @@ data class AappsColors(
     val onAccent: Color = Color(0xFF0B1014),
 )
 
-val SpaceGrotesk = FontFamily(
-    Font(R.font.space_grotesk_medium, FontWeight.Medium),
-    Font(R.font.space_grotesk_bold, FontWeight.Bold),
-)
+// Schriften je Plattform geladen (Android: R.font, iOS: Bytes aus den Compose-Ressourcen)
+expect val SpaceGrotesk: FontFamily
 
-val Inter = FontFamily(
-    Font(R.font.inter_regular, FontWeight.Normal),
-    Font(R.font.inter_semibold, FontWeight.SemiBold),
-)
+expect val Inter: FontFamily
 
 @Immutable
 data class AappsType(

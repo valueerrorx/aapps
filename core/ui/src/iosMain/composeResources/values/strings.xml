@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Nur iOS: App-Store-Texte (Android-Texte in core/billing) -->
+<resources>
+    <string name="ios_promise_offline">Never goes online</string>
+    <string name="store_offer_title">Try it free for one day</string>
+    <string name="store_offer_text">Use every feature for one day, free and without a subscription. After that the app stays locked until you unlock it with a one-time purchase – including all future updates.</string>
+    <string name="store_offer_price">After the trial: one-time purchase for %1$s.</string>
+    <string name="store_trial_start">Start free trial</string>
+    <string name="store_title">Thank you!</string>
+    <string name="store_text">Thanks for trying this app! If you like it, unlock it forever with a one-time purchase – including all future updates.</string>
+    <string name="store_point_data">No data collected, no tracking</string>
+    <string name="store_point_offline">Works completely offline</string>
+    <string name="store_point_source">Open source</string>
+    <string name="store_unlock">Unlock</string>
+    <string name="store_unlock_price">Unlock for %1$s</string>
+    <string name="store_restore">Restore purchase</string>
+    <string name="store_restoring">Checking …</string>
+    <string name="store_once">One-time purchase, no subscription. Only the purchase goes through the App Store, the app itself never goes online.</string>
+    <string name="store_hint_noprice">The price appears as soon as the App Store is reachable.</string>
+    <string name="store_hint_pending">Your purchase is pending, for example waiting for approval. The app unlocks as soon as it is confirmed.</string>
+    <string name="store_hint_notfound">No purchase found for this Apple Account.</string>
+    <string name="store_hint_offline">The App Store is not reachable right now. Please try again later.</string>
+    <string name="store_hint_unavailable">The purchase cannot be started right now. Please try again later.</string>
+    <string name="store_hint_failed">The purchase did not go through. Please try again.</string>
+</resources>

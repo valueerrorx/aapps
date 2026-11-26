@@ -35,20 +35,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.jetbrains.compose.resources.stringResource
 
 // Grundgeruest fuer Einstellungen: Kopfzeile, scrollbare Gruppen
 @Composable
 fun SettingsScreen(onBack: () -> Unit, content: @Composable ColumnScope.() -> Unit) {
     AappsScaffold {
         Column(Modifier.fillMaxWidth()) {
-            AappsTopBar(stringResource(R.string.aapps_settings), onBack, stringResource(R.string.aapps_back))
+            AappsTopBar(stringResource(Res.string.aapps_settings), onBack, stringResource(Res.string.aapps_back))
             Column(
                 Modifier
                     .fillMaxWidth()

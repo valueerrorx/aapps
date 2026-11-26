@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ios_promise_offline">Geht nie ins Internet</string>
+    <string name="store_offer_title">Einen Tag gratis testen</string>
+    <string name="store_offer_text">Nutze einen Tag lang alle Funktionen, kostenlos und ohne Abo. Danach bleibt die App gesperrt, bis du sie mit einem einmaligen Kauf freischaltest – inklusive aller zukünftigen Updates.</string>
+    <string name="store_offer_price">Nach der Testphase: einmaliger Kauf für %1$s.</string>
+    <string name="store_trial_start">Testphase starten</string>
+    <string name="store_title">Danke!</string>
+    <string name="store_text">Vielen Dank, dass du diese App getestet hast! Wenn sie dir gefällt, schalte sie mit einem einmaligen Kauf dauerhaft frei – inklusive aller zukünftigen Updates.</string>
+    <string name="store_point_data">Keine Daten, kein Tracking</string>
+    <string name="store_point_offline">Funktioniert komplett offline</string>
+    <string name="store_point_source">Open Source</string>
+    <string name="store_unlock">Freischalten</string>
+    <string name="store_unlock_price">Für %1$s freischalten</string>
+    <string name="store_restore">Kauf wiederherstellen</string>
+    <string name="store_restoring">Prüfe …</string>
+    <string name="store_once">Einmaliger Kauf, kein Abo. Nur der Kauf läuft über den App Store, die App selbst geht nie ins Internet.</string>
+    <string name="store_hint_noprice">Der Preis erscheint, sobald der App Store erreichbar ist.</string>
+    <string name="store_hint_pending">Dein Kauf ist noch ausstehend, z. B. weil er bestätigt werden muss. Die App wird freigeschaltet, sobald er bestätigt ist.</string>
+    <string name="store_hint_notfound">Für diesen Apple Account wurde kein Kauf gefunden.</string>
+    <string name="store_hint_offline">Der App Store ist gerade nicht erreichbar. Bitte versuch es später noch einmal.</string>
+    <string name="store_hint_unavailable">Der Kauf lässt sich gerade nicht starten. Bitte versuch es später noch einmal.</string>
+    <string name="store_hint_failed">Der Kauf hat nicht geklappt. Bitte versuch es noch einmal.</string>
+</resources>

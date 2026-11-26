@@ -1,7 +1,5 @@
 package solutions.xapient.aapps.core.ui
 
-import android.content.ActivityNotFoundException
-import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,10 +18,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
+import org.jetbrains.compose.resources.stringResource
 
 const val SOURCE_URL = "https://github.com/valueerrorx/aapps"
 
@@ -38,10 +35,10 @@ fun AboutScreen(
     icon: @Composable () -> Unit = {},
 ) {
     val c = Aapps.colors
-    val context = LocalContext.current
+    val uri = LocalUriHandler.current
     AappsScaffold {
         Column(Modifier.fillMaxWidth()) {
-            AappsTopBar(null, onBack, stringResource(R.string.aapps_back))
+            AappsTopBar(null, onBack, stringResource(Res.string.aapps_back))
             Column(
                 Modifier
                     .fillMaxWidth()
@@ -53,7 +50,7 @@ fun AboutScreen(
                 BasicText(appName, style = Aapps.type.headline.copy(color = c.fg))
                 Spacer(Modifier.height(4.dp))
                 BasicText(
-                    stringResource(R.string.aapps_version, versionName),
+                    stringResource(Res.string.aapps_version, versionName),
                     style = Aapps.type.number.copy(color = c.accent, fontSize = Aapps.type.label.fontSize * 1.1f),
                 )
                 Spacer(Modifier.height(16.dp))
@@ -61,17 +58,17 @@ fun AboutScreen(
                 Spacer(Modifier.height(28.dp))
                 SettingsGroup(null) {
                     Column(Modifier.padding(vertical = 10.dp)) {
-                        Promise(stringResource(R.string.aapps_promise_ads))
-                        Promise(stringResource(R.string.aapps_promise_tracking))
-                        Promise(stringResource(R.string.aapps_promise_internet))
+                        Promise(stringResource(Res.string.aapps_promise_ads))
+                        Promise(stringResource(Res.string.aapps_promise_tracking))
+                        Promise(noInternetText())
                     }
                 }
                 Spacer(Modifier.height(20.dp))
                 SettingsGroup(null) {
-                    SettingsAction(stringResource(R.string.aapps_source), SOURCE_URL.removePrefix("https://")) {
+                    SettingsAction(stringResource(Res.string.aapps_source), SOURCE_URL.removePrefix("https://")) {
                         try {
-                            context.startActivity(Intent(Intent.ACTION_VIEW, SOURCE_URL.toUri()))
-                        } catch (_: ActivityNotFoundException) {
+                            uri.openUri(SOURCE_URL)
+                        } catch (_: Exception) {
                             // kein Browser installiert: nichts tun
                         }
                     }
@@ -80,13 +77,17 @@ fun AboutScreen(
                 val small = Aapps.type.body.copy(color = c.fgMuted, fontSize = Aapps.type.label.fontSize * 1.1f)
                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                     notes.forEach { BasicText(it, style = small) }
-                    BasicText(stringResource(R.string.aapps_license), style = small)
-                    BasicText(stringResource(R.string.aapps_fonts), style = small)
+                    BasicText(stringResource(Res.string.aapps_license), style = small)
+                    BasicText(stringResource(Res.string.aapps_fonts), style = small)
                 }
             }
         }
     }
 }
+
+// Android: keine Internet-Berechtigung; iOS kennt keine, dort "nie online"
+@Composable
+internal expect fun noInternetText(): String
 
 @Composable
 private fun Promise(text: String) {
