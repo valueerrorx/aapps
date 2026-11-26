@@ -28,6 +28,10 @@ class AappsAppPlugin : Plugin<Project> {
         val version = file("version.txt").readText().trim()
         val parts = version.split(".").map { it.toInt() }
         require(parts.size == 3) { "version.txt muss X.Y.Z enthalten" }
+        // Optional versioncode.txt: hoeherer Code ohne neue versionName (Store-Update)
+        val baseCode = parts[0] * 10000 + parts[1] * 100 + parts[2]
+        val codeFile = file("versioncode.txt")
+        val code = if (codeFile.exists()) maxOf(baseCode, codeFile.readText().trim().toInt()) else baseCode
 
         extensions.configure<ApplicationExtension> {
             configureAndroidCommon(this)
@@ -36,7 +40,7 @@ class AappsAppPlugin : Plugin<Project> {
                 applicationId = "solutions.xapient.$appName"
                 targetSdk = Sdk.TARGET
                 versionName = version
-                versionCode = parts[0] * 10000 + parts[1] * 100 + parts[2]
+                versionCode = code
             }
             buildFeatures.buildConfig = true
             lint.checkDependencies = true

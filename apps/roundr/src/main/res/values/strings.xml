@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name" translatable="false">roundr</string>
-    <string name="tagline">An interval timer for HIIT, Tabata and boxing rounds. Big numbers, bold colours, clear beeps.</string>
+    <string name="tagline">An interval timer for workouts, game rounds, study sessions and more. Big numbers, bold colours, clear beeps.</string>
     <string name="note_background">The timer keeps running with the screen locked. The notification shows the phase and lets you pause or stop.</string>
 
     <string name="phase_prep">Get ready</string>
-    <string name="phase_work">Work</string>
+    <string name="phase_work">Active</string>
     <string name="phase_rest">Rest</string>
     <string name="phase_set_rest">Set break</string>
 
@@ -14,6 +14,8 @@
     <string name="preset_hiit">HIIT 40/20</string>
     <string name="preset_emom">EMOM</string>
     <string name="preset_boxing">Boxing</string>
+    <string name="preset_game">Game round</string>
+    <string name="preset_study">Study 25/5</string>
     <string name="custom">Custom</string>
 
     <string name="round_of">Round %1$d/%2$d</string>
@@ -32,12 +34,12 @@
     <string name="back">Previous phase</string>
     <string name="stop">Stop</string>
     <string name="stop_confirm">Tap again to stop</string>
-    <string name="notify_channel">Running workout</string>
+    <string name="notify_channel">Running timer</string>
 
     <string name="start">Start</string>
     <string name="total">Total</string>
     <string name="total_is">Total %1$s</string>
-    <string name="library">Workouts</string>
+    <string name="library">My timers</string>
     <string name="edit">Edit</string>
     <string name="rounds">Rounds</string>
     <string name="sets">Sets</string>
@@ -55,7 +57,7 @@
 
     <string name="presets">Presets</string>
     <string name="saved">Saved</string>
-    <string name="saved_empty">Edit a workout and save it under a name. It will show up here.</string>
+    <string name="saved_empty">Edit a timer and save it under a name. It will show up here.</string>
     <string name="selected">Selected</string>
     <string name="delete_named">Delete %1$s</string>
     <string name="delete_confirm">Tap × again to delete</string>
@@ -71,5 +73,5 @@
     <string name="vibrate">Vibrate</string>
     <string name="group_display">Display</string>
     <string name="keep_on">Keep screen on</string>
-    <string name="keep_on_sub">While a workout is running</string>
+    <string name="keep_on_sub">While a timer is running</string>
 </resources>

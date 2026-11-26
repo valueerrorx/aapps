@@ -56,11 +56,11 @@ class GestureTest {
 
     @Test fun tapPlusAndMinusStepOnce() {
         val work = editor()
-        rule.onNodeWithContentDescription("More Work").performTouchInput { down(center); up() }
+        rule.onNodeWithContentDescription("More Active").performTouchInput { down(center); up() }
         rule.waitForIdle()
         assertEquals(25, work())
-        value("Work", "0:25")
-        rule.onNodeWithContentDescription("Less Work").performTouchInput { down(center); up() }
+        value("Active", "0:25")
+        rule.onNodeWithContentDescription("Less Active").performTouchInput { down(center); up() }
         rule.waitForIdle()
         assertEquals(20, work())
     }
@@ -68,9 +68,9 @@ class GestureTest {
     @Test fun holdRepeats() {
         val work = editor()
         rule.mainClock.autoAdvance = false
-        rule.onNodeWithContentDescription("More Work").performTouchInput { down(center) }
+        rule.onNodeWithContentDescription("More Active").performTouchInput { down(center) }
         rule.mainClock.advanceTimeBy(1_500)
-        rule.onNodeWithContentDescription("More Work").performTouchInput { up() }
+        rule.onNodeWithContentDescription("More Active").performTouchInput { up() }
         rule.mainClock.advanceTimeBy(500)
         val after = work()
         assertTrue("nur $after", after >= 60)

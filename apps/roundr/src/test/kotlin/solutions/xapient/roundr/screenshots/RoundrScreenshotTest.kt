@@ -57,7 +57,7 @@ class RoundrScreenshotTest {
         )
     }
 
-    // Runde 3, Arbeit, 12 von 20 s uebrig
+    // Runde 3, Aktiv, 12 von 20 s uebrig
     @Composable private fun Work() = Running(tabata, 78_000)
 
     @Test fun run_work() = shot("run_work") { Work() }
@@ -96,9 +96,9 @@ class RoundrScreenshotTest {
     @Test fun home_font200() = shot("home_font200", fontScale = 2f) { Home() }
     @Test fun home_land_font200() = shot("home_land_font200", "+land", fontScale = 2f) { Home() }
 
-    private val saved = listOf(Workout("Beine & Po", 5, 45, 15, 6), Workout("Seilspringen", 10, 60, 30, 5, 2, 120))
+    private val saved = listOf(Workout("Quiz", 5, 45, 15, 6), Workout("Sprint", 10, 60, 30, 5, 2, 120))
 
-    @Composable private fun Library() = LibraryScreen(tabata, saved, {}, {}, {}, confirmName = "Seilspringen")
+    @Composable private fun Library() = LibraryScreen(tabata, saved, {}, {}, {}, confirmName = "Sprint")
 
     @Test fun library() = shot("library") { Library() }
     @Test fun library_de() = shot("library_de", "+de") { Library() }

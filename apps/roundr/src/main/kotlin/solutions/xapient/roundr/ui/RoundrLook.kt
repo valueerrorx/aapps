@@ -15,7 +15,7 @@ import solutions.xapient.roundr.R
 import solutions.xapient.roundr.domain.Phase
 import solutions.xapient.roundr.domain.Workout
 
-// Glut fuer Arbeit, Eis fuer Pause; Glut ist zugleich die App-Farbe
+// Glut fuer Aktiv, Eis fuer Pause; Glut ist zugleich die App-Farbe
 val Ember = Color(0xFFFF6B3D)
 val Ice = Color(0xFF4FC3F7)
 val Amber = Color(0xFFF2B84E)
@@ -59,6 +59,8 @@ fun workoutName(w: Workout): String = when (w.name) {
     "@hiit" -> stringResource(R.string.preset_hiit)
     "@emom" -> stringResource(R.string.preset_emom)
     "@boxing" -> stringResource(R.string.preset_boxing)
+    "@game" -> stringResource(R.string.preset_game)
+    "@study" -> stringResource(R.string.preset_study)
     "" -> stringResource(R.string.custom)
     else -> w.name
 }

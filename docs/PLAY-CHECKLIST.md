@@ -12,7 +12,7 @@ Store-Texte: `apps/<app>/fastlane/metadata/android/{de-DE,en-US}/`, Grafik-Liste
 
 ## 2. Store-Eintrag je App
 - [x] Titel, Kurz- und Langbeschreibung, Changelog DE/EN (Limits geprüft: Titel ≤ 30, kurz ≤ 80, lang ≤ 4000, Changelog ≤ 500 Zeichen).
-- [x] Changelog-Datei = versionCode aus `version.txt` (X·10000 + Y·100 + Z): `100.txt` für 0.1.0, `10000.txt` für sleepr, moovr, glidr (1.0.0). Änderst du die Version vor dem Upload, Datei umbenennen.
+- [x] Changelog-Datei = versionCode aus `version.txt` (X·10000 + Y·100 + Z): `100.txt` für 0.1.0, `10000.txt` für sleepr, moovr, glidr (1.0.0). Änderst du die Version vor dem Upload, Datei umbenennen. Optional hebt `apps/<app>/versioncode.txt` den versionCode an, ohne die Version zu ändern (roundr: 101).
 - [x] Icon 512×512 (RGBA), Feature-Grafik 1024×500 und Screenshots (auf 2:1 gebracht) bei allen 18 unter `metadata/android/<locale>/images/`, erzeugt mit `docs/overview/tools/store-images.js`, geprüft mit `--check`.
 - [x] Screenshot-Sprachvarianten angeglichen (sleepr, loudr, levlr, nordr, hertzr, magnr, pulsr, hudr, tunr: DE und EN gleiche Szenen).
 - [x] moovr (5) und glidr (6): echte Spiel-Screenshots quer, erzeugt mit `docs/overview/tools/game-shots/`.
@@ -37,7 +37,7 @@ Apps: sleepr, levlr, nordr, spinr, scorr, focusr, roundr, pulsr, loudr, tunr, ma
 | spinr | Unterhaltung |
 | scorr | Unterhaltung |
 | focusr | Produktivität |
-| roundr | Gesundheit & Fitness [?] (alternativ Sport) |
+| roundr | Tools |
 | pulsr | Musik & Audio |
 | loudr | Tools |
 | tunr | Musik & Audio |
@@ -68,7 +68,7 @@ Apps: sleepr, levlr, nordr, spinr, scorr, focusr, roundr, pulsr, loudr, tunr, ma
 ### Weitere Formulare
 - Werbung: **Nein**, bei allen.
 - App-Zugriff: alle Funktionen ohne Anmeldung zugänglich.
-- Gesundheits-Apps: alle „keine Gesundheitsfunktionen“. [?] roundr: falls Kategorie Gesundheit & Fitness, ehrlich „Trainings-Timer, erfasst keine Gesundheitsdaten“.
+- Gesundheits-Apps: alle „keine Gesundheitsfunktionen“. roundr: Runden- und Intervall-Timer, erfasst keine Gesundheitsdaten.
 - Finanzfunktionen, Behörden-App, Nachrichten: Nein. [?] dividr: rechnet nur Ausgaben einer Gruppe auf, keine Zahlungen oder Finanzdienste → „keine Finanzfunktionen“.
 
 ### Altersfreigabe (IARC-Fragebogen)
@@ -107,8 +107,8 @@ Für jeden Vordergrunddienst-Typ verlangt die Console eine Beschreibung und eine
 - EN: hertzr is a tone generator for speaker and room tests. A test tone or a sweep of up to 60 s must keep playing when the screen turns off, because the phone is often set down during the test. The service runs only during playback, shows the frequency and a stop button in the notification, and ends on stop, headphone unplug or an incoming call.
 
 ### specialUse – roundr
-- DE: roundr ist ein Intervall-Timer für Training. Während eines vom Nutzer gestarteten Trainings zählt der Dienst Arbeits- und Pausenphasen und spielt 3-2-1-Signale und Vibration, auch wenn das Handy gesperrt in der Tasche ist. Kein Standardtyp passt: `mediaPlayback` passt nicht zu kurzen Signaltönen, `health` würde Sensor-Rechte verlangen, die roundr nicht braucht. Der Dienst läuft nur während eines aktiven Trainings und endet bei Fertig oder Beenden. Würde er verzögert, kämen die Signale zu spät.
-- EN: roundr is an interval workout timer. During a workout started by the user, the service counts work and rest phases and plays 3-2-1 signals and vibration, even when the phone is locked in a pocket. No standard type fits: `mediaPlayback` does not match short signal tones, and `health` would require sensor permissions roundr does not need. The service runs only while a workout is active and ends when it is finished or stopped. If it were deferred, the signals would arrive late.
+- DE: roundr ist ein Runden- und Intervall-Timer (Sport, Spielrunden, Lernen). Während eines vom Nutzer gestarteten Timers zählt der Dienst Aktiv- und Pausenphasen und spielt 3-2-1-Signale und Vibration, auch wenn das Handy gesperrt in der Tasche ist. Kein Standardtyp passt: `mediaPlayback` passt nicht zu kurzen Signaltönen, `health` würde Sensor-Rechte verlangen, die roundr nicht braucht. Der Dienst läuft nur, solange ein Timer läuft, und endet bei Fertig oder Beenden. Würde er verzögert, kämen die Signale zu spät.
+- EN: roundr is a round and interval timer (sports, game rounds, studying). During a timer started by the user, the service counts active and rest phases and plays 3-2-1 signals and vibration, even when the phone is locked in a pocket. No standard type fits: `mediaPlayback` does not match short signal tones, and `health` would require sensor permissions roundr does not need. The service runs only while a timer is running and ends when it is finished or stopped. If it were deferred, the signals would arrive late.
 
 ### specialUse – dozr
 - DE: dozr ist ein Einschlaf-Timer für andere Apps. Nach einem vom Nutzer gestarteten Countdown senkt der Dienst die Medienlautstärke schrittweise, bittet andere Player per Audio-Fokus um Pause und stellt die Lautstärke danach wieder her. dozr spielt selbst nichts ab, daher passt `mediaPlayback` nicht. Der Dienst läuft nur, solange ein vom Nutzer gestarteter Timer aktiv ist, zeigt Restzeit, „+10 min“ und Stopp in der Benachrichtigung. Würde er verzögert, liefe die Wiedergabe die ganze Nacht weiter oder die Lautstärke bliebe auf null.
@@ -130,5 +130,5 @@ Für jeden Vordergrunddienst-Typ verlangt die Console eine Beschreibung und eine
   `./gradlew :apps:<app>:bundleRelease -Paapps.requireReleaseKey=true` mit `KEYSTORE_FILE`, `KEYSTORE_PASSWORD`, `KEY_PASSWORD_<APP>` → `apps/<app>/build/outputs/bundle/release/<app>-release.aab`
 - [x] Builds am NAS per `xapient-job` (Speicher knapp, eine App nach der anderen); signierte AABs aller 18 Apps liegen außerhalb des Repos bereit.
 - [ ] R8-Mapping (`build/outputs/mapping/release/mapping.txt`) mit hochladen, damit Absturzberichte lesbar sind.
-- [ ] Jeder weitere Upload braucht einen höheren versionCode, also `version.txt` erhöhen.
+- [ ] Jeder weitere Upload braucht einen höheren versionCode, also `version.txt` erhöhen (oder nur `versioncode.txt`, wenn die Version gleich bleiben soll).
 - Optional: `fastlane supply` liest die Texte direkt aus `apps/<app>/fastlane/metadata/android`. Sonst Texte per Copy-and-paste in die Console.

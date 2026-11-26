@@ -1,11 +1,11 @@
 # roundr – SPEC
 
 ## Aufgabe
-Intervall-Timer für HIIT, Tabata und Boxrunden: Arbeit und Pause wechseln sich ab, groß lesbar aus 3 m, mit Ton und Vibration, auch bei gesperrtem Bildschirm.
+Runden- und Intervall-Timer für Sport, Spielrunden, Lernen und mehr: Aktiv und Pause wechseln sich ab, groß lesbar aus 3 m, mit Ton und Vibration, auch bei gesperrtem Bildschirm.
 
 ## Muss
 - Training = Vorbereitung (0–60 s), Arbeit (5 s–60 min), Pause (0–60 min), Runden (1–99), Sätze (1–10), Satzpause (0–10 min). Pause 0 = direkt weiter (EMOM). Nach der letzten Runde keine Pause; zwischen Sätzen ersetzt die Satzpause die Pause (0 = normale Pause).
-- Vorlagen: Tabata 20/10 × 8, Tabata 3 Sätze, HIIT 40/20 × 10, EMOM 1:00 × 10, Boxen 3:00/1:00 × 12. Eigene Trainings unter Namen speichern (max. 20, Name max. 24 Zeichen, gleicher Name überschreibt), löschen mit zweitem Tipp.
+- Vorlagen: Tabata 20/10 × 8, Tabata 3 Sätze, HIIT 40/20 × 10, EMOM 1:00 × 10, Boxen 3:00/1:00 × 12, Spielrunde 2:00/0:30 × 5, Lernen 25:00/5:00 × 4. Eigene Timer unter Namen speichern (max. 20, Name max. 24 Zeichen, gleicher Name überschreibt), löschen mit zweitem Tipp.
 - Werte per −/+ ändern, Gedrückthalten wiederholt. Zeit-Schritte 5 s (< 1 min), 15 s (< 5 min), sonst 30 s, immer auf das Raster.
 - Lauf: ganze Fläche in der Phasenfarbe (Arbeit Glut-Orange, Pause Eis-Blau, Vorbereitung Bernstein), die sich wie ein Füllstand von oben nach unten leert; Phasenwechsel füllt per Feder neu und morpht die Farbe. Text und Symbole wechseln an der Füllkante die Farbe (dunkel auf Farbe, Farbe auf Dunkel).
 - Restzeit riesig (Sekunden unter 1 min, sonst m:ss, aufgerundet), Phase, Runde/Satz, nächste Phase. Letzte 3 s pulsieren.

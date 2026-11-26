@@ -69,4 +69,11 @@ class WorkoutTest {
         Presets.all.forEach { assertEquals(it, it.clamped()) }
         assertNull(Presets.all.groupBy { it.name }.values.firstOrNull { it.size > 1 })
     }
+
+    // Neutrale Vorlagen: Spielrunde 5 × 2:00/0:30, Lernen 4 × 25:00/5:00
+    @Test fun neutralPresets() {
+        val byName = Presets.all.associateBy { it.name }
+        assertTrue(byName.getValue("@game").sameTiming(Workout("", 10, 120, 30, 5)))
+        assertTrue(byName.getValue("@study").sameTiming(Workout("", 10, 1500, 300, 4)))
+    }
 }

@@ -1,0 +1,1 @@
+Kleine Anpassungen: Die Phase heißt jetzt „Aktiv“ statt „Arbeit“, eigene Einstellungen heißen „Timer“. Neue Vorlagen: Spielrunde und Lernen 25/5.

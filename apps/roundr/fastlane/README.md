@@ -5,7 +5,7 @@ Erzeugt mit `docs/overview/tools/store-images.js` nach `metadata/android/<locale
 
 ## Phone-Screenshots
 de-DE:
-1. `run_work_de.png` – Arbeit, Runde 3/8
+1. `run_work_de.png` – Aktiv, Runde 3/8
 2. `home_de.png` – Start mit Tabata
 3. `run_rest_de.png` – Pause
 4. `run_last3_de.png` – letzte 3 Sekunden
@@ -15,7 +15,7 @@ de-DE:
 8. `editor_de.png` – Bearbeiten
 
 en-US:
-1. `run_work.png` – Arbeit, Runde 3/8
+1. `run_work.png` – Aktiv, Runde 3/8
 2. `home.png` – Start mit Tabata
 3. `run_rest.png` – Pause
 4. `run_last3.png` – letzte 3 Sekunden

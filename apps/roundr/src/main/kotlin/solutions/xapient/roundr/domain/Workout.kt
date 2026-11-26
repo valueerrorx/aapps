@@ -87,6 +87,8 @@ object Presets {
         Workout("@hiit", prepSec = 10, workSec = 40, restSec = 20, rounds = 10),
         Workout("@emom", prepSec = 10, workSec = 60, restSec = 0, rounds = 10),
         Workout("@boxing", prepSec = 10, workSec = 180, restSec = 60, rounds = 12),
+        Workout("@game", prepSec = 10, workSec = 120, restSec = 30, rounds = 5),
+        Workout("@study", prepSec = 10, workSec = 1500, restSec = 300, rounds = 4),
     )
 
     val default: Workout get() = all.first()

@@ -1,0 +1,1 @@
+Small changes: the work phase is now called "Active", saved setups are now "timers". New templates: game round and study 25/5.

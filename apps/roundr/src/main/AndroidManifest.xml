@@ -34,7 +34,7 @@
             android:foregroundServiceType="specialUse">
             <property
                 android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
-                android:value="Interval workout timer: counts work and rest phases and plays countdown signals while the screen is locked. Runs only while a workout started by the user is active." />
+                android:value="Interval timer: counts active and rest phases and plays countdown signals while the screen is locked. Runs only while a timer started by the user is running." />
         </service>
     </application>
 </manifest>
