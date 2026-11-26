@@ -6,10 +6,10 @@
     <string name="phase_prep">Bereit machen</string>
     <string name="phase_work">Aktiv</string>
     <string name="phase_rest">Pause</string>
-    <string name="phase_set_rest">Satzpause</string>
+    <string name="phase_set_rest">Blockpause</string>
 
     <string name="preset_tabata">Tabata</string>
-    <string name="preset_tabata3">Tabata · 3 Sätze</string>
+    <string name="preset_tabata3">Tabata · 3 Blöcke</string>
     <string name="preset_hiit">HIIT 40/20</string>
     <string name="preset_emom">EMOM</string>
     <string name="preset_boxing">Boxen</string>
@@ -18,7 +18,7 @@
     <string name="custom">Eigenes</string>
 
     <string name="round_of">Runde %1$d/%2$d</string>
-    <string name="round_set_of">Runde %1$d/%2$d · Satz %3$d/%4$d</string>
+    <string name="round_set_of">Runde %1$d/%2$d · Block %3$d/%4$d</string>
     <string name="next_is">Danach · %1$s %2$s</string>
     <string name="last_phase">Die letzte</string>
     <string name="paused">Angehalten</string>
@@ -41,7 +41,7 @@
     <string name="library">Meine Timer</string>
     <string name="edit">Bearbeiten</string>
     <string name="rounds">Runden</string>
-    <string name="sets">Sätze</string>
+    <string name="sets">Blöcke</string>
     <string name="field_prep">Vorbereitung</string>
     <string name="less_named">%1$s weniger</string>
     <string name="more_named">%1$s mehr</string>

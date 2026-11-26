@@ -70,6 +70,7 @@ class RoundrScreenshotTest {
     @Test fun run_rest_land() = shot("run_rest_land", "+land") { Running(tabata, 68_000) }
     @Test fun run_prep() = shot("run_prep") { Running(tabata, 3_000) }
     @Test fun run_setrest() = shot("run_setrest") { Running(tabata3, 255_000) }
+    @Test fun run_setrest_de() = shot("run_setrest_de", "+de") { Running(tabata3, 255_000) }
     @Test fun run_last3() = shot("run_last3") { Running(tabata, 88_000) }
     @Test fun run_paused() = shot("run_paused") { Running(tabata, 78_000, running = false) }
     @Test fun run_paused_de() = shot("run_paused_de", "+de") { Running(tabata, 78_000, running = false, confirm = true) }

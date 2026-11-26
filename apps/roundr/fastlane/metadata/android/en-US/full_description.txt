@@ -1,10 +1,10 @@
 roundr switches between active and rest phases for you and counts the rounds. The whole screen glows in the colour of the current phase and drains like a fill level, with the time left in large digits in the middle. You can see how long is left even from a few metres away.
 
-Circuit training, a board game with a time limit, study blocks with breaks or the steps of a recipe: you set the phases and rounds, roundr tells you when to move on.
+Circuit training, a board game with a time limit, study sessions with breaks or the steps of a recipe: you set the phases and rounds, roundr tells you when to move on.
 
 Features
-• Prepare, active, rest, rounds, sets and set rest, all adjustable
-• Templates: Tabata, Tabata with 3 sets, HIIT 40/20, EMOM, boxing 3:00/1:00, game round 2:00/0:30, study 25/5
+• Prepare, active, rest, rounds, blocks and block break, all adjustable
+• Templates: Tabata, Tabata with 3 blocks, HIIT 40/20, EMOM, boxing 3:00/1:00, game round 2:00/0:30, study 25/5
 • Save up to 20 of your own timers by name
 • 3-2-1 beeps before every phase change, separate sounds for active, rest and finish, plus vibration (both can be turned off)
 • Keeps running with the screen locked, controls in the notification
