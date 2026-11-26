@@ -47,8 +47,8 @@ private val FLAT_SCALES = mapOf(
 // Wert in der Einheit -> Grad
 private fun toDegrees(v: Float, unit: AngleUnit): Float = when (unit) {
     AngleUnit.DEGREE -> v
-    AngleUnit.PERCENT -> Math.toDegrees(atan(v / 100.0)).toFloat()
-    AngleUnit.MM_PER_M -> Math.toDegrees(atan(v / 1000.0)).toFloat()
+    AngleUnit.PERCENT -> (atan(v / 100.0) * 180.0 / PI).toFloat()
+    AngleUnit.MM_PER_M -> (atan(v / 1000.0) * 180.0 / PI).toFloat()
 }
 
 private fun label(v: Float, unit: AngleUnit): String = when (unit) {

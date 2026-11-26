@@ -1,9 +1,9 @@
 package solutions.xapient.levlr.domain
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
-import org.junit.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
+import kotlin.test.Test
 
 class LevelEngineTest {
     private fun LevelEngine.feed(v: Vec3, n: Int, turns: Int = 0, start: Long = 1L): Long {

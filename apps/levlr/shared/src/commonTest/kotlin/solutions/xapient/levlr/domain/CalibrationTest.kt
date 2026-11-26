@@ -2,10 +2,10 @@ package solutions.xapient.levlr.domain
 
 import solutions.xapient.levlr.domain.CalibrationSession.Problem
 import solutions.xapient.levlr.domain.CalibrationSession.Step
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
-import org.junit.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
+import kotlin.test.Test
 import kotlin.math.abs
 
 class CalibrationTest {

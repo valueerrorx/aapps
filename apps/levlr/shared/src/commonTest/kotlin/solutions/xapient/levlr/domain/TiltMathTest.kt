@@ -1,7 +1,7 @@
 package solutions.xapient.levlr.domain
 
-import org.junit.Assert.assertEquals
-import org.junit.Test
+import kotlin.test.assertEquals
+import kotlin.test.Test
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin

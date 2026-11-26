@@ -28,7 +28,7 @@ private const val RAD_TO_DEG = (180.0 / PI).toFloat()
 object TiltMath {
 
     // Geraete- auf Bildschirmkoordinaten drehen (quarterTurns = Display-Rotation 0..3)
-    fun toScreen(v: Vec3, quarterTurns: Int): Vec3 = when (Math.floorMod(quarterTurns, 4)) {
+    fun toScreen(v: Vec3, quarterTurns: Int): Vec3 = when (quarterTurns.mod(4)) {
         1 -> Vec3(-v.y, v.x, v.z)
         2 -> Vec3(-v.x, -v.y, v.z)
         3 -> Vec3(v.y, -v.x, v.z)
@@ -39,7 +39,7 @@ object TiltMath {
     fun edgeRaw(up: Vec3): Float = atan2(-up.x, up.y) * RAD_TO_DEG
 
     // Welche Bildschirmkante unten liegt (0 = untere, 1 = rechte, 2 = obere, 3 = linke)
-    fun edgeQuadrant(raw: Float): Int = Math.floorMod((raw / 90f).roundToInt(), 4)
+    fun edgeQuadrant(raw: Float): Int = (raw / 90f).roundToInt().mod(4)
 
     // Wie oben, aber die bisherige Kante bleibt bis 45° + Hysterese
     fun edgeQuadrant(raw: Float, previous: Int, hysteresis: Float = 5f): Int =

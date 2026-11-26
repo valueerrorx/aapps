@@ -22,7 +22,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import solutions.xapient.aapps.core.ui.Aapps
 import solutions.xapient.aapps.core.ui.AappsIcons
@@ -30,7 +29,8 @@ import solutions.xapient.aapps.core.ui.AappsPillButton
 import solutions.xapient.aapps.core.ui.AappsTextButton
 import solutions.xapient.aapps.core.ui.Haptics
 import solutions.xapient.aapps.core.ui.Springs
-import solutions.xapient.levlr.R
+import org.jetbrains.compose.resources.stringResource
+import solutions.xapient.levlr.res.*
 import solutions.xapient.levlr.domain.Bias
 import solutions.xapient.levlr.domain.CalibrationSession
 import solutions.xapient.levlr.domain.CalibrationSession.Problem
@@ -64,18 +64,18 @@ fun CalibrationCard(
         }
     }
 
-    val title = if (step == Step.DONE) stringResource(R.string.cal_title_done)
-    else stringResource(R.string.cal_title, if (step == Step.FIRST) 1 else 2)
+    val title = if (step == Step.DONE) stringResource(Res.string.cal_title_done)
+    else stringResource(Res.string.cal_title, if (step == Step.FIRST) 1 else 2)
     val body = when (step) {
-        Step.FIRST -> stringResource(R.string.cal_step1)
-        Step.SECOND -> stringResource(if (mode == LevelMode.EDGE) R.string.cal_step2_edge else R.string.cal_step2_flat)
-        Step.DONE -> stringResource(R.string.cal_done)
+        Step.FIRST -> stringResource(Res.string.cal_step1)
+        Step.SECOND -> stringResource(if (mode == LevelMode.EDGE) Res.string.cal_step2_edge else Res.string.cal_step2_flat)
+        Step.DONE -> stringResource(Res.string.cal_done)
     }
     val problem = when (session.problem) {
         Problem.NONE -> null
-        Problem.WRONG_MODE -> stringResource(if (mode == LevelMode.EDGE) R.string.cal_wrong_mode_edge else R.string.cal_wrong_mode_flat)
-        Problem.NOT_ROTATED -> stringResource(if (mode == LevelMode.EDGE) R.string.cal_not_rotated else R.string.cal_not_turned)
-        Problem.IMPLAUSIBLE -> stringResource(R.string.cal_implausible)
+        Problem.WRONG_MODE -> stringResource(if (mode == LevelMode.EDGE) Res.string.cal_wrong_mode_edge else Res.string.cal_wrong_mode_flat)
+        Problem.NOT_ROTATED -> stringResource(if (mode == LevelMode.EDGE) Res.string.cal_not_rotated else Res.string.cal_not_turned)
+        Problem.IMPLAUSIBLE -> stringResource(Res.string.cal_implausible)
     }
 
     Column(
@@ -106,10 +106,10 @@ fun CalibrationCard(
         Spacer(Modifier.height(8.dp))
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically) {
             if (step != Step.DONE) {
-                AappsTextButton(stringResource(R.string.cal_cancel), { state.endCalibration() })
+                AappsTextButton(stringResource(Res.string.cal_cancel), { state.endCalibration() })
                 Spacer(Modifier.weight(1f))
                 AappsPillButton(
-                    text = stringResource(if (session.measuring) R.string.cal_measuring else R.string.cal_measure),
+                    text = stringResource(if (session.measuring) Res.string.cal_measuring else Res.string.cal_measure),
                     onClick = { state.measureCalibration() },
                     icon = if (step == Step.SECOND) AappsIcons.Rotate else AappsIcons.Target,
                     active = !session.measuring,
@@ -117,7 +117,7 @@ fun CalibrationCard(
                 )
             } else {
                 AappsPillButton(
-                    text = stringResource(R.string.cal_finish),
+                    text = stringResource(Res.string.cal_finish),
                     onClick = { state.endCalibration() },
                     icon = AappsIcons.Check,
                     active = true,

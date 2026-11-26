@@ -4,7 +4,7 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":core:ui"))
+    implementation(project(":apps:levlr:shared"))
     implementation(libs.androidx.core.ktx)
 
     testImplementation(libs.junit)

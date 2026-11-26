@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tagline">A spirit level that settles with real physics. One job, done beautifully.</string>
+    <string name="note_survey">Not for surveying work. Phone sensors are not certified instruments.</string>
+
+    <string name="mode_flat">Flat</string>
+    <string name="mode_edge">Edge</string>
+    <string name="level">Level</string>
+    <string name="hold">Hold</string>
+    <string name="held">Held</string>
+    <string name="left_lower">↙ left side low</string>
+    <string name="right_lower">right side low ↘</string>
+    <string name="flat_axes">X %1$s · Y %2$s</string>
+    <string name="no_sensor">This device has no motion sensor.</string>
+
+    <string name="group_measure">Measurement</string>
+    <string name="group_calibration">Calibration</string>
+    <string name="group_debug">Diagnostics</string>
+    <string name="unit">Unit</string>
+    <string name="unit_degree">Degrees</string>
+    <string name="unit_percent">Percent</string>
+    <string name="haptics">Vibrate when level</string>
+    <string name="calibrate">Calibrate</string>
+    <string name="calibrate_sub">Two readings, turned 180° in between</string>
+    <string name="reset_calibration">Reset calibration</string>
+    <string name="calibration_state">Flat: %1$s · Edge: %2$s</string>
+    <string name="calibrated">calibrated</string>
+    <string name="not_calibrated">factory</string>
+
+    <string name="cal_title">Calibrate · %1$d/2</string>
+    <string name="cal_title_done">Calibrated</string>
+    <string name="cal_step1">Lay the phone flat or stand it on an edge, then measure. Keep it still.</string>
+    <string name="cal_step2_flat">Turn it 180° on the same spot, then measure again.</string>
+    <string name="cal_step2_edge">Flip it onto the opposite edge at the same spot, then measure again.</string>
+    <string name="cal_done">Readings are now corrected for this phone.</string>
+    <string name="cal_measure">Measure</string>
+    <string name="cal_measuring">Measuring…</string>
+    <string name="cal_cancel">Cancel</string>
+    <string name="cal_finish">Done</string>
+    <string name="cal_wrong_mode_flat">Lay it flat to continue.</string>
+    <string name="cal_wrong_mode_edge">Stand it on an edge to continue.</string>
+    <string name="cal_not_rotated">That was the same edge. Flip it onto the opposite one.</string>
+    <string name="cal_not_turned">Same reading as before. Turn it 180° on the same spot.</string>
+    <string name="cal_implausible">The readings are too far apart. Same spot, try again.</string>
+</resources>

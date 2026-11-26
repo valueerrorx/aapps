@@ -1,4 +1,4 @@
-package solutions.xapient.levlr.ui
+package solutions.xapient.levlr
 
 import android.content.ActivityNotFoundException
 import android.content.Context
@@ -18,7 +18,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.core.content.FileProvider
 import solutions.xapient.aapps.core.ui.SettingsAction
-import solutions.xapient.levlr.R
 import kotlinx.coroutines.delay
 import java.io.File
 

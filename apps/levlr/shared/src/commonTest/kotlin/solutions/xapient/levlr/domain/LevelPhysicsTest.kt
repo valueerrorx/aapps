@@ -1,9 +1,9 @@
 package solutions.xapient.levlr.domain
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
-import org.junit.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
+import kotlin.test.Test
 
 class LevelPhysicsTest {
     @Test
@@ -18,7 +18,7 @@ class LevelPhysicsTest {
         while (!p.isSettled && frames < 600) {
             p.step(1f / 60f); frames++
         }
-        assertTrue("Feder schlaeft nicht ein", p.isSettled)
+        assertTrue(p.isSettled, "Feder schlaeft nicht ein")
         assertTrue(p.bubble.value < 0f)
         assertEquals(-3f, p.surface.value, 0.05f)
     }
@@ -30,7 +30,7 @@ class LevelPhysicsTest {
         p.setTarget(LevelReading(LevelMode.EDGE, edgeAngle = 10f))
         var min = 0f
         repeat(120) { p.step(1f / 60f); min = minOf(min, p.surface.value) }
-        assertTrue("Fluessigkeit soll nachschwappen", min < -10.5f)
+        assertTrue(min < -10.5f, "Fluessigkeit soll nachschwappen")
     }
 
     @Test

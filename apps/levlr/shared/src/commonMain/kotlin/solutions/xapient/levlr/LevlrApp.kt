@@ -1,69 +1,52 @@
 package solutions.xapient.levlr
 
-import android.content.Context
-import android.hardware.SensorManager
-import android.hardware.display.DisplayManager
-import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import solutions.xapient.aapps.core.ui.AappsTheme
 import solutions.xapient.aapps.core.ui.KeepScreenOn
 import solutions.xapient.aapps.core.ui.rememberHaptics
 import solutions.xapient.levlr.domain.Calibration
-import solutions.xapient.levlr.sensor.AndroidSensorSource
-import solutions.xapient.levlr.ui.DiagnosticsRow
+import solutions.xapient.levlr.domain.SensorSource
 import solutions.xapient.levlr.ui.LevelScreen
 import solutions.xapient.levlr.ui.LevelState
 import solutions.xapient.levlr.ui.LevlrAbout
 import solutions.xapient.levlr.ui.LevlrSettings
 
+const val APP_NAME = "levlr"
+
 val LevlrAccent = Color(0xFFC6F24E)
 
 private enum class Screen { LEVEL, SETTINGS, ABOUT }
 
+// Gemeinsam fuer Android und iOS; Sensor, Speicher und Diagnose kommen von der Plattform
 @Composable
-fun LevlrApp() {
-    val context = LocalContext.current
-    val prefs = remember { Prefs(context) }
+fun LevlrApp(
+    prefs: Prefs,
+    sensor: SensorSource,
+    versionName: String,
+    diagnostics: (@Composable () -> Unit)? = null,
+) {
     var unit by remember { mutableStateOf(prefs.unit) }
     var hapticsOn by remember { mutableStateOf(prefs.haptics) }
     var calibration by remember { mutableStateOf(prefs.calibration) }
     var screen by rememberSaveable { mutableStateOf(Screen.LEVEL) }
     val state = remember { LevelState(calibration) }
-    val sensor = remember {
-        AndroidSensorSource(context.getSystemService(Context.SENSOR_SERVICE) as? SensorManager)
-    }
 
     AappsTheme(LevlrAccent) {
         val haptics = rememberHaptics(hapticsOn)
         when (screen) {
             Screen.LEVEL -> {
                 KeepScreenOn()
-                // Display-Rotation fuer die Umrechnung; auch 90->270 ohne Config-Wechsel
-                val view = LocalView.current
-                DisposableEffect(view) {
-                    val dm = context.getSystemService(DisplayManager::class.java)
-                    val update = { state.quarterTurns = view.display?.rotation ?: 0 }
-                    update()
-                    val listener = object : DisplayManager.DisplayListener {
-                        override fun onDisplayChanged(displayId: Int) = update()
-                        override fun onDisplayAdded(displayId: Int) = Unit
-                        override fun onDisplayRemoved(displayId: Int) = Unit
-                    }
-                    dm?.registerDisplayListener(listener, null)
-                    onDispose { dm?.unregisterDisplayListener(listener) }
-                }
+                // Display-Rotation fuer die Umrechnung Geraet -> Bildschirm
+                DisplayRotationEffect { state.quarterTurns = it }
 
-                // Sensor nur zwischen onResume und onPause
+                // Sensor nur, solange die App im Vordergrund ist
                 LifecycleResumeEffect(sensor) {
                     sensor.start { v, t -> state.onSample(v, t) }
                     onPauseOrDispose {
@@ -85,7 +68,7 @@ fun LevlrApp() {
                 )
             }
             Screen.SETTINGS -> {
-                BackHandler { screen = Screen.LEVEL }
+                BackEffect { screen = Screen.LEVEL }
                 LevlrSettings(
                     unit = unit,
                     onUnit = { unit = it; prefs.unit = it; haptics.step() },
@@ -103,13 +86,25 @@ fun LevlrApp() {
                     },
                     onAbout = { screen = Screen.ABOUT },
                     onBack = { screen = Screen.LEVEL },
-                    diagnostics = if (BuildConfig.DEBUG) ({ DiagnosticsRow() }) else null,
+                    diagnostics = diagnostics,
                 )
             }
             Screen.ABOUT -> {
-                BackHandler { screen = Screen.SETTINGS }
-                LevlrAbout(BuildConfig.VERSION_NAME) { screen = Screen.SETTINGS }
+                BackEffect { screen = Screen.SETTINGS }
+                LevlrAbout(versionName) { screen = Screen.SETTINGS }
             }
         }
     }
 }
+
+/** Liefert die Display-Rotation 0..3 (Vierteldrehungen gegen den Uhrzeigersinn, wie Android Surface.ROTATION_*) */
+@Composable
+internal expect fun DisplayRotationEffect(onRotation: (Int) -> Unit)
+
+/** System-Zurueck (Android); iOS hat keine Zurueck-Taste, dort fuehrt der Pfeil oben zurueck */
+@Composable
+internal expect fun BackEffect(onBack: () -> Unit)
+
+/** Dezimaltrenner der aktuellen Sprache */
+@Composable
+internal expect fun decimalSeparator(): Char

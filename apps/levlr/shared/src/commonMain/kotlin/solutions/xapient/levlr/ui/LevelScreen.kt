@@ -45,10 +45,8 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.LiveRegionMode
@@ -69,13 +67,17 @@ import solutions.xapient.aapps.core.ui.AappsPillButton
 import solutions.xapient.aapps.core.ui.AappsScaffold
 import solutions.xapient.aapps.core.ui.Haptics
 import solutions.xapient.aapps.core.ui.Springs
-import solutions.xapient.levlr.R
+import org.jetbrains.compose.resources.stringResource
+import solutions.xapient.aapps.core.ui.Res as CoreRes
+import solutions.xapient.aapps.core.ui.aapps_settings
+import solutions.xapient.levlr.res.*
+import solutions.xapient.levlr.decimalSeparator
 import solutions.xapient.levlr.domain.AngleUnit
 import solutions.xapient.levlr.domain.LevelMode
 import solutions.xapient.levlr.domain.LevelReading
 import solutions.xapient.levlr.domain.TiltMath
 import kotlinx.coroutines.flow.first
-import java.util.Locale
+import kotlin.math.roundToInt
 
 // Hauptbildschirm: Zahl, Libelle, eine Hauptaktion
 @Composable
@@ -180,7 +182,7 @@ fun LevelScreen(
         if (sensorMissing) {
             Box(Modifier.fillMaxSize().background(c.bg.copy(alpha = 0.85f)), contentAlignment = Alignment.Center) {
                 BasicText(
-                    stringResource(R.string.no_sensor),
+                    stringResource(Res.string.no_sensor),
                     Modifier.padding(32.dp),
                     style = Aapps.type.title.copy(color = c.fg, textAlign = TextAlign.Center),
                 )
@@ -191,7 +193,7 @@ fun LevelScreen(
 
 @Composable
 private fun GearButton(onClick: () -> Unit) {
-    AappsIconButton(AappsIcons.Gear, stringResource(solutions.xapient.aapps.core.ui.R.string.aapps_settings), onClick)
+    AappsIconButton(AappsIcons.Gear, stringResource(CoreRes.string.aapps_settings), onClick)
 }
 
 @Composable
@@ -208,7 +210,7 @@ private fun TopRow(mode: LevelMode, onOpenSettings: (() -> Unit)?) {
             Box(Modifier.size(6.dp).background(c.accent, CircleShape))
             Spacer(Modifier.width(8.dp))
             BasicText(
-                stringResource(if (mode == LevelMode.EDGE) R.string.mode_edge else R.string.mode_flat).uppercase(),
+                stringResource(if (mode == LevelMode.EDGE) Res.string.mode_edge else Res.string.mode_flat).uppercase(),
                 style = Aapps.type.label.copy(color = c.fgMuted),
             )
         }
@@ -217,9 +219,11 @@ private fun TopRow(mode: LevelMode, onOpenSettings: (() -> Unit)?) {
     }
 }
 
-internal fun formatValue(v: Float, locale: Locale): String {
-    val s = String.format(locale, "%.1f", v)
-    return if (s.startsWith("-")) "−" + s.substring(1) else s
+// Eine Nachkommastelle mit Dezimaltrenner der Sprache, Minus als echtes Minuszeichen
+internal fun formatValue(v: Float, sep: Char): String {
+    val tenths = (kotlin.math.abs(v) * 10f).roundToInt()
+    val sign = if (v < 0f && tenths != 0) "−" else ""
+    return "$sign${tenths / 10}$sep${tenths % 10}"
 }
 
 internal fun unitSuffix(unit: AngleUnit) = when (unit) {
@@ -232,8 +236,8 @@ internal fun unitSuffix(unit: AngleUnit) = when (unit) {
 private fun ReadingBlock(state: LevelState, unit: AngleUnit, level: Float, modifier: Modifier) {
     val c = Aapps.colors
     val r = state.reading
-    val locale = LocalConfiguration.current.locales[0]
-    val value = formatValue(TiltMath.convert(r.primary, unit), locale)
+    val sep = decimalSeparator()
+    val value = formatValue(TiltMath.convert(r.primary, unit), sep)
     val color by animateColorAsState(if (r.isLevel && !state.held) c.accent else c.fg, Springs.gentle(), label = "numColor")
     val big: AnnotatedString = buildAnnotatedString {
         append(value)
@@ -241,7 +245,7 @@ private fun ReadingBlock(state: LevelState, unit: AngleUnit, level: Float, modif
             append(if (unit == AngleUnit.MM_PER_M) " " + unitSuffix(unit) else unitSuffix(unit))
         }
     }
-    val secondary = secondaryLine(r, unit, locale)
+    val secondary = secondaryLine(r, unit, sep)
     val description = value + " " + unitSuffix(unit)
     Column(
         modifier
@@ -268,8 +272,8 @@ private fun ReadingBlock(state: LevelState, unit: AngleUnit, level: Float, modif
 private fun ColumnScope.StatusLine(state: LevelState, secondary: String, level: Float) {
     val c = Aapps.colors
     val text = when {
-        state.held -> stringResource(R.string.held).uppercase()
-        state.reading.isLevel -> stringResource(R.string.level).uppercase()
+        state.held -> stringResource(Res.string.held).uppercase()
+        state.reading.isLevel -> stringResource(Res.string.level).uppercase()
         else -> secondary
     }
     val color = when {
@@ -295,12 +299,12 @@ private fun ColumnScope.StatusLine(state: LevelState, secondary: String, level: 
 
 // Flach: beide Achsen; Kante: welche Seite tiefer liegt und die beiden anderen Einheiten
 @Composable
-private fun secondaryLine(r: LevelReading, unit: AngleUnit, locale: Locale): String {
-    fun f(a: Float, u: AngleUnit) = formatValue(TiltMath.convert(a, u), locale) + (if (u == AngleUnit.MM_PER_M) " " else "") + unitSuffix(u)
+private fun secondaryLine(r: LevelReading, unit: AngleUnit, sep: Char): String {
+    fun f(a: Float, u: AngleUnit) = formatValue(TiltMath.convert(a, u), sep) + (if (u == AngleUnit.MM_PER_M) " " else "") + unitSuffix(u)
     return if (r.mode == LevelMode.FLAT) {
-        stringResource(R.string.flat_axes, f(r.flatX, unit), f(r.flatY, unit))
+        stringResource(Res.string.flat_axes, f(r.flatX, unit), f(r.flatY, unit))
     } else {
-        val side = stringResource(if (r.edgeAngle > 0f) R.string.right_lower else R.string.left_lower)
+        val side = stringResource(if (r.edgeAngle > 0f) Res.string.right_lower else Res.string.left_lower)
         val others = AngleUnit.entries.filter { it != unit }.joinToString("  ·  ") { f(kotlin.math.abs(r.edgeAngle), it) }
         "$side\n$others"
     }
@@ -320,7 +324,7 @@ private fun BottomAction(
             exit = fadeOut(Springs.gentle()),
         ) {
             AappsPillButton(
-                text = stringResource(if (state.held) R.string.held else R.string.hold),
+                text = stringResource(if (state.held) Res.string.held else Res.string.hold),
                 onClick = {
                     haptics?.press()
                     state.toggleHold()
