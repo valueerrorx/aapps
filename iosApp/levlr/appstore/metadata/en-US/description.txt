@@ -1,0 +1,20 @@
+levlr shows you how far off level something is. Stand your iPhone or iPad on an edge or lay it flat and levlr picks the right mode by itself: a tube level with one axis on the edge, a bullseye level with two axes when lying flat.
+
+At 0.0° the display locks in: the colour changes, a short shine runs across and you feel a tap. You can tell it is level without looking.
+
+Features
+• Switches automatically between edge and flat
+• Large reading with one decimal place, in degrees, percent or mm/m
+• Bubble and liquid move with spring physics
+• Hold: freeze the reading to read it calmly
+• Two-point calibration per mode, can be reset at any time
+• Screen stays on while the level is open
+• Portrait and landscape, iPad with Split View, English and German
+
+Handy for hanging pictures, mounting shelves or levelling tables. Accuracy depends on your device's sensor. levlr is not meant for surveying work.
+
+Try levlr free for one day with every feature: just start the free trial in the app. After that, a one-time purchase unlocks it for good, including all future updates. No subscription, no ads.
+
+• Private: no tracking, no account, no data collected. levlr does not make money from your data.
+• Completely offline: levlr works without a connection. Only the purchase goes through the App Store, the app itself never goes online.
+• Open source: free software under the GNU GPLv3. Source code: https://github.com/valueerrorx/aapps

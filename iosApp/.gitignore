@@ -1,0 +1,10 @@
+# von XcodeGen erzeugt
+*.xcodeproj/
+build/
+DerivedData/
+xcuserdata/
+# Signierung/Keys nie ins Repo
+*.p8
+*.p12
+*.mobileprovision
+*.cer

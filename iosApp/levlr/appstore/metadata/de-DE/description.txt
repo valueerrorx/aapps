@@ -1,0 +1,20 @@
+levlr zeigt dir, wie schief etwas ist. Stell dein iPhone oder iPad auf eine Kante oder leg es flach hin, levlr wählt den passenden Modus selbst: auf der Kante eine Röhrenlibelle mit einer Achse, flach liegend eine Dosenlibelle mit zwei Achsen.
+
+Bei 0,0° rastet die Anzeige ein: Farbwechsel, ein kurzer Glanz und ein spürbares Tippen. So merkst du auch ohne hinzusehen, dass es passt.
+
+Funktionen
+• Automatischer Wechsel zwischen Kante und flach
+• Große Anzeige mit einer Nachkommastelle, wahlweise in Grad, Prozent oder mm/m
+• Blase und Flüssigkeit bewegen sich mit Federphysik
+• Halten: Wert einfrieren und in Ruhe ablesen
+• Zwei-Punkt-Kalibrierung je Modus, jederzeit zurücksetzbar
+• Bildschirm bleibt an, solange die Waage offen ist
+• Hoch- und Querformat, iPad mit Split View, Deutsch und Englisch
+
+Praktisch zum Bilderaufhängen, Regalmontieren oder Tischausrichten. Wie genau levlr misst, hängt vom Sensor deines Geräts ab. Für Vermessungsarbeiten ist levlr nicht gedacht.
+
+Teste levlr einen Tag lang kostenlos mit allen Funktionen: Starte dazu in der App die kostenlose Testphase. Danach schaltet ein einmaliger Kauf die App dauerhaft frei, inklusive aller künftigen Updates. Kein Abo, keine Werbung.
+
+• Privat: kein Tracking, kein Konto, es werden keine Daten gesammelt. levlr verdient nicht an deinen Daten.
+• Komplett offline: levlr funktioniert ohne Verbindung. Nur der Kauf läuft über den App Store, die App selbst geht nie ins Internet.
+• Open Source: freie Software unter der GNU GPLv3. Quellcode: https://github.com/valueerrorx/aapps

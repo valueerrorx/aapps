@@ -1,0 +1,10 @@
+levlr is a spirit level that uses the motion sensor (no permission prompt needed). It never goes online; only the in-app purchases go through the App Store.
+
+Trial (guideline 3.1.1): on first launch the app shows the free trial offer. It states the duration (1 day), that the app stays locked afterwards, and the price of the one-time unlock. Two non-consumable in-app purchases:
+- "levlr 1-Day Trial" (solutions.xapient.levlr.trial, price 0): tap "Start free trial". The full app opens.
+- "Unlock levlr" (solutions.xapient.levlr.full_unlock): tap "Unlock for <price>" on the same screen (no need to wait for the trial to end). The app is unlocked permanently.
+"Restore purchase" is on the same screen and calls AppStore.sync().
+
+After the trial day the app shows a thank-you screen with the unlock purchase and "Restore purchase".
+
+How to use: lay the device flat or stand it on an edge. The big number shows the tilt; at 0.0° it locks in. Settings (gear icon): unit, haptics, two-point calibration, info. No account, no login, no network access.

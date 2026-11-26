@@ -1,0 +1,1 @@
+level,bubble,spirit,inclinometer,clinometer,angle,tilt,degree,measure,straight,picture,shelf,tool

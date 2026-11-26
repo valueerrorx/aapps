@@ -1,0 +1,1 @@
+wasserwaage,libelle,neigung,winkel,grad,messen,gerade,bild,regal,kalibrieren,offline,werkzeug

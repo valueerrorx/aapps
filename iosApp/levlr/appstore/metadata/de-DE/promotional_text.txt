@@ -1,0 +1,1 @@
+Wasserwaage für Kante und Fläche: rastet bei 0,0° spürbar ein. Ohne Tracking, komplett offline, Open Source.
