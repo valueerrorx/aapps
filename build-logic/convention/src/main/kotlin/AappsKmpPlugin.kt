@@ -28,6 +28,8 @@ class AappsKmpPlugin : Plugin<Project> {
             // commonTest laeuft auf der JVM mit (androidHostTest)
             withHostTest { isIncludeAndroidResources = true }
         }
+        // expect/actual-Klassen (Haptics) ohne Beta-Warnung
+        kotlin.compilerOptions.freeCompilerArgs.add("-Xexpect-actual-classes")
         // Kotlin/Native fuer iOS; gebaut wird nur am Mac, am NAS nur Metadaten/klibs
         kotlin.iosArm64()
         kotlin.iosSimulatorArm64()
