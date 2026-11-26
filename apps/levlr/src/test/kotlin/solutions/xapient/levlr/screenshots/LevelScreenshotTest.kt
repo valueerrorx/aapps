@@ -92,6 +92,25 @@ class LevelScreenshotTest {
         Level(LevelState().apply { show(LevelReading(LevelMode.EDGE, edgeAngle = -12.5f)); toggleHold() })
     }
 
+    // Store DE wie EN
+    @Test fun edge_level_de() = shot("edge_level_de", "+de") {
+        Level(LevelState().apply { show(LevelReading(LevelMode.EDGE, edgeAngle = 0.02f, isLevel = true)) }, shine = 0.45f)
+    }
+
+    @Test fun flat_tilted_de() = shot("flat_tilted_de", "+de") { Level(flatTilted()) }
+
+    @Test fun flat_level_de() = shot("flat_level_de", "+de") {
+        Level(LevelState().apply { show(LevelReading.FLAT_LEVEL) }, shine = 0.35f)
+    }
+
+    @Test fun held_de() = shot("held_de", "+de") {
+        Level(LevelState().apply { show(LevelReading(LevelMode.EDGE, edgeAngle = -12.5f)); toggleHold() })
+    }
+
+    @Test fun edge_mm_de() = shot("edge_mm_de", "+de") { Level(edgeTilted(), AngleUnit.MM_PER_M) }
+
+    @Test fun edge_tilted_land_de() = shot("edge_tilted_land_de", "+de-land") { Level(edgeTilted()) }
+
     @Test fun calibrate_step1() = shot("calibrate_step1") {
         Level(LevelState().apply { show(LevelReading(LevelMode.EDGE, edgeAngle = 0.8f)); startCalibration() })
     }

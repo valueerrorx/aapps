@@ -6,8 +6,13 @@ Erzeugt mit `docs/overview/tools/store-images.js` nach `metadata/android/<locale
 ## Phone-Screenshots
 de-DE:
 1. `edge_tilted_de.png` – Kante, 3,4°
-2. `calibrate_step2_de.png` – Kalibrieren
-3. `settings_de.png` – Einstellungen
+2. `edge_level_de.png` – eingerastet bei 0,0°
+3. `flat_tilted_de.png` – flach, Dosenlibelle
+4. `flat_level_de.png` – flach eingerastet
+5. `held_de.png` – Wert gehalten
+6. `edge_mm_de.png` – Einheit mm/m
+7. `calibrate_step2_de.png` – Kalibrieren
+8. `edge_tilted_land_de.png` – Querformat
 
 en-US:
 1. `edge_tilted.png` – Kante, 3,4°, Flüssigkeit schwappt
@@ -22,6 +27,3 @@ en-US:
 ## Icon und Feature-Grafik
 - Icon 512: `screenshots/icon_store_512.png`
 - Feature-Grafik 1024×500: erzeugt
-
-## Offen
-- DE-Varianten fehlen für `edge_level`, `flat_tilted`, `flat_level`.

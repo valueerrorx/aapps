@@ -79,6 +79,11 @@ class LoudrScreenshotTest {
     @Test fun loud_land() = shot("loud_land", "+land") { Screen(loud, s = Settings(TimeWeighting.SLOW, 2f)) }
     @Test fun paused() = shot("paused") { Screen(paused, measuring = false) }
     @Test fun overload() = shot("overload") { Screen(overload) }
+    // Store DE wie EN
+    @Test fun quiet_de() = shot("quiet_de", "+de") { Screen(quiet) }
+    @Test fun loud_de() = shot("loud_de", "+de") { Screen(loud, s = Settings(TimeWeighting.SLOW, 2f)) }
+    @Test fun paused_de() = shot("paused_de", "+de") { Screen(paused, measuring = false) }
+    @Test fun talk_land_de() = shot("talk_land_de", "+de-land") { Talk() }
 
     @Test fun mic_ask() = shot("mic_ask") { Ask() }
     @Test fun mic_ask_de() = shot("mic_ask_de", "+de") { Ask() }

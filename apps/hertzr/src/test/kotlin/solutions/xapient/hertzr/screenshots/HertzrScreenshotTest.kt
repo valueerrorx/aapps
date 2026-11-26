@@ -83,6 +83,11 @@ class HertzrScreenshotTest {
 
     @Test fun input() = shot("input") { Screen(idle, input = InputTarget.HZ, text = "1500") }
 
+    // Store DE wie EN
+    @Test fun play_square_de() = shot("play_square_de", "+de") { Screen(square, playing = true) }
+    @Test fun input_de() = shot("input_de", "+de") { Screen(idle, input = InputTarget.HZ, text = "1500") }
+    @Test fun sweep_land_de() = shot("sweep_land_de", "+de-land") { Sweep() }
+
     @Composable private fun Settings_() = HertzrSettings(idle, {}, {}, {}, {})
 
     @Test fun settings() = shot("settings") { Settings_() }

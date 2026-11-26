@@ -116,6 +116,11 @@ class MagnrScreenshotTest {
     @Test fun intro_de() = shot("intro_de", "+de") { Intro() }
     @Test fun intro_land() = shot("intro_land", "+land") { Intro() }
     @Test fun intro_font200() = shot("intro_font200", fontScale = 2f) { Intro() }
+    // Store DE wie EN
+    @Test fun strong_de() = shot("strong_de", "+de") { Screen(strong, sensitivity = Sensitivity.HIGH, sound = true) }
+    @Test fun quiet_de() = shot("quiet_de", "+de") { Screen(quiet) }
+    @Test fun near_land_de() = shot("near_land_de", "+de-land") { Near() }
+
     @Test fun calibrate() = shot("calibrate") { Screen(quiet, hint = Hint.CALIBRATE) }
 
     @Test fun no_sensor() = shot("no_sensor") { NoSensor() }

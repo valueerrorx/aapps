@@ -5,9 +5,12 @@ Erzeugt mit `docs/overview/tools/store-images.js` nach `metadata/android/<locale
 
 ## Phone-Screenshots
 de-DE:
-1. `idle_de.png` – 440 Hz Sinus
-2. `sweep_de.png` – Sweep
-3. `settings_de.png` – Einstellungen
+1. `play_square_de.png` – 55 Hz Rechteck, spielt
+2. `idle_de.png` – 440 Hz Sinus
+3. `sweep_de.png` – Sweep
+4. `input_de.png` – direkte Eingabe
+5. `sweep_land_de.png` – Querformat
+6. `settings_de.png` – Einstellungen
 
 en-US:
 1. `play_square.png` – 55 Hz Rechteck, spielt
@@ -20,6 +23,3 @@ en-US:
 ## Icon und Feature-Grafik
 - Icon 512: `screenshots/icon_store_512.png`
 - Feature-Grafik 1024×500: erzeugt
-
-## Offen
-- DE-Variante fehlt für `play_square` (spielend wirkt am besten als erstes Bild).

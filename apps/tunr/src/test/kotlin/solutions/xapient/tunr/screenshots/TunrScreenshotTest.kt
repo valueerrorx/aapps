@@ -89,6 +89,15 @@ class TunrScreenshotTest {
 
     @Test fun sharp() = shot("sharp") { Screen(chromatic, tone(54, 38f), strobe = 40f) }
 
+    // Store DE wie EN, deutsche Notenschrift wie flat_guitar_de
+    @Test fun reference_tone_de() = shot("reference_tone_de", "+de") {
+        Screen(guitar.copy(notation = Notation.GERMAN), Reading(heard = true, target = 45, string = 1), locked = 1, tone = 1)
+    }
+    @Test fun sharp_de() = shot("sharp_de", "+de") { Screen(chromatic.copy(notation = Notation.GERMAN), tone(54, 38f), strobe = 40f) }
+    @Test fun flat_guitar_land_de() = shot("flat_guitar_land_de", "+de-land") {
+        Screen(guitar.copy(notation = Notation.GERMAN), tone(45, -23f, string = 1), strobe = 21f, locked = 1)
+    }
+
     @Test fun mic_ask() = shot("mic_ask") { Screen(chromatic, mic = MicUi.ASK) }
     @Test fun mic_blocked() = shot("mic_blocked") { Screen(chromatic, mic = MicUi.BLOCKED) }
     @Test fun mic_silent() = shot("mic_silent") {

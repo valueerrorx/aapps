@@ -81,6 +81,11 @@ class PulsrScreenshotTest {
     @Test fun play_beat3() = shot("play_beat3") { Screen(waltz, pulse(waltz, 2, 0.4f)) }
     @Test fun play_fast() = shot("play_fast") { Screen(fast, pulse(fast, 3, 0.3f)) }
 
+    // Store DE wie EN
+    @Test fun play_beat3_de() = shot("play_beat3_de", "+de") { Screen(waltz, pulse(waltz, 2, 0.4f)) }
+    @Test fun play_fast_de() = shot("play_fast_de", "+de") { Screen(fast, pulse(fast, 3, 0.3f)) }
+    @Test fun play_accent_land_de() = shot("play_accent_land_de", "+de-land") { Accent() }
+
     @Composable private fun Settings_() = PulsrSettings(idle, {}, {}, {})
 
     @Test fun settings() = shot("settings") { Settings_() }

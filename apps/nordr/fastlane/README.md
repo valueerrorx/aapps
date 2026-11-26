@@ -6,8 +6,13 @@ Erzeugt mit `docs/overview/tools/store-images.js` nach `metadata/android/<locale
 ## Phone-Screenshots
 de-DE:
 1. `heading_de.png` – 247° WSW
-2. `calibrate_de.png` – Kalibrierhinweis
-3. `settings_de.png` – Einstellungen
+2. `course_de.png` – Kurs mit Abweichungsbogen
+3. `on_course_de.png` – auf Kurs
+4. `true_north_de.png` – rechtweisend
+5. `calibrate_de.png` – Kalibrierhinweis
+6. `region_de.png` – Regionsliste mit Deklination
+7. `heading_land_de.png` – Querformat
+8. `settings_de.png` – Einstellungen
 
 en-US:
 1. `heading.png` – 247° WSW
@@ -22,6 +27,3 @@ en-US:
 ## Icon und Feature-Grafik
 - Icon 512: `screenshots/icon_store_512.png`
 - Feature-Grafik 1024×500: erzeugt
-
-## Offen
-- DE-Varianten fehlen für `course`, `on_course`.

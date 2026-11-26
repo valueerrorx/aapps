@@ -7,7 +7,10 @@ Erzeugt mit `docs/overview/tools/store-images.js` nach `metadata/android/<locale
 de-DE:
 1. `play_accent_de.png` – spielt, 4/4 Achtel
 2. `idle_de.png` – 120 BPM
-3. `settings_de.png` – Einstellungen
+3. `play_beat3_de.png` – 3/4 Triolen
+4. `play_fast_de.png` – 7/4 Sechzehntel, 220 BPM
+5. `play_accent_land_de.png` – Querformat
+6. `settings_de.png` – Einstellungen
 
 en-US:
 1. `play_accent.png` – spielt, 4/4 Achtel
@@ -20,6 +23,3 @@ en-US:
 ## Icon und Feature-Grafik
 - Icon 512: `screenshots/icon_store_512.png`
 - Feature-Grafik 1024×500: erzeugt
-
-## Offen
-- DE-Varianten fehlen für `play_beat3`, `play_fast`.

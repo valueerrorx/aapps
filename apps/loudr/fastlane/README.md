@@ -6,7 +6,11 @@ Erzeugt mit `docs/overview/tools/store-images.js` nach `metadata/android/<locale
 ## Phone-Screenshots
 de-DE:
 1. `talk_de.png` – 63 dB, Gespräch
-2. `settings_de.png` – Einstellungen
+2. `quiet_de.png` – 33 dB
+3. `loud_de.png` – 92 dB, Max 101
+4. `paused_de.png` – pausiert, Verlauf mit Lücke
+5. `talk_land_de.png` – Querformat
+6. `settings_de.png` – Einstellungen
 
 en-US:
 1. `talk.png` – 63 dB, Gespräch
@@ -19,6 +23,3 @@ en-US:
 ## Icon und Feature-Grafik
 - Icon 512: `screenshots/icon_store_512.png`
 - Feature-Grafik 1024×500: erzeugt
-
-## Offen
-- DE hat nur 2 Bilder: `quiet_de`, `loud_de`, `talk_land_de` aufnehmen.

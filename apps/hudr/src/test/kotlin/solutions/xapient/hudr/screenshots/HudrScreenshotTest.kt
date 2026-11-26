@@ -87,6 +87,11 @@ class HudrScreenshotTest {
     @Test fun lost() = shot("lost") { Main(lost) }
     @Test fun mph() = shot("mph") { Main(mph, Settings(SpeedUnit.MPH)) }
 
+    // Store DE wie EN (ohne mph)
+    @Test fun near_de() = shot("near_de", "+de") { Main(near, limit50) }
+    @Test fun over_de() = shot("over_de", "+de") { Main(over, limit50) }
+    @Test fun drive_land_de() = shot("drive_land_de", "+de-land") { Drive() }
+
     @Test fun hud() = shot("hud") { Hud(drive) }
     @Test fun hud_land() = shot("hud_land", "+land") { Hud(drive) }
     @Test fun hud_over() = shot("hud_over") { Hud(over, limit50) }

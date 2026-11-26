@@ -65,6 +65,9 @@ class SleeprScreenshotTest {
     // Grundsprache Englisch
     @Test fun idle_en() = shot("idle_en", lang = "en")
     @Test fun settings_en() = shot("settings_en", lang = "en", screen = MainActivity.Screen.SETTINGS)
+    @Test fun playing_en() { setEngine(fakeEngine()); shot("playing_en", lang = "en") }
+    @Test fun idle_bottom_en() = shot("idle_bottom_en", lang = "en", bottom = true)
+    @Test fun idle_land_en() = shot("idle_land_en", "+land", lang = "en")
 
     // Testphase abgelaufen: Dankes-Bildschirm (Preis da bzw. offline)
     @Test fun thanks() { expired("1,49 €"); shot("thanks") }

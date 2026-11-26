@@ -135,9 +135,31 @@ class CompassScreenshotTest {
 
     @Test fun settings_font200() = shot("settings_font200", fontScale = 2f) { Settings() }
 
-    @Test fun region() = shot("region", "+de") {
-        RegionPicker(Regions.byId("vienna")!!, ::declination, {}, {})
+    @Composable
+    private fun Region_() = RegionPicker(Regions.byId("vienna")!!, ::declination, {}, {})
+
+    // war bisher deutsch, steht aber in der EN-Liste
+    @Test fun region() = shot("region") { Region_() }
+
+    @Test fun region_de() = shot("region_de", "+de") { Region_() }
+
+    // Store DE wie EN
+    @Test fun course_de() = shot("course_de", "+de") { Compass(courseState()) }
+
+    @Test fun on_course_de() = shot("on_course_de", "+de") {
+        Compass(
+            CompassState().apply {
+                show(CompassReading(valid = true, heading = 250f, magnetic = 250f, course = 250f, onCourse = true))
+            },
+            shine = 0.4f,
+        )
     }
+
+    @Test fun true_north_de() = shot("true_north_de", "+de") {
+        Compass(CompassState().apply { show(CompassReading(valid = true, heading = 4f, magnetic = 359f)) }, NorthRef.TRUE)
+    }
+
+    @Test fun heading_land_de() = shot("heading_land_de", "+de-land") { Compass(headingState()) }
 
     @Test fun about() = shot("about") { NordrAbout("0.1.0") {} }
 
