@@ -19,6 +19,7 @@ rootProject.name = "aapps"
 
 include(":core:ui")
 include(":core:billing")
+include(":core:store")
 include(":apps:sleepr")
 include(":apps:levlr")
 include(":apps:nordr")
