@@ -30,12 +30,19 @@
 
 ## Play-Store-Grafiken
 `node store-images.js [app,…] [--collage vorschau.png]` schreibt je App und Sprache (de-DE, en-US) nach `apps/<app>/fastlane/metadata/android/<locale>/images/`:
-- `phoneScreenshots/1.png …`: Auswahl und Reihenfolge aus `apps/<app>/fastlane/README.md` (Abschnitt „Phone-Screenshots“), Quelle `apps/<app>/screenshots/` im Arbeitsbaum. Ohne Beschnitt auf 1200×2400 bzw. 2400×1200 (2:1) gebracht, der Rand setzt die Randpixel des Bildes fort. moovr und glidr bekommen keine (nur vom Gerät).
+- `phoneScreenshots/1.png …`: Auswahl und Reihenfolge aus `apps/<app>/fastlane/README.md` (Abschnitt „Phone-Screenshots“), Quelle `apps/<app>/screenshots/` im Arbeitsbaum. Ohne Beschnitt auf 1200×2400 bzw. 2400×1200 (2:1) gebracht, der Rand setzt die Randpixel des Bildes fort. moovr und glidr: Bilder aus `game-shots/` (siehe unten).
 - `featureGraphic.png`: 1024×500, RGB ohne Alpha. Icon, Name, Kategorie aus `title.txt`, Claim aus `short_description.txt`, rechts das erste Hochformat-Bild der Liste im Handy-Rahmen (moovr/glidr: Spielgrafik aus `img/`).
 - `icon.png`: 512×512 RGBA aus `screenshots/icon_store_512.png`.
 - `--collage`: alle de-DE-Feature-Grafiken als Vorschau in 2 Spalten.
 
 `node store-images.js --check` prüft alle Dateien gegen die Play-Vorgaben (Maße, max. 2:1, Alpha, Dateigröße).
+
+## Spiel-Screenshots (moovr, glidr)
+Die Spiele laufen in einer WebView, Robolectric rendert sie nicht. `game-shots/game-shots.mjs` startet das echte Spiel aus `src/main/assets` im Headless-Chromium (Canvas wie in der WebView), quer 2400×1200, und bedient es per Maus:
+- glidr: `node game-shots.mjs glidr <ordner> store` (Levelauswahl, Level 11/16/23 als Übersicht und mit gezogener Kuh, Levelende).
+- moovr: `node game-shots.mjs moovr <ordner> run [seed]` (Menü, Bild alle ~0,5 s eines Laufs, Ergebnis). Mehrere Seeds probieren, gute Bilder von Hand wählen.
+- Gewählte Bilder nach `apps/<app>/screenshots/` kopieren und in `fastlane/README.md` eintragen.
+- Voraussetzung (nicht committen): im Ordner `game-shots/` `npm i playwright-core` und `node node_modules/playwright-core/cli.js install chromium-headless-shell`.
 
 ## Schriften
 Inter und Space Grotesk (SIL Open Font License 1.1, Lizenztexte in `../fonts/`) als Teilmengen (Latein inkl. Umlaute), dieselben wie in den Apps.

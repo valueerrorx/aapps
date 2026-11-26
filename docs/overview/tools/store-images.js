@@ -6,7 +6,7 @@ const zlib = require('zlib');
 const { OV, REPO, canvas, apps } = require('./lib.js');
 
 const LOCALES = ['de-DE', 'en-US'];
-const NO_SHOTS = ['moovr', 'glidr']; // Spiele: Screenshots nur vom Gerät
+const GAMES = ['moovr', 'glidr']; // Spiele: Feature-Grafik mit Spielgrafik, Screenshots quer aus game-shots.mjs
 const BG = '#10161B', FG = '#DCE3E8', SUB = '#C3CCD3';
 const FW = 1024, FH = 500;
 
@@ -145,7 +145,7 @@ async function feature(app, loc, shots) {
   g.fillStyle = gr; g.fillRect(0, 0, FW, FH);
 
   // Handy: hochkant unten angeschnitten, Spiele quer rechts angeschnitten
-  const game = NO_SHOTS.includes(app.id);
+  const game = GAMES.includes(app.id);
   const B = 9; // Rahmenbreite
   let px, py, sw, sh, src;
   if (game) {
@@ -213,7 +213,7 @@ function check() {
     if (!fs.existsSync(ic)) fail(ic, 'fehlt'); else { n++; const i = hdr(ic); if (i.w !== 512 || i.h !== 512 || i.ct !== 6 || i.size >= 1 << 20) fail(ic, JSON.stringify(i)); }
     const sd = path.join(d, 'phoneScreenshots');
     const files = fs.existsSync(sd) ? fs.readdirSync(sd) : [];
-    if (!NO_SHOTS.includes(app.id) && files.length < 2) fail(sd, `nur ${files.length} Screenshots`);
+    if (files.length < 2) fail(sd, `nur ${files.length} Screenshots`);
     for (const f of files) {
       n++; const i = hdr(path.join(sd, f)), lo = Math.min(i.w, i.h), hi = Math.max(i.w, i.h);
       if (lo < 320 || hi > 3840 || hi > 2 * lo || i.ct !== 2 || i.size >= 8 << 20) fail(path.join(sd, f), JSON.stringify(i));
@@ -231,7 +231,7 @@ function check() {
   const list = apps().filter((a) => !only || only.includes(a.id));
   const tiles = [];
   for (const app of list) {
-    const shots = NO_SHOTS.includes(app.id) ? {} : shotLists(app.id);
+    const shots = shotLists(app.id);
     const iconPng = await icon(app.id);
     for (const loc of LOCALES) {
       const d = imgDir(app.id, loc);
@@ -240,7 +240,6 @@ function check() {
       const c = await feature(app, loc, shots);
       fs.writeFileSync(path.join(d, 'featureGraphic.png'), encodePNG(FW, FH, pixels(c.getContext('2d'), FW, FH, 3), 3));
       if (loc === 'de-DE') tiles.push(c);
-      if (NO_SHOTS.includes(app.id)) continue;
       if (!shots[loc] || !shots[loc].length) { console.warn(`WARN keine Screenshot-Liste: ${app.id} ${loc}`); continue; }
       const sd = path.join(d, 'phoneScreenshots');
       fs.rmSync(sd, { recursive: true, force: true }); fs.mkdirSync(sd);

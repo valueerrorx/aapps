@@ -1,14 +1,24 @@
 # moovr – Store-Grafiken
 
-Quelle: `apps/moovr/screenshots/`. Dort liegen nur `icon_masks.png`, `icon_store_512.png` und `splash_pre31.png`.
-Icon und Feature-Grafik erzeugt mit `docs/overview/tools/store-images.js` nach `metadata/android/<locale>/images/`.
+Quelle: `apps/moovr/screenshots/` (`splash_pre31.png` ist nur das Startbild, kein Screenshot).
+Erzeugt mit `docs/overview/tools/store-images.js` nach `metadata/android/<locale>/images/`.
 
 ## Phone-Screenshots
-Fehlen. Das Spiel läuft in einer WebView, Robolectric kann es nicht rendern.
-- Nötig: mind. 2, besser 4 bis 6 Bilder im Querformat vom Gerät (Hauptmenü, Sprung über Schollen, Superkraft, Ergebnis mit Metern).
-- Die Spieltexte sind englisch, dieselben Bilder passen für de-DE und en-US.
-- `splash_pre31.png` (800×480, nur Startbild) eignet sich nicht als Screenshot.
-- Notlösung bis dahin: `src/main/assets/assets/sprites/clumsy-cheatsheet.jpg` zeigt Spielgrafik, ist aber kein echter Screenshot.
+Echtes Spiel im Headless-Chromium (wie die WebView), quer 2400×1200, aufgenommen mit `docs/overview/tools/game-shots/` (Szenario `run`, mehrere Läufe, Auswahl von Hand). Die Spieltexte sind englisch, dieselben Bilder gelten für beide Sprachen.
+
+de-DE:
+1. `play_cowabunga.png` – Superkuh, Pinguin springt
+2. `play_obstacles.png` – Pinguin, Eisloch, Rettungsring, Mine
+3. `play_supercow.png` – Superkuh mit Stern
+4. `menu.png` – Hauptmenü mit Highscore
+5. `result.png` – Ergebnis in Metern
+
+en-US:
+1. `play_cowabunga.png` – Superkuh, Pinguin springt
+2. `play_obstacles.png` – Pinguin, Eisloch, Rettungsring, Mine
+3. `play_supercow.png` – Superkuh mit Stern
+4. `menu.png` – Hauptmenü mit Highscore
+5. `result.png` – Ergebnis in Metern
 
 ## Icon und Feature-Grafik
 - Icon 512: `screenshots/icon_store_512.png`
