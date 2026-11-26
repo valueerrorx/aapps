@@ -83,7 +83,7 @@ Apps: sleepr, levlr, nordr, spinr, scorr, focusr, roundr, pulsr, loudr, tunr, ma
 - [x] Entschieden: alle Apps **13+**, nicht für Kinder gezielt. Wählst du Altersgruppen unter 13 (z. B. für die Spiele oder focusr im Unterricht), gilt das Familien-Programm mit strengeren Regeln (Inhalte, Links nach außen, Prüfung).
 
 ## 5. Sonderberechtigungen (Play-Console-Erklärungen)
-Für jeden Vordergrunddienst-Typ verlangt die Console eine Beschreibung und einen **Video-Link** (z. B. nicht gelistetes Video, 30 s, Funktion bei gesperrtem Bildschirm). [ ] Videos aufnehmen.
+Für jeden Vordergrunddienst-Typ verlangt die Console eine Beschreibung und einen **Video-Link** (z. B. nicht gelistetes Video, 30 s, Funktion bei gesperrtem Bildschirm). [x] Videos aufgenommen, liegen in `docs/fgs/` und sind über GitHub Pages abrufbar: https://valueerrorx.github.io/aapps/fgs/ (einzeln: `https://valueerrorx.github.io/aapps/fgs/<app>-fgs.mp4`).
 
 | App | Erklärung nötig |
 |---|---|
