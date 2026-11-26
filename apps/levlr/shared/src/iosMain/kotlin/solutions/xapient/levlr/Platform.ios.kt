@@ -11,6 +11,9 @@ import platform.CoreMotion.CMMotionManager
 import platform.Foundation.NSNumberFormatter
 import platform.Foundation.NSOperationQueue
 import platform.UIKit.UIInterfaceOrientation
+import platform.UIKit.UIInterfaceOrientationLandscapeLeft
+import platform.UIKit.UIInterfaceOrientationLandscapeRight
+import platform.UIKit.UIInterfaceOrientationPortraitUpsideDown
 import solutions.xapient.levlr.domain.SensorSource
 import solutions.xapient.levlr.domain.Vec3
 
@@ -70,9 +73,9 @@ internal actual fun DisplayRotationEffect(onRotation: (Int) -> Unit) {
 
 // Wie Android Surface.ROTATION_*: LandscapeRight = Geraet gegen den Uhrzeigersinn gedreht (Oberkante links)
 private fun quarterTurns(o: UIInterfaceOrientation?): Int = when (o) {
-    UIInterfaceOrientation.UIInterfaceOrientationLandscapeRight -> 1
-    UIInterfaceOrientation.UIInterfaceOrientationPortraitUpsideDown -> 2
-    UIInterfaceOrientation.UIInterfaceOrientationLandscapeLeft -> 3
+    UIInterfaceOrientationLandscapeRight -> 1
+    UIInterfaceOrientationPortraitUpsideDown -> 2
+    UIInterfaceOrientationLandscapeLeft -> 3
     else -> 0
 }
 
