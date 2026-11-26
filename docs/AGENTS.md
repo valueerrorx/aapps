@@ -32,6 +32,13 @@ Robolectric läuft mit SDK 34 (`src/test/resources/robolectric.properties`), wei
 - `step()`: Raster beim Ziehen, Wechsel im Segment. `press()`: Tasten. Beide über die View, folgen der System-Touch-Haptik.
 - Faustregel: Folgt die Rückmeldung direkt auf einen Finger, dann `step`/`press`.
 
+## iOS (KMP, erst levlr)
+- Aufbau, CI und Store-Schritte: `iosApp/README.md`. Gebaut wird nur in GitHub Actions (`.github/workflows/ios-<app>.yml`), am NAS nur die Android- und JVM-Seite.
+- App mit iOS: Code nach `apps/<app>/shared` (Plugin `aapps.kmp`, Framework `AappsKit`), `apps/<app>` bleibt dünner Android-Einstieg (AGP 9 erlaubt KMP nicht im App-Modul). Texte in `shared/src/commonMain/composeResources`.
+- `core/ui` ist KMP; Android-Ressourcen in `src/androidMain/res` sind zugleich die CMP-Ressourcen (`Res`), andere Apps nutzen weiter `R.string.aapps_*`.
+- Kauf auf iOS: `core/store` (StoreKit 2 über `iosApp/common/StoreKitBridge.swift`), Testphase = Gratis-Kauf `<bundle>.trial`, Freischalten `<bundle>.full_unlock`. Tests `:core:store:jvmTest`.
+- Plattformteile per `expect`/`actual` nur wo nötig (Sensor, Haptik, Drehung, Schriften, Speicher).
+
 ## Regeln
 - sleepr ist Views/Canvas statt Compose und nutzt `core/ui` nicht; nicht auf Compose umbauen. Haptik dort direkt über die View (`KEYBOARD_TAP` wie `press()`).
 - Erlaubt: Compose BOM, activity, lifecycle, core-ktx, kotlinx-serialization (nur wo nötig).
