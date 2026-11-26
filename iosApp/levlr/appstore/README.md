@@ -36,5 +36,5 @@ Alle Inhaltsfragen (Gewalt, Sexualität, Glücksspiel, Drogen, Horror, Schimpfw�
 ## Screenshots
 - Pflichtgrößen: iPhone 6.9" (1320 × 2868) und iPad 13" (2064 × 2752), je 1–10 Bilder pro Sprache.
 - Zustände: `EDGE_TILTED`, `EDGE_LEVEL`, `FLAT_TILTED`, `HELD`, `CALIBRATE`, `SETTINGS`, `OFFER`, `THANKS` (Startargument `-levlrScene <NAME>`, siehe `apps/levlr/shared/src/iosMain/.../Scenes.kt`).
-- Der UI-Test `LevlrUITests/ScreenshotTests` startet alle Zustände in EN und DE und hängt die Bilder an das Testergebnis (`.xcresult`). Im CI bleiben sie auf dem Runner (öffentliches Repo, keine Artefakte); Upload nach App Store Connect folgt per API (offen, siehe `iosApp/README.md`).
+- Der UI-Test `LevlrUITests/ScreenshotTests` startet alle Zustände in EN und DE und hängt die Bilder an das Testergebnis (`.xcresult`). Im CI bleiben sie auf dem Runner (öffentliches Repo, keine Artefakte); Die Review-Screenshots der IAPs (`OFFER` für die Testphase, `THANKS` für die Freischaltung) lädt die CI direkt per API hoch (`iosApp/tools/asc-iap-screenshot.mjs`, nur wenn noch keiner da ist). Upload der App-Screenshots ist noch offen.
 - Von Hand am Mac: `xcrun simctl boot "<iPhone … Pro Max>"`, App installieren, dann `xcrun simctl launch booted solutions.xapient.levlr -levlrScene EDGE_TILTED -AppleLanguages "(de)"` und `xcrun simctl io booted screenshot edge_tilted_de.png`.
