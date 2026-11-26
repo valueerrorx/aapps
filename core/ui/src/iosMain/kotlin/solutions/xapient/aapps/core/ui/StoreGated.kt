@@ -67,7 +67,7 @@ fun StoreScreen(appName: String, state: StoreState, onTrial: () -> Unit, onBuy: 
     }
     // Apple 3.1.1: Dauer, was danach gesperrt ist, und der Preis stehen vor dem Start der Testphase
     val text = stringResource(if (offer) Res.string.store_offer_text else Res.string.store_text)
-    val priceLine = if (offer && price != null) "\n\n" + stringResource(Res.string.store_offer_price, price) else ""
+    val priceLine = if (offer && price != null) "\n" + stringResource(Res.string.store_offer_price, price) else ""
     ThanksLayout(
         appName = appName,
         title = stringResource(if (offer) Res.string.store_offer_title else Res.string.store_title),
@@ -102,5 +102,6 @@ fun StoreScreen(appName: String, state: StoreState, onTrial: () -> Unit, onBuy: 
             }
         },
         footer = stringResource(Res.string.store_once),
+        compact = true,
     )
 }

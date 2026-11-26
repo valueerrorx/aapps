@@ -42,25 +42,28 @@ fun ThanksLayout(
     hint: String?,
     secondary: @Composable () -> Unit,
     footer: String,
+    // kleiner Kopf und engere Abstaende, damit auch auf kleinen iPhones alles ohne Scrollen passt
+    compact: Boolean = false,
 ) {
     val c = Aapps.colors
+    val gap = if (compact) 0.6f else 1f
     AappsScaffold {
         Column(
             Modifier
                 .fillMaxWidth()
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 24.dp, vertical = 32.dp),
+                .padding(horizontal = 24.dp, vertical = 32.dp * gap),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             // Hero: Schloss im Akzent-Halo
             Box(
-                Modifier.size(112.dp).glow(c.accent, 72.dp, 0.3f).background(c.surface, CircleShape)
-                    .border(1.5.dp, c.accent, CircleShape),
+                Modifier.size(if (compact) 72.dp else 112.dp).glow(c.accent, if (compact) 48.dp else 72.dp, 0.3f)
+                    .background(c.surface, CircleShape).border(1.5.dp, c.accent, CircleShape),
                 contentAlignment = Alignment.Center,
             ) {
-                AappsIcon(AappsIcons.Unlock, null, c.accent, size = 48.dp)
+                AappsIcon(AappsIcons.Unlock, null, c.accent, size = if (compact) 32.dp else 48.dp)
             }
-            Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(24.dp * gap))
             BasicText(appName.uppercase(), style = Aapps.type.label.copy(color = c.accent))
             Spacer(Modifier.height(6.dp))
             BasicText(
@@ -68,22 +71,22 @@ fun ThanksLayout(
                 Modifier.semantics { heading() },
                 style = Aapps.type.headline.copy(color = c.fg, textAlign = TextAlign.Center),
             )
-            Spacer(Modifier.height(14.dp))
+            Spacer(Modifier.height(14.dp * gap))
             BasicText(
                 text,
                 Modifier.widthIn(max = 480.dp),
                 style = Aapps.type.body.copy(color = c.fgMuted, textAlign = TextAlign.Center),
             )
-            Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(24.dp * gap))
             Box(Modifier.widthIn(max = 480.dp)) {
                 SettingsGroup(null) {
                     points.forEach { Point(it) }
                 }
             }
-            Spacer(Modifier.height(28.dp))
+            Spacer(Modifier.height(28.dp * gap))
             primary()
             if (hint != null) {
-                Spacer(Modifier.height(14.dp))
+                Spacer(Modifier.height(14.dp * gap))
                 BasicText(
                     hint,
                     Modifier.widthIn(max = 480.dp),
@@ -92,7 +95,7 @@ fun ThanksLayout(
             }
             Spacer(Modifier.height(8.dp))
             secondary()
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(12.dp * gap))
             BasicText(
                 footer,
                 Modifier.widthIn(max = 480.dp),
