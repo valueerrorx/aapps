@@ -1,0 +1,95 @@
+# iOS-Build levlr auf macOS: Kotlin-Tests, Simulator-Build + UI-Tests; mit Secrets zusaetzlich TestFlight.
+# Keine Build-Artefakte hochladen: das Repo ist oeffentlich, Builds gehen nur an App Store Connect.
+name: iOS levlr
+
+on:
+  push:
+    branches: [feat/ios]
+    paths:
+      - "iosApp/**"
+      - "apps/levlr/**"
+      - "core/ui/**"
+      - "core/store/**"
+      - "build-logic/**"
+      - "gradle/**"
+      - "*.gradle.kts"
+      - "gradle.properties"
+      - ".github/workflows/ios-levlr.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ios-levlr-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: macos-latest
+    timeout-minutes: 90
+    env:
+      AAPPS_BUILD: ${{ github.run_number }}
+      HAS_ASC: ${{ secrets.ASC_KEY_P8 != '' && secrets.ASC_KEY_ID != '' && secrets.ASC_ISSUER_ID != '' && secrets.APPLE_TEAM_ID != '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Xcode waehlen (neueste installierte)
+        run: |
+          XC=$(ls -d /Applications/Xcode*.app | sort -V | tail -1)
+          sudo xcode-select -s "$XC"
+          xcodebuild -version
+
+      - name: Version wie Android
+        run: echo "AAPPS_VERSION=$(cat apps/levlr/version.txt)" >> "$GITHUB_ENV"
+
+      - name: Kotlin-Tests (JVM + iOS-Simulator)
+        run: ./gradlew --no-daemon :core:store:jvmTest :core:store:iosSimulatorArm64Test :apps:levlr:shared:iosSimulatorArm64Test
+
+      - name: Xcode-Projekt erzeugen
+        run: |
+          brew install xcodegen
+          cd iosApp/levlr && xcodegen generate
+
+      - name: Simulator-Build + UI-Tests
+        run: |
+          UDID=$(xcrun simctl list devices available -j | python3 -c '
+          import json, sys
+          d = json.load(sys.stdin)["devices"]
+          phones = [x for r, l in d.items() if "iOS" in r for x in l if x["name"].startswith("iPhone")]
+          print(phones[-1]["udid"])')
+          xcodebuild test \
+            -project iosApp/levlr/levlr.xcodeproj -scheme levlr \
+            -destination "platform=iOS Simulator,id=$UDID" \
+            -resultBundlePath "$RUNNER_TEMP/levlr-tests.xcresult" \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Archiv + Upload zu TestFlight
+        if: env.HAS_ASC == 'true'
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          KEY="$RUNNER_TEMP/AuthKey_$ASC_KEY_ID.p8"
+          trap 'rm -f "$KEY"' EXIT
+          printf '%s' "$ASC_KEY_P8" > "$KEY"
+          AUTH=(-allowProvisioningUpdates -authenticationKeyPath "$KEY" -authenticationKeyID "$ASC_KEY_ID" -authenticationKeyIssuerID "$ASC_ISSUER_ID")
+          xcodebuild archive \
+            -project iosApp/levlr/levlr.xcodeproj -scheme levlr -configuration Release \
+            -destination "generic/platform=iOS" -archivePath "$RUNNER_TEMP/levlr.xcarchive" \
+            DEVELOPMENT_TEAM="$APPLE_TEAM_ID" "${AUTH[@]}"
+          sed "s/TEAM_ID/$APPLE_TEAM_ID/" iosApp/levlr/ExportOptions.plist > "$RUNNER_TEMP/ExportOptions.plist"
+          xcodebuild -exportArchive \
+            -archivePath "$RUNNER_TEMP/levlr.xcarchive" \
+            -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist" \
+            -exportPath "$RUNNER_TEMP/export" "${AUTH[@]}"
+          rm -rf "$RUNNER_TEMP/levlr.xcarchive" "$RUNNER_TEMP/export"
