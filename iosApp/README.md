@@ -164,3 +164,8 @@ Gratis, ohne Kauf und ohne Kotlin: je App eine eigene Swift-Hülle `WebGame.swif
 - **Vibration**: iOS kennt keine Muster; Phasenwechsel ein Stoß, Ende zwei, 3-2-1 nur leichtes Tippen (Systemhaptik). Im Hintergrund bestimmen die iOS-Einstellungen.
 - **Ton**: Kategorie Playback mischend: klingt auch bei Stummschalter, Musik läuft weiter (Android: Medienlautstärke).
 - **Zurück, Sicherung**: wie levlr.
+
+## Einschränkungen auf iOS (loudr)
+- **Mikrofon**: AVAudioEngine-Eingangs-Tap, Kategorie Record, Modus Measurement (ohne automatische Verstärkung, wie UNPROCESSED auf Android), Bezugspegel wie UNPROCESSED; Werte sind wie auf Android Schätzwerte, Kalibrier-Offset gleicht ab. Gemessen wird nur im Vordergrund.
+- **Berechtigung**: einmal von selbst fragen; abgelehnt = Hinweis mit Knopf zur Einstellungen-App (iOS fragt nicht erneut). „Stummgeschaltet“ gibt es auf iOS nicht, eine Unterbrechung (Anruf) zeigt „Mikrofon nicht verfügbar“ mit Erneut-Knopf.
+- **Zurück, Sicherung**: wie levlr; Min/Max/Verlauf überstehen auf iOS keinen Prozess-Neustart.

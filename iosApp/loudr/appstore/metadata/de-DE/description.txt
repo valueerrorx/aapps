@@ -1,0 +1,20 @@
+loudr zeigt dir, wie laut es gerade ist. App öffnen, und die Messung läuft: der Pegel in dB(A), ein Vergleich aus dem Alltag (von Flüstern bis Sirene) und der Verlauf der letzten 60 Sekunden.
+
+Funktionen
+• A-bewerteter Pegel, Zeitbewertung Fast oder Slow
+• Minimum, Maximum und Mittelwert (Leq) über die Messzeit
+• Verlauf der letzten 60 Sekunden
+• Alltagsvergleich und vier Farbzonen von ruhig bis sehr laut
+• Kalibrier-Offset von −20 bis +20 dB, falls du ein Vergleichsgerät hast
+• Pause und Zurücksetzen
+• Hoch- und Querformat, iPhone und iPad, Deutsch und Englisch
+
+Handy-Mikrofone sind nicht geeicht. loudr liefert einen Schätzwert und ersetzt kein Schallpegelmessgerät. Aussagen zu Gesundheit oder Gehörschutz macht loudr nicht.
+
+Mikrofon: loudr braucht den Mikrofonzugriff, um den Pegel zu messen. Das Signal wird nur live ausgewertet, nicht aufgenommen, nicht gespeichert und nicht gesendet. Gemessen wird nur, solange loudr im Vordergrund ist.
+
+Teste loudr einen Tag lang kostenlos mit allen Funktionen: einfach in der App den Test starten. Danach schaltet ein einmaliger Kauf die App dauerhaft frei, inklusive aller künftigen Updates. Kein Abo, keine Werbung.
+
+• Privat: kein Tracking, kein Konto, es werden keine Daten gesammelt. loudr verdient nicht an deinen Daten.
+• Komplett offline: loudr funktioniert ohne Verbindung. Nur der Kauf läuft über den App Store, die App selbst geht nie ins Internet.
+• Open Source: freie Software unter der GNU GPLv3. Quellcode: https://github.com/valueerrorx/aapps

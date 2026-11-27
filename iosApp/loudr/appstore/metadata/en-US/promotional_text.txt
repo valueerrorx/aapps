@@ -1,0 +1,1 @@
+How loud is it right now? Level in dB(A) with min, max and Leq, a 60-second history and everyday comparisons. No tracking, fully offline, open source.

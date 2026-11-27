@@ -1,0 +1,1 @@
+dezibel,db,lärm,lautstärke,schall,pegel,messen,messgerät,spl,leq,akustik,offline

@@ -1,0 +1,4 @@
+/* Sprache des Bundles; die Texte der App kommen aus den Compose-Ressourcen */
+"CFBundleDisplayName" = "loudr";
+"NSHumanReadableCopyright" = "Free software under the GNU GPLv3.";
+"NSMicrophoneUsageDescription" = "loudr uses the microphone to measure the sound level. Nothing is recorded, stored or sent.";

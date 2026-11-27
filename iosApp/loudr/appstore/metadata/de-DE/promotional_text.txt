@@ -1,0 +1,1 @@
+Wie laut ist es gerade? Pegel in dB(A) mit Min, Max und Leq, 60 Sekunden Verlauf und Alltagsvergleich. Ohne Tracking, komplett offline, Open Source.
