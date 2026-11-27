@@ -8,6 +8,9 @@ Kein In-App-Kauf, keine Testphase, kein Store-Gate, kein `.storekit`. Preis 0, K
 ## Aufbau der App
 Reines Swift (kein Kotlin): `glidr/WebGame.swift` zeigt das Spiel aus `apps/glidr/src/main/assets` (dieselben Dateien wie Android) in einer WKWebView über das eigene Schema `aapps://game/`. Fremde Adressen werden nicht geladen. WebKit auf iOS spielt kein Ogg, darum liegen dieselben Klänge als AAC in `../ios-assets/assets/sounds/*.m4a` (erzeugt mit ffmpeg, 64 kbit/s) und ein kleines Skript lädt `.m4a` statt `.ogg`; `game.js` bleibt unverändert. Ändern sich Klänge, die `.m4a` neu erzeugen. Fortschritt und Sterne liegen im localStorage der WebView.
 
+## iPad
+Spielfläche im Seitenverhältnis 16:10 (768×480) eingepasst, Rest schwarz (Phaser `EXACT_FIT` würde sonst auf 4:3 strecken); am iPhone füllt sie wie auf Android den Bereich ohne Notch.
+
 ## Berechtigungen
 Keine. `UIRequiredDeviceCapabilities`: arm64. Nur Querformat, iPad im Vollbild (`UIRequiresFullScreen`).
 
