@@ -2,7 +2,7 @@ import XCTest
 
 // Startet die App in festen Zustaenden und haengt Screenshots an das Testergebnis
 final class ScreenshotTests: XCTestCase {
-    private let scenes = ["HOME", "SWITCHES", "STARS", "SLALOM", "ECHO", "RESULT", "PATH", "GAMES", "SETTINGS", "ABOUT", "OFFER", "THANKS"]
+    private let scenes = ["HOME", "SWITCHES", "STARS", "SLALOM", "ECHO", "RESULT", "GAMES", "SETTINGS", "ABOUT", "OFFER", "THANKS"]
 
     override func setUpWithError() throws {
         continueAfterFailure = false

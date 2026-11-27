@@ -26,17 +26,21 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.layout.onPlaced
+import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathEffect
@@ -54,9 +58,7 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
 import solutions.xapient.aapps.core.ui.Aapps
 import solutions.xapient.aapps.core.ui.AappsIcon
@@ -72,13 +74,10 @@ import solutions.xapient.thinkr.domain.GameId
 import kotlin.math.sin
 import kotlin.random.Random
 
-data class DailyItem(val id: GameId, val name: String, val icon: ImageVector, val level: Int, val done: Boolean)
-
-// Heute: Tagesbild als Hero, darunter Serie und Woche, beim Scrollen alle Spiele als Pfad; unten die eine Hauptaktion
+// Start: Kopf mit Datum, Serie und Woche, darunter alle Spiele als Lernpfad; oeffnet bei der naechsten Einheit von heute
 @Composable
 fun HomeScreen(
     today: Int,
-    items: List<DailyItem>,
     games: List<GameItem>,
     streak: Int,
     week: List<Boolean>,
@@ -86,18 +85,17 @@ fun HomeScreen(
     onPlay: (GameId) -> Unit,
     onGames: () -> Unit,
     onSettings: () -> Unit,
-    scroll: ScrollState = rememberScrollState(),
 ) {
     val c = Aapps.colors
-    val next = items.firstOrNull { !it.done }
-    val allDone = items.isNotEmpty() && next == null
+    val next = games.firstOrNull { it.daily && !it.doneToday }
+    val allDone = games.any { it.daily } && next == null
     val landscape = LocalWindowInfo.current.containerSize.let { it.width > it.height }
     val action: @Composable () -> Unit = {
         AappsPillButton(
             stringResource(
                 when {
                     allDone -> Res.string.done_today
-                    items.any { it.done } -> Res.string.go_on
+                    games.any { it.doneToday } -> Res.string.go_on
                     else -> Res.string.start
                 },
             ),
@@ -109,9 +107,21 @@ fun HomeScreen(
         )
     }
     val play: (GameId) -> Unit = { haptics?.press(); onPlay(it) }
+    // beim Oeffnen zur naechsten offenen (sonst ersten) Einheit von heute scrollen
+    val scroll = rememberScrollState()
+    val focus = games.indexOf(next ?: games.firstOrNull { it.daily })
+    var pathTop by remember { mutableStateOf<Float?>(null) }
+    val fs = LocalDensity.current.fontScale.coerceIn(1f, 2f)
+    val density = LocalDensity.current
     AappsScaffold {
         BoxWithConstraints(Modifier.fillMaxSize()) {
             val viewH = maxHeight
+            LaunchedEffect(pathTop) {
+                val top = pathTop ?: return@LaunchedEffect
+                if (focus < 0) return@LaunchedEffect
+                scroll.scrollTo(with(density) { (top + (pathNodeY(focus, fs) - viewH * 0.4f).toPx()).toInt().coerceAtLeast(0) })
+            }
+            val path = Modifier.onPlaced { pathTop = it.positionInParent().y }
             if (landscape) {
                 Row(Modifier.fillMaxSize()) {
                     Column(Modifier.weight(0.42f).fillMaxHeight().padding(start = 12.dp, bottom = 16.dp)) {
@@ -122,22 +132,15 @@ fun HomeScreen(
                         Box(Modifier.padding(start = 8.dp)) { action() }
                     }
                     Column(Modifier.weight(0.58f).fillMaxHeight().verticalScroll(scroll)) {
-                        // Pfadtitel lugt unten hervor: zeigt, dass es weitergeht
-                        Constellation(items, next?.id, play, Modifier.fillMaxWidth().height(viewH - 44.dp).padding(12.dp))
-                        PathTitle()
-                        GamePath(games, play, Modifier.padding(bottom = 24.dp))
+                        GamePath(games, play, path.padding(bottom = 24.dp))
                     }
                 }
             } else {
-                // Hero wie bisher, nur so viel kuerzer, dass der Pfad ueber der Pille hervorlugt
-                val heroH = (viewH - 64.dp - 76.dp - 98.dp - 64.dp).coerceAtLeast(300.dp)
                 Column(Modifier.fillMaxSize().verticalScroll(scroll)) {
                     Box(Modifier.padding(start = 12.dp)) { Header(today, onGames, onSettings) }
-                    Constellation(items, next?.id, play, Modifier.fillMaxWidth().height(heroH).padding(horizontal = 12.dp))
+                    Spacer(Modifier.height(12.dp))
                     StreakRow(streak, week, today, Modifier.padding(horizontal = 28.dp))
-                    Spacer(Modifier.height(36.dp))
-                    PathTitle()
-                    GamePath(games, play, Modifier.padding(bottom = 112.dp))
+                    GamePath(games, play, path.padding(bottom = 112.dp))
                 }
                 // Pille schwebt ueber dem Pfad, weicher Uebergang statt harter Kante
                 Box(
@@ -167,105 +170,6 @@ private fun Header(today: Int, onGames: () -> Unit, onSettings: () -> Unit) {
         )
         AappsIconButton(ThinkrIcons.Games, stringResource(Res.string.games), onGames)
         AappsIconButton(AappsIcons.Gear, stringResource(CoreRes.string.aapps_settings), onSettings)
-    }
-}
-
-// Lage der Kugeln im Hero, normiert; Hochformat im Zickzack, Querformat als flacher Bogen
-private fun spots(n: Int, wide: Boolean): List<Offset> = when (n) {
-    0 -> emptyList()
-    1 -> listOf(Offset(0.5f, 0.47f))
-    2 -> if (wide) listOf(Offset(0.3f, 0.42f), Offset(0.7f, 0.58f)) else listOf(Offset(0.33f, 0.3f), Offset(0.67f, 0.7f))
-    else -> if (wide) {
-        listOf(Offset(0.18f, 0.36f), Offset(0.5f, 0.64f), Offset(0.82f, 0.38f))
-    } else {
-        listOf(Offset(0.3f, 0.2f), Offset(0.7f, 0.5f), Offset(0.32f, 0.8f))
-    }
-}
-
-// Tagesbild: Spiele als Lichtkugeln, verbunden zu einem kleinen Sternbild
-@Composable
-private fun Constellation(items: List<DailyItem>, next: GameId?, onPlay: (GameId) -> Unit, modifier: Modifier) {
-    val c = Aapps.colors
-    BoxWithConstraints(modifier) {
-        val wide = maxWidth > maxHeight * 1.15f
-        val pts = spots(items.size, wide)
-        val k = when (items.size) {
-            1 -> 0.46f
-            2 -> 0.34f
-            else -> 0.28f
-        }
-        val orb = min(min(maxWidth, maxHeight) * k, 168.dp).coerceAtLeast(84.dp)
-        val density = LocalDensity.current
-        val orbPx = with(density) { orb.toPx() }
-        // ruhiger Sternenstaub, fest per Seed: kein Flimmern, keine Animation
-        val dust = remember { Random(23).let { r -> List(46) { Triple(r.nextFloat(), r.nextFloat(), r.nextFloat()) } } }
-        Canvas(Modifier.fillMaxSize()) {
-            dust.forEach { (x, y, a) ->
-                drawCircle(c.fg.copy(alpha = 0.06f + 0.16f * a), (0.6f + 1.1f * a).dp.toPx(), Offset(x * size.width, y * size.height))
-            }
-            val centers = pts.map { Offset(it.x * size.width, it.y * size.height) }
-            centers.zipWithNext().forEachIndexed { i, (a, b) ->
-                val lit = items[i].done && items[i + 1].done
-                val d = b - a
-                val len = d.getDistance()
-                if (len <= orbPx) return@forEachIndexed
-                val u = d / len
-                val gap = orbPx / 2 + 8.dp.toPx()
-                val p0 = a + u * gap
-                val p1 = b - u * gap
-                if (lit) {
-                    drawLine(c.accent.copy(alpha = 0.25f), p0, p1, 8.dp.toPx(), StrokeCap.Round)
-                    drawLine(c.accent, p0, p1, 2.dp.toPx(), StrokeCap.Round)
-                } else {
-                    drawLine(
-                        c.fgFaint, p0, p1, 1.5.dp.toPx(), StrokeCap.Round,
-                        pathEffect = PathEffect.dashPathEffect(floatArrayOf(2.dp.toPx(), 7.dp.toPx())),
-                    )
-                }
-            }
-        }
-        val colW = orb * 1.7f
-        items.forEachIndexed { i, item ->
-            val p = pts[i]
-            Orb(
-                item, item.id == next, orb, { onPlay(item.id) },
-                Modifier
-                    .width(colW)
-                    .offset {
-                        IntOffset(
-                            (p.x * constraints.maxWidth - colW.toPx() / 2).toInt(),
-                            (p.y * constraints.maxHeight - orbPx / 2).toInt(),
-                        )
-                    },
-            )
-        }
-    }
-}
-
-@Composable
-private fun Orb(item: DailyItem, isNext: Boolean, size: Dp, onClick: () -> Unit, modifier: Modifier) {
-    val c = Aapps.colors
-    val source = remember { MutableInteractionSource() }
-    val pressed by source.collectIsPressedAsState()
-    val desc = stringResource(if (item.done) Res.string.orb_done else Res.string.orb_open, item.name, item.level)
-    Column(
-        modifier
-            .semantics(mergeDescendants = true) { contentDescription = desc }
-            .clickable(source, indication = null, role = Role.Button, onClick = onClick),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        OrbFace(item.icon, item.done, isNext, size, Modifier.pressScale(pressed, 0.94f))
-        Spacer(Modifier.height(12.dp))
-        BasicText(
-            item.name, style = Aapps.type.title.copy(color = c.fg, textAlign = TextAlign.Center),
-            maxLines = 1, overflow = TextOverflow.Ellipsis,
-        )
-        Spacer(Modifier.height(2.dp))
-        BasicText(
-            stringResource(Res.string.level_n, item.level).uppercase(),
-            style = Aapps.type.label.copy(color = if (item.done) c.accent else c.fgMuted, textAlign = TextAlign.Center),
-            maxLines = 1,
-        )
     }
 }
 
@@ -315,33 +219,30 @@ private fun OrbFace(icon: ImageVector, done: Boolean, lit: Boolean, size: Dp, mo
     }
 }
 
-@Composable
-private fun PathTitle() {
-    val c = Aapps.colors
-    BasicText(
-        stringResource(Res.string.all_games).uppercase(),
-        Modifier.fillMaxWidth().padding(horizontal = 28.dp),
-        style = Aapps.type.label.copy(color = c.fgMuted),
-    )
-}
-
 // Waagrechte Lage der Stationen: sanfte S-Kurve Mitte, rechts, rechts, Mitte, links, links ...
 private fun pathX(i: Int): Float = 0.5f + 0.26f * sin(i * 1.05f)
+
+private val PATH_NODE = 76.dp
+private val PATH_TOP = 40.dp
+private fun pathStep(fs: Float): Dp = 116.dp + 28.dp * (fs - 1f)
+
+// Mitte der Station i, gemessen ab Oberkante des Pfads
+private fun pathNodeY(i: Int, fs: Float): Dp = PATH_TOP + PATH_NODE / 2 + pathStep(fs) * i
 
 // Alle Spiele als geschwungener Pfad; Tipp startet frei
 @Composable
 private fun GamePath(games: List<GameItem>, onPlay: (GameId) -> Unit, modifier: Modifier) {
     val c = Aapps.colors
     val fs = LocalDensity.current.fontScale.coerceIn(1f, 2f)
-    val node = 76.dp
-    val step = 116.dp + 28.dp * (fs - 1f)
-    val top = 40.dp
-    // eigener Sternenstaub, gleich ruhig wie im Hero
+    val node = PATH_NODE
+    val step = pathStep(fs)
+    val top = PATH_TOP
+    // ruhiger Sternenstaub, fest per Seed: kein Flimmern, keine Animation
     val dust = remember { Random(41).let { r -> List(40) { Triple(r.nextFloat(), r.nextFloat(), r.nextFloat()) } } }
     BoxWithConstraints(modifier.fillMaxWidth().height(top * 2 + step * (games.size - 1).coerceAtLeast(0) + node)) {
         val w = maxWidth
         val cx = { i: Int -> w * pathX(i) }
-        val cy = { i: Int -> top + node / 2 + step * i }
+        val cy = { i: Int -> pathNodeY(i, fs) }
         Canvas(Modifier.fillMaxSize()) {
             dust.forEach { (x, y, a) ->
                 drawCircle(c.fg.copy(alpha = 0.05f + 0.13f * a), (0.6f + 1.0f * a).dp.toPx(), Offset(x * size.width, y * size.height))

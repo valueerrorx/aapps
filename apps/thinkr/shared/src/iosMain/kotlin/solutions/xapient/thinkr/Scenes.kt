@@ -1,10 +1,6 @@
 package solutions.xapient.thinkr
 
-import androidx.compose.foundation.ScrollState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.stringResource
 import solutions.xapient.aapps.core.store.StoreAccess
 import solutions.xapient.aapps.core.store.StoreState
@@ -21,7 +17,6 @@ import solutions.xapient.thinkr.domain.stars.StarsGame
 import solutions.xapient.thinkr.domain.stars.StarsState
 import solutions.xapient.thinkr.domain.switches.Pilot
 import solutions.xapient.thinkr.domain.switches.SwitchesGame
-import solutions.xapient.thinkr.ui.DailyItem
 import solutions.xapient.thinkr.ui.GameItem
 import solutions.xapient.thinkr.ui.GamesScreen
 import solutions.xapient.thinkr.ui.HomeScreen
@@ -35,7 +30,7 @@ import solutions.xapient.thinkr.ui.ThinkrSettings
 
 // Feste Zustaende fuer App-Store-Screenshots, wie die Roborazzi-Tests auf Android
 internal enum class Scene {
-    HOME, SWITCHES, STARS, SLALOM, ECHO, RESULT, PATH, GAMES, SETTINGS, ABOUT, OFFER, THANKS;
+    HOME, SWITCHES, STARS, SLALOM, ECHO, RESULT, GAMES, SETTINGS, ABOUT, OFFER, THANKS;
 
     companion object {
         fun of(name: String?): Scene? = entries.firstOrNull { it.name.equals(name, ignoreCase = true) }
@@ -53,8 +48,6 @@ internal fun SceneContent(scene: Scene, versionName: String) {
     AppsTheme {
         when (scene) {
             Scene.HOME -> Home()
-            // Lernpfad: wie Android 1700 px bei 2,625 px/dp
-            Scene.PATH -> Home(done = 1, scroll = with(LocalDensity.current) { 648.dp.roundToPx() })
             Scene.SWITCHES -> Games.Switches.Frozen(Pilot.play(SwitchesGame.start(3, 1, false), 23_350), Phase.PLAYING)
             Scene.STARS -> Games.Stars.Frozen(starsRecall(), Phase.PLAYING)
             Scene.SLALOM -> Games.Slalom.Frozen(slalomBanking(4, 3, 9_000), Phase.PLAYING)
@@ -85,16 +78,12 @@ internal fun SceneContent(scene: Scene, versionName: String) {
 @Composable
 private fun AppsTheme(content: @Composable () -> Unit) = AappsTheme(ThinkrAccent) { content() }
 
-// Tagesbild aus der echten Auswahl fuer heute; done = wie viele schon erledigt
+// Lernpfad mit der echten Tagesauswahl; done = wie viele davon schon erledigt
 @Composable
-private fun Home(done: Int = 0, scroll: Int = 0) {
+private fun Home(done: Int = 0) {
     val pick = Daily.pick(TODAY, Games.ids)
     HomeScreen(
         today = TODAY,
-        items = pick.mapIndexed { i, id ->
-            val def = Games.of(id)!!
-            DailyItem(id, stringResource(def.name), def.icon, LEVELS[Games.ids.indexOf(id)], i < done)
-        },
         games = Games.all.mapIndexed { i, def ->
             val daily = def.id in pick
             GameItem(def.id, stringResource(def.name), def.icon, LEVELS[i], 0, daily, daily && pick.indexOf(def.id) < done)
@@ -102,7 +91,6 @@ private fun Home(done: Int = 0, scroll: Int = 0) {
         streak = 4,
         week = WEEK,
         haptics = null, onPlay = {}, onGames = {}, onSettings = {},
-        scroll = remember { ScrollState(scroll) },
     )
 }
 

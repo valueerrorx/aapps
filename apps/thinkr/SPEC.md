@@ -112,7 +112,7 @@ Erster Release: 5 Spiele (Echo, Weichen, Sternbild, Tinte, Schwarm), die übrige
 - Punkte: je sauber passierter Reihe 10 × Tempo-Faktor × Multiplikator; knapp ausgewichen (gesperrte Nachbarspur, Wechsel in den letzten 0,7 s) +15 und `tick()`. Ereignisse (Durchfahrten, Tempostufen, neue Reihen) laufen streng nach Zeit.
 
 ## Screens
-1. **Heute**: Datum, oben Spiele und Zahnrad. Hero: Tagesbild aus bis zu 3 Lichtkugeln (Spielsymbol, Name, Stufe), verbunden durch Linien, erledigt = Akzent mit Haken. Darunter Serie und Woche Mo–So. Pille „Start" / „Weiter" / „Fertig für heute".
+1. **Heute**: Datum, oben Spiele und Zahnrad. Darunter Serie und Woche Mo–So, dann alle Spiele als Lernpfad; Tagesspiele leuchten mit „Heute“, erledigt = Akzent mit Haken. Beim Öffnen scrollt der Pfad zur nächsten offenen Tageseinheit. Pille „Start" / „Weiter" / „Fertig für heute".
 2. **Spiele**: alle Spiele mit Stufe und Bestwert, Tipp startet.
 3. **Spiel**: Zeitleiste, Punkte, Multiplikator mit 4 Punkten, Pause.
 4. **Ergebnis**: Punkte groß, Stufe mit Pfeil, Treffer in %, Bestwert, „Neuer Bestwert" mit einmaligem Glanz, „Tagestraining erledigt". Pille „Weiter" (nächstes Tagesspiel) bzw. „Nochmal", Text-Knopf „Fertig".
@@ -128,7 +128,7 @@ Verlauf-Screen kommt in einer späteren Phase. Tagestraining und Listen enthalte
 ## Screenshot-Zustände (`apps/thinkr/screenshots/`)
 | Name | Inhalt |
 |---|---|
-| `home` | Tagesbild mit den drei echten Tagesspielen, nichts erledigt, Serie 4 |
+| `home` | Lernpfad mit den drei echten Tagesspielen, nichts erledigt, Serie 4 |
 | `home_partly` | eines erledigt (`home_partly_land`: zwei) |
 | `home_done` | alles erledigt, Pille „Fertig für heute" |
 | `games` | Spieleliste |
