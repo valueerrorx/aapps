@@ -9,13 +9,19 @@ import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.PathBuilder
 import androidx.compose.ui.graphics.vector.path
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import solutions.xapient.tunr.R
+import kotlin.math.abs
+import org.jetbrains.compose.resources.stringResource
 import solutions.xapient.tunr.domain.Instrument
 import solutions.xapient.tunr.domain.Notation
 import solutions.xapient.tunr.domain.Notes
-import kotlin.math.abs
+import solutions.xapient.tunr.res.Res
+import solutions.xapient.tunr.res.inst_bass
+import solutions.xapient.tunr.res.inst_chromatic
+import solutions.xapient.tunr.res.inst_drop_d
+import solutions.xapient.tunr.res.inst_guitar
+import solutions.xapient.tunr.res.inst_ukulele
+import solutions.xapient.tunr.res.inst_violin
 
 // Gruen laut Markenfarben: gestimmt; Bernstein und Koralle zeigen die Abweichung
 val TunrGreen = Color(0xFF4DF0A2)
@@ -52,12 +58,12 @@ const val GLOW_LOCK = 0.06f
 @Composable
 fun instrumentLabel(i: Instrument): String = stringResource(
     when (i) {
-        Instrument.CHROMATIC -> R.string.inst_chromatic
-        Instrument.GUITAR -> R.string.inst_guitar
-        Instrument.GUITAR_DROP_D -> R.string.inst_drop_d
-        Instrument.BASS -> R.string.inst_bass
-        Instrument.UKULELE -> R.string.inst_ukulele
-        Instrument.VIOLIN -> R.string.inst_violin
+        Instrument.CHROMATIC -> Res.string.inst_chromatic
+        Instrument.GUITAR -> Res.string.inst_guitar
+        Instrument.GUITAR_DROP_D -> Res.string.inst_drop_d
+        Instrument.BASS -> Res.string.inst_bass
+        Instrument.UKULELE -> Res.string.inst_ukulele
+        Instrument.VIOLIN -> Res.string.inst_violin
     },
 )
 

@@ -9,7 +9,7 @@ aapps {
 }
 
 dependencies {
-    implementation(project(":core:ui"))
+    implementation(project(":apps:tunr:shared"))
     implementation(libs.androidx.core.ktx)
 
     testImplementation(libs.junit)

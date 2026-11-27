@@ -16,12 +16,6 @@ import solutions.xapient.tunr.domain.Frame
 import solutions.xapient.tunr.domain.PitchDetector
 import solutions.xapient.tunr.domain.SlidingWindow
 
-// Mikrofon; im Test ersetzt. start/stop nur vom Main-Thread, Rueckrufe kommen auf dem Main-Thread
-interface Mic {
-    fun start(sink: (Frame) -> Unit, onError: () -> Unit): Boolean
-    fun stop()
-}
-
 // AudioRecord auf eigenem Thread; Analyse dort, nur fertige Frames gehen an den Main-Thread
 class AudioRecordMic(context: Context) : Mic {
     private val app = context.applicationContext

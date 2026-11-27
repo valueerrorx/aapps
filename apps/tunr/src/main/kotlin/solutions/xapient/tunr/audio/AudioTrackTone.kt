@@ -8,12 +8,6 @@ import android.os.Process
 import solutions.xapient.tunr.domain.Pluck
 import solutions.xapient.tunr.domain.ToneMixer
 
-// Referenzton; im Test ersetzt. Aufrufe vom Main-Thread
-interface TonePlayer {
-    fun play(hz: Float)
-    fun stop()
-}
-
 // AudioTrack (Medien) auf eigenem Thread; Synthese dort, die UI wartet nie
 class AudioTrackTone : TonePlayer {
     private val lock = Any()

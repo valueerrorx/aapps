@@ -35,8 +35,6 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.onClick
@@ -47,23 +45,47 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import solutions.xapient.aapps.core.ui.Aapps
 import solutions.xapient.aapps.core.ui.AappsIcon
 import solutions.xapient.aapps.core.ui.AappsIcons
 import solutions.xapient.aapps.core.ui.AappsScaffold
 import solutions.xapient.aapps.core.ui.AappsTopBar
 import solutions.xapient.aapps.core.ui.AboutScreen
+import solutions.xapient.aapps.core.ui.Res as CoreRes
 import solutions.xapient.aapps.core.ui.SettingsAction
 import solutions.xapient.aapps.core.ui.SettingsChoice
 import solutions.xapient.aapps.core.ui.SettingsDivider
 import solutions.xapient.aapps.core.ui.SettingsGroup
 import solutions.xapient.aapps.core.ui.SettingsScreen
 import solutions.xapient.aapps.core.ui.SettingsToggle
+import solutions.xapient.aapps.core.ui.aapps_about
+import solutions.xapient.aapps.core.ui.aapps_back
 import solutions.xapient.aapps.core.ui.pressScale
-import solutions.xapient.tunr.R
 import solutions.xapient.tunr.domain.Instrument
 import solutions.xapient.tunr.domain.Notation
 import solutions.xapient.tunr.domain.Settings
+import solutions.xapient.tunr.res.Res
+import solutions.xapient.tunr.res.a4_higher
+import solutions.xapient.tunr.res.a4_lower
+import solutions.xapient.tunr.res.a4_sub
+import solutions.xapient.tunr.res.a4_title
+import solutions.xapient.tunr.res.a4_value
+import solutions.xapient.tunr.res.app_name
+import solutions.xapient.tunr.res.group_feedback
+import solutions.xapient.tunr.res.group_tuning
+import solutions.xapient.tunr.res.haptics
+import solutions.xapient.tunr.res.haptics_sub
+import solutions.xapient.tunr.res.ic_launcher_about
+import solutions.xapient.tunr.res.inst_chromatic_sub
+import solutions.xapient.tunr.res.instrument
+import solutions.xapient.tunr.res.notation
+import solutions.xapient.tunr.res.notation_flat
+import solutions.xapient.tunr.res.notation_german
+import solutions.xapient.tunr.res.notation_sharp
+import solutions.xapient.tunr.res.note_mic
+import solutions.xapient.tunr.res.tagline
 
 @Composable
 fun TunrSettings(
@@ -73,25 +95,25 @@ fun TunrSettings(
     onBack: () -> Unit,
 ) {
     SettingsScreen(onBack) {
-        SettingsGroup(stringResource(R.string.group_tuning)) {
+        SettingsGroup(stringResource(Res.string.group_tuning)) {
             A4Row(settings.a4) { onChange(settings.copy(a4 = it)) }
             SettingsDivider()
             SettingsChoice(
-                stringResource(R.string.notation),
+                stringResource(Res.string.notation),
                 listOf(
                     // Woerter statt Vorzeichen: die Schriften haben keine ♯/♭-Glyphen
-                    Notation.SHARP to stringResource(R.string.notation_sharp),
-                    Notation.FLAT to stringResource(R.string.notation_flat),
-                    Notation.GERMAN to stringResource(R.string.notation_german),
+                    Notation.SHARP to stringResource(Res.string.notation_sharp),
+                    Notation.FLAT to stringResource(Res.string.notation_flat),
+                    Notation.GERMAN to stringResource(Res.string.notation_german),
                 ),
                 settings.notation,
             ) { onChange(settings.copy(notation = it)) }
         }
-        SettingsGroup(stringResource(R.string.group_feedback)) {
-            SettingsToggle(stringResource(R.string.haptics), settings.haptics, { onChange(settings.copy(haptics = it)) }, stringResource(R.string.haptics_sub))
+        SettingsGroup(stringResource(Res.string.group_feedback)) {
+            SettingsToggle(stringResource(Res.string.haptics), settings.haptics, { onChange(settings.copy(haptics = it)) }, stringResource(Res.string.haptics_sub))
         }
         SettingsGroup(null) {
-            SettingsAction(stringResource(solutions.xapient.aapps.core.ui.R.string.aapps_about), onClick = onAbout)
+            SettingsAction(stringResource(CoreRes.string.aapps_about), onClick = onAbout)
         }
     }
 }
@@ -107,19 +129,19 @@ private fun A4Row(a4: Int, onA4: (Int) -> Unit) {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(Modifier.weight(1f)) {
-            BasicText(stringResource(R.string.a4_title), style = Aapps.type.body.copy(color = c.fg))
+            BasicText(stringResource(Res.string.a4_title), style = Aapps.type.body.copy(color = c.fg))
             Spacer(Modifier.height(2.dp))
-            BasicText(stringResource(R.string.a4_sub), style = Aapps.type.body.copy(color = c.fgMuted, fontSize = Aapps.type.label.fontSize * 1.1f))
+            BasicText(stringResource(Res.string.a4_sub), style = Aapps.type.body.copy(color = c.fgMuted, fontSize = Aapps.type.label.fontSize * 1.1f))
         }
         Spacer(Modifier.width(8.dp))
-        StepButton(TunrIcons.Minus, stringResource(R.string.a4_lower), a4 > Settings.A4_MIN) { onA4((value - 1).coerceAtLeast(Settings.A4_MIN)) }
+        StepButton(TunrIcons.Minus, stringResource(Res.string.a4_lower), a4 > Settings.A4_MIN) { onA4((value - 1).coerceAtLeast(Settings.A4_MIN)) }
         BasicText(
-            stringResource(R.string.a4_value, a4),
+            stringResource(Res.string.a4_value, a4),
             Modifier.widthIn(min = 72.dp * fs),
             style = Aapps.type.number.copy(color = c.fg, textAlign = TextAlign.Center),
             maxLines = 1,
         )
-        StepButton(TunrIcons.Plus, stringResource(R.string.a4_higher), a4 < Settings.A4_MAX) { onA4((value + 1).coerceAtMost(Settings.A4_MAX)) }
+        StepButton(TunrIcons.Plus, stringResource(Res.string.a4_higher), a4 < Settings.A4_MAX) { onA4((value + 1).coerceAtMost(Settings.A4_MAX)) }
     }
 }
 
@@ -177,7 +199,7 @@ fun InstrumentScreen(selected: Instrument, notation: Notation, onSelect: (Instru
     val c = Aapps.colors
     AappsScaffold {
         Column(Modifier.fillMaxWidth()) {
-            AappsTopBar(stringResource(R.string.instrument), onBack, stringResource(solutions.xapient.aapps.core.ui.R.string.aapps_back))
+            AappsTopBar(stringResource(Res.string.instrument), onBack, stringResource(CoreRes.string.aapps_back))
             Column(
                 Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(start = 16.dp, end = 16.dp, bottom = 32.dp),
                 verticalArrangement = Arrangement.spacedBy(20.dp),
@@ -198,7 +220,7 @@ fun InstrumentScreen(selected: Instrument, notation: Notation, onSelect: (Instru
                                 BasicText(instrumentLabel(inst), style = Aapps.type.body.copy(color = c.fg))
                                 Spacer(Modifier.height(2.dp))
                                 BasicText(
-                                    if (inst.chromatic) stringResource(R.string.inst_chromatic_sub) else stringsText(inst, notation),
+                                    if (inst.chromatic) stringResource(Res.string.inst_chromatic_sub) else stringsText(inst, notation),
                                     style = if (inst.chromatic) {
                                         Aapps.type.body.copy(color = c.fgMuted, fontSize = Aapps.type.label.fontSize * 1.1f)
                                     } else {
@@ -219,11 +241,11 @@ fun InstrumentScreen(selected: Instrument, notation: Notation, onSelect: (Instru
 @Composable
 fun TunrAbout(versionName: String, onBack: () -> Unit) {
     AboutScreen(
-        appName = stringResource(R.string.app_name),
+        appName = stringResource(Res.string.app_name),
         versionName = versionName,
-        tagline = stringResource(R.string.tagline),
+        tagline = stringResource(Res.string.tagline),
         onBack = onBack,
-        notes = listOf(stringResource(R.string.note_mic)),
-        icon = { Image(painterResource(R.drawable.ic_launcher_about), null, Modifier.size(88.dp)) },
+        notes = listOf(stringResource(Res.string.note_mic)),
+        icon = { Image(painterResource(Res.drawable.ic_launcher_about), null, Modifier.size(88.dp)) },
     )
 }

@@ -28,8 +28,8 @@ object Notes {
     fun hz(midi: Int, a4: Float): Float = (a4 * 2.0.pow((midi - A4_MIDI) / 12.0)).toFloat()
 
     fun name(midi: Int, notation: Notation): NoteName {
-        val pc = Math.floorMod(midi, 12)
-        val octave = Math.floorDiv(midi, 12) - 1
+        val pc = (midi).mod(12)
+        val octave = (midi).floorDiv(12) - 1
         return when {
             notation == Notation.GERMAN && pc == 10 -> NoteName("B", Accidental.NONE, octave)
             notation == Notation.GERMAN && pc == 11 -> NoteName("H", Accidental.NONE, octave)

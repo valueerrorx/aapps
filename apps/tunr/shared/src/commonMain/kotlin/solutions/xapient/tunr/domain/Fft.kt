@@ -14,8 +14,8 @@ class Fft(val size: Int) {
         require(size >= 2 && size and (size - 1) == 0) { "Groesse muss Zweierpotenz sein: $size" }
         cosT = DoubleArray(size / 2) { cos(2 * PI * it / size) }
         sinT = DoubleArray(size / 2) { sin(2 * PI * it / size) }
-        val bits = Integer.numberOfTrailingZeros(size)
-        rev = IntArray(size) { Integer.reverse(it) ushr (32 - bits) }
+        val bits = size.countTrailingZeroBits()
+        rev = IntArray(size) { reverseBits(it) ushr (32 - bits) }
     }
 
     // inverse = true: ohne 1/n-Skalierung
@@ -57,4 +57,15 @@ class Fft(val size: Int) {
             return p
         }
     }
+}
+
+// Bitreihenfolge umdrehen (wie Integer.reverse, ohne JVM)
+private fun reverseBits(x: Int): Int {
+    var v = x
+    var r = 0
+    repeat(32) {
+        r = (r shl 1) or (v and 1)
+        v = v ushr 1
+    }
+    return r
 }

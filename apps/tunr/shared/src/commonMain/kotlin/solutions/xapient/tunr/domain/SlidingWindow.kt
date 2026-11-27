@@ -15,7 +15,7 @@ class SlidingWindow(val size: Int, val hop: Int) {
     // pcm: genau hop Samples, 16 bit
     fun push(pcm: ShortArray) {
         require(pcm.size >= hop)
-        System.arraycopy(data, hop, data, 0, size - hop)
+        data.copyInto(data, 0, hop, size)
         val base = size - hop
         var zeros = true
         for (i in 0 until hop) {

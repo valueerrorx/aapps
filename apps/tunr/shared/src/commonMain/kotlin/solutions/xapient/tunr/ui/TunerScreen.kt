@@ -38,7 +38,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
@@ -52,7 +51,10 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import kotlin.math.roundToInt
 import kotlinx.coroutines.flow.first
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.stringResource
 import solutions.xapient.aapps.core.ui.Aapps
 import solutions.xapient.aapps.core.ui.AappsIcon
 import solutions.xapient.aapps.core.ui.AappsIconButton
@@ -60,14 +62,29 @@ import solutions.xapient.aapps.core.ui.AappsIcons
 import solutions.xapient.aapps.core.ui.AappsPillButton
 import solutions.xapient.aapps.core.ui.AappsScaffold
 import solutions.xapient.aapps.core.ui.Haptics
+import solutions.xapient.aapps.core.ui.Res as CoreRes
 import solutions.xapient.aapps.core.ui.Springs
+import solutions.xapient.aapps.core.ui.aapps_settings
 import solutions.xapient.aapps.core.ui.glow
-import solutions.xapient.tunr.R
 import solutions.xapient.tunr.domain.Instrument
 import solutions.xapient.tunr.domain.Notation
 import solutions.xapient.tunr.domain.Notes
 import solutions.xapient.tunr.domain.Settings
-import kotlin.math.roundToInt
+import solutions.xapient.tunr.res.Res
+import solutions.xapient.tunr.res.a4_label
+import solutions.xapient.tunr.res.mic_allow
+import solutions.xapient.tunr.res.mic_ask_text
+import solutions.xapient.tunr.res.mic_error_text
+import solutions.xapient.tunr.res.mic_off
+import solutions.xapient.tunr.res.mic_retry
+import solutions.xapient.tunr.res.mic_silent
+import solutions.xapient.tunr.res.play_tone
+import solutions.xapient.tunr.res.status_flat
+import solutions.xapient.tunr.res.status_in_tune
+import solutions.xapient.tunr.res.status_sharp
+import solutions.xapient.tunr.res.string_auto
+import solutions.xapient.tunr.res.string_desc
+import solutions.xapient.tunr.res.string_locked
 
 // Mikrofon-Lage aus Sicht der Oberflaeche
 enum class MicUi { ON, ASK, BLOCKED, ERROR }
@@ -115,8 +132,8 @@ fun TunerScreen(
 
     val landscape = LocalWindowInfo.current.containerSize.let { it.width > it.height }
     val hint = when {
-        mic != MicUi.ON -> stringResource(R.string.mic_off)
-        state.micSilent -> stringResource(R.string.mic_silent)
+        mic != MicUi.ON -> stringResource(Res.string.mic_off)
+        state.micSilent -> stringResource(Res.string.mic_silent)
         else -> null
     }
     val dial: @Composable (Modifier) -> Unit = { m -> TunerDial(state, settings.notation, hint, m) }
@@ -129,12 +146,12 @@ fun TunerScreen(
     val top: @Composable (Modifier) -> Unit = { m ->
         Row(m.heightIn(min = 56.dp), verticalAlignment = Alignment.CenterVertically) {
             BasicText(
-                stringResource(R.string.a4_label, settings.a4).uppercase(),
+                stringResource(Res.string.a4_label, settings.a4).uppercase(),
                 Modifier.padding(start = 12.dp).weight(1f),
                 style = Aapps.type.label.copy(color = Aapps.colors.fgMuted),
                 maxLines = 1,
             )
-            AappsIconButton(AappsIcons.Gear, stringResource(solutions.xapient.aapps.core.ui.R.string.aapps_settings), onSettings)
+            AappsIconButton(AappsIcons.Gear, stringResource(CoreRes.string.aapps_settings), onSettings)
         }
     }
     val action: @Composable () -> Unit = {
@@ -205,9 +222,9 @@ private object UpperBias : Arrangement.Vertical {
 private fun StatusLine(coarse: Coarse, modifier: Modifier = Modifier) {
     val text = when {
         !coarse.active -> ""
-        coarse.inTune -> stringResource(R.string.status_in_tune)
-        coarse.dir < 0 -> stringResource(R.string.status_flat)
-        else -> stringResource(R.string.status_sharp)
+        coarse.inTune -> stringResource(Res.string.status_in_tune)
+        coarse.dir < 0 -> stringResource(Res.string.status_flat)
+        else -> stringResource(Res.string.status_sharp)
     }
     val color = if (coarse.inTune) TunrGreen else stateColor(coarse.cents5.toFloat())
     // Schrift waechst mit, aber hoechstens 1,5-fach
@@ -244,8 +261,8 @@ private fun StringRow(
     onPlay: (Int) -> Unit,
 ) {
     val c = Aapps.colors
-    val held = stringResource(R.string.string_locked)
-    val auto = stringResource(R.string.string_auto)
+    val held = stringResource(Res.string.string_locked)
+    val auto = stringResource(Res.string.string_auto)
     Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.padding(horizontal = 12.dp)) {
         instrument.strings.forEachIndexed { i, midi ->
             val name = Notes.name(midi, notation)
@@ -289,8 +306,8 @@ private fun StringRow(
                 },
                 c.accent, glowLevel,
             )
-            val desc = stringResource(R.string.string_desc, i + 1, name.toString())
-            val playLabel = stringResource(R.string.play_tone, name.toString())
+            val desc = stringResource(Res.string.string_desc, i + 1, name.toString())
+            val playLabel = stringResource(Res.string.play_tone, name.toString())
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Box(
                     Modifier
@@ -333,9 +350,9 @@ private fun StringRow(
 private fun MicPrompt(mic: MicUi, onAction: () -> Unit) {
     val c = Aapps.colors
     val (text, button) = when (mic) {
-        MicUi.BLOCKED -> R.string.mic_blocked_text to R.string.mic_settings
-        MicUi.ERROR -> R.string.mic_error_text to R.string.mic_retry
-        else -> R.string.mic_ask_text to R.string.mic_allow
+        MicUi.BLOCKED -> blockedText to blockedAction
+        MicUi.ERROR -> Res.string.mic_error_text to Res.string.mic_retry
+        else -> Res.string.mic_ask_text to Res.string.mic_allow
     }
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(horizontal = 28.dp)) {
         BasicText(
@@ -346,3 +363,7 @@ private fun MicPrompt(mic: MicUi, onAction: () -> Unit) {
         AappsPillButton(stringResource(button), onAction, Modifier.widthIn(min = 176.dp), icon = TunrIcons.Mic, active = true)
     }
 }
+
+// Hinweis bei gesperrtem Mikrofon: Android App-Infos, iOS Einstellungen-App
+internal expect val blockedText: StringResource
+internal expect val blockedAction: StringResource

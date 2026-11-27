@@ -14,9 +14,7 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.lerp
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
@@ -27,21 +25,32 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import solutions.xapient.aapps.core.ui.Aapps
-import solutions.xapient.aapps.core.ui.drawGlow
-import solutions.xapient.tunr.R
-import solutions.xapient.tunr.domain.Accidental
-import solutions.xapient.tunr.domain.Notation
-import solutions.xapient.tunr.domain.Notes
-import solutions.xapient.tunr.domain.TunerMotion.Companion.INNER_RATIO
-import solutions.xapient.tunr.domain.TunerMotion.Companion.STROBE_INNER
-import solutions.xapient.tunr.domain.TunerMotion.Companion.STROBE_OUTER
+import kotlin.math.PI
+import solutions.xapient.aapps.core.ui.decimalSeparator
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.math.sin
+import org.jetbrains.compose.resources.stringResource
+import solutions.xapient.aapps.core.ui.Aapps
+import solutions.xapient.aapps.core.ui.drawGlow
+import solutions.xapient.tunr.domain.Accidental
+import solutions.xapient.tunr.domain.Notation
+import solutions.xapient.tunr.domain.Notes
+import solutions.xapient.tunr.domain.TunerMotion.Companion.INNER_RATIO
+import solutions.xapient.tunr.domain.TunerMotion.Companion.STROBE_INNER
+import solutions.xapient.tunr.domain.TunerMotion.Companion.STROBE_OUTER
+import solutions.xapient.tunr.res.Res
+import solutions.xapient.tunr.res.cent
+import solutions.xapient.tunr.res.hz
+import solutions.xapient.tunr.res.play_a_note
+import solutions.xapient.tunr.res.state_flat
+import solutions.xapient.tunr.res.state_in_tune
+import solutions.xapient.tunr.res.state_listening
+import solutions.xapient.tunr.res.state_sharp
+import solutions.xapient.tunr.res.tuner
 
 // Skala: +-50 Cent ueber +-120 Grad, oben Mitte = 0
 const val DEG_PER_CENT = 2.4f
@@ -57,20 +66,20 @@ fun TunerDial(state: TunerState, notation: Notation, hint: String?, modifier: Mo
     val number = Aapps.type.number
     val label = Aapps.type.label
     val fs = LocalDensity.current.fontScale.coerceIn(1f, 2f)
-    val locale = LocalConfiguration.current.locales[0]
-    val play = stringResource(R.string.play_a_note)
-    val centWord = stringResource(R.string.cent)
-    val hzWord = stringResource(R.string.hz)
-    val desc = stringResource(R.string.tuner)
+    val dec = decimalSeparator()
+    val play = stringResource(Res.string.play_a_note)
+    val centWord = stringResource(Res.string.cent)
+    val hzWord = stringResource(Res.string.hz)
+    val desc = stringResource(Res.string.tuner)
     val coarse = state.coarse
     val noteText = if (coarse.target >= 0) Notes.name(coarse.target, notation).toString() else ""
     val stateText = when {
         hint != null -> hint
-        !coarse.heard || coarse.target < 0 -> stringResource(R.string.state_listening)
-        coarse.inTune -> stringResource(R.string.state_in_tune, noteText)
+        !coarse.heard || coarse.target < 0 -> stringResource(Res.string.state_listening)
+        coarse.inTune -> stringResource(Res.string.state_in_tune, noteText)
         // Ansage in 5-Cent-Schritten, bleibt so aktuell ohne Neukomposition je Frame
-        coarse.dir < 0 -> stringResource(R.string.state_flat, noteText, abs(coarse.cents5))
-        coarse.dir > 0 -> stringResource(R.string.state_sharp, noteText, abs(coarse.cents5))
+        coarse.dir < 0 -> stringResource(Res.string.state_flat, noteText, abs(coarse.cents5))
+        coarse.dir > 0 -> stringResource(Res.string.state_sharp, noteText, abs(coarse.cents5))
         else -> noteText
     }
     val centerHint = hint ?: if (!coarse.heard) play else null
@@ -100,7 +109,7 @@ fun TunerDial(state: TunerState, notation: Notation, hint: String?, modifier: Mo
                             cent % 10 == 0 -> r * 0.06f
                             else -> r * 0.035f
                         }
-                        val a = Math.toRadians(angleOf(cent.toFloat()).toDouble())
+                        val a = angleOf(cent.toFloat()).toDouble() * PI / 180
                         val r0 = rg - r * 0.03f
                         moveTo(mid.x + r0 * cos(a).toFloat(), mid.y + r0 * sin(a).toFloat())
                         lineTo(mid.x + (r0 - len) * cos(a).toFloat(), mid.y + (r0 - len) * sin(a).toFloat())
@@ -167,7 +176,7 @@ fun TunerDial(state: TunerState, notation: Notation, hint: String?, modifier: Mo
                             drawArc(col.copy(alpha = 0.22f * pres), -90f, sweep, false, gaugeTL, gaugeSize, style = Stroke(r * 0.06f, cap = StrokeCap.Round))
                             drawArc(col.copy(alpha = pres), -90f, sweep, false, gaugeTL, gaugeSize, style = Stroke(r * 0.022f, cap = StrokeCap.Round))
                         }
-                        val a = Math.toRadians(angleOf(needle).toDouble())
+                        val a = angleOf(needle).toDouble() * PI / 180
                         val dir = Offset(cos(a).toFloat(), sin(a).toFloat())
                         val tip = mid + dir * rg
                         drawGlow(col, tip, r * 0.16f, 0.55f * pres)
@@ -209,7 +218,7 @@ fun TunerDial(state: TunerState, notation: Notation, hint: String?, modifier: Mo
                             drawText(unit, c.fgMuted.copy(alpha = pres), Offset(x0 + num.size.width + gap, baseY - unit.firstBaseline))
                             val hz10 = (rd.hz * 10f).roundToInt()
                             if (hz10 != hzKey || hzLayout == null) {
-                                hzLayout = measurer.measure(String.format(locale, "%.1f %s", hz10 / 10f, hzWord), labelStyle.copy(letterSpacing = 0.04.sp))
+                                hzLayout = measurer.measure("${hz10 / 10}$dec${hz10 % 10} $hzWord", labelStyle.copy(letterSpacing = 0.04.sp))
                                 hzKey = hz10
                             }
                             val hz = hzLayout!!
