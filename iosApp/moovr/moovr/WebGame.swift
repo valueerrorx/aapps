@@ -80,6 +80,20 @@ final class WebGameController: UIViewController, WKNavigationDelegate, WKUIDeleg
         let center = NotificationCenter.default
         center.addObserver(self, selector: #selector(pause), name: UIApplication.willResignActiveNotification, object: nil)
         center.addObserver(self, selector: #selector(resume), name: UIApplication.didBecomeActiveNotification, object: nil)
+        if sceneScript == nil { start() }
+    }
+
+    // Screenshots: erst nach der Drehung ins Querformat laden, sonst behaelt Phaser die Hochkant-Groesse
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        let landscape = view.bounds.width > view.bounds.height
+        if !started, landscape || UIDevice.current.userInterfaceIdiom == .pad { start() }
+    }
+
+    private var started = false
+
+    private func start() {
+        started = true
         webView.load(URLRequest(url: BundleAssets.start))
     }
 

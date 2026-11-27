@@ -214,9 +214,9 @@ jobs:
           printf '%s' "$ASC_KEY_P8" > "$ASC_KEY_PATH"
           APP_PATH="$RUNNER_TEMP/dd/Build/Products/Debug-iphonesimulator/$APP.app"
           SCENES=$(cat "iosApp/$APP/appstore/scenes.txt")
-          # Querformat-Apps (Spiele): Grad im Uhrzeigersinn, um die das Simulator-Bild gedreht wird
-          export SHOT_ROTATE=$(cat "iosApp/$APP/appstore/rotate.txt" 2>/dev/null || true)
-          bash iosApp/tools/sim-shots.sh "$APP_PATH" "$BUNDLE" "$RUNNER_TEMP/shots" APP_IPHONE_67 '^iPhone \d+ Pro Max$' 1320x2868 $SCENES
+          # Querformat-Apps (Spiele): Grad im Uhrzeigersinn, um die das iPhone-Bild gedreht wird; iPadOS laesst die App im Simulator hochkant
+          ROTATE=$(cat "iosApp/$APP/appstore/rotate.txt" 2>/dev/null || true)
+          SHOT_ROTATE="$ROTATE" bash iosApp/tools/sim-shots.sh "$APP_PATH" "$BUNDLE" "$RUNNER_TEMP/shots" APP_IPHONE_67 '^iPhone \d+ Pro Max$' 1320x2868 $SCENES
           bash iosApp/tools/sim-shots.sh "$APP_PATH" "$BUNDLE" "$RUNNER_TEMP/shots" APP_IPAD_PRO_3GEN_129 '^iPad Pro 13-inch' 2064x2752 $SCENES
           node iosApp/tools/asc-screenshots.mjs "$BUNDLE" "$RUNNER_TEMP/shots"
           rm -rf "$RUNNER_TEMP/shots"
