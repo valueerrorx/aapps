@@ -1,0 +1,27 @@
+thinkr brings nine short brain games for a quick break, each round takes about a minute. Every day thinkr picks three of them as your daily session, and you can play all the others freely from the path.
+
+The games
+• Echo: Is the shape the same as the previous one? Later you compare with the one two back.
+• Switches: Steer beads of light over switches into the gate with their colour and shape.
+• Constellation: Remember where the stars lit up.
+• Ink: Does the meaning of one word match the ink colour of the other?
+• Swarm: Swipe where the middle comet points.
+• Bounce: Where does the light leave after the prisms bend it?
+• Drops: Solve the sums before they fall into the water.
+• Glance: A shape in the centre and a star at the edge, caught in a blink.
+• Slalom: Steer your glider past pillars and rocks in the crystal canyon.
+
+Features
+• Levels adapt to how you play, best scores per game
+• Daily session with a streak, a missed day is now and then bridged quietly
+• Relaxed mode with more time and its own levels
+• Colour-blind mode for Ink, subtle sounds optional
+• Portrait and landscape, iPhone and iPad, English and German
+
+thinkr is entertainment. Not a medical device, no health claims.
+
+Try thinkr free for one day with every feature: just start the free trial in the app. After that, a one-time purchase unlocks it for good, including all future updates. No subscription, no ads.
+
+• Private: no tracking, no account, no data collected. thinkr does not make money from your data.
+• Completely offline: thinkr works without a connection. Only the purchase goes through the App Store, the app itself never goes online.
+• Open source: free software under the GNU GPLv3. Source code: https://github.com/valueerrorx/aapps

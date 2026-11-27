@@ -150,3 +150,9 @@ Gratis, ohne Kauf und ohne Kotlin: je App eine eigene Swift-Hülle `WebGame.swif
 - **Helligkeit**: Solange der eigene QR-Code angezeigt wird, volle Bildschirmhelligkeit; beim Verlassen zurück.
 - **Sicherung**: Gruppen (Application Support) und Geräte-ID (UserDefaults) wandern mit iCloud-/Gerätesicherung (Android: Sicherung aus). Wer eine Sicherung auf ein zweites Gerät spielt und beide weiter nutzt, hat zweimal dieselbe Geräte-ID; dann können neue Einträge der beiden Geräte kollidieren. Bewusst nicht ausgeschlossen (Normalfall: altes Gerät wird ersetzt).
 - **Drehung, Zurück**: wie levlr.
+
+## Einschränkungen auf iOS (thinkr)
+- **Töne**: AVAudioPlayer je Klang über die Ambient-Audiosession (Stummschalter gilt, andere Musik läuft weiter); Android SoundPool.
+- **Bewegung reduzieren**: „Bewegung reduzieren“ in den Bedienungshilfen hält die Deko-Animationen an (Android: Animationsskala 0).
+- **Datum**: Tageswechsel nach lokaler Zeitzone wie Android; Datumszeile und Wochentagsbuchstaben über NSDateFormatter (gleiches Muster wie Android).
+- **Drehung, Zurück, Sicherung**: wie levlr.

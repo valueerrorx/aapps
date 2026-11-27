@@ -3,7 +3,7 @@ package solutions.xapient.thinkr.screenshots
 import androidx.compose.foundation.ScrollState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import com.github.takahirom.roborazzi.RobolectricDeviceQualifiers
 import com.github.takahirom.roborazzi.RoborazziOptions
 import com.github.takahirom.roborazzi.captureRoboImage
@@ -15,7 +15,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
 import solutions.xapient.aapps.core.ui.AappsTheme
 import solutions.xapient.thinkr.Games
-import solutions.xapient.thinkr.R
 import solutions.xapient.thinkr.domain.Daily
 import solutions.xapient.thinkr.domain.echo.EchoGame
 import solutions.xapient.thinkr.domain.echo.EchoState
@@ -139,7 +138,7 @@ class ThinkrScreenshotTest {
     }
     @Test fun echo_paused() = shot("echo_paused") { Games.Echo.Frozen(echoPlay(), Phase.PAUSED) }
 
-    private val best = ResultView(R.string.game_echo,ThinkrIcons.Echo, 4280, 6, 5, 88, 4280, newBest = true, dailyComplete = false, hasNext = false)
+    private val best = ResultView(Games.Echo.name, ThinkrIcons.Echo, 4280, 6, 5, 88, 4280, newBest = true, dailyComplete = false, hasNext = false)
 
     @Composable private fun ResultBest() = ResultScreen(best, null, {}, {}, {}, animate = false)
 

@@ -1,0 +1,63 @@
+{
+  "identifier" : "9E4B2C7A",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "1.49",
+      "familyShareable" : false,
+      "internalID" : "67400394531",
+      "localizations" : [
+        {
+          "description" : "Unlock thinkr for good, incl. all future updates.",
+          "displayName" : "Unlock thinkr",
+          "locale" : "en_US"
+        },
+        {
+          "description" : "thinkr dauerhaft freischalten, inkl. aller Updates.",
+          "displayName" : "thinkr freischalten",
+          "locale" : "de"
+        }
+      ],
+      "productID" : "solutions.xapient.thinkr.full_unlock",
+      "referenceName" : "thinkr Unlock",
+      "type" : "NonConsumable"
+    },
+    {
+      "displayPrice" : "0.0",
+      "familyShareable" : false,
+      "internalID" : "67400394532",
+      "localizations" : [
+        {
+          "description" : "All features free for one day, then locked.",
+          "displayName" : "1-Day Trial",
+          "locale" : "en_US"
+        },
+        {
+          "description" : "Einen Tag alles gratis, danach bis zum Kauf gesperrt.",
+          "displayName" : "1 Tag testen",
+          "locale" : "de"
+        }
+      ],
+      "productID" : "solutions.xapient.thinkr.trial",
+      "referenceName" : "thinkr 1-Day Trial",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+    "_failTransactionsEnabled" : false,
+    "_locale" : "de_AT",
+    "_storefront" : "AUT",
+    "_storeKitErrors" : [
+
+    ]
+  },
+  "subscriptionGroups" : [
+
+  ],
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  }
+}

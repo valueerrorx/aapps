@@ -23,7 +23,6 @@ import solutions.xapient.aapps.core.ui.Aapps
 import solutions.xapient.aapps.core.ui.AappsScaffold
 import solutions.xapient.aapps.core.ui.AappsTheme
 import solutions.xapient.thinkr.Games
-import solutions.xapient.thinkr.R
 import solutions.xapient.thinkr.domain.switches.Net
 import solutions.xapient.thinkr.domain.switches.NetBook
 import solutions.xapient.thinkr.domain.switches.Pilot
@@ -80,7 +79,7 @@ class SwitchesScreenshotTest {
     @Test fun switches_paused() = shot("switches_paused") { Games.Switches.Frozen(levelOne(), Phase.PAUSED) }
 
     private val result = ResultView(
-        R.string.game_switches, ThinkrIcons.Switches, 1840, 4, 3, 93, 1840,
+        Games.Switches.name, ThinkrIcons.Switches, 1840, 4, 3, 93, 1840,
         newBest = true, dailyComplete = false, hasNext = false, tally = true, hits = 27, total = 29,
     )
 
