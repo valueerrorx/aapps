@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Schluessel-App ohne eigenen Kauf: Billing-Recht aus core/ui nicht noetig -->
+    <uses-permission android:name="com.android.vending.BILLING" tools:node="remove" />
+
+    <!-- Status installiert/nicht installiert aller xapient-Apps (Paket-Sichtbarkeit ab Android 11) -->
+    <queries>
+        <package android:name="solutions.xapient.sleepr" />
+        <package android:name="solutions.xapient.levlr" />
+        <package android:name="solutions.xapient.nordr" />
+        <package android:name="solutions.xapient.spinr" />
+        <package android:name="solutions.xapient.scorr" />
+        <package android:name="solutions.xapient.focusr" />
+        <package android:name="solutions.xapient.roundr" />
+        <package android:name="solutions.xapient.pulsr" />
+        <package android:name="solutions.xapient.loudr" />
+        <package android:name="solutions.xapient.tunr" />
+        <package android:name="solutions.xapient.magnr" />
+        <package android:name="solutions.xapient.dozr" />
+        <package android:name="solutions.xapient.hertzr" />
+        <package android:name="solutions.xapient.hudr" />
+        <package android:name="solutions.xapient.moovr" />
+        <package android:name="solutions.xapient.glidr" />
+        <package android:name="solutions.xapient.thinkr" />
+        <package android:name="solutions.xapient.dividr" />
+    </queries>
+
+    <application
+        android:allowBackup="false"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Bundle">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:screenOrientation="fullSensor"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboardHidden|uiMode|density|fontScale|locale|layoutDirection"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

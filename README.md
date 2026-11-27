@@ -21,6 +21,7 @@ Kleine Android-Werkzeuge, jedes mit genau einer Aufgabe: schön, schnell, offlin
 - **glidr** – Cool Cows on Ice: Physikrätsel mit 48 Leveln und schlitternden Kühen.
 - **thinkr** – Kurze Denkspiele für zwischendurch, je etwa eine Minute, mit Tagestraining.
 - **dividr** – Gruppenkasse ohne Konto und Internet: Ausgaben teilen, Handys gleichen per QR-Code ab.
+- **xapient bundle** – Schlüssel-App: ein Kauf in Google Play schaltet alle xapient-Apps frei.
 
 Jede App liegt unter `apps/<name>/` mit `SPEC.md`. Übersicht mit Bildern: [docs/overview/index.html](docs/overview/index.html), Plan: [docs/PLAN.md](docs/PLAN.md).
 
@@ -31,7 +32,7 @@ Siehe [docs/AGENTS.md](docs/AGENTS.md). Die CI (GitHub Actions) läuft vorerst n
 - Keine Werbung, kein Tracking, kein Account.
 - Keine Internet-Berechtigung: was die Apps messen, bleibt am Gerät.
 - Open Source unter GPLv3.
-- Alle Apps außer den Spielen moovr und glidr: 24 Stunden voll testen, danach einmaliger Kauf über Google Play (`core/billing`, Produkt `full_unlock`).
+- Alle Apps außer den Spielen moovr und glidr: 24 Stunden voll testen, danach einmaliger Kauf über Google Play (`core/billing`, Produkt `full_unlock`), oder alle auf einmal mit xapient bundle.
 
 ## Lizenz
 GPLv3, siehe [LICENSE](LICENSE).

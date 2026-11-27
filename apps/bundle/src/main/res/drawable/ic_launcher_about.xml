@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="72dp"
+    android:height="72dp"
+    android:viewportWidth="72"
+    android:viewportHeight="72">
+    <!-- App-Icon fuer die Kopfzeile und Info-Seite (adaptive Icons kann Compose nicht direkt zeichnen) -->
+    <path android:pathData="M20,0h32a20,20 0 0 1 20,20v32a20,20 0 0 1 -20,20h-32a20,20 0 0 1 -20,-20v-32a20,20 0 0 1 20,-20z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="radial"
+                android:centerX="36"
+                android:centerY="32"
+                android:gradientRadius="44"
+                android:startColor="#FF1B262E"
+                android:endColor="#FF10161B" />
+        </aapt:attr>
+    </path>
+    <path
+        android:pathData="M20,0.5h32a19.5,19.5 0 0 1 19.5,19.5v32a19.5,19.5 0 0 1 -19.5,19.5h-32a19.5,19.5 0 0 1 -19.5,-19.5v-32a19.5,19.5 0 0 1 19.5,-19.5z"
+        android:strokeWidth="1"
+        android:strokeColor="#FF26323C" />
+    <group android:translateX="-18" android:translateY="-18">
+        <!-- Lichthof -->
+        <path android:pathData="M24,54a30,30 0 1,0 60,0a30,30 0 1,0 -60,0z">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:type="radial"
+                    android:centerX="54"
+                    android:centerY="54"
+                    android:gradientRadius="30"
+                    android:startColor="#38F3C98B"
+                    android:endColor="#00F3C98B" />
+            </aapt:attr>
+        </path>
+        <!-- Schluessel, schraeg: Ring aus den App-Farben, Bart in Champagner -->
+        <group
+            android:pivotX="54"
+            android:pivotY="54"
+            android:rotation="45">
+            <path
+                android:pathData="M49,54H78.5M72.5,54V62.5M64.5,54V60.5"
+                android:strokeWidth="5.5"
+                android:strokeColor="#FFF3C98B"
+                android:strokeLineCap="round"
+                android:strokeLineJoin="round" />
+            <path
+                android:pathData="M27,54a11,11 0 1,0 22,0a11,11 0 1,0 -22,0z"
+                android:strokeWidth="5.5">
+                <aapt:attr name="android:strokeColor">
+                    <gradient
+                        android:type="sweep"
+                        android:centerX="38"
+                        android:centerY="54">
+                    <item android:offset="0.000" android:color="#FFFF6E5A" />
+                    <item android:offset="0.111" android:color="#FFFFD24A" />
+                    <item android:offset="0.222" android:color="#FFC6F24E" />
+                    <item android:offset="0.333" android:color="#FF4DF0A2" />
+                    <item android:offset="0.444" android:color="#FF2EE6E6" />
+                    <item android:offset="0.556" android:color="#FF8AD8FF" />
+                    <item android:offset="0.667" android:color="#FF5B8DFF" />
+                    <item android:offset="0.778" android:color="#FFC08EFF" />
+                    <item android:offset="0.889" android:color="#FFFF4FA0" />
+                    <item android:offset="1.000" android:color="#FFFF6E5A" />
+                    </gradient>
+                </aapt:attr>
+            </path>
+            <path
+                android:fillColor="#33F3C98B"
+                android:pathData="M34.5,54a3.5,3.5 0 1,0 7,0a3.5,3.5 0 1,0 -7,0z" />
+        </group>
+    </group>
+</vector>

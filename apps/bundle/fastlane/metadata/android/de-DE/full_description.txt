@@ -1,0 +1,34 @@
+xapient bundle ist der Schlüssel für alle xapient-Apps. Installiere es aus Google Play und jede xapient-App auf deinem Gerät ist freigeschaltet, ohne jede einzeln zu kaufen.
+
+So funktioniert es
+• xapient bundle einmal kaufen und installieren.
+• Die xapient-Apps installieren, die dir gefallen, oder die vorhandenen weiter nutzen. Beim nächsten Start finden sie das Bundle und öffnen sich voll freigeschaltet, ohne Testphasen-Bildschirm.
+• xapient bundle installiert lassen. Auf einem neuen Handy installierst du es mit demselben Google-Konto wieder aus Google Play, ohne zweiten Kauf.
+
+Schaltet diese Apps frei
+• sleepr – Rauschgenerator
+• levlr – Wasserwaage
+• nordr – Kompass
+• spinr – Glücksrad
+• scorr – Punktezähler
+• focusr – Visueller Timer
+• roundr – Intervall-Timer
+• pulsr – Metronom
+• loudr – Lautstärkemesser
+• tunr – Stimmgerät
+• magnr – Metalldetektor
+• dozr – Einschlaf-Timer
+• hertzr – Tongenerator
+• hudr – GPS-Tacho
+• thinkr – Denkspiele
+• dividr – Gruppenkasse
+
+moovr (Clumsy Cow) und glidr (Cool Cows on Ice) sind Gratis-Spiele und stehen ebenfalls in der Übersicht.
+
+Die Bundle-App zeigt alle xapient-Apps mit ihrem Status. Installierte öffnest du mit einem Tipp, fehlende installierst du direkt aus Google Play.
+
+Einmaliger Kauf, kein Abo, keine Werbung.
+
+• Privat: kein Tracking, kein Konto, es werden keine Daten gesammelt. xapient bundle verdient nicht an deinen Daten.
+• Komplett offline: xapient bundle hat keine Internet-Berechtigung. Die Apps suchen das Bundle lokal auf deinem Gerät, es wird nichts gesendet.
+• Open Source: freie Software unter der GNU GPLv3. Quellcode: https://github.com/valueerrorx/aapps

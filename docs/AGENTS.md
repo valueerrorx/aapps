@@ -26,6 +26,7 @@ Robolectric läuft mit SDK 34 (`src/test/resources/robolectric.properties`), wei
 - Tests: `TrialGate.factory` durch einen Fake (`PurchaseSource`) ersetzen, siehe `levlr/TrialGatedTest`.
 - Nur Debug-Builds: `adb shell am start -S -n solutions.xapient.<app>/.MainActivity --es aapps_trial expire` (Testphase vorbei) bzw. `reset`. Im Release fehlt der Schalter (`core/billing/src/release`).
 - sleepr (Views): Dankes-Bildschirm als Views in `Pages.thanks`, gleiche Texte aus `core/billing`.
+- Schlüssel-App `apps/bundle` (Bezahl-App, kein In-App-Kauf): `BundleKey.installed` prüft live Paket, Installer Play und Signatur-SHA-256 (`BUNDLE_CERT_SHA256`, leer = nie frei); FULL ohne Kauf-Cache. Neue App -> `Catalog` + `<queries>` in `apps/bundle` ergänzen (Test prüft gegen `settings.gradle.kts`).
 
 ## Haptik (`core/ui/Haptics`)
 - `tick()`/`confirm()`: Ereignis (Fund, Einrasten, gestimmt, Ablauf). Läuft über den Vibrator (Usage Alarm), spürbar auch bei ausgeschalteter Touch-Haptik im System, entprellt auf 120 ms.

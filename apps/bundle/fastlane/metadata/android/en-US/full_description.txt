@@ -1,0 +1,34 @@
+xapient bundle is the key to all xapient apps. Install it from Google Play and every xapient app on your device is unlocked, without buying each one separately.
+
+How it works
+• Buy and install xapient bundle once.
+• Install the xapient apps you like or keep the ones you already have. At their next start they find the bundle and open fully unlocked, without a trial screen.
+• Keep xapient bundle installed. On a new phone, install it again from Google Play with the same Google account, no second purchase needed.
+
+Unlocks these apps
+• sleepr – noise generator
+• levlr – spirit level
+• nordr – compass
+• spinr – decision wheel
+• scorr – score keeper
+• focusr – visual timer
+• roundr – interval timer
+• pulsr – metronome
+• loudr – sound level meter
+• tunr – chromatic tuner
+• magnr – metal detector
+• dozr – sleep timer
+• hertzr – tone generator
+• hudr – GPS speedometer
+• thinkr – brain games
+• dividr – group expenses
+
+moovr (Clumsy Cow) and glidr (Cool Cows on Ice) are free games and are listed in the bundle as well.
+
+The bundle app shows all xapient apps with their status. Open the installed ones with one tap or install the missing ones from Google Play.
+
+One-time purchase, no subscription, no ads.
+
+• Private: no tracking, no account, no data collected. xapient bundle does not make money from your data.
+• Completely offline: xapient bundle has no internet permission. The apps look for the bundle locally on your device, nothing is sent anywhere.
+• Open source: free software under the GNU GPLv3. Source code: https://github.com/valueerrorx/aapps

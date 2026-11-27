@@ -1,0 +1,1 @@
+Erste Version: ein Kauf schaltet alle xapient-Apps frei, Übersicht mit Status, Öffnen und Installieren.

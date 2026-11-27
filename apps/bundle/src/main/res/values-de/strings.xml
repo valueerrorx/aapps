@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tagline">Ein Schlüssel für alle xapient-Apps. Solange diese App aus Google Play installiert ist, ist jede xapient-App auf diesem Gerät freigeschaltet.</string>
+    <string name="note_check">Die Apps suchen beim Start offline nach dem Bundle. Es wird nichts gesendet und kein Konto gebraucht.</string>
+    <string name="note_device">Neues Handy? Installiere xapient bundle mit demselben Google-Konto wieder aus Google Play, ohne zweiten Kauf.</string>
+    <string name="about">Info</string>
+    <string name="headline">Alle Apps frei</string>
+    <string name="intro">Solange diese App installiert bleibt, ist jede xapient-App auf diesem Gerät voll freigeschaltet.</string>
+    <string name="installed_count">%1$d von %2$d installiert</string>
+    <string name="group_installed">Installiert</string>
+    <string name="group_more">Weitere Apps</string>
+    <string name="status_unlocked">Freigeschaltet</string>
+    <string name="status_included">Enthalten</string>
+    <string name="status_free">Gratis</string>
+    <string name="open">Öffnen</string>
+    <string name="install">Laden</string>
+    <string name="open_desc">%1$s öffnen</string>
+    <string name="install_desc">%1$s aus Google Play installieren</string>
+    <string name="line_sleepr">Rauschen zum Einschlafen</string>
+    <string name="line_levlr">Wasserwaage, die bei 0,0° einrastet</string>
+    <string name="line_nordr">Ruhiger Kompass, der den Kurs hält</string>
+    <string name="line_spinr">Glücksrad für faire Entscheidungen</string>
+    <string name="line_scorr">Punktezähler für den Spieleabend</string>
+    <string name="line_focusr">Visueller Timer mit schrumpfender Scheibe</string>
+    <string name="line_roundr">Runden- und Intervall-Timer</string>
+    <string name="line_pulsr">Metronom mit Tap-Tempo</string>
+    <string name="line_loudr">Schallpegel in dB(A) messen</string>
+    <string name="line_tunr">Chromatisches Stimmgerät</string>
+    <string name="line_magnr">Metalldetektor per Magnetfeldsensor</string>
+    <string name="line_dozr">Einschlaf-Timer für jede App</string>
+    <string name="line_hertzr">Tongenerator von 1 Hz bis 22 kHz</string>
+    <string name="line_hudr">GPS-Tacho mit HUD-Modus</string>
+    <string name="line_moovr">Mit der Kuh über Eisschollen hüpfen</string>
+    <string name="line_glidr">Physikrätsel mit Kühen auf dem Eis</string>
+    <string name="line_thinkr">Neun kurze Denkspiele für zwischendurch</string>
+    <string name="line_dividr">Gruppenausgaben offline teilen</string>
+</resources>
