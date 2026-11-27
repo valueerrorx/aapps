@@ -5,6 +5,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
+import solutions.xapient.aapps.core.ui.SharedPrefsKeyValues
 import solutions.xapient.aapps.core.ui.TrialGated
 
 class MainActivity : ComponentActivity() {
@@ -15,6 +18,16 @@ class MainActivity : ComponentActivity() {
             navigationBarStyle = SystemBarStyle.dark(android.graphics.Color.TRANSPARENT),
         )
         super.onCreate(savedInstanceState)
-        setContent { TrialGated(SpinrAccent) { SpinrApp() } }
+        setContent {
+            TrialGated(SpinrAccent) {
+                val context = LocalContext.current
+                val prefs = remember { Prefs(SharedPrefsKeyValues(context, "spinr")) }
+                SpinrApp(
+                    prefs = prefs,
+                    newTickPlayer = { AndroidTickPlayer(context) },
+                    versionName = BuildConfig.VERSION_NAME,
+                )
+            }
+        }
     }
 }

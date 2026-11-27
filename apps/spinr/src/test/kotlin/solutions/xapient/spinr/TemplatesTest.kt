@@ -1,20 +1,38 @@
 package solutions.xapient.spinr
 
 import solutions.xapient.spinr.domain.Wheel
+import android.content.ComponentName
+import androidx.activity.ComponentActivity
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.test.ExperimentalTestApi
+import androidx.compose.ui.test.runComposeUiTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
+import org.robolectric.Shadows.shadowOf
 
 // Vorlagen in beiden Sprachen: gueltige, editierbare Raeder
 @RunWith(RobolectricTestRunner::class)
 class TemplatesTest {
-    private fun groups(qualifiers: String): List<TemplateGroup> {
+    // Vorlagen kommen aus Compose-Ressourcen: je Sprache eigene Komposition, Ergebnis abgreifen
+    @OptIn(ExperimentalTestApi::class)
+    private fun <T> composed(qualifiers: String, block: @Composable () -> T): T {
         RuntimeEnvironment.setQualifiers(qualifiers)
-        return templateGroups(RuntimeEnvironment.getApplication().resources)
+        // leere Activity anmelden (kein Test-Manifest im Projekt)
+        val app = RuntimeEnvironment.getApplication()
+        shadowOf(app.packageManager).addActivityIfNotPresent(ComponentName(app, ComponentActivity::class.java))
+        var out: T? = null
+        runComposeUiTest {
+            setContent { out = block() }
+            waitForIdle()
+        }
+        return out!!
     }
+
+    private fun groups(qualifiers: String): List<TemplateGroup> = composed(qualifiers) { templateGroups() }
 
     @Test
     fun everyTemplateIsAValidWheel() {
@@ -48,8 +66,7 @@ class TemplatesTest {
 
     @Test
     fun firstStartKeepsTheFourClassics() {
-        RuntimeEnvironment.setQualifiers("+de")
-        val names = starterWheels(RuntimeEnvironment.getApplication().resources).map { it.name }
+        val names = composed("+de") { starterWheels() }.map { it.name }
         assertEquals(listOf("Was essen wir?", "Ja oder nein?", "Würfel", "Wer zahlt?"), names)
     }
 }

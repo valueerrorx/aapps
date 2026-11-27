@@ -46,8 +46,10 @@ class SpinScreenshotTest {
     }
 
     // Vorlagen in der Sprache des gerade gesetzten Qualifiers
-    private fun res() = RuntimeEnvironment.getApplication().resources
-    private fun presets() = starterWheels(res())
+    @Composable
+    private fun presets() = starterWheels()
+
+    @Composable
     private fun food() = presets()[0]
 
     @Composable
@@ -158,14 +160,15 @@ class SpinScreenshotTest {
     }
 
     @Composable
-    private fun Templates() = TemplatesScreen(templateGroups(res()), {}, {})
+    private fun Templates() = TemplatesScreen(templateGroups(), {}, {})
 
     @Test fun templates_de() = shot("templates_de", "+de") { Templates() }
 
     @Test fun templates_de_font200() = shot("templates_de_font200", "+de", fontScale = 2f) { Templates() }
 
     // Vorlage als Rad: Himmelsrichtungen und Buchstaben A-Z (26, kurze Eintraege)
-    private fun template(name: String) = templateGroups(res()).flatMap { it.wheels }.first { it.name == name }
+    @Composable
+    private fun template(name: String) = templateGroups().flatMap { it.wheels }.first { it.name == name }
 
     @Test fun compass_de() = shot("compass_de", "+de") { template("Himmelsrichtungen").let { Spin(idle(it), it.name) } }
 
