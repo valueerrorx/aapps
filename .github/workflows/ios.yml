@@ -96,6 +96,12 @@ jobs:
           sudo xcode-select -s "$XC"
           xcodebuild -version
 
+      # Release-Link von Kotlin/Native braucht mehr als die 1,5 GB aus gradle.properties (die gelten fuer den NAS)
+      - name: Gradle-Speicher (nur CI)
+        run: |
+          mkdir -p ~/.gradle
+          echo "org.gradle.jvmargs=-Xmx5g -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8" >> ~/.gradle/gradle.properties
+
       # Build-Nummer: run_number + 100 (Workflow umbenannt, levlr hatte schon Builds bis 6)
       - name: Version wie Android
         run: |
