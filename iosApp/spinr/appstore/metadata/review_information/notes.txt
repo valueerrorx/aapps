@@ -1,0 +1,10 @@
+spinr is a decision wheel. It is not a gambling app: there are no stakes, prizes or currency. It never goes online; only the in-app purchases go through the App Store.
+
+Trial (guideline 3.1.1): on first launch the app shows the free trial offer. It states the duration (1 day), that the app stays locked afterwards, and the price of the one-time unlock. Two non-consumable in-app purchases:
+- "spinr 1-Day Trial" (solutions.xapient.spinr.trial, price 0): tap "Start free trial". The full app opens.
+- "Unlock spinr" (solutions.xapient.spinr.full_unlock): tap "Unlock for <price>" on the same screen (no need to wait for the trial to end). The app is unlocked permanently.
+"Restore purchase" is on the same screen and calls AppStore.sync().
+
+After the trial day the app shows a thank-you screen with the unlock purchase and "Restore purchase".
+
+How to use: tap the wheel, press "Spin" or flick it. The list icon opens the saved wheels and templates; entries can be edited there. The gear icon opens the settings (haptics, sound). No account, no login, no network access.

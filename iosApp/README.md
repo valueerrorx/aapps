@@ -1,6 +1,6 @@
 # aapps für iPhone und iPad
 
-levlr ist die erste App und die Vorlage für alle weiteren, danach nordr. Gebaut wird in GitHub Actions auf macOS (`.github/workflows/ios.yml`, eine Matrix über alle `iosApp/<app>/project.yml`), ein eigener Mac ist nicht nötig.
+levlr ist die erste App und die Vorlage für alle weiteren, danach nordr und spinr. Gebaut wird in GitHub Actions auf macOS (`.github/workflows/ios.yml`, eine Matrix über alle `iosApp/<app>/project.yml`), ein eigener Mac ist nicht nötig.
 
 ## Aufbau
 
@@ -87,4 +87,10 @@ Signieren: Target **levlr** → **Signing & Capabilities** → **Automatically m
 - **Sensor**: CoreMotion Device Motion mit Bezug „magnetisch Nord“ (Gyro + Magnetometer + Schwerkraft fusioniert, wie der Android-Rotation-Vector), ohne Standort und ohne Berechtigung. Genauigkeit aus der Magnetometer-Kalibrierung von iOS (unkalibriert/gering → Kalibrierhinweis), Störung aus der Feldstärke wie auf Android. Vor der ersten Kalibrierung liefert iOS teils kein Feld, dann fehlt der Hinweis kurz. Der Simulator hat keinen Kompass (zeigt „kein Kompass-Sensor“, Screenshots über feste Szenen).
 - **Deklination**: Android nutzt `GeomagneticField`; iOS hat kein Gegenstück ohne Standort, deshalb rechnet nordr dort mit dem eingebauten Weltmagnetfeld-Modell WMM2025 (NOAA, gemeinfrei, gültig bis Ende 2029) für die gewählte Region. Danach braucht es ein Update mit dem Nachfolgemodell.
 - **Haptik**: wie levlr, folgt der Systemhaptik; iPads ohne Taptic Engine haben kein Tippen bei N/O/S/W und auf Kurs.
+- **Drehung, Zurück, Sicherung**: wie levlr.
+
+## Einschränkungen auf iOS (spinr)
+- **Klick-Ton**: AVAudioPlayer (drei Player im Wechsel, leicht wechselnde Tonhöhe wie Android), Audio-Kategorie Ambient: der Stummschalter schaltet den Ton ab, andere Audio-Apps laufen weiter.
+- **Bedienungshilfen**: Android sagt das Ergebnis über TalkBack an; ob VoiceOver das auf iOS ebenso tut, ist am Gerät zu prüfen (in der Store-Beschreibung deshalb nicht erwähnt).
+- **Zeichen kürzen**: Einträge werden an Graphem-Grenzen gekürzt (Android BreakIterator, iOS NSString composed character sequences).
 - **Drehung, Zurück, Sicherung**: wie levlr.
