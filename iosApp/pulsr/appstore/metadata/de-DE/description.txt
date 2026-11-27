@@ -1,0 +1,19 @@
+pulsr ist ein Metronom zum Üben. Die Klicks werden auf das Sample genau in den Audiostrom gemischt und nicht über einen Timer ausgelöst. Dadurch bleibt der Takt gleichmäßig und läuft auch über lange Zeit nicht davon.
+
+Funktionen
+• Tempo von 20 bis 300 BPM: am Rad drehen, mit −/+ oder per Tap-Tempo
+• Taktart mit 1 bis 12 Schlägen, erster Schlag betont (abschaltbar)
+• Unterteilung in Viertel, Achtel, Triolen oder Sechzehntel
+• Drei Klänge: Klick, Holz und Piep
+• Tempo- und Taktwechsel im Lauf ohne Stolpern
+• Lichtpuls synchron zum Ton, mit Tempobezeichnung von Largo bis Prestissimo
+• Spielt bei gesperrtem Bildschirm weiter und stoppt, wenn du den Kopfhörer absteckst oder ein Anruf kommt
+• Mischt sich in laufende Musik, damit du zu Aufnahmen üben kannst
+• Bildschirm bleibt beim Spielen an (abschaltbar)
+• Hoch- und Querformat, iPhone und iPad, Deutsch und Englisch
+
+Teste pulsr einen Tag lang kostenlos mit allen Funktionen: einfach in der App die Testphase starten. Danach schaltet ein einmaliger Kauf die App dauerhaft frei, inklusive aller künftigen Updates. Kein Abo, keine Werbung.
+
+• Privat: kein Tracking, kein Konto, es werden keine Daten gesammelt. pulsr verdient nicht an deinen Daten.
+• Komplett offline: pulsr funktioniert ohne Verbindung. Nur der Kauf läuft über den App Store, die App selbst geht nie ins Internet.
+• Open Source: freie Software unter der GNU GPLv3. Quellcode: https://github.com/valueerrorx/aapps

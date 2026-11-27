@@ -19,6 +19,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         // Lautstaerketasten regeln das Metronom
         volumeControlStream = AudioManager.STREAM_MUSIC
-        setContent { TrialGated(PulsrAccent) { PulsrApp() } }
+        setContent { TrialGated(PulsrAccent) { AndroidPulsrApp() } }
     }
 }

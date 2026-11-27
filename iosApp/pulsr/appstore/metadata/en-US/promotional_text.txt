@@ -1,0 +1,1 @@
+A metronome for practice: sample-accurate clicks that never drift, tap tempo, subdivisions and a light pulse in sync. No tracking, fully offline, open source.

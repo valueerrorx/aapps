@@ -169,3 +169,10 @@ Gratis, ohne Kauf und ohne Kotlin: je App eine eigene Swift-Hülle `WebGame.swif
 - **Mikrofon**: AVAudioEngine-Eingangs-Tap, Kategorie Record, Modus Measurement (ohne automatische Verstärkung, wie UNPROCESSED auf Android), Bezugspegel wie UNPROCESSED; Werte sind wie auf Android Schätzwerte, Kalibrier-Offset gleicht ab. Gemessen wird nur im Vordergrund.
 - **Berechtigung**: einmal von selbst fragen; abgelehnt = Hinweis mit Knopf zur Einstellungen-App (iOS fragt nicht erneut). „Stummgeschaltet“ gibt es auf iOS nicht, eine Unterbrechung (Anruf) zeigt „Mikrofon nicht verfügbar“ mit Erneut-Knopf.
 - **Zurück, Sicherung**: wie levlr; Min/Max/Verlauf überstehen auf iOS keinen Prozess-Neustart.
+
+## Einschränkungen auf iOS (pulsr)
+- **Audio**: AVAudioEngine mit Player-Knoten statt AudioTrack. Die Klicks rechnet derselbe Kotlin-Renderer, Blöcke (1024 Samples) werden sample-genau eingereiht, vier Blöcke voraus (~85 ms bei 48 kHz). Tempo- und Taktwechsel greifen deshalb etwas später als auf Android (~20 ms Puffer), der Takt selbst bleibt sample-genau.
+- **Gesperrter Bildschirm**: Hintergrund-Audio (`UIBackgroundModes` audio) statt Vordergrunddienst; keine Stopp-Taste in einer Benachrichtigung. Anruf/Unterbrechung und abgesteckter Kopfhörer stoppen wie auf Android.
+- **Lichtpuls**: Zeitbasis `CACurrentMediaTime` mit Ausgabelatenz der Audiosession. Synchronität am Gerät prüfen (besonders mit Bluetooth-Kopfhörern).
+- **Lautstärke**: Lautstärketasten regeln die Medienlautstärke (Audiosession Playback), mischt sich in laufende Musik.
+- **Drehung, Zurück**: wie levlr.

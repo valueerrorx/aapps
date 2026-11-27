@@ -1,0 +1,19 @@
+pulsr is a metronome for practice. The clicks are mixed into the audio stream with sample accuracy instead of being triggered by a timer. That keeps the beat steady, and it does not drift even over long sessions.
+
+Features
+• Tempo from 20 to 300 BPM: turn the wheel, use −/+ or tap tempo
+• Time signatures with 1 to 12 beats, accented first beat (can be turned off)
+• Subdivisions: quarters, eighths, triplets or sixteenths
+• Three sounds: click, wood and beep
+• Change tempo or time signature while playing without stumbling
+• Light pulse in sync with the sound, with tempo markings from Largo to Prestissimo
+• Keeps playing with the screen locked and stops when you unplug your headphones or a call comes in
+• Mixes with music that is already playing, so you can practise along to recordings
+• Screen stays on while playing (can be turned off)
+• Portrait and landscape, iPhone and iPad, English and German
+
+Try pulsr free for one day with every feature: just start the free trial in the app. After that, a one-time purchase unlocks it for good, including all future updates. No subscription, no ads.
+
+• Private: no tracking, no account, no data collected. pulsr does not make money from your data.
+• Completely offline: pulsr works without a connection. Only the purchase goes through the App Store, the app itself never goes online.
+• Open source: free software under the GNU GPLv3. Source code: https://github.com/valueerrorx/aapps

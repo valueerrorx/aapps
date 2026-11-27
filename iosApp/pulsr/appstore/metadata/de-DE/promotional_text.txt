@@ -1,0 +1,1 @@
+Ein Metronom zum Üben: Klicks auf das Sample genau, die nie davonlaufen, Tap-Tempo, Unterteilungen und Lichtpuls im Takt. Ohne Tracking, offline, Open Source.

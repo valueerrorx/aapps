@@ -14,7 +14,7 @@ aapps {
 }
 
 dependencies {
-    implementation(project(":core:ui"))
+    implementation(project(":apps:pulsr:shared"))
     implementation(libs.androidx.core.ktx)
 
     testImplementation(libs.junit)
