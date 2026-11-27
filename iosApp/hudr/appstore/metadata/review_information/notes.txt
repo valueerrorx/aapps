@@ -1,0 +1,10 @@
+hudr is a GPS speedometer. It asks for location "While Using the App" only (no background location) and, if the user chose approximate location, asks once per session for precise location (temporary full accuracy, purpose key "speed"). The location is only used to compute speed on the device; it is never stored or sent. The app never goes online; only the in-app purchases go through the App Store.
+
+Trial (guideline 3.1.1): on first launch the app shows the free trial offer. It states the duration (1 day), that the app stays locked afterwards, and the price of the one-time unlock. Two non-consumable in-app purchases:
+- "hudr 1-Day Trial" (solutions.xapient.hudr.trial, price 0): tap "Start free trial". The full app opens.
+- "Unlock hudr" (solutions.xapient.hudr.full_unlock): tap "Unlock for <price>" on the same screen (no need to wait for the trial to end). The app is unlocked permanently.
+"Restore purchase" is on the same screen and calls AppStore.sync().
+
+After the trial day the app shows a thank-you screen with the unlock purchase and "Restore purchase".
+
+How to use: allow location, then walk or drive; the speed appears once GPS has a fix (outdoors). "HUD" mirrors the display for reading in the windscreen. Speed warning and units are in the settings. No account, no login, no network access.

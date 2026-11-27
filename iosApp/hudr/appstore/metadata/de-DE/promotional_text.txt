@@ -1,0 +1,1 @@
+GPS-Tacho mit großen Ziffern, Warnschwelle und gespiegeltem HUD-Modus für die Windschutzscheibe. Standort bleibt am Gerät, offline, Open Source.

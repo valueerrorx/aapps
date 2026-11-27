@@ -1,0 +1,1 @@
+speedometer,speed,gps,hud,head up,windscreen,mph,kmh,knots,trip,bike,car,boat,offline

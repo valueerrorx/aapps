@@ -1,0 +1,6 @@
+/* Sprache des Bundles; die Texte der App kommen aus den Compose-Ressourcen */
+"CFBundleDisplayName" = "hudr";
+"NSHumanReadableCopyright" = "Freie Software unter der GNU GPLv3.";
+"NSLocationWhenInUseUsageDescription" = "hudr misst deine Geschwindigkeit per GPS, solange die App offen ist. Dein Standort bleibt auf dem Gerät.";
+/* Zweck fuer den genauen Standort (NSLocationTemporaryUsageDescriptionDictionary) */
+"speed" = "Die Geschwindigkeit stimmt nur mit genauem Standort.";

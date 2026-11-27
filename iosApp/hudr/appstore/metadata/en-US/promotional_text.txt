@@ -1,0 +1,1 @@
+GPS speedometer with large digits, speed warning and a mirrored HUD mode for the windscreen. Location stays on your device, fully offline, open source.

@@ -1,0 +1,63 @@
+{
+  "identifier" : "5C2A9F43",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "1.49",
+      "familyShareable" : false,
+      "internalID" : "6740000501",
+      "localizations" : [
+        {
+          "description" : "Unlock hudr for good, incl. all future updates.",
+          "displayName" : "Unlock hudr",
+          "locale" : "en_US"
+        },
+        {
+          "description" : "hudr dauerhaft freischalten, inkl. aller Updates.",
+          "displayName" : "hudr freischalten",
+          "locale" : "de"
+        }
+      ],
+      "productID" : "solutions.xapient.hudr.full_unlock",
+      "referenceName" : "hudr Unlock",
+      "type" : "NonConsumable"
+    },
+    {
+      "displayPrice" : "0.0",
+      "familyShareable" : false,
+      "internalID" : "6740000502",
+      "localizations" : [
+        {
+          "description" : "All features free for one day, then locked.",
+          "displayName" : "1-Day Trial",
+          "locale" : "en_US"
+        },
+        {
+          "description" : "Einen Tag alles gratis, danach bis zum Kauf gesperrt.",
+          "displayName" : "1 Tag testen",
+          "locale" : "de"
+        }
+      ],
+      "productID" : "solutions.xapient.hudr.trial",
+      "referenceName" : "hudr 1-Day Trial",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+    "_failTransactionsEnabled" : false,
+    "_locale" : "de_AT",
+    "_storefront" : "AUT",
+    "_storeKitErrors" : [
+
+    ]
+  },
+  "subscriptionGroups" : [
+
+  ],
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  }
+}
