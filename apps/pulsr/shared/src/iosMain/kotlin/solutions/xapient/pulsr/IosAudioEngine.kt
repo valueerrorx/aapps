@@ -16,6 +16,8 @@ import platform.AVFAudio.AVAudioSessionInterruptionTypeKey
 import platform.AVFAudio.AVAudioSessionRouteChangeNotification
 import platform.AVFAudio.AVAudioSessionRouteChangeReasonKey
 import platform.AVFAudio.AVAudioTime
+import platform.AVFAudio.IOBufferDuration
+import platform.AVFAudio.outputLatency
 import platform.AVFAudio.setActive
 import platform.Foundation.NSNotification
 import platform.Foundation.NSNotificationCenter
