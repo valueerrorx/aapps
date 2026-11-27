@@ -15,7 +15,8 @@ const DEFAULT_LANG = 'en-US';
 const PRODUCT_ID = 'full_unlock';
 const PURCHASE_OPTION_ID = 'buy';
 const PRICE_EUR = 1.49;
-const NO_IAP = new Set(['moovr', 'glidr']);
+// ohne In-App-Kauf: Gratis-Spiele und die Bezahl-App bundle (Preis in der Console)
+const NO_IAP = new Set(['moovr', 'glidr', 'bundle']);
 
 // Kurz-Locales auf Play-Codes abbilden
 const LOCALE_MAP = { de: 'de-DE', en: 'en-US', fr: 'fr-FR', es: 'es-ES', it: 'it-IT', nl: 'nl-NL', pt: 'pt-PT', sl: 'sl' };
@@ -374,7 +375,7 @@ async function buildProduct(appName, pkg) {
 }
 
 async function cmdIap(appName, pkg) {
-  if (NO_IAP.has(appName)) { console.log(`iap ${pkg}: uebersprungen (gratis-App)`); return; }
+  if (NO_IAP.has(appName)) { console.log(`iap ${pkg}: uebersprungen (kein In-App-Kauf)`); return; }
   const name = appTitle(appName);
   console.log(`iap ${pkg}${DRY ? ' (dry-run)' : ''}: ${PRODUCT_ID}, Einmalkauf ${PRICE_EUR.toFixed(2)} EUR`);
   for (const [lc, f] of Object.entries(IAP_TEXT)) {

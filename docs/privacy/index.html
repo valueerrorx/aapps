@@ -22,7 +22,7 @@
 <body>
 <main>
 <h1>Datenschutz / Privacy</h1>
-<p class="muted">aapps: sleepr, levlr, nordr, spinr, scorr, focusr, roundr, pulsr, loudr, tunr, magnr, dozr, hertzr, hudr, thinkr, dividr, moovr (Clumsy Cow), glidr (Cool Cows on Ice)</p>
+<p class="muted">aapps: sleepr, levlr, nordr, spinr, scorr, focusr, roundr, pulsr, loudr, tunr, magnr, dozr, hertzr, hudr, thinkr, dividr, moovr (Clumsy Cow), glidr (Cool Cows on Ice), xapient bundle</p>
 <nav><a href="#de">Deutsch</a><a href="#en">English</a></nav>
 
 <section id="de" lang="de">
@@ -64,8 +64,9 @@
 <tr><td>dividr</td><td>Kamera, Vibration</td><td>Nur zum Scannen der QR-Codes anderer Gruppenmitglieder. Das Kamerabild wird nur live ausgewertet, nicht gespeichert und nicht übertragen. Gruppen, Namen und Ausgaben bleiben auf dem Gerät und gehen nur per QR-Code direkt von Handy zu Handy; als Text teilst du die Abrechnung nur selbst über das Teilen-Menü.</td></tr>
 <tr><td>moovr</td><td>keine</td><td>Spiel läuft komplett aus der App heraus; der Rekord wird lokal gespeichert.</td></tr>
 <tr><td>glidr</td><td>keine</td><td>Spiel läuft komplett aus der App heraus; die Sterne werden lokal gespeichert.</td></tr>
+<tr><td>xapient bundle</td><td>keine (Paketabfrage der xapient-Apps)</td><td>Zeigt, welche xapient-Apps auf dem Gerät installiert sind. Die Abfrage läuft nur lokal über Android, es wird nichts gespeichert oder übertragen.</td></tr>
 </table>
-<p>Alle Apps außer moovr und glidr haben zusätzlich die Berechtigung „Google Play-Abrechnungsdienst“ für den einmaligen Kauf (siehe „Testphase und Kauf“).</p>
+<p>Alle Apps außer moovr, glidr und xapient bundle haben zusätzlich die Berechtigung „Google Play-Abrechnungsdienst“ für den einmaligen Kauf (siehe „Testphase und Kauf“).</p>
 <p>Vibration ist eine normale Android-Berechtigung ohne Rückfrage. Mikrofon, Kamera, Standort und Benachrichtigungen fragt Android bei dir an; du kannst sie jederzeit in den Systemeinstellungen entziehen.</p>
 
 <h3>Links</h3>
@@ -76,6 +77,7 @@
 
 <h3>Testphase und Kauf</h3>
 <p>Die Werkzeug-Apps (alle außer moovr und glidr) sind 24 Stunden ab dem ersten Start voll nutzbar und lassen sich danach mit einem einmaligen In-App-Kauf dauerhaft freischalten. Der Kauf wird ausschließlich über Google Play abgewickelt: Die App fragt dazu über die Google-Play-Abrechnung (Berechtigung „Google Play-Abrechnungsdienst“) bei der Play-Store-App auf deinem Gerät nach, ob die App gekauft wurde. Die App selbst geht dabei nie ins Internet und erfährt nur „gekauft“ oder „nicht gekauft“. Gespeichert werden lokal nur der Zeitpunkt des ersten Starts und ob die App freigeschaltet ist. Zahlungsdaten verarbeitet allein Google; der Anbieter erhält davon keine.</p>
+<p>Alternativ schaltet die kostenpflichtige App „xapient bundle“ aus Google Play alle xapient-Apps auf einmal frei. Dazu prüfen die Apps bei jedem Start lokal über den Android-Paketmanager, ob xapient bundle installiert ist, aus Google Play stammt und mit dem Schlüssel von Google Play signiert ist. Das Ergebnis wird nicht gespeichert und nicht übertragen; wird xapient bundle deinstalliert, gilt wieder der einzelne Kauf bzw. die Testphase.</p>
 
 <h3>iPhone und iPad (App Store)</h3>
 <p>levlr gibt es auch für iPhone und iPad. Dort gilt dasselbe: keine Datenerhebung, kein Tracking, die App geht nie ins Internet. Einstellungen, Kalibrierung und der Stand der Testphase liegen lokal in den Einstellungen der App (UserDefaults) und werden mit der App gelöscht; wie alle App-Daten können sie in deiner eigenen iCloud- oder Geräte-Sicherung landen, auf die der Anbieter keinen Zugriff hat. Den Lagesensor (Bewegungssensor) liest die App nur, solange sie geöffnet ist; dafür fragt iOS keine Berechtigung ab. Wenn du eine App über den App Store installierst, verarbeitet Apple dabei Daten nach seinen eigenen Bestimmungen. Der Anbieter erhält von Apple nur die üblichen zusammengefassten Statistiken von App Store Connect.</p>
@@ -124,8 +126,9 @@
 <tr><td>dividr</td><td>Camera, vibration</td><td>Only to scan the QR codes of other group members. The camera image is analysed live only, not stored and not transmitted. Groups, names and expenses stay on the device and only travel by QR code directly from phone to phone; you share the settlement as text yourself via the share menu.</td></tr>
 <tr><td>moovr</td><td>none</td><td>The game runs entirely from within the app; the best distance is stored locally.</td></tr>
 <tr><td>glidr</td><td>none</td><td>The game runs entirely from within the app; stars are stored locally.</td></tr>
+<tr><td>xapient bundle</td><td>none (package query of the xapient apps)</td><td>Shows which xapient apps are installed on the device. The query runs locally through Android only; nothing is stored or transmitted.</td></tr>
 </table>
-<p>All apps except moovr and glidr also have the "Google Play billing service" permission for the one-time purchase (see "Trial and purchase").</p>
+<p>All apps except moovr, glidr and xapient bundle also have the "Google Play billing service" permission for the one-time purchase (see "Trial and purchase").</p>
 <p>Vibration is a normal Android permission granted without a prompt. Android asks you for microphone, camera, location and notification access, and you can revoke them at any time in the system settings.</p>
 
 <h3>Links</h3>
@@ -136,6 +139,7 @@
 
 <h3>Trial and purchase</h3>
 <p>The tool apps (all except moovr and glidr) can be used fully for 24 hours from the first start and can then be unlocked for good with a one-time in-app purchase. The purchase is handled entirely by Google Play: the app asks the Play Store app on your device through Google Play billing (permission "Google Play billing service") whether the app has been bought. The app itself never goes online and only learns "bought" or "not bought". Only the time of the first start and whether the app is unlocked are stored locally. Payment data is processed by Google alone; the provider does not receive it.</p>
+<p>Alternatively, the paid app "xapient bundle" from Google Play unlocks all xapient apps at once. For this, the apps check locally through the Android package manager at every start whether xapient bundle is installed, comes from Google Play and is signed with the Google Play key. The result is neither stored nor transmitted; if xapient bundle is uninstalled, the individual purchase or the trial applies again.</p>
 
 <h3>iPhone and iPad (App Store)</h3>
 <p>levlr is also available for iPhone and iPad. The same applies there: no data collection, no tracking, the app never goes online. Settings, calibration and the trial state are stored locally in the app's settings (UserDefaults) and are deleted with the app; like all app data they may end up in your own iCloud or device backup, which the provider cannot access. The app reads the motion sensor only while it is open; iOS does not ask for a permission for that. When you install an app through the App Store, Apple processes data under its own terms. The provider only receives the usual aggregated statistics of App Store Connect.</p>
