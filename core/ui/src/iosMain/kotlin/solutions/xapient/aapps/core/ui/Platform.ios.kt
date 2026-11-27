@@ -114,4 +114,6 @@ class UserDefaultsKeyValues(private val prefix: String) : KeyValues {
     override fun putFloat(key: String, value: Float) = d.setFloat(value, prefix + key)
     override fun bool(key: String, default: Boolean) = if (has(key)) d.boolForKey(prefix + key) else default
     override fun putBool(key: String, value: Boolean) = d.setBool(value, prefix + key)
+    override fun string(key: String, default: String?): String? = d.stringForKey(prefix + key) ?: default
+    override fun putString(key: String, value: String) = d.setObject(value, prefix + key)
 }

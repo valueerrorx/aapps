@@ -6,6 +6,7 @@ import solutions.xapient.aapps.core.store.StoreAccess
 import solutions.xapient.aapps.core.store.StoreState
 import solutions.xapient.aapps.core.ui.AappsTheme
 import solutions.xapient.aapps.core.ui.StoreScreen
+import solutions.xapient.aapps.core.ui.decimalSeparator
 import solutions.xapient.levlr.domain.AngleUnit
 import solutions.xapient.levlr.domain.Bias
 import solutions.xapient.levlr.domain.Calibration

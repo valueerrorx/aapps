@@ -9,6 +9,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import solutions.xapient.aapps.core.ui.AappsTheme
+import solutions.xapient.aapps.core.ui.BackEffect
+import solutions.xapient.aapps.core.ui.DisplayRotationEffect
 import solutions.xapient.aapps.core.ui.KeepScreenOn
 import solutions.xapient.aapps.core.ui.rememberHaptics
 import solutions.xapient.levlr.domain.Calibration
@@ -96,15 +98,3 @@ fun LevlrApp(
         }
     }
 }
-
-/** Liefert die Display-Rotation 0..3 (Vierteldrehungen gegen den Uhrzeigersinn, wie Android Surface.ROTATION_*) */
-@Composable
-internal expect fun DisplayRotationEffect(onRotation: (Int) -> Unit)
-
-/** System-Zurueck (Android); iOS hat keine Zurueck-Taste, dort fuehrt der Pfeil oben zurueck */
-@Composable
-internal expect fun BackEffect(onBack: () -> Unit)
-
-/** Dezimaltrenner der aktuellen Sprache */
-@Composable
-internal expect fun decimalSeparator(): Char

@@ -16,4 +16,6 @@ class SharedPrefsKeyValues(context: Context, name: String) : KeyValues {
     override fun putFloat(key: String, value: Float) = sp.edit().putFloat(key, value).apply()
     override fun bool(key: String, default: Boolean) = sp.getBoolean(key, default)
     override fun putBool(key: String, value: Boolean) = sp.edit().putBoolean(key, value).apply()
+    override fun string(key: String, default: String?): String? = sp.getString(key, default)
+    override fun putString(key: String, value: String) = sp.edit().putString(key, value).apply()
 }

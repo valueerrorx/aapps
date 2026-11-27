@@ -71,7 +71,7 @@ import org.jetbrains.compose.resources.stringResource
 import solutions.xapient.aapps.core.ui.Res as CoreRes
 import solutions.xapient.aapps.core.ui.aapps_settings
 import solutions.xapient.levlr.res.*
-import solutions.xapient.levlr.decimalSeparator
+import solutions.xapient.aapps.core.ui.decimalSeparator
 import solutions.xapient.levlr.domain.AngleUnit
 import solutions.xapient.levlr.domain.LevelMode
 import solutions.xapient.levlr.domain.LevelReading

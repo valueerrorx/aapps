@@ -1,4 +1,4 @@
-package solutions.xapient.levlr
+package solutions.xapient.aapps.core.ui
 
 import android.hardware.display.DisplayManager
 import androidx.activity.compose.BackHandler
@@ -11,7 +11,7 @@ import java.text.DecimalFormatSymbols
 
 // Auch 90 -> 270 ohne Config-Wechsel
 @Composable
-internal actual fun DisplayRotationEffect(onRotation: (Int) -> Unit) {
+actual fun DisplayRotationEffect(onRotation: (Int) -> Unit) {
     val view = LocalView.current
     val callback = rememberUpdatedState(onRotation)
     DisposableEffect(view) {
@@ -29,8 +29,8 @@ internal actual fun DisplayRotationEffect(onRotation: (Int) -> Unit) {
 }
 
 @Composable
-internal actual fun BackEffect(onBack: () -> Unit) = BackHandler(onBack = onBack)
+actual fun BackEffect(onBack: () -> Unit) = BackHandler(onBack = onBack)
 
 @Composable
-internal actual fun decimalSeparator(): Char =
+actual fun decimalSeparator(): Char =
     DecimalFormatSymbols.getInstance(LocalConfiguration.current.locales[0]).decimalSeparator

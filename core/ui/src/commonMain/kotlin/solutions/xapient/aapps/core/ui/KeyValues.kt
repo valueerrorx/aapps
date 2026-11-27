@@ -8,4 +8,6 @@ interface KeyValues {
     fun putFloat(key: String, value: Float)
     fun bool(key: String, default: Boolean): Boolean
     fun putBool(key: String, value: Boolean)
+    fun string(key: String, default: String?): String?
+    fun putString(key: String, value: String)
 }
