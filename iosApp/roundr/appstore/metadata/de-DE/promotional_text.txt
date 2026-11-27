@@ -1,0 +1,1 @@
+Intervall-Timer, den du quer durch den Raum liest: Die ganze Fläche leuchtet in der Farbe der Phase. Vorlagen, Piep bei 3-2-1. Ohne Tracking, offline, Open Source.

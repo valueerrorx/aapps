@@ -1,0 +1,1 @@
+Interval timer you can read from across the room: the whole screen glows in the colour of the phase. Templates, 3-2-1 beeps. No tracking, offline, open source.

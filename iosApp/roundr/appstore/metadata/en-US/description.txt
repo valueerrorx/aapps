@@ -1,0 +1,24 @@
+roundr switches between active and rest phases for you and counts the rounds. The whole screen glows in the colour of the current phase and drains like a fill level, with the time left in large digits in the middle. You can see how long is left even from a few metres away.
+
+Circuit training, a board game with a time limit, study sessions with breaks or the steps of a recipe: you set the phases and rounds, roundr tells you when to move on.
+
+Features
+• Prepare, active, rest, rounds, blocks and block break, all adjustable
+• Templates: Tabata, Tabata with 3 blocks, HIIT 40/20, EMOM, boxing 3:00/1:00, game round 2:00/0:30, study 25/5
+• Save up to 20 of your own timers by name
+• 3-2-1 beeps before every phase change, separate sounds for active, rest and finish, plus vibration (both can be turned off)
+• With the screen locked, every new phase arrives as a notification with its sound
+• Pause, skip to the next phase or go back to the start of the phase
+• Time runs steadily without drifting
+• Screen stays on while a timer is running (can be turned off)
+• Portrait and landscape, iPhone and iPad, English and German
+
+roundr is a timer. It does not record health or fitness data and gives no advice.
+
+Permissions: only notifications, so that phase changes also reach you when roundr is in the background. While the app is open, the timer works without them.
+
+Try roundr free for one day with every feature: just start the free trial in the app. After that, a one-time purchase unlocks it for good, including all future updates. No subscription, no ads.
+
+• Private: no tracking, no account, no data collected. roundr does not make money from your data.
+• Completely offline: roundr works without a connection. Only the purchase goes through the App Store, the app itself never goes online.
+• Open source: free software under the GNU GPLv3. Source code: https://github.com/valueerrorx/aapps

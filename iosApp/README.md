@@ -156,3 +156,11 @@ Gratis, ohne Kauf und ohne Kotlin: je App eine eigene Swift-Hülle `WebGame.swif
 - **Bewegung reduzieren**: „Bewegung reduzieren“ in den Bedienungshilfen hält die Deko-Animationen an (Android: Animationsskala 0).
 - **Datum**: Tageswechsel nach lokaler Zeitzone wie Android; Datumszeile und Wochentagsbuchstaben über NSDateFormatter (gleiches Muster wie Android).
 - **Drehung, Zurück, Sicherung**: wie levlr.
+
+## Einschränkungen auf iOS (roundr)
+- **Hintergrund**: Kein Dienst wie auf Android. Jeder Phasenwechsel ist als lokale Mitteilung mit eigenem Ton vorgemerkt (höchstens 60 voraus, iOS erlaubt 64); bei sehr langen Trainings fehlen hinten Ansagen, bis die App wieder geöffnet wird. 3-2-1 gibt es nur bei offener App. Ohne Mitteilungsrecht keine Ansagen im Hintergrund.
+- **Steuerung**: Keine Knöpfe (Anhalten, Weiter, Stopp) in der Mitteilung; Tippen öffnet die App.
+- **Uhr**: Wanduhr wie focusr; ein Lauf übersteht einen Neustart, eine Uhrzeitänderung verschiebt ihn.
+- **Vibration**: iOS kennt keine Muster; Phasenwechsel ein Stoß, Ende zwei, 3-2-1 nur leichtes Tippen (Systemhaptik). Im Hintergrund bestimmen die iOS-Einstellungen.
+- **Ton**: Kategorie Playback mischend: klingt auch bei Stummschalter, Musik läuft weiter (Android: Medienlautstärke).
+- **Zurück, Sicherung**: wie levlr.
