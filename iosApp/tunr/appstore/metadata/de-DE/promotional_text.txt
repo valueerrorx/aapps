@@ -1,0 +1,1 @@
+Stimmen nach Auge oder Gehör: Note, Cent und Strobe-Ring wie beim Hardware-Stimmgerät, Referenzton je Saite. Ohne Tracking, komplett offline, Open Source.

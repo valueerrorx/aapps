@@ -1,0 +1,18 @@
+tunr hört zu und zeigt dir sofort, welchen Ton du spielst und wie weit er danebenliegt. Note, Abweichung in Cent und Frequenz stehen groß in der Mitte, dazu ein Zeiger und ein Strobe-Ring wie bei Stimmgeräten aus Hardware: Er dreht sich, solange der Ton zu hoch oder zu tief ist, und steht still, wenn er stimmt.
+
+Funktionen
+• Chromatisch von E1 bis C8
+• Instrumente: Gitarre (Standard und Drop D), Bass mit 4 Saiten, Ukulele, Violine
+• Referenzton je Saite zum Stimmen nach Gehör
+• Kammerton von 415 bis 466 Hz einstellbar (Standard 440 Hz)
+• Schreibweise mit Kreuzen, mit Bs oder deutsch (H und B)
+• Haptisches Feedback, wenn der Ton stimmt (iPhone)
+• Hoch- und Querformat, iPhone und iPad, Deutsch und Englisch
+
+Mikrofon: tunr braucht den Mikrofonzugriff, um den Ton zu erkennen. Das Signal wird nur live ausgewertet, nicht aufgenommen, nicht gespeichert und nicht gesendet. Das Mikrofon ist nur aktiv, solange der Stimm-Bildschirm im Vordergrund ist.
+
+Teste tunr einen Tag lang kostenlos mit allen Funktionen: einfach in der App den Test starten. Danach schaltet ein einmaliger Kauf die App dauerhaft frei, inklusive aller künftigen Updates. Kein Abo, keine Werbung.
+
+• Privat: kein Tracking, kein Konto, es werden keine Daten gesammelt. tunr verdient nicht an deinen Daten.
+• Komplett offline: tunr funktioniert ohne Verbindung. Nur der Kauf läuft über den App Store, die App selbst geht nie ins Internet.
+• Open Source: freie Software unter der GNU GPLv3. Quellcode: https://github.com/valueerrorx/aapps

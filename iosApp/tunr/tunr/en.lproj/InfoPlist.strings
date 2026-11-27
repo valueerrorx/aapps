@@ -1,0 +1,4 @@
+/* Sprache des Bundles; die Texte der App kommen aus den Compose-Ressourcen */
+"CFBundleDisplayName" = "tunr";
+"NSHumanReadableCopyright" = "Free software under the GNU GPLv3.";
+"NSMicrophoneUsageDescription" = "tunr uses the microphone to hear your instrument while the tuner is on screen. Nothing is recorded, stored or sent.";

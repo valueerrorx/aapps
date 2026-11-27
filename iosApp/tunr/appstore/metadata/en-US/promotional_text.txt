@@ -1,0 +1,1 @@
+Tune by ear or by eye: note, cents and a strobe ring like on hardware tuners, reference tone for every string. No tracking, fully offline, open source.

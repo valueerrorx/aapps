@@ -1,0 +1,1 @@
+tuner,guitar,bass,ukulele,violin,chromatic,pitch,strobe,cent,drop d,reference tone,offline

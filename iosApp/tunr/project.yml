@@ -1,0 +1,66 @@
+# XcodeGen: erzeugt tunr.xcodeproj (nicht im Repo). Version/Build kommen aus der Umgebung:
+# AAPPS_VERSION = apps/tunr/version.txt (wie Android), AAPPS_BUILD = Build-Nummer (CI: run_number + 100)
+name: tunr
+options:
+  bundleIdPrefix: solutions.xapient
+  developmentLanguage: en
+  deploymentTarget:
+    iOS: "17.0"
+settings:
+  base:
+    MARKETING_VERSION: ${AAPPS_VERSION}
+    CURRENT_PROJECT_VERSION: ${AAPPS_BUILD}
+    SWIFT_VERSION: "5.0"
+    SWIFT_STRICT_CONCURRENCY: minimal
+    CODE_SIGN_STYLE: Automatic
+    # Gradle im Build-Skript braucht Zugriff ausserhalb der Sandbox
+    ENABLE_USER_SCRIPT_SANDBOXING: NO
+targets:
+  tunr:
+    type: application
+    platform: iOS
+    sources:
+      - path: tunr
+      - path: ../common
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: solutions.xapient.tunr
+        PRODUCT_NAME: tunr
+        INFOPLIST_FILE: tunr/Info.plist
+        TARGETED_DEVICE_FAMILY: "1,2"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        FRAMEWORK_SEARCH_PATHS: "$(SRCROOT)/../../apps/tunr/shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)"
+        OTHER_LDFLAGS: "$(inherited) -framework AappsKit -framework AVFAudio"
+    preBuildScripts:
+      - name: Kotlin-Framework (Gradle)
+        basedOnDependencyAnalysis: false
+        script: |
+          cd "$SRCROOT/../.."
+          ./gradlew --no-daemon :apps:tunr:shared:embedAndSignAppleFrameworkForXcode
+  TunrUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: TunrUITests
+    dependencies:
+      - target: tunr
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: solutions.xapient.tunr.uitests
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_TARGET_NAME: tunr
+schemes:
+  tunr:
+    build:
+      targets:
+        tunr: all
+        TunrUITests: [test]
+    run:
+      config: Debug
+      storeKitConfiguration: tunr.storekit
+    test:
+      config: Debug
+      targets:
+        - TunrUITests
+    archive:
+      config: Release

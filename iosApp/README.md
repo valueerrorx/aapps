@@ -176,3 +176,8 @@ Gratis, ohne Kauf und ohne Kotlin: je App eine eigene Swift-Hülle `WebGame.swif
 - **Lichtpuls**: Zeitbasis `CACurrentMediaTime` mit Ausgabelatenz der Audiosession. Synchronität am Gerät prüfen (besonders mit Bluetooth-Kopfhörern).
 - **Lautstärke**: Lautstärketasten regeln die Medienlautstärke (Audiosession Playback), mischt sich in laufende Musik.
 - **Drehung, Zurück**: wie levlr.
+
+## Einschränkungen auf iOS (tunr)
+- **Audio**: eine Sitzung PlayAndRecord im Modus Measurement (ohne automatische Verstärkung) für Mikrofon und Referenzton, Ton über den Lautsprecher. Mikrofon über den Eingangs-Tap von AVAudioEngine, Analyse wie auf Android in 25-ms-Schritten; Referenzton über einen Player-Knoten mit derselben Saiten-Synthese.
+- **Berechtigung**: einmal von selbst fragen; abgelehnt = Hinweis mit Knopf zur Einstellungen-App (iOS fragt nicht erneut). Unterbrechung (Anruf) = „Mikrofon nicht verfügbar“ mit Erneut-Knopf.
+- **Zurück, Haptik, Sicherung**: wie levlr.
