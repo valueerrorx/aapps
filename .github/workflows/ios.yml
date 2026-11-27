@@ -1,0 +1,206 @@
+# iOS-Build je App (iosApp/<app>/project.yml) auf macOS: Kotlin-Tests, Simulator-Build + UI-Tests; mit Secrets zusaetzlich TestFlight.
+# Gebaut werden nur Apps, deren Dateien sich geaendert haben; gemeinsame Teile (core, Build, iosApp/common) bauen alle.
+# Keine Build-Artefakte hochladen: das Repo ist oeffentlich, Builds gehen nur an App Store Connect.
+name: iOS
+
+on:
+  push:
+    branches: [feat/ios]
+    paths:
+      - "iosApp/**"
+      - "apps/**"
+      - "core/ui/**"
+      - "core/store/**"
+      - "build-logic/**"
+      - "gradle/**"
+      - "*.gradle.kts"
+      - "gradle.properties"
+      - ".github/workflows/ios.yml"
+  workflow_dispatch:
+    inputs:
+      app:
+        description: "App (leer = alle iOS-Apps)"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+jobs:
+  apps:
+    runs-on: ubuntu-latest
+    outputs:
+      apps: ${{ steps.list.outputs.apps }}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          fetch-depth: 0
+      - id: list
+        env:
+          INPUT_APP: ${{ inputs.app }}
+          BEFORE: ${{ github.event.before }}
+        run: |
+          all=$(ls iosApp/*/project.yml | cut -d/ -f2)
+          if [ "$GITHUB_EVENT_NAME" = workflow_dispatch ]; then
+            apps=${INPUT_APP:-$all}
+          elif ! git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+            apps=$all
+          else
+            apps=""
+            while read -r f; do
+              case "$f" in
+                apps/*|iosApp/*)
+                  a=$(echo "$f" | cut -d/ -f2)
+                  if echo "$all" | grep -qx "$a"; then apps="$apps $a"
+                  elif [ "${f%%/*}" = iosApp ]; then apps="$all"; fi ;;
+                core/ui/*|core/store/*|build-logic/*|gradle/*|*.gradle.kts|gradle.properties|.github/workflows/ios.yml)
+                  apps="$all" ;;
+              esac
+            done < <(git diff --name-only "$BEFORE" "$GITHUB_SHA")
+          fi
+          json=$(printf '%s\n' $apps | sort -u | { grep . || true; } | jq -R . | jq -cs .)
+          echo "apps=$json" >> "$GITHUB_OUTPUT"
+          echo "Apps: $json"
+
+  build:
+    needs: apps
+    if: needs.apps.outputs.apps != '[]'
+    runs-on: macos-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        app: ${{ fromJSON(needs.apps.outputs.apps) }}
+    # neuer Lauf derselben App bricht den alten ab, andere Apps laufen weiter
+    concurrency:
+      group: ios-${{ matrix.app }}-${{ github.ref }}
+      cancel-in-progress: true
+    env:
+      APP: ${{ matrix.app }}
+      BUNDLE: solutions.xapient.${{ matrix.app }}
+      AAPPS_BUILD: ${{ github.run_number }}
+      HAS_ASC: ${{ secrets.ASC_KEY_P8 != '' && secrets.ASC_KEY_ID != '' && secrets.ASC_ISSUER_ID != '' && secrets.APPLE_TEAM_ID != '' }}
+    steps:
+      # Actions auf Commit-SHAs gepinnt (Tag als Kommentar)
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+
+      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: gradle/actions/setup-gradle@0723195856401067f7a2779048b490ace7a47d7c # v5.0.2
+
+      - name: Xcode waehlen (neueste installierte)
+        run: |
+          XC=$(ls -d /Applications/Xcode*.app | sort -V | tail -1)
+          sudo xcode-select -s "$XC"
+          xcodebuild -version
+
+      - name: Version wie Android
+        run: echo "AAPPS_VERSION=$(cat apps/$APP/version.txt)" >> "$GITHUB_ENV"
+
+      - name: Kotlin-Tests (JVM + iOS-Simulator)
+        run: ./gradlew --no-daemon :core:store:jvmTest :core:store:iosSimulatorArm64Test ":apps:$APP:shared:iosSimulatorArm64Test"
+
+      - name: Xcode-Projekt erzeugen (XcodeGen 2.49.0, Pruefsumme fest)
+        run: |
+          curl -sSL -o "$RUNNER_TEMP/xcodegen.zip" https://github.com/yonaskolb/XcodeGen/releases/download/2.49.0/xcodegen.zip
+          echo "ae5598b33a19ad1e23e775d6648f97375c3529c970905f489358a21055b65e53  $RUNNER_TEMP/xcodegen.zip" | shasum -a 256 -c -
+          unzip -q "$RUNNER_TEMP/xcodegen.zip" -d "$RUNNER_TEMP"
+          cd "iosApp/$APP" && "$RUNNER_TEMP/xcodegen/bin/xcodegen" generate
+
+      - name: Simulator-Build + UI-Tests
+        run: |
+          UDID=$(xcrun simctl list devices available -j | python3 -c '
+          import json, sys
+          d = json.load(sys.stdin)["devices"]
+          phones = [x for r, l in d.items() if "iOS" in r for x in l if x["name"].startswith("iPhone")]
+          print(phones[-1]["udid"])')
+          echo "SIM_UDID=$UDID" >> "$GITHUB_ENV"
+          xcodebuild test \
+            -project "iosApp/$APP/$APP.xcodeproj" -scheme "$APP" \
+            -destination "platform=iOS Simulator,id=$UDID" \
+            -derivedDataPath "$RUNNER_TEMP/dd" \
+            -resultBundlePath "$RUNNER_TEMP/$APP-tests.xcresult" \
+            CODE_SIGNING_ALLOWED=NO
+
+      # App-Eintrag legt Thomas von Hand an (nicht per API); bis dahin nur bauen und testen
+      - name: App in App Store Connect?
+        if: env.HAS_ASC == 'true'
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+        run: |
+          export ASC_KEY_PATH="$RUNNER_TEMP/exists_key.p8"
+          trap 'rm -f "$ASC_KEY_PATH"' EXIT
+          printf '%s' "$ASC_KEY_P8" > "$ASC_KEY_PATH"
+          EXISTS=$(node iosApp/tools/asc-app-exists.mjs "$BUNDLE")
+          echo "ASC_APP=$EXISTS" >> "$GITHUB_ENV"
+          if [ "$EXISTS" != true ]; then echo "::notice::$BUNDLE noch nicht in App Store Connect, kein Upload"; fi
+
+      # Review-Screenshot je In-App-Kauf direkt per API (keine Artefakte); laedt nur, wenn noch keiner da ist
+      - name: IAP-Review-Screenshots
+        if: env.ASC_APP == 'true'
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+        run: |
+          export ASC_KEY_PATH="$RUNNER_TEMP/iap_key.p8"
+          trap 'rm -f "$ASC_KEY_PATH"' EXIT
+          printf '%s' "$ASC_KEY_P8" > "$ASC_KEY_PATH"
+          xcrun simctl boot "$SIM_UDID" || true
+          xcrun simctl bootstatus "$SIM_UDID" -b
+          xcrun simctl status_bar "$SIM_UDID" override --time 9:41 --batteryState charged --batteryLevel 100 || true
+          xcrun simctl install "$SIM_UDID" "$RUNNER_TEMP/dd/Build/Products/Debug-iphonesimulator/$APP.app"
+          for s in OFFER THANKS; do
+            xcrun simctl launch --terminate-running-process "$SIM_UDID" "$BUNDLE" -aappsScene "$s" -AppleLanguages "(en)" -AppleLocale en_US
+            sleep 6
+            xcrun simctl io "$SIM_UDID" screenshot "$RUNNER_TEMP/iap_$s.png"
+          done
+          node iosApp/tools/asc-iap-screenshot.mjs "$BUNDLE" \
+            trial="$RUNNER_TEMP/iap_OFFER.png" full_unlock="$RUNNER_TEMP/iap_THANKS.png"
+
+      # App-Screenshots 6.9" + 13", EN + DE, Szenen aus iosApp/<app>/appstore/scenes.txt; direkt per API, ersetzt nur Geaendertes
+      - name: App-Screenshots
+        if: env.ASC_APP == 'true'
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+        run: |
+          export ASC_KEY_PATH="$RUNNER_TEMP/shots_key.p8"
+          trap 'rm -f "$ASC_KEY_PATH"' EXIT
+          printf '%s' "$ASC_KEY_P8" > "$ASC_KEY_PATH"
+          APP_PATH="$RUNNER_TEMP/dd/Build/Products/Debug-iphonesimulator/$APP.app"
+          SCENES=$(cat "iosApp/$APP/appstore/scenes.txt")
+          bash iosApp/tools/sim-shots.sh "$APP_PATH" "$BUNDLE" "$RUNNER_TEMP/shots" APP_IPHONE_67 '^iPhone \d+ Pro Max$' 1320x2868 $SCENES
+          bash iosApp/tools/sim-shots.sh "$APP_PATH" "$BUNDLE" "$RUNNER_TEMP/shots" APP_IPAD_PRO_3GEN_129 '^iPad Pro 13-inch' 2064x2752 $SCENES
+          node iosApp/tools/asc-screenshots.mjs "$BUNDLE" "$RUNNER_TEMP/shots"
+          rm -rf "$RUNNER_TEMP/shots"
+
+      - name: Archiv + Upload zu TestFlight
+        if: env.ASC_APP == 'true'
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          KEY="$RUNNER_TEMP/AuthKey_$ASC_KEY_ID.p8"
+          trap 'rm -f "$KEY"' EXIT
+          printf '%s' "$ASC_KEY_P8" > "$KEY"
+          AUTH=(-allowProvisioningUpdates -authenticationKeyPath "$KEY" -authenticationKeyID "$ASC_KEY_ID" -authenticationKeyIssuerID "$ASC_ISSUER_ID")
+          # unsigniert archivieren: ein Development-Profil braeuchte ein registriertes Geraet; signiert wird beim Export (App Store)
+          xcodebuild archive \
+            -project "iosApp/$APP/$APP.xcodeproj" -scheme "$APP" -configuration Release \
+            -destination "generic/platform=iOS" -archivePath "$RUNNER_TEMP/$APP.xcarchive" \
+            DEVELOPMENT_TEAM="$APPLE_TEAM_ID" CODE_SIGNING_ALLOWED=NO
+          sed "s/TEAM_ID/$APPLE_TEAM_ID/" "iosApp/$APP/ExportOptions.plist" > "$RUNNER_TEMP/ExportOptions.plist"
+          xcodebuild -exportArchive \
+            -archivePath "$RUNNER_TEMP/$APP.xcarchive" \
+            -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist" \
+            -exportPath "$RUNNER_TEMP/export" "${AUTH[@]}"
+          rm -rf "$RUNNER_TEMP/$APP.xcarchive" "$RUNNER_TEMP/export"
