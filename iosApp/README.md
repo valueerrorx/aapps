@@ -145,7 +145,7 @@ Gratis, ohne Kauf und ohne Kotlin: je App eine eigene Swift-Hülle `WebGame.swif
 - **QR-Code lesen**: AVFoundation (`AVCaptureMetadataOutput`, 1080p) in Swift (`iosApp/dividr/dividr/DividrHost.swift`), eingebettet per `UIKitView`. Ob sehr dichte Codes (große Gruppen, Version 30–40) so zuverlässig gelesen werden wie mit ZXing auf Android, ist am Gerät zu prüfen.
 - **Kamera-Erlaubnis**: Systemdialog beim ersten Scannen; nach Ablehnung führt „Einstellungen öffnen“ in die App-Einstellungen.
 - **Komprimieren**: System-zlib (raw Deflate, Stufe 9) wie `java.util.zip` auf Android; die Codes sind zwischen beiden Plattformen austauschbar.
-- **Zahlen/Währungen/Datum**: NSNumberFormatter/NSDateFormatter statt java.text; Nachkommastellen je Währung aus CLDR (wie Android). Darstellung kann sich minimal unterscheiden (z. B. Leerzeichen vor €).
+- **Zahlen/Währungen/Datum**: NSNumberFormatter/NSDateFormatter statt java.text; Nachkommastellen je Währung nach ISO 4217 wie `java.util.Currency` (Apples Formatter weicht teils ab, z. B. Bargeld-Stellen). Darstellung kann sich minimal unterscheiden (z. B. Leerzeichen vor €).
 - **Teilen**: Systemblatt (`UIActivityViewController`), auf dem iPad als Popover in der Bildschirmmitte.
 - **Helligkeit**: Solange der eigene QR-Code angezeigt wird, volle Bildschirmhelligkeit; beim Verlassen zurück.
 - **Sicherung**: Gruppen (Application Support) und Geräte-ID (UserDefaults) wandern mit iCloud-/Gerätesicherung (Android: Sicherung aus). Wer eine Sicherung auf ein zweites Gerät spielt und beide weiter nutzt, hat zweimal dieselbe Geräte-ID; dann können neue Einträge der beiden Geräte kollidieren. Bewusst nicht ausgeschlossen (Normalfall: altes Gerät wird ersetzt).

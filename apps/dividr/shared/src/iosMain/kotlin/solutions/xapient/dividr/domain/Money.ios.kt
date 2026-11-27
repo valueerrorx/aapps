@@ -10,13 +10,19 @@ internal actual object MoneyFormat {
 
     actual fun known(code: String): Boolean = code in codes
 
-    actual fun digits(code: String): Int? {
-        if (!known(code)) return null
-        val f = NSNumberFormatter()
-        f.locale = NSLocale(localeIdentifier = "en_US_POSIX")
-        f.numberStyle = NSNumberFormatterCurrencyStyle
-        f.currencyCode = code
-        return f.maximumFractionDigits.toInt()
+    // Nachkommastellen nach ISO 4217 wie java.util.Currency (Apples Formatter weicht teils ab)
+    private val zero = setOf("ADP", "BEF", "BIF", "BYR", "CLP", "DJF", "ESP", "GNF", "GRD", "ISK", "ITL", "JPY", "KMF", "KRW", "LUF", "MGF", "PTE", "PYG", "RWF", "TPE", "TRL", "UGX", "UYI", "VND", "VUV", "XAF", "XOF", "XPF")
+    private val three = setOf("BHD", "IQD", "JOD", "KWD", "LYD", "OMR", "TND")
+    private val four = setOf("CLF", "UYW")
+    private val none = setOf("XAG", "XAU", "XBA", "XBB", "XBC", "XBD", "XDR", "XPD", "XPT", "XSU", "XTS", "XUA", "XXX")
+
+    actual fun digits(code: String): Int? = when {
+        !known(code) -> null
+        code in zero -> 0
+        code in three -> 3
+        code in four -> 4
+        code in none -> -1
+        else -> 2
     }
 
     actual fun symbol(code: String, locale: Locale): String =
