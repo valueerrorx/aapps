@@ -1,0 +1,116 @@
+# Release einer App zu Google Play: pruefen, mit Upload-Key signieren, AAB hochladen. Nur manuell, nur main.
+# Kein Artefakt (Repo oeffentlich). Secrets je App: UPLOAD_KEYSTORE_<APP> (base64, PKCS12, Alias = App-Name),
+# UPLOAD_KEY_PASSWORD_<APP> (Store = Key); dazu PLAY_SERVICE_ACCOUNT_JSON. Dateien nur in $RUNNER_TEMP.
+name: Android release
+
+on:
+  workflow_dispatch:
+    inputs:
+      app:
+        description: "App (Ordnername unter apps/)"
+        required: true
+        type: string
+      track:
+        description: "Play-Track"
+        required: true
+        default: internal
+        type: choice
+        options: [internal, production]
+      dry_run:
+        description: "Nur bauen, signieren, pruefen; nichts hochladen"
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: android-release-${{ inputs.app }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    # TEMPORAER: Dry-Run auf feat/ios fuer den Test, danach nur noch main
+    if: github.ref == 'refs/heads/main' || (github.ref == 'refs/heads/feat/ios' && inputs.dry_run)
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      APP: ${{ inputs.app }}
+      TRACK: ${{ inputs.track }}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          persist-credentials: false
+
+      - name: App pruefen
+        id: app
+        run: |
+          [[ "$APP" =~ ^[a-z][a-z0-9]*$ ]] && grep -qx "include(\":apps:$APP\")" settings.gradle.kts \
+            || { echo "::error::Unbekannte App: $APP"; exit 1; }
+          echo "upper=${APP^^}" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      # Release ohne Gradle-Cache: nichts aus fremden Laeufen ins signierte Bundle
+      - uses: gradle/actions/setup-gradle@0723195856401067f7a2779048b490ace7a47d7c # v5.0.2
+        with:
+          cache-disabled: true
+
+      - name: Gradle fuer CI
+        run: bash .github/ci/gradle-ci.sh
+
+      - name: Pruefen
+        run: ./gradlew --no-daemon ":apps:$APP:check" ":apps:$APP:verifyRoborazziDebug"
+
+      # versionCode wie lokal aus version.txt / versioncode.txt (Gradle-Plugin)
+      - name: Signiert bauen und pruefen
+        env:
+          KS_B64: ${{ secrets[format('UPLOAD_KEYSTORE_{0}', steps.app.outputs.upper)] }}
+          KS_PW: ${{ secrets[format('UPLOAD_KEY_PASSWORD_{0}', steps.app.outputs.upper)] }}
+        run: |
+          [ -n "$KS_B64" ] && [ -n "$KS_PW" ] || { echo "::error::Upload-Key-Secrets fuer $APP fehlen"; exit 1; }
+          export KEYSTORE_FILE="$RUNNER_TEMP/upload.p12"
+          trap 'rm -f "$KEYSTORE_FILE"' EXIT
+          printf '%s' "$KS_B64" | base64 -d > "$KEYSTORE_FILE"
+          export KEYSTORE_PASSWORD="$KS_PW" "KEY_PASSWORD_${APP^^}=$KS_PW"
+          ./gradlew --no-daemon -Paapps.requireReleaseKey=true ":apps:$APP:bundleRelease" ":apps:$APP:assembleRelease"
+          AAB=$(ls apps/$APP/build/outputs/bundle/release/*.aab)
+          APK=$(ls apps/$APP/build/outputs/apk/release/*.apk)
+          want=$(keytool -list -v -keystore "$KEYSTORE_FILE" -storepass:env KS_PW -alias "$APP" | sed -n 's/.*SHA256: //p' | head -1)
+          BT=$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)
+          "$BT/apksigner" verify --print-certs "$APK" > "$RUNNER_TEMP/apk-certs.txt"
+          apk=$(sed -n 's/.*certificate SHA-256 digest: //p' "$RUNNER_TEMP/apk-certs.txt" | head -1 | tr 'a-f' 'A-F')
+          jarsigner -verify -strict "$AAB" > /dev/null
+          aab=$(keytool -printcert -jarfile "$AAB" | sed -n 's/.*SHA256: //p' | head -1)
+          [ -n "$want" ] && [ "$aab" = "$want" ] && [ "$apk" = "$(echo "$want" | tr -d ':')" ] \
+            || { echo "::error::Signatur stimmt nicht mit dem Upload-Key ueberein"; exit 1; }
+          vc=$("$BT/aapt2" dump badging "$APK" | sed -n "s/.*versionCode='\([0-9]*\)'.*/\1/p")
+          echo "AAB=$AAB" >> "$GITHUB_ENV"
+          {
+            echo "### $APP"
+            echo "- versionCode $vc, versionName $(cat apps/$APP/version.txt)"
+            echo "- AAB $(( $(stat -c %s "$AAB") / 1024 )) KB, Signatur = Upload-Key (apksigner + jarsigner ok)"
+            echo "- Track $TRACK, dry_run ${{ inputs.dry_run }}"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Play-Tool
+        run: npm ci --prefix tools/play --no-audit --no-fund
+
+      - name: Upload zu Play
+        env:
+          SA_JSON: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          DRY: ${{ inputs.dry_run }}
+        run: |
+          export PLAY_KEY_FILE="$RUNNER_TEMP/play.json"
+          trap 'rm -f "$PLAY_KEY_FILE"' EXIT
+          ( umask 077; printf '%s' "$SA_JSON" > "$PLAY_KEY_FILE" )
+          if [ "$DRY" = true ]; then
+            node tools/play/play.mjs check "$APP"
+            node tools/play/play.mjs upload "$APP" --aab="$AAB" --track="$TRACK" --dry-run
+          else
+            node tools/play/play.mjs upload "$APP" --aab="$AAB" --track="$TRACK"
+          fi
