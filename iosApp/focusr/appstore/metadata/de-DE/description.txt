@@ -1,0 +1,19 @@
+Bei focusr siehst du die Restzeit auf einen Blick: Eine farbige Scheibe zeigt, wie viel Zeit noch bleibt, und wird beim Ablaufen langsam kleiner. Die Zeit stellst du ein, indem du am Rand der Scheibe ziehst. Gedacht zum Lernen, für Meetings, beim Kochen oder im Unterricht, auch am Beamer im Querformat.
+
+Funktionen
+• Einstellen per Ziehen mit spürbaren Rasten
+• Skala 5, 20, 60 oder 120 Minuten
+• Große Restzeit und Endzeit („Endet um 14:35“)
+• Start, Pause, Weiter und Zurücksetzen
+• Am Ende ein sanfter Glockenton und Vibration, beides einzeln abschaltbar
+• Das Ende kommt pünktlich, auch bei gesperrtem Bildschirm oder geschlossener App (als Mitteilung mit Glockenton)
+• Bildschirm bleibt an, solange der Timer läuft (abschaltbar)
+• Hoch- und Querformat, iPhone und iPad, Deutsch und Englisch, bedienbar mit VoiceOver
+
+Berechtigungen: nur Mitteilungen, damit „Zeit um“ dich auch erreicht, wenn focusr im Hintergrund ist. Bei offener App funktioniert der Timer auch ohne.
+
+Teste focusr einen Tag lang kostenlos mit allen Funktionen: einfach in der App die Testphase starten. Danach schaltet ein einmaliger Kauf die App dauerhaft frei, inklusive aller künftigen Updates. Kein Abo, keine Werbung.
+
+• Privat: kein Tracking, kein Konto, es werden keine Daten gesammelt. focusr verdient nicht an deinen Daten.
+• Komplett offline: focusr funktioniert ohne Verbindung. Nur der Kauf läuft über den App Store, die App selbst geht nie ins Internet.
+• Open Source: freie Software unter der GNU GPLv3. Quellcode: https://github.com/valueerrorx/aapps

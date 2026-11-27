@@ -1,0 +1,1 @@
+timer,countdown,visual,focus,study,classroom,meeting,kitchen,time,disc,teacher,offline

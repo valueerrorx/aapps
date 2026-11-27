@@ -1,0 +1,1 @@
+Visueller Timer: Die Restzeit ist eine farbige Scheibe, die langsam schrumpft. Ziehen zum Einstellen, sanfter Glockenton am Ende. Ohne Tracking, offline, Open Source.

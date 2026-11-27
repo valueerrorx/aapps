@@ -1,0 +1,10 @@
+focusr is a visual timer: the remaining time is shown as a coloured disc that slowly shrinks. It never goes online; only the in-app purchases go through the App Store.
+
+Trial (guideline 3.1.1): on first launch the app shows the free trial offer. It states the duration (1 day), that the app stays locked afterwards, and the price of the one-time unlock. Two non-consumable in-app purchases:
+- "focusr 1-Day Trial" (solutions.xapient.focusr.trial, price 0): tap "Start free trial". The full app opens.
+- "Unlock focusr" (solutions.xapient.focusr.full_unlock): tap "Unlock for <price>" on the same screen (no need to wait for the trial to end). The app is unlocked permanently.
+"Restore purchase" is on the same screen and calls AppStore.sync().
+
+After the trial day the app shows a thank-you screen with the unlock purchase and "Restore purchase".
+
+How to use: drag around the disc to set the time, then press "Start". The app asks for notification permission on the first start; it is only used for the local "Time's up" notification with a chime when the app is in the background. The gear icon opens the settings (dial scale, chime, vibration). No account, no login, no network access.

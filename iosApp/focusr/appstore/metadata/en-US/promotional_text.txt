@@ -1,0 +1,1 @@
+A visual timer: the time left is a coloured disc that slowly shrinks. Drag to set, soft chime at the end. No tracking, fully offline, open source.

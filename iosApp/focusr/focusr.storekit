@@ -1,0 +1,63 @@
+{
+  "identifier" : "5C8E2A20",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "1.49",
+      "familyShareable" : false,
+      "internalID" : "6740000221",
+      "localizations" : [
+        {
+          "description" : "Unlock focusr for good, incl. all future updates.",
+          "displayName" : "Unlock focusr",
+          "locale" : "en_US"
+        },
+        {
+          "description" : "focusr dauerhaft freischalten, inkl. aller Updates.",
+          "displayName" : "focusr freischalten",
+          "locale" : "de"
+        }
+      ],
+      "productID" : "solutions.xapient.focusr.full_unlock",
+      "referenceName" : "focusr Unlock",
+      "type" : "NonConsumable"
+    },
+    {
+      "displayPrice" : "0.0",
+      "familyShareable" : false,
+      "internalID" : "6740000222",
+      "localizations" : [
+        {
+          "description" : "All features free for one day, then locked.",
+          "displayName" : "1-Day Trial",
+          "locale" : "en_US"
+        },
+        {
+          "description" : "Einen Tag alles gratis, danach bis zum Kauf gesperrt.",
+          "displayName" : "1 Tag testen",
+          "locale" : "de"
+        }
+      ],
+      "productID" : "solutions.xapient.focusr.trial",
+      "referenceName" : "focusr 1-Day Trial",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+    "_failTransactionsEnabled" : false,
+    "_locale" : "de_AT",
+    "_storefront" : "AUT",
+    "_storeKitErrors" : [
+
+    ]
+  },
+  "subscriptionGroups" : [
+
+  ],
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  }
+}

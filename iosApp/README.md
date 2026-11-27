@@ -111,3 +111,9 @@ Signieren: Target **levlr** → **Signing & Capabilities** → **Automatically m
 ## Einschränkungen auf iOS (scorr)
 - **Fehler-Haptik** (Tippen, wenn nichts geht): UINotificationFeedbackGenerator „Error“, folgt der Systemhaptik; iPads ohne Taptic Engine bleiben still.
 - **Zurück, Sicherung**: wie levlr.
+
+## Einschränkungen auf iOS (focusr)
+- **Uhr**: iOS hat keine öffentliche Laufzeituhr, die im Ruhezustand weiterläuft; focusr rechnet mit der Wanduhr. Wer während eines Timers die Uhrzeit ändert, verschiebt das Ende (dafür übersteht ein Timer einen Neustart).
+- **Hintergrund**: Kein Dauer-Hinweis mit Restzeit (Android: Countdown-Benachrichtigung). Das Ende kommt als lokale Mitteilung mit Glocke, aber nur mit Mitteilungsrecht; ohne Recht klingelt focusr nur bei offener App. Ob die Mitteilung vibriert, bestimmen die iOS-Einstellungen.
+- **Ton**: Bei offener App spielt focusr die Glocke selbst (Kategorie Playback mit Ducking, klingt auch bei Stummschalter).
+- **Zurück, Sicherung**: wie levlr.
