@@ -27,7 +27,8 @@ struct MoovrIOSApp: App {
         #if DEBUG
         switch UserDefaults.standard.string(forKey: "aappsScene")?.uppercased() {
         case "MENU": return ""
-        case "PLAY": return "fadeOut('0');"
+        // nach 2,5 s anhalten, sonst ist die Kuh bis zum Foto schon ins Wasser gefallen
+        case "PLAY": return "fadeOut('0'); setTimeout(function () { game.paused = true; }, 2500);"
         default: return nil
         }
         #else

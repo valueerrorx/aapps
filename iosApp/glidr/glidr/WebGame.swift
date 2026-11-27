@@ -103,6 +103,10 @@ final class WebGameController: UIViewController, WKNavigationDelegate, WKUIDeleg
         // Screenshots: immer dieselbe Querlage, damit das Bild gerade gedreht werden kann
         if sceneScript != nil, let scene = view.window?.windowScene {
             scene.requestGeometryUpdate(.iOS(interfaceOrientations: .landscapeRight))
+            // falls keine Drehung kommt: trotzdem laden
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { [weak self] in
+                if let self, !self.started { self.start() }
+            }
         }
     }
 
