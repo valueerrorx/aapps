@@ -108,3 +108,6 @@ Signieren: Target **levlr** → **Signing & Capabilities** → **Automatically m
 - **Lautstärke**: Die Hardware-Tasten regeln die Systemlautstärke, der Regler in der App die Mischung (wie Android).
 - **Zurück, Sicherung**: wie levlr.
 
+## Einschränkungen auf iOS (scorr)
+- **Fehler-Haptik** (Tippen, wenn nichts geht): UINotificationFeedbackGenerator „Error“, folgt der Systemhaptik; iPads ohne Taptic Engine bleiben still.
+- **Zurück, Sicherung**: wie levlr.

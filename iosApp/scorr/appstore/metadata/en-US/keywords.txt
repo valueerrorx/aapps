@@ -1,0 +1,1 @@
+score,counter,points,scoreboard,tally,board game,card game,table tennis,quiz,rounds,offline

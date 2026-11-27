@@ -1,0 +1,21 @@
+scorr keeps score for board and card games, table tennis or quiz nights. Every player or team gets a big colour tile. Tap the top half for plus one, the bottom half for minus one. For bigger jumps, drag up or down across the tile, or long-press and type in a number.
+
+Features
+• 1 to 8 players or teams, each with a name and a colour
+• Quick changes are combined into one move, unlimited undo
+• Rounds (optional) with a history table and round winners
+• Scoring by rounds won or total points
+• Optional target, winner with the most or the fewest points
+• The game is kept even when the app is closed
+• Screen stays on (can be turned off)
+• Portrait and landscape, iPhone and iPad, English and German
+
+Player names and scores are stored only on your device.
+
+scorr asks for no permissions.
+
+Try scorr free for one day with every feature: just start the free trial in the app. After that, a one-time purchase unlocks it for good, including all future updates. No subscription, no ads.
+
+• Private: no tracking, no account, no data collected. scorr does not make money from your data.
+• Completely offline: scorr works without a connection. Only the purchase goes through the App Store, the app itself never goes online.
+• Open source: free software under the GNU GPLv3. Source code: https://github.com/valueerrorx/aapps

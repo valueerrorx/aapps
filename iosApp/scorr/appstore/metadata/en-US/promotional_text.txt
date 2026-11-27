@@ -1,0 +1,1 @@
+Keep score at game night: big colour tiles, one tap per point, rounds and history. No tracking, fully offline, open source.

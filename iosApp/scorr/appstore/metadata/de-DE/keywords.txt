@@ -1,0 +1,1 @@
+punkte,zähler,spielstand,anzeigetafel,brettspiel,kartenspiel,tischtennis,quiz,runden,offline

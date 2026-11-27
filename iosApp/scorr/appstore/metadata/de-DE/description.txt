@@ -1,0 +1,21 @@
+scorr zählt Punkte bei Brett- und Kartenspielen, beim Tischtennis oder am Quizabend. Jeder Spieler und jedes Team bekommt eine große Farbfläche. Oben tippen zählt plus eins, unten minus eins. Für größere Sprünge ziehst du senkrecht über die Fläche oder hältst lange gedrückt und gibst eine Zahl ein.
+
+Funktionen
+• 1 bis 8 Spieler oder Teams, jeweils mit Name und Farbe
+• Schnelle Änderungen werden zu einem Zug zusammengefasst, Rückgängig beliebig oft
+• Runden (abschaltbar) mit Verlauf als Tabelle und Rundensiegern
+• Wertung nach Rundensiegen oder Gesamtpunkten
+• Optionales Ziel, Gewinner mit den meisten oder den wenigsten Punkten
+• Der Spielstand bleibt erhalten, auch wenn die App geschlossen wird
+• Bildschirm bleibt an (abschaltbar)
+• Hoch- und Querformat, iPhone und iPad, Deutsch und Englisch
+
+Spielernamen und Punkte werden nur auf deinem Gerät gespeichert.
+
+scorr fragt nach keinen Berechtigungen.
+
+Teste scorr einen Tag lang kostenlos mit allen Funktionen: einfach in der App die Testphase starten. Danach schaltet ein einmaliger Kauf die App dauerhaft frei, inklusive aller künftigen Updates. Kein Abo, keine Werbung.
+
+• Privat: kein Tracking, kein Konto, es werden keine Daten gesammelt. scorr verdient nicht an deinen Daten.
+• Komplett offline: scorr funktioniert ohne Verbindung. Nur der Kauf läuft über den App Store, die App selbst geht nie ins Internet.
+• Open Source: freie Software unter der GNU GPLv3. Quellcode: https://github.com/valueerrorx/aapps
