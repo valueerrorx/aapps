@@ -38,7 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -50,7 +50,7 @@ import solutions.xapient.aapps.core.ui.AappsIcon
 import solutions.xapient.aapps.core.ui.SettingsDivider
 import solutions.xapient.aapps.core.ui.SettingsGroup
 import solutions.xapient.aapps.core.ui.Springs
-import solutions.xapient.scorr.R
+import solutions.xapient.scorr.res.*
 import solutions.xapient.scorr.domain.Game
 
 private val Warn = Color(0xFFF2B84E)
@@ -69,15 +69,15 @@ fun PlayersScreen(
     val c = Aapps.colors
     var colorsOf by rememberSaveable { mutableIntStateOf(openColors) }
     var confirm by rememberSaveable { mutableIntStateOf(-1) }
-    ListScreen(stringResource(R.string.players), onBack) {
-        SettingsGroup(stringResource(R.string.players_label, game.players.size, Game.MAX_PLAYERS)) {
+    ListScreen(stringResource(Res.string.players), onBack) {
+        SettingsGroup(stringResource(Res.string.players_label, game.players.size, Game.MAX_PLAYERS)) {
             game.players.forEachIndexed { i, p ->
                 if (i > 0) SettingsDivider()
                 val color = playerColor(p.color)
                 val shown = displayName(game, i)
                 Row(Modifier.fillMaxWidth().padding(start = 6.dp, end = 6.dp), verticalAlignment = Alignment.CenterVertically) {
                     // Farbpunkt oeffnet die Palette
-                    val colorDesc = stringResource(R.string.color_named, shown)
+                    val colorDesc = stringResource(Res.string.color_named, shown)
                     Box(
                         Modifier
                             .size(48.dp)
@@ -93,11 +93,11 @@ fun PlayersScreen(
                         )
                     }
                     Spacer(Modifier.width(6.dp))
-                    NameField(p.name, stringResource(R.string.player_n, i + 1), { onRename(i, it) }, Modifier.weight(1f))
+                    NameField(p.name, stringResource(Res.string.player_n, i + 1), { onRename(i, it) }, Modifier.weight(1f))
                     if (game.players.size > 1) {
                         val armed = confirm == i
                         val tint by animateColorAsState(if (armed) Warn else c.fgMuted, Springs.gentle(), label = "rm")
-                        RemoveButton(stringResource(R.string.remove_named, shown), tint) {
+                        RemoveButton(stringResource(Res.string.remove_named, shown), tint) {
                             if (armed || !game.hasActions(i)) {
                                 confirm = -1
                                 if (colorsOf >= i) colorsOf = -1
@@ -112,7 +112,7 @@ fun PlayersScreen(
                 }
                 AnimatedVisibility(confirm == i, enter = fadeIn() + expandVertically(), exit = fadeOut() + shrinkVertically()) {
                     BasicText(
-                        stringResource(R.string.remove_confirm, shown),
+                        stringResource(Res.string.remove_confirm, shown),
                         Modifier.padding(start = 18.dp, end = 18.dp, bottom = 12.dp),
                         style = Aapps.type.body.copy(color = Warn),
                     )
@@ -123,7 +123,7 @@ fun PlayersScreen(
             }
             if (game.players.size < Game.MAX_PLAYERS) {
                 SettingsDivider()
-                AddRow(stringResource(R.string.add_player)) { confirm = -1; onAdd() }
+                AddRow(stringResource(Res.string.add_player)) { confirm = -1; onAdd() }
             }
         }
     }
@@ -139,7 +139,7 @@ private fun Palette(selectedColor: Int, onPick: (Int) -> Unit) {
         FlowRow(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly, maxItemsInEachRow = perRow) {
             PlayerColors.indices.forEach { k ->
                 val selected = k == selectedColor
-                val desc = stringResource(R.string.color_n, k + 1)
+                val desc = stringResource(Res.string.color_n, k + 1)
                 Box(
                     Modifier
                         .size(48.dp)

@@ -21,7 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
@@ -34,7 +34,9 @@ import solutions.xapient.aapps.core.ui.AappsScaffold
 import solutions.xapient.aapps.core.ui.AappsTopBar
 import solutions.xapient.aapps.core.ui.SettingsDivider
 import solutions.xapient.aapps.core.ui.SettingsGroup
-import solutions.xapient.scorr.R
+import solutions.xapient.scorr.res.*
+import solutions.xapient.aapps.core.ui.Res as CoreRes
+import solutions.xapient.aapps.core.ui.aapps_back
 import solutions.xapient.scorr.domain.Board
 import solutions.xapient.scorr.domain.Game
 import solutions.xapient.scorr.domain.WinRule
@@ -44,7 +46,7 @@ import solutions.xapient.scorr.domain.WinRule
 fun ListScreen(title: String, onBack: () -> Unit, content: @Composable ColumnScope.() -> Unit) {
     AappsScaffold {
         Column(Modifier.fillMaxWidth()) {
-            AappsTopBar(title, onBack, stringResource(solutions.xapient.aapps.core.ui.R.string.aapps_back))
+            AappsTopBar(title, onBack, stringResource(CoreRes.string.aapps_back))
             Column(
                 Modifier
                     .fillMaxWidth()
@@ -61,12 +63,12 @@ fun ListScreen(title: String, onBack: () -> Unit, content: @Composable ColumnSco
 @Composable
 fun HistoryScreen(game: Game, onBack: () -> Unit) {
     val rounds = game.rounds
-    val title = if (rounds) stringResource(R.string.round_n, game.round) else stringResource(R.string.history)
+    val title = if (rounds) stringResource(Res.string.round_n, game.round) else stringResource(Res.string.history)
     ListScreen(title, onBack) {
         Totals(game)
         if (!game.canUndo) {
             BasicText(
-                stringResource(R.string.no_points),
+                stringResource(Res.string.no_points),
                 Modifier.padding(horizontal = 12.dp),
                 style = Aapps.type.body.copy(color = Aapps.colors.fgMuted),
             )
@@ -85,14 +87,14 @@ private fun Totals(game: Game) {
     val byPoints: Comparator<Int> = if (game.rule == WinRule.MOST) compareByDescending { scores[it] } else compareBy { scores[it] }
     val order = scores.indices.sortedWith(if (game.countsWins) compareByDescending<Int> { wins[it] }.then(byPoints) else byPoints)
     val crowned = if (game.finished) game.winners else game.leaders
-    SettingsGroup(stringResource(if (game.rounds) R.string.standings else R.string.total)) {
+    SettingsGroup(stringResource(if (game.rounds) Res.string.standings else Res.string.total)) {
         order.forEachIndexed { rank, i ->
             if (rank > 0) SettingsDivider()
             val color = playerColor(game.players[i].color)
             val name = displayName(game, i)
             val desc = if (game.rounds) {
-                stringResource(R.string.tile_desc_rounds, name, Board.format(scores[i]), wins[i])
-            } else stringResource(R.string.tile_desc, name, Board.format(scores[i]))
+                stringResource(Res.string.tile_desc_rounds, name, Board.format(scores[i]), wins[i])
+            } else stringResource(Res.string.tile_desc, name, Board.format(scores[i]))
             Row(
                 Modifier.fillMaxWidth().heightIn(min = 64.dp).padding(horizontal = 18.dp, vertical = 10.dp)
                     .semantics(mergeDescendants = true) { contentDescription = desc },
@@ -124,12 +126,12 @@ private fun RoundTable(game: Game) {
     val c = Aapps.colors
     val table = game.roundTable()
     val won = game.roundWinners
-    val wonLabel = stringResource(R.string.round_won)
+    val wonLabel = stringResource(Res.string.round_won)
     val fs = LocalDensity.current.fontScale.coerceIn(1f, 2f)
     val first = 64.dp * fs
     val col = 68.dp * fs
     val cell = Aapps.type.number.copy(fontSize = 17.sp, textAlign = TextAlign.End)
-    SettingsGroup(stringResource(R.string.rounds_title)) {
+    SettingsGroup(stringResource(Res.string.rounds_title)) {
         Column(Modifier.horizontalScroll(rememberScrollState()).padding(vertical = 8.dp)) {
             // Kopf: Farbpunkt + Name je Spieler
             Row(Modifier.padding(horizontal = 12.dp).heightIn(min = 40.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -151,8 +153,8 @@ private fun RoundTable(game: Game) {
                 Box(Modifier.padding(horizontal = 12.dp).width(first + col * game.players.size).heightIn(min = 1.dp).background(c.line.copy(alpha = 0.6f)))
                 Row(Modifier.padding(horizontal = 12.dp).heightIn(min = 44.dp), verticalAlignment = Alignment.CenterVertically) {
                     Column(Modifier.width(first)) {
-                        BasicText(stringResource(R.string.round_short, r + 1), style = Aapps.type.number.copy(color = if (running) c.accent else c.fgMuted, fontSize = 15.sp))
-                        if (running) BasicText(stringResource(R.string.running).uppercase(), style = Aapps.type.label.copy(color = c.fgFaint, fontSize = 10.sp))
+                        BasicText(stringResource(Res.string.round_short, r + 1), style = Aapps.type.number.copy(color = if (running) c.accent else c.fgMuted, fontSize = 15.sp))
+                        if (running) BasicText(stringResource(Res.string.running).uppercase(), style = Aapps.type.label.copy(color = c.fgFaint, fontSize = 10.sp))
                     }
                     table[r].forEachIndexed { i, v ->
                         // Rundensieger: Pokal und Spielerfarbe

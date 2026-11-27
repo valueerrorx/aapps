@@ -65,8 +65,8 @@ import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
-import androidx.compose.ui.res.pluralStringResource
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.pluralStringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.semantics.CustomAccessibilityAction
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
@@ -95,7 +95,9 @@ import solutions.xapient.aapps.core.ui.AappsScaffold
 import solutions.xapient.aapps.core.ui.Haptics
 import solutions.xapient.aapps.core.ui.Springs
 import solutions.xapient.aapps.core.ui.pressScale
-import solutions.xapient.scorr.R
+import solutions.xapient.scorr.res.*
+import solutions.xapient.aapps.core.ui.Res as CoreRes
+import solutions.xapient.aapps.core.ui.aapps_settings
 import solutions.xapient.scorr.domain.Board
 import solutions.xapient.scorr.domain.Game
 import kotlinx.coroutines.delay
@@ -105,7 +107,7 @@ import kotlin.math.min
 // Anzeigename: leer = „Spieler n"
 @Composable
 fun displayName(game: Game, i: Int): String =
-    game.players.getOrNull(i)?.name?.ifBlank { null } ?: stringResource(R.string.player_n, i + 1)
+    game.players.getOrNull(i)?.name?.ifBlank { null } ?: stringResource(Res.string.player_n, i + 1)
 
 // Bestaetigung fuer „Neues Spiel" verfaellt nach dieser Zeit
 private const val CONFIRM_MS = 3000L
@@ -124,7 +126,7 @@ fun ScoreScreen(
     onSettings: () -> Unit,
     canUndo: Boolean = game.canUndo,
     onReject: () -> Unit = {},
-    clock: () -> Long = System::currentTimeMillis,
+    clock: () -> Long = ::nowMs,
     animate: Boolean = true,
     scrubPreview: Pair<Int, Int>? = null,
     shineAt: Float = -1f,
@@ -175,7 +177,7 @@ fun ScoreScreen(
         val action: @Composable () -> Unit = {
             when {
                 finished -> AappsPillButton(
-                    stringResource(if (confirm) R.string.new_game_again else R.string.new_game),
+                    stringResource(if (confirm) Res.string.new_game_again else Res.string.new_game),
                     {
                         if (confirm) {
                             confirm = false
@@ -190,7 +192,7 @@ fun ScoreScreen(
                     icon = if (plainAction) null else AappsIcons.Rotate, active = true,
                 )
                 rounds -> AappsPillButton(
-                    stringResource(R.string.next_round),
+                    stringResource(Res.string.next_round),
                     {
                         haptics?.press()
                         // Rundensieg ist ein Ereignis
@@ -238,7 +240,7 @@ fun ScoreScreen(
         }
         // Ansage fuer TalkBack: Knoten bleibt stehen, nur der Text kommt dazu
         val announce = if (finished) {
-            stringResource(R.string.announce_winner, game.winners.sorted().map { displayName(game, it) }.joinToString(", "))
+            stringResource(Res.string.announce_winner, game.winners.sorted().map { displayName(game, it) }.joinToString(", "))
         } else ""
         Box(Modifier.size(1.dp).semantics { contentDescription = announce; liveRegion = LiveRegionMode.Polite })
         overlay()
@@ -247,7 +249,7 @@ fun ScoreScreen(
 
 @Composable
 private fun GearButton(onClick: () -> Unit) {
-    AappsIconButton(AappsIcons.Gear, stringResource(solutions.xapient.aapps.core.ui.R.string.aapps_settings), onClick)
+    AappsIconButton(AappsIcons.Gear, stringResource(CoreRes.string.aapps_settings), onClick)
 }
 
 // Rueckgaengig bleibt an seinem Platz, ist ohne Verlauf aber unsichtbar
@@ -256,7 +258,7 @@ private fun UndoButton(enabled: Boolean, haptics: Haptics?, onUndo: () -> Unit) 
     val alpha by animateFloatAsState(if (enabled) 1f else 0f, Springs.gentle(), label = "undo")
     Box(Modifier.graphicsLayer { this.alpha = alpha }) {
         if (enabled) {
-            AappsIconButton(ScorrIcons.Undo, stringResource(R.string.undo), { haptics?.press(); onUndo() })
+            AappsIconButton(ScorrIcons.Undo, stringResource(Res.string.undo), { haptics?.press(); onUndo() })
         } else {
             Spacer(Modifier.size(48.dp))
         }
@@ -269,10 +271,10 @@ private fun RoundChip(game: Game, rounds: Boolean, onClick: () -> Unit) {
     val c = Aapps.colors
     val source = remember { MutableInteractionSource() }
     val pressed by source.collectIsPressedAsState()
-    val title = (if (rounds) stringResource(R.string.round_n, game.round) else stringResource(R.string.history)).uppercase()
+    val title = (if (rounds) stringResource(Res.string.round_n, game.round) else stringResource(Res.string.history)).uppercase()
     val target = game.target?.let {
-        if (game.countsWins) pluralStringResource(R.plurals.target_short_wins, it, Board.format(it)).uppercase()
-        else stringResource(R.string.target_short, Board.format(it)).uppercase()
+        if (game.countsWins) pluralStringResource(Res.plurals.target_short_wins, it, Board.format(it)).uppercase()
+        else stringResource(Res.string.target_short, Board.format(it)).uppercase()
     }
     val style = Aapps.type.label.copy(color = c.fg, fontSize = Aapps.type.label.fontSize * 1.1f)
     val measurer = rememberTextMeasurer()
@@ -286,7 +288,7 @@ private fun RoundChip(game: Game, rounds: Boolean, onClick: () -> Unit) {
             Modifier
                 .pressScale(pressed, 0.96f)
                 .heightIn(min = 48.dp)
-                .clickable(source, indication = null, role = Role.Button, onClickLabel = stringResource(R.string.history), onClick = onClick)
+                .clickable(source, indication = null, role = Role.Button, onClickLabel = stringResource(Res.string.history), onClick = onClick)
                 .padding(vertical = 6.dp)
                 .background(if (pressed) c.surfaceHigh else Color.Transparent, RoundedCornerShape(24.dp))
                 .border(1.dp, if (pressed) c.fgFaint else c.line, RoundedCornerShape(24.dp))
@@ -318,7 +320,7 @@ private fun WinnerLine(game: Game, modifier: Modifier) {
     val color = if (w.size == 1) playerColor(game.players[w[0]].color) else Aapps.colors.fg
     Column(modifier) {
         BasicText(
-            stringResource(if (w.size == 1) R.string.winner else R.string.winners).uppercase(),
+            stringResource(if (w.size == 1) Res.string.winner else Res.string.winners).uppercase(),
             style = Aapps.type.label.copy(color = Aapps.colors.fgMuted),
         )
         BasicText(
@@ -476,13 +478,13 @@ private fun Tile(
     val c = Aapps.colors
     val radius = if (compact) 22.dp else 28.dp
     val shape = RoundedCornerShape(radius)
-    val plusLabel = stringResource(R.string.action_plus)
-    val minusLabel = stringResource(R.string.action_minus)
-    val enterLabel = stringResource(R.string.action_enter)
-    val desc = if (isWinner) stringResource(R.string.tile_desc_winner, name) else name
+    val plusLabel = stringResource(Res.string.action_plus)
+    val minusLabel = stringResource(Res.string.action_minus)
+    val enterLabel = stringResource(Res.string.action_enter)
+    val desc = if (isWinner) stringResource(Res.string.tile_desc_winner, name) else name
     val points = if (stats != null) {
-        stringResource(R.string.tile_state_rounds, Board.format(game.roundPoints[index]), stats.first, Board.format(stats.second))
-    } else stringResource(R.string.points_n, Board.format(score))
+        stringResource(Res.string.tile_state_rounds, Board.format(game.roundPoints[index]), stats.first, Board.format(stats.second))
+    } else stringResource(Res.string.points_n, Board.format(score))
 
     Box(
         modifier
@@ -708,7 +710,7 @@ private fun TileContent(
             exit = fadeOut(Springs.gentle()),
         ) {
             BasicText(
-                stringResource(R.string.winner).uppercase(),
+                stringResource(Res.string.winner).uppercase(),
                 Modifier.background(Ink, CircleShape).padding(horizontal = 16.dp, vertical = 5.dp),
                 style = labelStyle.copy(color = Color.White),
                 maxLines = 1,

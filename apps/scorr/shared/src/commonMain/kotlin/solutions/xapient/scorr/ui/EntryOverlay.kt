@@ -42,7 +42,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
@@ -57,7 +57,7 @@ import solutions.xapient.aapps.core.ui.AappsPillButton
 import solutions.xapient.aapps.core.ui.AappsTextButton
 import solutions.xapient.aapps.core.ui.AappsTheme
 import solutions.xapient.aapps.core.ui.glow
-import solutions.xapient.scorr.R
+import solutions.xapient.scorr.res.*
 import solutions.xapient.scorr.domain.Board
 
 // Zahleneingabe ueber der Tafel; Akzent = Spielerfarbe
@@ -113,11 +113,11 @@ fun EntryOverlay(
                     // Querformat: Schliessen oben statt unten, sonst reicht die Hoehe nicht
                     if (landscape) {
                         Spacer(Modifier.width(4.dp))
-                        AappsIconButton(ScorrIcons.Close, stringResource(R.string.cancel), onDismiss)
+                        AappsIconButton(ScorrIcons.Close, stringResource(Res.string.cancel), onDismiss)
                     }
                 }
                 Spacer(Modifier.height(if (landscape) 8.dp else 18.dp))
-                val hint = stringResource(R.string.entry_hint)
+                val hint = stringResource(Res.string.entry_hint)
                 val style = Aapps.type.display.copy(color = color, fontSize = 72.sp, textAlign = TextAlign.Center)
                 BasicTextField(
                     value = text,
@@ -141,13 +141,13 @@ fun EntryOverlay(
                 Spacer(Modifier.height(if (landscape) 12.dp else 22.dp))
                 val sub: @Composable (Modifier) -> Unit = { m ->
                     AappsPillButton(
-                        stringResource(R.string.subtract), { onApply(-amount) }, m,
+                        stringResource(Res.string.subtract), { onApply(-amount) }, m,
                         icon = ScorrIcons.Minus, enabled = amount > 0,
                     )
                 }
                 val add: @Composable (Modifier) -> Unit = { m ->
                     AappsPillButton(
-                        stringResource(R.string.add), { onApply(amount) }, m,
+                        stringResource(Res.string.add), { onApply(amount) }, m,
                         icon = ScorrIcons.Plus, active = amount > 0, enabled = amount > 0,
                     )
                 }
@@ -165,7 +165,7 @@ fun EntryOverlay(
                 if (!landscape) {
                     Spacer(Modifier.height(6.dp))
                     Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                        AappsTextButton(stringResource(R.string.cancel), onDismiss)
+                        AappsTextButton(stringResource(Res.string.cancel), onDismiss)
                     }
                 }
             }
