@@ -78,7 +78,6 @@ jobs:
     env:
       APP: ${{ matrix.app }}
       BUNDLE: solutions.xapient.${{ matrix.app }}
-      AAPPS_BUILD: ${{ github.run_number }}
       HAS_ASC: ${{ secrets.ASC_KEY_P8 != '' && secrets.ASC_KEY_ID != '' && secrets.ASC_ISSUER_ID != '' && secrets.APPLE_TEAM_ID != '' }}
     steps:
       # Actions auf Commit-SHAs gepinnt (Tag als Kommentar)
@@ -97,8 +96,11 @@ jobs:
           sudo xcode-select -s "$XC"
           xcodebuild -version
 
+      # Build-Nummer: run_number + 100 (Workflow umbenannt, levlr hatte schon Builds bis 6)
       - name: Version wie Android
-        run: echo "AAPPS_VERSION=$(cat apps/$APP/version.txt)" >> "$GITHUB_ENV"
+        run: |
+          echo "AAPPS_VERSION=$(cat apps/$APP/version.txt)" >> "$GITHUB_ENV"
+          echo "AAPPS_BUILD=$((GITHUB_RUN_NUMBER + 100))" >> "$GITHUB_ENV"
 
       - name: Kotlin-Tests (JVM + iOS-Simulator)
         run: ./gradlew --no-daemon :core:store:jvmTest :core:store:iosSimulatorArm64Test ":apps:$APP:shared:iosSimulatorArm64Test"

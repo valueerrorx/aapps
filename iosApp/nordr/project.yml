@@ -1,5 +1,5 @@
 # XcodeGen: erzeugt nordr.xcodeproj (nicht im Repo). Version/Build kommen aus der Umgebung:
-# AAPPS_VERSION = apps/nordr/version.txt (wie Android), AAPPS_BUILD = Build-Nummer (CI: github.run_number)
+# AAPPS_VERSION = apps/nordr/version.txt (wie Android), AAPPS_BUILD = Build-Nummer (CI: run_number + 100)
 name: nordr
 options:
   bundleIdPrefix: solutions.xapient

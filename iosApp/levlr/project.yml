@@ -1,5 +1,5 @@
 # XcodeGen: erzeugt levlr.xcodeproj (nicht im Repo). Version/Build kommen aus der Umgebung:
-# AAPPS_VERSION = apps/levlr/version.txt (wie Android), AAPPS_BUILD = Build-Nummer (CI: github.run_number)
+# AAPPS_VERSION = apps/levlr/version.txt (wie Android), AAPPS_BUILD = Build-Nummer (CI: run_number + 100)
 name: levlr
 options:
   bundleIdPrefix: solutions.xapient
