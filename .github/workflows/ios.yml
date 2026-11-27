@@ -82,9 +82,9 @@ jobs:
       fail-fast: false
       matrix:
         include: ${{ fromJSON(needs.apps.outputs.matrix) }}
-    # neuer Lauf derselben App bricht den alten ab, andere Apps laufen weiter
+    # neuer Lauf derselben App bricht den alten ab, andere Apps laufen weiter; reine Pruef-Builds brechen keinen Upload ab
     concurrency:
-      group: ios-${{ matrix.app }}-${{ github.ref }}
+      group: ios-${{ matrix.app }}-${{ github.ref }}-${{ matrix.upload }}
       cancel-in-progress: true
     env:
       APP: ${{ matrix.app }}
