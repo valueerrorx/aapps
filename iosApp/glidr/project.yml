@@ -1,0 +1,62 @@
+# XcodeGen: erzeugt glidr.xcodeproj (nicht im Repo). Version/Build kommen aus der Umgebung:
+# AAPPS_VERSION = apps/glidr/version.txt (wie Android), AAPPS_BUILD = Build-Nummer (CI: run_number + 100)
+# Reines Swift: Spiel-Assets direkt aus apps/glidr/src/main/assets, kein Kotlin, kein Kauf
+name: glidr
+options:
+  bundleIdPrefix: solutions.xapient
+  developmentLanguage: en
+  deploymentTarget:
+    iOS: "17.0"
+settings:
+  base:
+    MARKETING_VERSION: ${AAPPS_VERSION}
+    CURRENT_PROJECT_VERSION: ${AAPPS_BUILD}
+    SWIFT_VERSION: "5.0"
+    SWIFT_STRICT_CONCURRENCY: minimal
+    CODE_SIGN_STYLE: Automatic
+targets:
+  glidr:
+    type: application
+    platform: iOS
+    sources:
+      - path: glidr
+      # Ordner-Referenzen: im Bundle als assets/ (Spiel wie Android) und ios-assets/ (AAC statt Ogg)
+      - path: ../../apps/glidr/src/main/assets
+        type: folder
+        buildPhase: resources
+      - path: ios-assets
+        type: folder
+        buildPhase: resources
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: solutions.xapient.glidr
+        PRODUCT_NAME: glidr
+        INFOPLIST_FILE: glidr/Info.plist
+        TARGETED_DEVICE_FAMILY: "1,2"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+  GlidrUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: GlidrUITests
+    dependencies:
+      - target: glidr
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: solutions.xapient.glidr.uitests
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_TARGET_NAME: glidr
+schemes:
+  glidr:
+    build:
+      targets:
+        glidr: all
+        GlidrUITests: [test]
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - GlidrUITests
+    archive:
+      config: Release
