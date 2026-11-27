@@ -1,4 +1,4 @@
-xapient bundle ist der Schlüssel für alle xapient-Apps. Installiere es aus Google Play und jede xapient-App auf deinem Gerät ist freigeschaltet, ohne jede einzeln zu kaufen.
+xapient bundle ist der Schlüssel für alle xapient-Apps. Installiere es aus Google Play und jede xapient-App auf deinem Gerät ist freigeschaltet, auch künftige, ohne jede einzeln zu kaufen.
 
 So funktioniert es
 • xapient bundle einmal kaufen und installieren.
@@ -22,6 +22,7 @@ Schaltet diese Apps frei
 • hudr – GPS-Tacho
 • thinkr – Denkspiele
 • dividr – Gruppenkasse
+• … und jede künftige xapient-App
 
 moovr (Clumsy Cow) und glidr (Cool Cows on Ice) sind Gratis-Spiele und stehen ebenfalls in der Übersicht.
 

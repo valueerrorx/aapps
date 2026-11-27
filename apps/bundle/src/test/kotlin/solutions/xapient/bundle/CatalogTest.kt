@@ -35,5 +35,12 @@ class CatalogTest {
 
     @Test fun onlyGamesAreFree() = assertEquals(setOf("moovr", "glidr"), Catalog.filter { it.free }.map { it.id }.toSet())
 
+    // Hinweis im Dankes-Screen nennt die Zahl der Bezahl-Apps
+    @Test fun thanksHintCountMatchesPaidApps() {
+        val paid = Catalog.count { !it.free }.toString()
+        val hint = RuntimeEnvironment.getApplication().getString(solutions.xapient.aapps.core.billing.R.string.billing_bundle)
+        assertTrue(hint, Regex("\\b$paid\\b").containsMatchIn(hint))
+    }
+
     @Test fun nothingInstalledInTest() = assertEquals(emptySet<String>(), installedApps(RuntimeEnvironment.getApplication()))
 }

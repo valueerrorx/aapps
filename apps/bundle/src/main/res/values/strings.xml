@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name" translatable="false">xapient bundle</string>
-    <string name="tagline">One key for all xapient apps. As long as this app is installed from Google Play, every xapient app on this device is unlocked.</string>
+    <string name="tagline">One key for all xapient apps, including future ones. As long as this app is installed from Google Play, every xapient app on this device is unlocked.</string>
     <string name="note_check">The apps look for the bundle offline when they start. Nothing is sent anywhere and no account is needed.</string>
     <string name="note_device">New phone? Install xapient bundle again from Google Play with the same Google account, no second purchase needed.</string>
     <string name="about">About</string>
     <string name="headline">All apps unlocked</string>
-    <string name="intro">As long as this app stays installed, every xapient app on this device is fully unlocked.</string>
+    <string name="intro">As long as this app stays installed, every xapient app on this device is fully unlocked, including future ones.</string>
     <string name="installed_count">%1$d of %2$d installed</string>
     <string name="group_installed">Installed</string>
     <string name="group_more">More apps</string>
