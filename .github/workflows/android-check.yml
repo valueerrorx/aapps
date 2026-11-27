@@ -104,4 +104,5 @@ jobs:
             echo "| App | main | ${GITHUB_REF_NAME} | Diff |"
             echo "|---|---|---|---|"
             echo "| $APP | $(kb "$base") | $(kb "$now") | $diff |"
-          } >> "$GITHUB_STEP_SUMMARY"
+          } | tee -a "$GITHUB_STEP_SUMMARY"
+          echo "APK-SIZE $APP main=$base now=$now"
