@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="state_active">aktiv</string>
+
+    <string name="tagline">Farbiges Rauschen zum Abschirmen und Runterkommen. Mischen, Timer setzen, laufen lassen.</string>
+    <string name="note_privacy">Alles wird live am Gerät berechnet. sleepr sammelt keine Daten und sendet nichts.</string>
+    <string name="note_background">Rauscht bei gesperrtem Bildschirm weiter. Stoppen geht auch am Sperrbildschirm.</string>
+
+    <!-- Mixer -->
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+    <string name="state_ready">Bereit</string>
+    <string name="state_playing">Läuft</string>
+    <string name="state_left">Läuft · noch %1$s</string>
+    <string name="state_fading">Blendet aus · %1$s</string>
+    <string name="spectrum">Spektrum der Mischung</string>
+    <string name="spectrum_unit">Leistung/Hz · dB</string>
+    <string name="all_zero">Alle Regler auf null</string>
+    <string name="colors">Rauschfarben</string>
+    <string name="wave_length">∿ Wellenlänge  kurz ↔ lang</string>
+    <string name="waves_on">Wellen %1$s ein</string>
+    <string name="waves_off">Wellen %1$s aus</string>
+    <string name="volume">Lautstärke</string>
+    <string name="treble">Höhen</string>
+    <string name="treble_open">offen</string>
+    <string name="timer_off">Aus</string>
+    <string name="timer_chip">%1$d min</string>
+    <string name="with_timer">%1$s · Timer %2$d min</string>
+    <plurals name="timer_minutes">
+        <item quantity="one">Timer %1$d Minute</item>
+        <item quantity="other">Timer %1$d Minuten</item>
+    </plurals>
+
+    <!-- Rauschfarben: Name, Steigung, Kurzhinweis -->
+    <string name="white">Weiß</string>
+    <string name="pink">Rosa</string>
+    <string name="brown">Braun</string>
+    <string name="grey">Grau</string>
+    <string name="green">Grün</string>
+    <string name="slope_white">0 dB/Okt</string>
+    <string name="slope_pink">−3 dB/Okt</string>
+    <string name="slope_brown">−6 dB/Okt</string>
+    <string name="slope_grey">gehörangepasst</string>
+    <string name="slope_green">Mitte ~500 Hz</string>
+    <string name="hint_white">hell, zischend</string>
+    <string name="hint_pink">ausgewogen, wie Regen</string>
+    <string name="hint_brown">tief, wie Brandung</string>
+    <string name="hint_grey">wirkt überall gleich laut</string>
+    <string name="hint_green">weich, naturnah</string>
+
+    <!-- Mischungen -->
+    <string name="mix_ocean">Meer</string>
+    <string name="mix_focus">Fokus</string>
+    <string name="mix_sleep">Einschlafen</string>
+    <string name="mix_mask">Abschirmen</string>
+    <string name="mix_nature">Natur</string>
+    <string name="mix_white">Klassisch weiß</string>
+
+    <!-- Einstellungen -->
+    <string name="group_display">Anzeige</string>
+    <string name="show_waves">Wellen-Schalter anzeigen</string>
+    <string name="show_waves_sub">Ausgeblendet laufen Wellen weiter</string>
+    <string name="show_mixes">Mischungen anzeigen</string>
+    <string name="show_mixes_sub">Laden geht auch immer hier</string>
+    <string name="group_mixes">Mischungen</string>
+    <string name="group_colors">Rauschfarben</string>
+    <string name="group_waves">Wellen</string>
+    <string name="group_volume">Lautstärke und Höhen</string>
+    <string name="group_timer">Timer</string>
+
+    <string name="explain_mixes">Fertige Mischungen als Startpunkt. Danach kannst du jeden Regler weiter anpassen.</string>
+    <string name="explain_colors">Jede Farbe hat ihren eigenen Regler, du kannst sie frei mischen. Alle sind gleich laut eingestellt, sie unterscheiden sich nur im Klang. Grau und Grün sind Näherungen.</string>
+    <string name="explain_white">hell und zischend, alle Frequenzen gleich stark</string>
+    <string name="explain_pink">ausgewogen, wie Regen; Höhen leiser als bei Weiß</string>
+    <string name="explain_brown">tief, wie Brandung; noch weniger Höhen</string>
+    <string name="explain_grey">gleicht grob aus, wie das Ohr Höhen und Tiefen hört, und wirkt so überall gleich laut</string>
+    <string name="explain_green">betont die Mitte um 500 Hz, weich und naturnah</string>
+    <string name="explain_waves">Der Wellen-Knopf neben einer Farbe lässt sie an- und abschwellen wie Meereswellen: anschwellen, brechen, auslaufen, jede Welle etwas anders. Darunter stellst du ein, wie lang die Wellen im Schnitt sind (3 bis 20 s). Beim Abspielen bewegt sich der Regler mit.</string>
+    <string name="explain_volume">Leise reicht: Störgeräusche sollen verschwimmen, lauter als ein ruhiges Gespräch muss es nicht sein. Bei Kindern lieber über Lautsprecher als über Kopfhörer. Höhen: links klingt es dumpfer, rechts heller.</string>
+    <string name="explain_timer">Der Timer blendet am Ende sanft aus statt hart zu stoppen, bei langen Timern über bis zu 2 Minuten. Wechselst du ihn während des Abspielens, beginnt er von vorn.</string>
+</resources>

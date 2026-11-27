@@ -100,3 +100,11 @@ Signieren: Target **levlr** → **Signing & Capabilities** → **Automatically m
 - **Sensor**: CoreMotion Device Motion (kalibriertes Magnetfeld in µT, 50 Hz) statt des Android-Magnetsensors; die Lage kommt aus Gyro + Schwerkraft mit Magnetometer-Korrektur und wird für den Feld-Ausgleich beim Drehen genutzt wie auf Android. iOS nennt keinen Messbereich, die Sättigung wird daher nur an einer stehen bleibenden Achse erkannt. Keine Berechtigung nötig. Der Simulator hat kein Magnetometer (zeigt „kein Sensor“, Screenshots über feste Szenen).
 - **Ton**: AVAudioEngine mit derselben Ton-Synthese wie Android, Audio-Kategorie Ambient (Stummschalter gilt, Musik läuft weiter).
 - **Haptik, Drehung, Zurück, Sicherung**: wie levlr.
+
+## Einschränkungen auf iOS (sleepr)
+- **Oberfläche**: Auf Android ist sleepr bewusst mit Views gebaut (SPEC.md). Für iOS gibt es dieselbe Oberfläche in Compose (`apps/sleepr/shared`), die Signalverarbeitung (`domain/Dsp.kt`) ist dieselbe Datei. Die Android-App hängt nicht am KMP-Modul.
+- **Audio**: AVAudioEngine mit vier Puffern zu je 4096 Frames (rund 340 ms, Android ≥ 300 ms), Rechenweg wie `NoiseEngine` auf Android. Kategorie Playback mit Hintergrund-Audio (`UIBackgroundModes` audio) statt Vordergrunddienst; Stopp am Sperrbildschirm über die Mediensteuerung statt Benachrichtigung, darum keine Berechtigung.
+- **Audio-Fokus**: Unterbrechung (Anruf, Wecker, Siri) stoppt wie auf Android; abgezogene Kopfhörer stoppen weich (Apple-Vorgabe).
+- **Lautstärke**: Die Hardware-Tasten regeln die Systemlautstärke, der Regler in der App die Mischung (wie Android).
+- **Zurück, Sicherung**: wie levlr.
+

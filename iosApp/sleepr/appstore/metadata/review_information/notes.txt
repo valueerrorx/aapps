@@ -1,0 +1,12 @@
+sleepr is a noise generator. All sound is computed live on the device (no audio files). It never goes online; only the in-app purchases go through the App Store.
+
+Background audio: playback continues with the screen locked (UIBackgroundModes audio). It stops on interruptions (e.g. calls), when headphones are unplugged, from the lock screen controls, or when the optional timer ends with a gentle fade-out.
+
+Trial (guideline 3.1.1): on first launch the app shows the free trial offer. It states the duration (1 day), that the app stays locked afterwards, and the price of the one-time unlock. Two non-consumable in-app purchases:
+- "sleepr 1-Day Trial" (solutions.xapient.sleepr.trial, price 0): tap "Start free trial". The full app opens.
+- "Unlock sleepr" (solutions.xapient.sleepr.full_unlock): tap "Unlock for <price>" on the same screen (no need to wait for the trial to end). The app is unlocked permanently.
+"Restore purchase" is on the same screen and calls AppStore.sync().
+
+After the trial day the app shows a thank-you screen with the unlock purchase and "Restore purchase".
+
+How to use: press "Start". Mix the noise colours with the sliders, tap a mix (Ocean, Focus, ...) or the wave button next to a colour, pick a timer. The gear icon opens the settings with explanations. No account, no login, no network access.

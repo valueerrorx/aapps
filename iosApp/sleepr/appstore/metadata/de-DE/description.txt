@@ -1,0 +1,21 @@
+sleepr erzeugt Rauschen live auf deinem Gerät und lässt dich fünf Rauschfarben frei mischen: zum Überdecken von Störgeräuschen, zum Konzentrieren oder zum Einschlafen. Es gibt keine Audiodateien und keine Schleifen. Das Rauschen wird laufend neu berechnet und wiederholt sich nicht.
+
+Funktionen
+• Fünf Rauschfarben mit eigenem Regler: Weiß, Rosa, Braun, Grau (an das Gehör angepasst) und Grün
+• Wellen-Modus je Farbe: das Rauschen schwillt an und ab wie Meereswellen, Wellenlänge 3 bis 20 Sekunden
+• Sechs fertige Mischungen: Meer, Fokus, Einschlafen, Abschirmen, Natur, Klassisch weiß
+• Lautstärke und Höhen-Regler für einen dunkleren oder helleren Klang
+• Spektrumanzeige der aktuellen Mischung
+• Timer von 15 bis 90 Minuten, am Ende blendet sleepr sanft aus
+• Läuft bei gesperrtem Bildschirm weiter, Stopp auch am Sperrbildschirm
+• Hoch- und Querformat, iPhone und iPad, Deutsch und Englisch
+
+sleepr ist keine medizinische App. Wähle eine angenehme, nicht zu hohe Lautstärke, besonders mit Kopfhörern.
+
+sleepr fragt nach keinen Berechtigungen.
+
+Teste sleepr einen Tag lang kostenlos mit allen Funktionen: einfach in der App die Testphase starten. Danach schaltet ein einmaliger Kauf die App dauerhaft frei, inklusive aller künftigen Updates. Kein Abo, keine Werbung.
+
+• Privat: kein Tracking, kein Konto, es werden keine Daten gesammelt. sleepr verdient nicht an deinen Daten.
+• Komplett offline: sleepr funktioniert ohne Verbindung. Nur der Kauf läuft über den App Store, die App selbst geht nie ins Internet.
+• Open Source: freie Software unter der GNU GPLv3. Quellcode: https://github.com/valueerrorx/aapps

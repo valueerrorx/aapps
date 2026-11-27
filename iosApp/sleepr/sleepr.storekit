@@ -1,0 +1,63 @@
+{
+  "identifier" : "5C8E1A4D",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "1.49",
+      "familyShareable" : false,
+      "internalID" : "6740000111",
+      "localizations" : [
+        {
+          "description" : "Unlock sleepr for good, incl. all future updates.",
+          "displayName" : "Unlock sleepr",
+          "locale" : "en_US"
+        },
+        {
+          "description" : "sleepr dauerhaft freischalten, inkl. aller Updates.",
+          "displayName" : "sleepr freischalten",
+          "locale" : "de"
+        }
+      ],
+      "productID" : "solutions.xapient.sleepr.full_unlock",
+      "referenceName" : "sleepr Unlock",
+      "type" : "NonConsumable"
+    },
+    {
+      "displayPrice" : "0.0",
+      "familyShareable" : false,
+      "internalID" : "6740000112",
+      "localizations" : [
+        {
+          "description" : "All features free for one day, then locked.",
+          "displayName" : "1-Day Trial",
+          "locale" : "en_US"
+        },
+        {
+          "description" : "Einen Tag alles gratis, danach bis zum Kauf gesperrt.",
+          "displayName" : "1 Tag testen",
+          "locale" : "de"
+        }
+      ],
+      "productID" : "solutions.xapient.sleepr.trial",
+      "referenceName" : "sleepr 1-Day Trial",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+    "_failTransactionsEnabled" : false,
+    "_locale" : "de_AT",
+    "_storefront" : "AUT",
+    "_storeKitErrors" : [
+
+    ]
+  },
+  "subscriptionGroups" : [
+
+  ],
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  }
+}
