@@ -45,7 +45,7 @@ data class Workout(
     fun sameTiming(o: Workout): Boolean = copy(name = "") == o.copy(name = "")
 
     companion object {
-        const val NAME_MAX = 24
+        internal const val NAME_MAX = 24
 
         fun cleanName(s: String): String =
             s.replace('|', ' ').replace('\n', ' ').replace('\r', ' ').trim().trimStart('@').trim().take(NAME_MAX)
