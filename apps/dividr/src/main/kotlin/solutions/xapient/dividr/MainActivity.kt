@@ -5,6 +5,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import solutions.xapient.aapps.core.ui.TrialGated
 import solutions.xapient.dividr.ui.DividrAccent
 
@@ -16,6 +18,12 @@ class MainActivity : ComponentActivity() {
             navigationBarStyle = SystemBarStyle.dark(android.graphics.Color.TRANSPARENT),
         )
         super.onCreate(savedInstanceState)
-        setContent { TrialGated(DividrAccent) { DividrApp() } }
+        setContent {
+            TrialGated(DividrAccent) {
+                val context = LocalContext.current
+                val store = remember { Store(context) }
+                DividrApp(store, BuildConfig.VERSION_NAME)
+            }
+        }
     }
 }

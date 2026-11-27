@@ -1,0 +1,10 @@
+dividr splits group expenses. It never goes online: phones swap the group data by QR code (camera only for scanning). Only the in-app purchases go through the App Store.
+
+Trial (guideline 3.1.1): on first launch the app shows the free trial offer. It states the duration (1 day), that the app stays locked afterwards, and the price of the one-time unlock. Two non-consumable in-app purchases:
+- "dividr 1-Day Trial" (solutions.xapient.dividr.trial, price 0): tap "Start free trial". The full app opens.
+- "Unlock dividr" (solutions.xapient.dividr.full_unlock): tap "Unlock for <price>" on the same screen (no need to wait for the trial to end). The app is unlocked permanently.
+"Restore purchase" is on the same screen and calls AppStore.sync().
+
+After the trial day the app shows a thank-you screen with the unlock purchase and "Restore purchase".
+
+How to use: create a group with your name, add an expense with the "+ Expense" button. "Share" shows the group's QR code, "Scan" reads the code of another device (a second device is needed to try the exchange). The gear icon opens the settings (people, currency, groups). No account, no login, no network access.

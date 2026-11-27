@@ -139,3 +139,14 @@ Gratis, ohne Kauf und ohne Kotlin: je App eine eigene Swift-Hülle `WebGame.swif
 - **Schutz**: Kopfhörer über die Audio-Route (kabelgebunden, Bluetooth), Stopp bei abgezogenem Kopfhörer und bei Unterbrechung wie `AudioGuard` auf Android.
 - **Haptik**: Anschlag am Bandende = Fehler-Haptik (`UINotificationFeedbackGenerator`), sonst wie levlr.
 - **Zurück, Sicherung**: wie levlr.
+
+## Einschränkungen auf iOS (dividr)
+- **QR-Code erzeugen**: Android nutzt ZXing, iOS einen eigenen Encoder in Kotlin (`apps/dividr/shared/.../qr/QrEncoder.kt`, ECC M, Strafpunkte nach Norm). Auf der JVM gegen ZXing geprüft: gleiche Version, bei gleicher Maske Bit für Bit gleiche Matrix, zurücklesbar bis Version 40. Die gewählte Maske kann vereinzelt von ZXing abweichen (beide gültig).
+- **QR-Code lesen**: AVFoundation (`AVCaptureMetadataOutput`, 1080p) in Swift (`iosApp/dividr/dividr/DividrHost.swift`), eingebettet per `UIKitView`. Ob sehr dichte Codes (große Gruppen, Version 30–40) so zuverlässig gelesen werden wie mit ZXing auf Android, ist am Gerät zu prüfen.
+- **Kamera-Erlaubnis**: Systemdialog beim ersten Scannen; nach Ablehnung führt „Einstellungen öffnen“ in die App-Einstellungen.
+- **Komprimieren**: System-zlib (raw Deflate, Stufe 9) wie `java.util.zip` auf Android; die Codes sind zwischen beiden Plattformen austauschbar.
+- **Zahlen/Währungen/Datum**: NSNumberFormatter/NSDateFormatter statt java.text; Nachkommastellen je Währung aus CLDR (wie Android). Darstellung kann sich minimal unterscheiden (z. B. Leerzeichen vor €).
+- **Teilen**: Systemblatt (`UIActivityViewController`), auf dem iPad als Popover in der Bildschirmmitte.
+- **Helligkeit**: Solange der eigene QR-Code angezeigt wird, volle Bildschirmhelligkeit; beim Verlassen zurück.
+- **Sicherung**: Gruppen (Application Support) und Geräte-ID (UserDefaults) wandern mit iCloud-/Gerätesicherung (Android: Sicherung aus). Wer eine Sicherung auf ein zweites Gerät spielt und beide weiter nutzt, hat zweimal dieselbe Geräte-ID; dann können neue Einträge der beiden Geräte kollidieren. Bewusst nicht ausgeschlossen (Normalfall: altes Gerät wird ersetzt).
+- **Drehung, Zurück**: wie levlr.

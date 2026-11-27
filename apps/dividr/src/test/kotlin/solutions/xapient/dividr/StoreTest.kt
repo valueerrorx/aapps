@@ -7,7 +7,12 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
-import solutions.xapient.dividr.domain.CodecTest
+import solutions.xapient.dividr.domain.Entry
+import solutions.xapient.dividr.domain.Group
+import solutions.xapient.dividr.domain.Stamp
+import solutions.xapient.dividr.domain.addMember
+import solutions.xapient.dividr.domain.newGroup
+import solutions.xapient.dividr.domain.putEntry
 import solutions.xapient.dividr.domain.Ids
 import java.io.File
 
@@ -15,10 +20,22 @@ import java.io.File
 class StoreTest {
     private val ctx get() = RuntimeEnvironment.getApplication()
 
+    // kleine Gruppe mit n Ausgaben (Fixtures liegen im shared-Modul)
+    private fun trip(n: Int): Group {
+        val dev = 0x7A3F_1C02
+        var seq = 0
+        var g = newGroup(0x1234_5678_9ABCL, "Kornaten", "EUR", dev)
+        val ids = listOf("Anna", "Ben", "Clara").map { name -> Ids.of(dev, ++seq).also { g = g.addMember(it, name, dev) } }
+        repeat(n) { i ->
+            g = g.putEntry(Entry(Ids.of(dev, ++seq), Stamp(1, dev), title = "Eis $i", amount = 100L + i, payer = ids[i % 3], forAll = true, forIds = emptySet(), day = 20_400), dev)
+        }
+        return g
+    }
+
     @Test fun saveLoadAndBackup() {
         val store = Store(ctx)
-        val g1 = CodecTest().trip(5)
-        val g2 = CodecTest().trip(8)
+        val g1 = trip(5)
+        val g2 = trip(8)
         val key = store.keyFor(g1)
         store.save(key, g1)
         assertEquals(g1, store.load(key))

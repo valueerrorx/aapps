@@ -1,0 +1,4 @@
+/* Sprache des Bundles; die Texte der App kommen aus den Compose-Ressourcen */
+"CFBundleDisplayName" = "dividr";
+"NSHumanReadableCopyright" = "Freie Software unter der GNU GPLv3.";
+"NSCameraUsageDescription" = "dividr liest damit den QR-Code am anderen Handy. Nichts wird gespeichert oder gesendet.";

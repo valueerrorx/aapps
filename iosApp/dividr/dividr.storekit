@@ -1,0 +1,63 @@
+{
+  "identifier" : "7D1A2B3C",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "1.49",
+      "familyShareable" : false,
+      "internalID" : "67400374431",
+      "localizations" : [
+        {
+          "description" : "Unlock dividr for good, incl. all future updates.",
+          "displayName" : "Unlock dividr",
+          "locale" : "en_US"
+        },
+        {
+          "description" : "dividr dauerhaft freischalten, inkl. aller Updates.",
+          "displayName" : "dividr freischalten",
+          "locale" : "de"
+        }
+      ],
+      "productID" : "solutions.xapient.dividr.full_unlock",
+      "referenceName" : "dividr Unlock",
+      "type" : "NonConsumable"
+    },
+    {
+      "displayPrice" : "0.0",
+      "familyShareable" : false,
+      "internalID" : "67400374432",
+      "localizations" : [
+        {
+          "description" : "All features free for one day, then locked.",
+          "displayName" : "1-Day Trial",
+          "locale" : "en_US"
+        },
+        {
+          "description" : "Einen Tag alles gratis, danach bis zum Kauf gesperrt.",
+          "displayName" : "1 Tag testen",
+          "locale" : "de"
+        }
+      ],
+      "productID" : "solutions.xapient.dividr.trial",
+      "referenceName" : "dividr 1-Day Trial",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+    "_failTransactionsEnabled" : false,
+    "_locale" : "de_AT",
+    "_storefront" : "AUT",
+    "_storeKitErrors" : [
+
+    ]
+  },
+  "subscriptionGroups" : [
+
+  ],
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  }
+}

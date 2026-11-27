@@ -7,7 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import com.github.takahirom.roborazzi.RobolectricDeviceQualifiers
 import com.github.takahirom.roborazzi.RoborazziOptions
 import com.github.takahirom.roborazzi.captureRoboImage
@@ -18,7 +17,6 @@ import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
 import solutions.xapient.aapps.core.ui.AappsTheme
-import solutions.xapient.dividr.R
 import solutions.xapient.dividr.domain.Entry
 import solutions.xapient.dividr.domain.Frames
 import solutions.xapient.dividr.domain.Group
@@ -171,7 +169,7 @@ class DividrScreenshotTest {
 
     // Store DE wie EN
     @Test fun qr_fullscreen_de() = shot("qr_fullscreen_de", "+de") {
-        QrScreen(Demo.codes(g), stringResource(R.string.let_them_scan), {}, animate = false)
+        QrScreen(Demo.codes(g), "Lass das andere Handy diesen Code scannen", {}, animate = false)
     }
     @Test fun group_land_de() = shot("group_land_de", "+de-land") { Main() }
     @Test fun entry_foreign_de() = shot("entry_foreign_de", "+de") { EntryShot(null, g.entries.values.first { it.currency == "HUF" }) }

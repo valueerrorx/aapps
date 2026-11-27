@@ -1,0 +1,21 @@
+dividr teilt Ausgaben in der Gruppe, beim Segeltörn, im Urlaub oder in der WG. Ganz ohne Konto, Server oder Internet: Die Handys tauschen alles per QR-Code. Einer legt die Gruppe an, die anderen scannen den Code und treten bei.
+
+Funktionen
+• Ausgaben für alle oder für ausgewählte Personen, gleichmäßig geteilt
+• Zahlungen zum Ausgleichen, fremde Währungen mit Wechselkurs
+• Später Dazugekommene zählen von Anfang an oder erst ab jetzt mit
+• Jeder kann alle Einträge ändern, der Import zeigt jede Änderung und Löschung
+• Abrechnung mit möglichst wenigen Überweisungen, auf allen Handys gleich
+• Abrechnung als Text per Messenger teilen
+• Gäste ohne eigenes Handy, doppelte Personen zusammenlegen
+• Mehrere Gruppen, Hoch- und Querformat, iPhone und iPad, Deutsch und Englisch
+
+Ein Code enthält alles, was dein Handy von der Gruppe kennt. Scannt ihr euch gegenseitig, seid ihr auf demselben Stand.
+
+dividr braucht die Kamera nur zum Scannen der Codes.
+
+Teste dividr einen Tag lang kostenlos mit allen Funktionen: einfach in der App die Testphase starten. Danach schaltet ein einmaliger Kauf die App dauerhaft frei, inklusive aller künftigen Updates. Kein Abo, keine Werbung.
+
+• Privat: kein Tracking, kein Konto, es werden keine Daten gesammelt. dividr verdient nicht an euren Daten.
+• Komplett offline: dividr funktioniert ohne Verbindung. Nur der Kauf läuft über den App Store, die App selbst geht nie ins Internet.
+• Open Source: freie Software unter der GNU GPLv3. Quellcode: https://github.com/valueerrorx/aapps

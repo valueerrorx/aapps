@@ -1,0 +1,1 @@
+Split costs offline by QR code
