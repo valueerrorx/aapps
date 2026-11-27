@@ -1,6 +1,6 @@
 # aapps für iPhone und iPad
 
-levlr ist die erste App und die Vorlage für alle weiteren. Gebaut wird in GitHub Actions auf macOS (`.github/workflows/ios-levlr.yml`), ein eigener Mac ist nicht nötig.
+levlr ist die erste App und die Vorlage für alle weiteren, danach nordr. Gebaut wird in GitHub Actions auf macOS (`.github/workflows/ios.yml`, eine Matrix über alle `iosApp/<app>/project.yml`), ein eigener Mac ist nicht nötig.
 
 ## Aufbau
 
@@ -8,13 +8,14 @@ levlr ist die erste App und die Vorlage für alle weiteren. Gebaut wird in GitHu
 core/ui            KMP: Theme, Bausteine, Einstellungen, Info, Dankes-Layout (Android + iOS)
                    androidMain: Haptik/Vibrator, TrialGated (Google Play), ThanksScreen
                    iosMain:     Haptik (UIKit), StoreGated + StoreScreen (App Store), Schriften, UserDefaults
+                   alle: Display-Rotation, Zurück-Taste, Dezimaltrenner (DisplayRotationEffect, BackEffect, decimalSeparator)
 core/store         KMP (iOS + JVM): Testphase/Kauf-Logik für den App Store (StorePolicy, StoreGate), Tests auf der JVM
 core/billing       nur Android (Google Play), unverändert
-apps/levlr/shared  KMP: Domain + komplette Oberfläche, Texte in composeResources (DE/EN)
-                   androidMain: Display-Rotation, Zurück-Taste;  iosMain: CoreMotion, MainViewController, Screenshot-Szenen
+apps/<app>/shared  KMP: Domain + komplette Oberfläche, Texte in composeResources (DE/EN)
+                   iosMain: Sensor (CoreMotion), MainViewController, Screenshot-Szenen
 apps/levlr         Android-App, nur noch Einstieg (MainActivity, Sensor, Debug-Diagnose)
 iosApp/common      Swift, für alle Apps gleich: StoreKitBridge (StoreKit 2)
-iosApp/levlr       XcodeGen-Projekt (project.yml), SwiftUI-Hülle, Info.plist, PrivacyInfo, Icons, .storekit, UI-Tests, appstore/
+iosApp/<app>       XcodeGen-Projekt (project.yml), SwiftUI-Hülle, Info.plist, PrivacyInfo, Icons, .storekit, UI-Tests, appstore/
 ```
 
 - Kotlin-Framework heißt in jeder App `AappsKit` (statisch, per `embedAndSignAppleFrameworkForXcode`, ohne CocoaPods).
@@ -31,10 +32,10 @@ iosApp/levlr       XcodeGen-Projekt (project.yml), SwiftUI-Hülle, Info.plist, P
 - Debug-Builds: Startargument `-aappsTrial expire` bzw. `reset` (Release ignoriert es). Lokal im Simulator: Scheme nutzt `levlr.storekit`.
 
 ## CI (GitHub Actions)
-Bei jedem Push auf `feat/ios` (Pfade iosApp, levlr, core/ui, core/store, Build-Dateien):
+Bei jedem Push auf `feat/ios` je betroffener App (eigene Dateien unter `apps/<app>` bzw. `iosApp/<app>`; core/ui, core/store, iosApp/common, Build-Dateien betreffen alle). Von Hand: workflow_dispatch mit `app` (leer = alle).
 1. Kotlin-Tests auf JVM und iOS-Simulator
 2. `xcodegen generate`, Simulator-Build, UI-Tests (Start + alle Screenshot-Szenen)
-3. Nur wenn die Secrets gesetzt sind: Archiv, Signierung (automatisch, per API-Key), Upload zu TestFlight
+3. Nur wenn die Secrets gesetzt sind und die App in App Store Connect existiert: IAP-Review-Screenshots, App-Screenshots, Archiv, Signierung (automatisch, per API-Key), Upload zu TestFlight
 
 Keine Build-Artefakte als GitHub-Artifact (öffentliches Repo). Der API-Key liegt nur während des Schritts in `$RUNNER_TEMP`.
 Secrets: `ASC_KEY_ID`, `ASC_ISSUER_ID`, `ASC_KEY_P8` (Inhalt der .p8-Datei), `APPLE_TEAM_ID`.
@@ -81,3 +82,9 @@ Signieren: Target **levlr** → **Signing & Capabilities** → **Automatically m
 - **Zurück**: Keine System-Zurück-Taste, zurück geht es über den Pfeil oben links.
 - **Diagnose** (Sensor-CSV aufzeichnen) gibt es nur im Android-Debug-Build.
 - **Sicherung**: Einstellungen und Kalibrierung liegen in den UserDefaults und können über iCloud-/Gerätesicherung auf ein neues Gerät wandern (Android: Sicherung aus). Nach einem Gerätewechsel neu kalibrieren (bewusst nicht ausgeschlossen).
+
+## Einschränkungen auf iOS (nordr)
+- **Sensor**: CoreMotion Device Motion mit Bezug „magnetisch Nord“ (Gyro + Magnetometer + Schwerkraft fusioniert, wie der Android-Rotation-Vector), ohne Standort und ohne Berechtigung. Genauigkeit aus der Magnetometer-Kalibrierung von iOS (unkalibriert/gering → Kalibrierhinweis), Störung aus der Feldstärke wie auf Android. Vor der ersten Kalibrierung liefert iOS teils kein Feld, dann fehlt der Hinweis kurz. Der Simulator hat keinen Kompass (zeigt „kein Kompass-Sensor“, Screenshots über feste Szenen).
+- **Deklination**: Android nutzt `GeomagneticField`; iOS hat kein Gegenstück ohne Standort, deshalb rechnet nordr dort mit dem eingebauten Weltmagnetfeld-Modell WMM2025 (NOAA, gemeinfrei, gültig bis Ende 2029) für die gewählte Region. Danach braucht es ein Update mit dem Nachfolgemodell.
+- **Haptik**: wie levlr, folgt der Systemhaptik; iPads ohne Taptic Engine haben kein Tippen bei N/O/S/W und auf Kurs.
+- **Drehung, Zurück, Sicherung**: wie levlr.

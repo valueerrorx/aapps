@@ -1,0 +1,1 @@
+heading,north,magnetic,true north,bearing,direction,course,declination,orientation,hiking,offline

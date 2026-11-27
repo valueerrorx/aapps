@@ -21,10 +21,10 @@ struct ComposeView: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> UIViewController {
         let defaults = UserDefaults.standard
         let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""
-        // nur Debug: -levlrScene EDGE_TILTED (Screenshots), -aappsTrial expire|reset
+        // nur Debug: -aappsScene EDGE_TILTED (Screenshots), -aappsTrial expire|reset
         #if DEBUG
         let debugTrial = defaults.string(forKey: "aappsTrial")
-        let scene = defaults.string(forKey: "levlrScene")
+        let scene = defaults.string(forKey: "aappsScene")
         #else
         let debugTrial: String? = nil
         let scene: String? = nil

@@ -8,7 +8,7 @@ import solutions.xapient.aapps.core.ui.StoreGated
 import solutions.xapient.aapps.core.ui.UserDefaultsKeyValues
 
 /**
- * Einstieg fuer Swift. [scene] = Screenshot-Zustand (Startargument -levlrScene), [debugTrial] = expire|reset
+ * Einstieg fuer Swift. [scene] = Screenshot-Zustand (Startargument -aappsScene), [debugTrial] = expire|reset
  * (nur Debug-Builds), [versionName] = CFBundleShortVersionString.
  */
 fun MainViewController(bridge: StoreBridge, versionName: String, scene: String?, debugTrial: String?): UIViewController =

@@ -1,0 +1,1 @@
+Ruhiger Kompass mit Genauigkeitsanzeige, der auf Wunsch einen Kurs hält. Ohne Tracking, ohne Standort, komplett offline, Open Source.

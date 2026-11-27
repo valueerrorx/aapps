@@ -25,7 +25,7 @@ final class ScreenshotTests: XCTestCase {
     private func capture(language: String, locale: String) {
         for scene in scenes {
             let app = XCUIApplication()
-            app.launchArguments = ["-levlrScene", scene, "-AppleLanguages", "(" + language + ")", "-AppleLocale", locale]
+            app.launchArguments = ["-aappsScene", scene, "-AppleLanguages", "(" + language + ")", "-AppleLocale", locale]
             app.launch()
             XCTAssertTrue(app.wait(for: .runningForeground, timeout: 20))
             // Compose braucht einen Moment fuer den ersten Frame

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Store-Screenshots im Simulator: App in festen Szenen starten (Debug-Build, -levlrScene) und abfotografieren.
+# Store-Screenshots im Simulator: App in festen Szenen starten (Debug-Build, -aappsScene) und abfotografieren.
 # sim-shots.sh <app.app> <bundleId> <ordner> <displayType> <Geraete-Regex> <BxH> <Szene>...
 # Ergebnis: <ordner>/<locale>/<displayType>/NN_<szene>.png (en-US und de-DE)
 set -euo pipefail
@@ -24,7 +24,7 @@ for spec in en-US:en:en_US de-DE:de:de_AT; do
   mkdir -p "$OUT/$LOCALE/$TYPE"
   n=1
   for scene in "$@"; do
-    xcrun simctl launch --terminate-running-process "$UDID" "$BUNDLE" -levlrScene "$scene" -AppleLanguages "($LANG_)" -AppleLocale "$CC" > /dev/null
+    xcrun simctl launch --terminate-running-process "$UDID" "$BUNDLE" -aappsScene "$scene" -AppleLanguages "($LANG_)" -AppleLocale "$CC" > /dev/null
     sleep 6
     f="$OUT/$LOCALE/$TYPE/$(printf %02d "$n")_$(echo "$scene" | tr 'A-Z' 'a-z').png"
     xcrun simctl io "$UDID" screenshot "$f" > /dev/null 2>&1

@@ -1,0 +1,3 @@
+/* Sprache des Bundles; die Texte der App kommen aus den Compose-Ressourcen */
+"CFBundleDisplayName" = "nordr";
+"NSHumanReadableCopyright" = "Freie Software unter der GNU GPLv3.";

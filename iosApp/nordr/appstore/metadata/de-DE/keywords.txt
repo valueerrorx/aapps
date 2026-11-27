@@ -1,0 +1,1 @@
+norden,himmelsrichtung,richtung,kurs,magnetisch,missweisung,deklination,peilung,wandern,offline

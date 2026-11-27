@@ -1,0 +1,21 @@
+nordr zeigt dir ruhig an, wohin dein iPhone oder iPad zeigt. Die Richtung kommt aus den Lagesensoren und dem Kompass des Geräts und wird geglättet, damit die Anzeige im Stillstand nicht zittert. Das funktioniert flach liegend und aufrecht gehalten, ohne Sprung dazwischen.
+
+Funktionen
+• Große Gradzahl und Himmelsrichtung (16 Richtungen)
+• Kompassrose mit Trägheit und leichtem Nachschwingen
+• Kurs setzen: nordr zeigt die Abweichung („12° rechts“) und meldet sich, wenn du wieder auf Kurs bist
+• Missweisend (magnetisch) oder rechtweisend (geografisch). Die Missweisung ergibt sich aus einer Region, die du selbst auswählst, ganz ohne Standortzugriff
+• Kalibrierhinweis (Acht-Bewegung) bei geringer Genauigkeit und Hinweis bei magnetischer Störung
+• Optionales spürbares Tippen beim Überstreichen von N, O, S und W
+• Bildschirm bleibt an, solange der Kompass offen ist
+• Hoch- und Querformat, iPad mit Split View, Deutsch und Englisch
+
+Metall, Magnete und Elektronik in der Nähe können die Anzeige verfälschen. Für die Navigation in kritischen Situationen ist nordr nicht gedacht.
+
+nordr fragt nach keinen Berechtigungen und greift nicht auf deinen Standort zu.
+
+Teste nordr einen Tag lang kostenlos mit allen Funktionen: Starte dazu in der App die kostenlose Testphase. Danach schaltet ein einmaliger Kauf die App dauerhaft frei, inklusive aller künftigen Updates. Kein Abo, keine Werbung.
+
+• Privat: kein Tracking, kein Konto, es werden keine Daten gesammelt. nordr verdient nicht an deinen Daten.
+• Komplett offline: nordr funktioniert ohne Verbindung. Nur der Kauf läuft über den App Store, die App selbst geht nie ins Internet.
+• Open Source: freie Software unter der GNU GPLv3. Quellcode: https://github.com/valueerrorx/aapps

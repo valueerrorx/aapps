@@ -1,0 +1,21 @@
+nordr calmly shows where your iPhone or iPad is pointing. The direction comes from the device's motion sensors and compass and is smoothed so the reading does not jitter when you hold still. It works lying flat and held upright, without a jump in between.
+
+Features
+• Large heading in degrees and compass direction (16 points)
+• Compass rose with inertia and a slight overshoot
+• Set a course: nordr shows the deviation ("12° right") and lets you know when you are back on course
+• Magnetic or true north. The declination comes from a region you choose yourself, no location access needed
+• Calibration hint (figure-eight motion) when accuracy is low, and a notice when there is magnetic interference
+• Optional haptic tap when passing N, E, S and W
+• Screen stays on while the compass is open
+• Portrait and landscape, iPad with Split View, English and German
+
+Metal, magnets and electronics nearby can distort the reading. nordr is not meant for navigation in critical situations.
+
+nordr asks for no permissions and does not access your location.
+
+Try nordr free for one day with every feature: just start the free trial in the app. After that, a one-time purchase unlocks it for good, including all future updates. No subscription, no ads.
+
+• Private: no tracking, no account, no data collected. nordr does not make money from your data.
+• Completely offline: nordr works without a connection. Only the purchase goes through the App Store, the app itself never goes online.
+• Open source: free software under the GNU GPLv3. Source code: https://github.com/valueerrorx/aapps

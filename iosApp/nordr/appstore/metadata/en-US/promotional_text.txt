@@ -1,0 +1,1 @@
+Calm compass with an accuracy indicator that can hold a course for you. No tracking, no location access, fully offline, open source.
