@@ -20,6 +20,8 @@ data class GateState(
 class TrialGate(
     private val prefs: SharedPreferences,
     private val source: PurchaseSource,
+    // Schluessel-App, bei jeder Entscheidung live (kein Cache)
+    private val bundle: () -> Boolean = { false },
     private val clock: () -> Long = System::currentTimeMillis,
 ) {
     var state: GateState
@@ -33,7 +35,7 @@ class TrialGate(
     }
 
     private fun decide(query: Owned?) = TrialPolicy.decide(
-        prefs.getLong(KEY_FIRST, clock()), clock(), prefs.getBoolean(KEY_PURCHASED, false), query,
+        prefs.getLong(KEY_FIRST, clock()), clock(), prefs.getBoolean(KEY_PURCHASED, false), query, bundle(),
     )
 
     private fun set(s: GateState) {
@@ -98,18 +100,21 @@ class TrialGate(
         const val KEY_PURCHASED = "purchased"
         const val DEBUG_EXTRA = "aapps_trial"
 
-        /** Nur aus dem Cache, ohne Play-Abfrage: fuer Einstiege ohne Activity (z. B. Kachel) */
+        /** Nur aus dem Cache plus Bundle, ohne Play-Abfrage: fuer Einstiege ohne Activity (z. B. Kachel) */
         fun expired(context: Context): Boolean {
             val p = context.applicationContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
             if (!p.contains(KEY_FIRST)) return false
             val now = System.currentTimeMillis()
-            return TrialPolicy.decide(p.getLong(KEY_FIRST, now), now, p.getBoolean(KEY_PURCHASED, false), null).access == Access.EXPIRED
+            val d = TrialPolicy.decide(
+                p.getLong(KEY_FIRST, now), now, p.getBoolean(KEY_PURCHASED, false), null, BundleKey.installed(context),
+            )
+            return d.access == Access.EXPIRED
         }
 
         /** Im Test ersetzbar (Fake statt Play Billing) */
         var factory: (Context) -> TrialGate = { context ->
             val app = context.applicationContext
-            TrialGate(app.getSharedPreferences(PREFS, Context.MODE_PRIVATE), PlayPurchases(app))
+            TrialGate(app.getSharedPreferences(PREFS, Context.MODE_PRIVATE), PlayPurchases(app), bundle = { BundleKey.installed(app) })
         }
     }
 }

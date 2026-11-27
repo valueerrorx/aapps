@@ -55,6 +55,14 @@ class TrialPolicyTest {
         assertTrue(decide(t0, t0 + TRIAL_MS, true, null).purchased)
     }
 
+    @Test fun bundleUnlocksButIsNoPurchase() {
+        val d = decide(t0, t0 + TRIAL_MS * 3, false, Owned.NONE, bundle = true)
+        assertEquals(Access.FULL, d.access)
+        assertFalse(d.purchased)
+        assertEquals(Access.FULL, decide(t0, t0 + TRIAL_MS * 3, false, null, bundle = true).access)
+        assertEquals(Access.EXPIRED, decide(t0, t0 + TRIAL_MS * 3, false, null, bundle = false).access)
+    }
+
     @Test fun combinePrefersPurchased() {
         assertEquals(Owned.NONE, TrialPolicy.combine(emptyList()))
         assertEquals(Owned.PENDING, TrialPolicy.combine(listOf(Owned.NONE, Owned.PENDING)))

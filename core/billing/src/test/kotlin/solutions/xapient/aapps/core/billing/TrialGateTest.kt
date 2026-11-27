@@ -119,6 +119,27 @@ class TrialGateTest {
         assertEquals(Access.EXPIRED, seen.last())
     }
 
+    @Test fun bundleUnlocksLiveWithoutCache() {
+        var bundle = true
+        val g = TrialGate(prefs, fake, { bundle }) { now }
+        now += TrialPolicy.TRIAL_MS * 2
+        g.refresh()
+        assertEquals(Access.FULL, g.state.access)
+        assertFalse(prefs.getBoolean(TrialGate.KEY_PURCHASED, true))
+        // Bundle deinstalliert: beim naechsten Start sofort gesperrt
+        bundle = false
+        g.refresh()
+        assertEquals(Access.EXPIRED, g.state.access)
+    }
+
+    @Test fun expiredHelperIgnoresMissingBundle() {
+        val ctx = RuntimeEnvironment.getApplication()
+        val p = ctx.getSharedPreferences(TrialGate.PREFS, Context.MODE_PRIVATE)
+        p.edit().putLong(TrialGate.KEY_FIRST, System.currentTimeMillis() - TrialPolicy.TRIAL_MS * 2).commit()
+        assertTrue(TrialGate.expired(ctx))
+        p.edit().clear().commit()
+    }
+
     @Test fun debugSwitchOnlyInDebugVariant() {
         val probe = RuntimeEnvironment.getApplication().getSharedPreferences("probe", Context.MODE_PRIVATE)
         val debug = DebugTrial.apply("reset", probe, 0)

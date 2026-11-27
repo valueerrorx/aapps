@@ -17,11 +17,12 @@ object TrialPolicy {
     /**
      * [query] null = Abfrage fehlgeschlagen oder noch offen, dann gilt [cachedPurchased].
      * Nur eine erfolgreiche Abfrage setzt den Cache zurueck (z. B. nach Erstattung).
+     * [bundle] = Schluessel-App installiert: frei, zaehlt aber nicht als eigener Kauf.
      */
-    fun decide(firstStart: Long, now: Long, cachedPurchased: Boolean, query: Owned?): Decision {
+    fun decide(firstStart: Long, now: Long, cachedPurchased: Boolean, query: Owned?, bundle: Boolean = false): Decision {
         val purchased = if (query == null) cachedPurchased else query == Owned.PURCHASED
         val access = when {
-            purchased -> Access.FULL
+            purchased || bundle -> Access.FULL
             // Uhr zurueckgestellt (now < firstStart) zaehlt bewusst als Testphase, kein Anti-Tamper
             now - firstStart < TRIAL_MS -> Access.TRIAL
             else -> Access.EXPIRED

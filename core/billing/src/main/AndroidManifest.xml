@@ -6,4 +6,9 @@
          kommen nur aus datatransport (Protokoll der Billing-Library an Google) und werden entfernt: die App geht nie ins Internet. -->
     <uses-permission android:name="android.permission.INTERNET" tools:node="remove" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" tools:node="remove" />
+
+    <!-- Schluessel-App sichtbar machen (Paket-Sichtbarkeit ab Android 11), siehe BundleKey -->
+    <queries>
+        <package android:name="solutions.xapient.bundle" />
+    </queries>
 </manifest>
