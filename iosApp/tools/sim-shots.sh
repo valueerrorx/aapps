@@ -30,6 +30,8 @@ for spec in en-US:en:en_US de-DE:de:de_AT; do
     xcrun simctl io "$UDID" screenshot "$f" > /dev/null 2>&1
     got="$(sips -g pixelWidth -g pixelHeight "$f" | awk '/pixelWidth/{w=$2}/pixelHeight/{h=$2}END{print w"x"h}')"
     if [ "$got" != "$SIZE" ]; then echo "::error::$f ist $got statt $SIZE"; exit 1; fi
+    # Querformat-App: Simulator liefert das Bild hochkant, gerade drehen (SHOT_ROTATE = Grad im Uhrzeigersinn)
+    if [ -n "${SHOT_ROTATE:-}" ]; then sips -r "$SHOT_ROTATE" "$f" > /dev/null; fi
     n=$((n + 1))
   done
 done

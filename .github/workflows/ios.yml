@@ -131,8 +131,12 @@ jobs:
           echo "AAPPS_VERSION=$(cat apps/$APP/version.txt)" >> "$GITHUB_ENV"
           echo "AAPPS_BUILD=$((GITHUB_RUN_NUMBER + 100))" >> "$GITHUB_ENV"
 
+      # reine Swift-Apps (Spiele) haben kein apps/<app>/shared
       - name: Kotlin-Tests (JVM + iOS-Simulator)
-        run: ./gradlew --no-daemon :core:store:jvmTest :core:store:iosSimulatorArm64Test ":apps:$APP:shared:iosSimulatorArm64Test"
+        run: |
+          SHARED=""
+          if [ -d "apps/$APP/shared" ]; then SHARED=":apps:$APP:shared:iosSimulatorArm64Test"; fi
+          ./gradlew --no-daemon :core:store:jvmTest :core:store:iosSimulatorArm64Test $SHARED
 
       # App-Eintrag legt Thomas von Hand an (nicht per API); bis dahin kein Upload
       - name: App in App Store Connect?
@@ -174,9 +178,9 @@ jobs:
             -resultBundlePath "$RUNNER_TEMP/$APP-tests.xcresult" \
             CODE_SIGNING_ALLOWED=NO
 
-      # Review-Screenshot je In-App-Kauf direkt per API (keine Artefakte); laedt nur, wenn noch keiner da ist
+      # Review-Screenshot je In-App-Kauf direkt per API (keine Artefakte); laedt nur, wenn noch keiner da ist; Gratis-Apps ohne .storekit nicht
       - name: IAP-Review-Screenshots
-        if: env.SHOTS == 'true' && env.ASC_APP == 'true'
+        if: env.SHOTS == 'true' && env.ASC_APP == 'true' && hashFiles(format('iosApp/{0}/{0}.storekit', matrix.app)) != ''
         env:
           ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
@@ -210,6 +214,8 @@ jobs:
           printf '%s' "$ASC_KEY_P8" > "$ASC_KEY_PATH"
           APP_PATH="$RUNNER_TEMP/dd/Build/Products/Debug-iphonesimulator/$APP.app"
           SCENES=$(cat "iosApp/$APP/appstore/scenes.txt")
+          # Querformat-Apps (Spiele): Grad im Uhrzeigersinn, um die das Simulator-Bild gedreht wird
+          export SHOT_ROTATE=$(cat "iosApp/$APP/appstore/rotate.txt" 2>/dev/null || true)
           bash iosApp/tools/sim-shots.sh "$APP_PATH" "$BUNDLE" "$RUNNER_TEMP/shots" APP_IPHONE_67 '^iPhone \d+ Pro Max$' 1320x2868 $SCENES
           bash iosApp/tools/sim-shots.sh "$APP_PATH" "$BUNDLE" "$RUNNER_TEMP/shots" APP_IPAD_PRO_3GEN_129 '^iPad Pro 13-inch' 2064x2752 $SCENES
           node iosApp/tools/asc-screenshots.mjs "$BUNDLE" "$RUNNER_TEMP/shots"

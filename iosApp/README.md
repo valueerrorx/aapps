@@ -117,3 +117,19 @@ Signieren: Target **levlr** → **Signing & Capabilities** → **Automatically m
 - **Hintergrund**: Kein Dauer-Hinweis mit Restzeit (Android: Countdown-Benachrichtigung). Das Ende kommt als lokale Mitteilung mit Glocke, aber nur mit Mitteilungsrecht; ohne Recht klingelt focusr nur bei offener App. Ob die Mitteilung vibriert, bestimmen die iOS-Einstellungen.
 - **Ton**: Bei offener App spielt focusr die Glocke selbst (Kategorie Playback mit Ducking, klingt auch bei Stummschalter).
 - **Zurück, Sicherung**: wie levlr.
+
+## Einschränkungen auf iOS (hudr)
+- **Standort**: CoreLocation nur „Beim Verwenden der App“, kein Hintergrund. Ist nur der ungefähre Standort erlaubt, fragt der Knopf einmal pro Sitzung nach dem genauen (temporäre volle Genauigkeit); gesperrt oder Ortungsdienste aus → Knopf öffnet die App-Einstellungen (zu den Ortungsdiensten selbst lässt iOS nicht springen, der Hinweistext sagt das).
+- **Satelliten**: iOS nennt keine Satellitenzahl, der GPS-Status zeigt nur die Genauigkeit.
+- **HUD-Modus**: volle Helligkeit auf Wunsch (danach der vorige Wert); Statusleiste und Drehung bleiben wie im normalen Modus.
+- **Geräte**: `UIRequiredDeviceCapabilities` gps, also iPhones und iPads mit Mobilfunk.
+- **Ton**: Doppelpiep über AVAudioPlayer, Audio-Kategorie Ambient (Stummschalter gilt).
+- **Haptik, Zurück, Sicherung**: wie levlr.
+
+## Spiele (moovr, glidr)
+Gratis, ohne Kauf und ohne Kotlin: je App eine eigene Swift-Hülle `WebGame.swift` (WKWebView, eigenes Schema `aapps://game/`, nur Dateien aus dem Bundle) um dieselben Phaser-Dateien wie Android (`apps/<app>/src/main/assets`). Kein `apps/<app>/shared`, der Workflow überspringt dann den Kotlin-Test der App und die IAP-Screenshots (kein `.storekit`).
+- **Ton**: WebKit auf iOS spielt kein Ogg; dieselben Klänge liegen als AAC in `iosApp/<app>/ios-assets`, ein Skript lädt `.m4a` statt `.ogg`. Phaser sperrt Audio auf dem iPhone bis zum ersten Tippen, die Musik kann also erst dann einsetzen; der Stummschalter schaltet das Spiel stumm.
+- **Zurück**: iOS hat keine Zurück-Taste, die Spiele haben eigene Menü-Knöpfe.
+- **Pause**: beim Wechsel in den Hintergrund `<app>Pause()`, danach `<app>Resume()` wie auf Android.
+- **Absturz des Web-Prozesses**: neu laden, höchstens einmal pro 30 s.
+- **Spielstand**: localStorage der WebView (bleibt bei Updates, geht beim Löschen der App verloren).
