@@ -77,7 +77,7 @@ var states = [],
                 (loaderFull.y = game.world.centerY - loaderFull.height / 2),
                 game.load.setPreloadSprite(loaderFull));
             game.load.script("gray", "Gray.js");
-            game.load.bitmapFont("desyrel", "assets/fonts/font1.png", "assets/fonts/font1.xml");
+            game.load.bitmapFont("desyrel", glidrHD.font, "assets/fonts/font1.xml");
             game.load.audio("theme1", "assets/sounds/cowrag.ogg", !1);
             game.load.audio("map", "assets/sounds/cowtitlerag.ogg");
             game.load.audio("yeehaw", "assets/sounds/yeehaw.ogg");
@@ -112,7 +112,7 @@ var states = [],
                 ),
                     game.load.image("backgroundlevel" + i, "assets/levels/" + i + ".png");
             game.load.physics("physicsData", "./assets/polygons/rampleft.json");
-            game.load.atlas("allsprites", "assets/sprites/allsprites.png", "assets/sprites/allsprites.jsona");
+            game.load.atlas("allsprites", glidrHD.sprites, "assets/sprites/allsprites.jsona");
         },
         create: function () {
             music = game.add.audio("map", 1, !0);
@@ -2638,7 +2638,15 @@ function updateLevelstatus() {
 var scaleConfig = {
     scale: { mode: Phaser.ScaleManager.EXACT_FIT, fullScreenScaleMode: Phaser.ScaleManager.EXACT_FIT },
 };
-var game = new Phaser.Game(worldwidth, worldheight, Phaser.CANVAS, "", scaleConfig);
+// Config-Objekt statt positional, damit die Render-Aufloesung (hd.js) gesetzt werden kann
+var game = new Phaser.Game({
+    width: worldwidth,
+    height: worldheight,
+    renderer: Phaser.CANVAS,
+    parent: "",
+    state: scaleConfig,
+    resolution: glidrHD.resolution,
+});
 game.state.add("boot", BootState, !0);
 game.state.add("preload", PreloadState, !1);
 game.state.add("menu", Menu, !1);
