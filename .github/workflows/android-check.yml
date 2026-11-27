@@ -53,6 +53,8 @@ jobs:
     timeout-minutes: 60
     strategy:
       fail-fast: false
+      # schont Maven Central (429 bei zu vielen parallelen Downloads)
+      max-parallel: 9
       matrix:
         app: ${{ fromJSON(needs.apps.outputs.apps) }}
     env:

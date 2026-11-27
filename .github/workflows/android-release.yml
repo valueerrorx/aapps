@@ -60,16 +60,16 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      # Release ohne Gradle-Cache: nichts aus fremden Laeufen ins signierte Bundle
+      # Abhaengigkeiten aus dem main-Cache nur lesen (sonst 429 von Maven Central), Task-Ausgaben nie (--no-build-cache)
       - uses: gradle/actions/setup-gradle@0723195856401067f7a2779048b490ace7a47d7c # v5.0.2
         with:
-          cache-disabled: true
+          cache-read-only: true
 
       - name: Gradle fuer CI
         run: bash .github/ci/gradle-ci.sh
 
       - name: Pruefen
-        run: ./gradlew --no-daemon ":apps:$APP:check" ":apps:$APP:verifyRoborazziDebug"
+        run: ./gradlew --no-daemon --no-build-cache ":apps:$APP:check" ":apps:$APP:verifyRoborazziDebug"
 
       # versionCode wie lokal aus version.txt / versioncode.txt (Gradle-Plugin)
       - name: Signiert bauen und pruefen
@@ -82,7 +82,7 @@ jobs:
           trap 'rm -f "$KEYSTORE_FILE"' EXIT
           printf '%s' "$KS_B64" | base64 -d > "$KEYSTORE_FILE"
           export KEYSTORE_PASSWORD="$KS_PW" "KEY_PASSWORD_${APP^^}=$KS_PW"
-          ./gradlew --no-daemon -Paapps.requireReleaseKey="$APP" ":apps:$APP:bundleRelease" ":apps:$APP:assembleRelease"
+          ./gradlew --no-daemon --no-build-cache -Paapps.requireReleaseKey="$APP" ":apps:$APP:bundleRelease" ":apps:$APP:assembleRelease"
           AAB=$(ls apps/$APP/build/outputs/bundle/release/*.aab)
           APK=$(ls apps/$APP/build/outputs/apk/release/*.apk)
           want=$(keytool -list -v -keystore "$KEYSTORE_FILE" -storepass:env KS_PW -alias "$APP" | sed -n 's/.*SHA256: //p' | head -1)
