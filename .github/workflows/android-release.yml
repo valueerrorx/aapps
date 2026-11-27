@@ -4,6 +4,10 @@
 name: Android release
 
 on:
+  # TEMPORAER: registriert den Workflow auf feat/ios, laeuft nur als Dry-Run (levlr)
+  push:
+    branches: [feat/ios]
+    paths: [.github/workflows/android-release.yml]
   workflow_dispatch:
     inputs:
       app:
@@ -32,12 +36,13 @@ concurrency:
 jobs:
   release:
     # TEMPORAER: Dry-Run auf feat/ios fuer den Test, danach nur noch main
-    if: github.ref == 'refs/heads/main' || (github.ref == 'refs/heads/feat/ios' && inputs.dry_run)
+    if: (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') || (github.ref == 'refs/heads/feat/ios' && (github.event_name == 'push' || inputs.dry_run))
     runs-on: ubuntu-latest
     timeout-minutes: 60
     env:
-      APP: ${{ inputs.app }}
-      TRACK: ${{ inputs.track }}
+      APP: ${{ inputs.app || 'levlr' }}
+      TRACK: ${{ inputs.track || 'internal' }}
+      DRY: ${{ github.event_name == 'push' || inputs.dry_run }}
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
@@ -94,7 +99,7 @@ jobs:
             echo "### $APP"
             echo "- versionCode $vc, versionName $(cat apps/$APP/version.txt)"
             echo "- AAB $(( $(stat -c %s "$AAB") / 1024 )) KB, Signatur = Upload-Key (apksigner + jarsigner ok)"
-            echo "- Track $TRACK, dry_run ${{ inputs.dry_run }}"
+            echo "- Track $TRACK, dry_run $DRY"
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Play-Tool
@@ -103,7 +108,6 @@ jobs:
       - name: Upload zu Play
         env:
           SA_JSON: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
-          DRY: ${{ inputs.dry_run }}
         run: |
           export PLAY_KEY_FILE="$RUNNER_TEMP/play.json"
           trap 'rm -f "$PLAY_KEY_FILE"' EXIT
