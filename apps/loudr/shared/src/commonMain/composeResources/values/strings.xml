@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name" translatable="false">loudr</string>
+    <string name="tagline">A sound level meter that shows how loud it is, with everyday comparisons.</string>
+    <string name="note_mic">Measures only while loudr is open. Nothing is recorded, stored or sent.</string>
+    <string name="note_estimate">Phone microphones are not calibrated instruments. Values are estimates and can be off by several decibels. Use the calibration to match a reference meter.</string>
+
+    <string name="status_live">Measuring</string>
+    <string name="status_paused">Paused</string>
+    <string name="pause">Pause</string>
+    <string name="resume">Resume</string>
+    <string name="reset">Reset min, max and average</string>
+    <string name="unit" translatable="false">dB(A)</string>
+    <string name="fast">Fast</string>
+    <string name="slow">Slow</string>
+    <string name="stat_min">Min</string>
+    <string name="stat_avg">Average</string>
+    <string name="stat_max">Max</string>
+    <string name="history">Last 60 s</string>
+    <string name="footnote">Estimate · phone mics are not calibrated</string>
+    <string name="footnote_cal">Estimate · calibrated %1$s dB</string>
+    <string name="level">Sound level</string>
+    <string name="level_state">%1$s decibels A, %2$s</string>
+    <string name="level_none">No value yet</string>
+    <string name="level_over">At least %1$s decibels A, microphone overloaded</string>
+    <string name="overload">Overload</string>
+
+    <string name="ex_silence">Near silence</string>
+    <string name="ex_whisper">Whisper</string>
+    <string name="ex_quiet_room">Quiet room</string>
+    <string name="ex_office">Quiet office</string>
+    <string name="ex_conversation">Conversation</string>
+    <string name="ex_vacuum">Vacuum cleaner</string>
+    <string name="ex_traffic">Busy street</string>
+    <string name="ex_mower">Lawn mower</string>
+    <string name="ex_motorbike">Motorbike</string>
+    <string name="ex_concert">Rock concert</string>
+    <string name="ex_siren">Siren up close</string>
+
+    <string name="mic_ask_title">Microphone needed</string>
+    <string name="mic_ask_text">loudr listens to measure the sound level. Nothing is recorded or stored.</string>
+    <string name="mic_allow">Allow microphone</string>
+    <string name="mic_allow_short">Allow</string>
+    <string name="mic_blocked_title">Microphone blocked</string>
+    <string name="mic_blocked_text">Allow the microphone for loudr under Permissions in the app settings.</string>
+    <string name="mic_settings">Open settings</string>
+    <string name="mic_settings_short">Settings</string>
+    <string name="mic_failed_title">Microphone unavailable</string>
+    <string name="mic_failed_text">Another app may be using it. Close it and try again.</string>
+    <string name="mic_retry">Try again</string>
+    <string name="mic_silenced_title">Microphone muted</string>
+    <string name="mic_silenced_text">Microphone access is off in quick settings, or another app is using it. Turn it back on and loudr continues by itself.</string>
+
+    <string name="group_measure">Measurement</string>
+    <string name="weighting">Time weighting</string>
+    <string name="weighting_fast">Fast · 125 ms</string>
+    <string name="weighting_slow">Slow · 1 s</string>
+    <string name="calibration">Calibration</string>
+    <string name="calibration_sub">Place the phone next to a reference meter and adjust until both agree.</string>
+    <string name="calibration_now">Now: %1$s dB(A)</string>
+    <string name="calibration_value">%1$s dB</string>
+    <string name="raise">Raise offset</string>
+    <string name="lower">Lower offset</string>
+    <string name="calibration_reset">Reset calibration</string>
+    <string name="group_display">Display</string>
+    <string name="keep_on">Keep screen on</string>
+    <string name="keep_on_sub">While measuring</string>
+    <string name="group_note">Note</string>
+    <string name="mic_blocked_text_ios">Turn on the microphone for loudr in the Settings app.</string>
+</resources>

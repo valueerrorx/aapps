@@ -20,7 +20,6 @@ import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
@@ -29,8 +28,9 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.stringResource
 import solutions.xapient.aapps.core.ui.Aapps
-import solutions.xapient.loudr.R
 import solutions.xapient.loudr.domain.Calibration
 import solutions.xapient.loudr.domain.Reading
 import solutions.xapient.loudr.domain.Scale
@@ -38,6 +38,10 @@ import solutions.xapient.loudr.domain.SoundMeter
 import solutions.xapient.loudr.domain.TimeWeighting
 import solutions.xapient.loudr.domain.Zone
 import solutions.xapient.loudr.domain.formatDb
+import solutions.xapient.loudr.res.Res
+import solutions.xapient.loudr.res.stat_avg
+import solutions.xapient.loudr.res.stat_max
+import solutions.xapient.loudr.res.stat_min
 
 // Min · Mittel · Max; Ziffern nur in der Zeichenphase
 @Composable
@@ -48,10 +52,10 @@ fun Stats(
     offset: Float,
     modifier: Modifier = Modifier,
 ) {
-    val items = listOf<Pair<Int, (Reading) -> Float>>(
-        R.string.stat_min to { it.min(weighting) },
-        R.string.stat_avg to { it.leq },
-        R.string.stat_max to { it.max(weighting) },
+    val items = listOf<Pair<StringResource, (Reading) -> Float>>(
+        Res.string.stat_min to { it.min(weighting) },
+        Res.string.stat_avg to { it.leq },
+        Res.string.stat_max to { it.max(weighting) },
     )
     Row(modifier, horizontalArrangement = Arrangement.SpaceEvenly) {
         items.forEach { (label, pick) ->

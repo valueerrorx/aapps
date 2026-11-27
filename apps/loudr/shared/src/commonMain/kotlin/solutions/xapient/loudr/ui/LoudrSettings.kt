@@ -27,8 +27,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -37,22 +35,46 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import solutions.xapient.aapps.core.ui.Aapps
 import solutions.xapient.aapps.core.ui.AappsIcon
 import solutions.xapient.aapps.core.ui.AboutScreen
 import solutions.xapient.aapps.core.ui.Haptics
+import solutions.xapient.aapps.core.ui.Res as CoreRes
 import solutions.xapient.aapps.core.ui.SettingsAction
 import solutions.xapient.aapps.core.ui.SettingsChoice
 import solutions.xapient.aapps.core.ui.SettingsDivider
 import solutions.xapient.aapps.core.ui.SettingsGroup
 import solutions.xapient.aapps.core.ui.SettingsScreen
 import solutions.xapient.aapps.core.ui.SettingsToggle
+import solutions.xapient.aapps.core.ui.aapps_about
 import solutions.xapient.aapps.core.ui.pressScale
-import solutions.xapient.loudr.R
 import solutions.xapient.loudr.Settings
 import solutions.xapient.loudr.domain.Calibration
 import solutions.xapient.loudr.domain.TimeWeighting
 import solutions.xapient.loudr.domain.formatDb
+import solutions.xapient.loudr.res.Res
+import solutions.xapient.loudr.res.app_name
+import solutions.xapient.loudr.res.calibration
+import solutions.xapient.loudr.res.calibration_now
+import solutions.xapient.loudr.res.calibration_reset
+import solutions.xapient.loudr.res.calibration_sub
+import solutions.xapient.loudr.res.calibration_value
+import solutions.xapient.loudr.res.group_display
+import solutions.xapient.loudr.res.group_measure
+import solutions.xapient.loudr.res.group_note
+import solutions.xapient.loudr.res.ic_launcher_about
+import solutions.xapient.loudr.res.keep_on
+import solutions.xapient.loudr.res.keep_on_sub
+import solutions.xapient.loudr.res.lower
+import solutions.xapient.loudr.res.note_estimate
+import solutions.xapient.loudr.res.note_mic
+import solutions.xapient.loudr.res.raise
+import solutions.xapient.loudr.res.tagline
+import solutions.xapient.loudr.res.weighting
+import solutions.xapient.loudr.res.weighting_fast
+import solutions.xapient.loudr.res.weighting_slow
 
 @Composable
 fun LoudrSettings(
@@ -65,34 +87,34 @@ fun LoudrSettings(
     onBack: () -> Unit,
 ) {
     SettingsScreen(onBack) {
-        SettingsGroup(stringResource(R.string.group_measure)) {
+        SettingsGroup(stringResource(Res.string.group_measure)) {
             SettingsChoice(
-                stringResource(R.string.weighting),
+                stringResource(Res.string.weighting),
                 listOf(
-                    TimeWeighting.FAST to stringResource(R.string.weighting_fast),
-                    TimeWeighting.SLOW to stringResource(R.string.weighting_slow),
+                    TimeWeighting.FAST to stringResource(Res.string.weighting_fast),
+                    TimeWeighting.SLOW to stringResource(Res.string.weighting_slow),
                 ),
                 settings.weighting,
             ) { onChange(settings.copy(weighting = it)) }
             SettingsDivider()
             CalibrationRow(settings.offset, live, haptics) { onChange(settings.copy(offset = it)) }
             SettingsDivider()
-            SettingsAction(stringResource(R.string.calibration_reset), enabled = settings.offset != 0f) {
+            SettingsAction(stringResource(Res.string.calibration_reset), enabled = settings.offset != 0f) {
                 onChange(settings.copy(offset = 0f))
             }
         }
-        SettingsGroup(stringResource(R.string.group_display)) {
-            SettingsToggle(stringResource(R.string.keep_on), settings.keepOn, { onChange(settings.copy(keepOn = it)) }, stringResource(R.string.keep_on_sub))
+        SettingsGroup(stringResource(Res.string.group_display)) {
+            SettingsToggle(stringResource(Res.string.keep_on), settings.keepOn, { onChange(settings.copy(keepOn = it)) }, stringResource(Res.string.keep_on_sub))
         }
-        SettingsGroup(stringResource(R.string.group_note)) {
+        SettingsGroup(stringResource(Res.string.group_note)) {
             BasicText(
-                stringResource(R.string.note_estimate),
+                stringResource(Res.string.note_estimate),
                 Modifier.padding(horizontal = 18.dp, vertical = 16.dp),
                 style = Aapps.type.body.copy(color = Aapps.colors.fgMuted),
             )
         }
         SettingsGroup(null) {
-            SettingsAction(stringResource(solutions.xapient.aapps.core.ui.R.string.aapps_about), onClick = onAbout)
+            SettingsAction(stringResource(CoreRes.string.aapps_about), onClick = onAbout)
         }
     }
 }
@@ -102,7 +124,7 @@ fun LoudrSettings(
 private fun CalibrationRow(offset: Float, live: () -> Float, haptics: Haptics?, onOffset: (Float) -> Unit) {
     val c = Aapps.colors
     val sep = decimalSeparator()
-    val value = stringResource(R.string.calibration_value, Calibration.label(offset, sep))
+    val value = stringResource(Res.string.calibration_value, Calibration.label(offset, sep))
     // Live-Wert viermal pro Sekunde, nicht je Bild
     val read by rememberUpdatedState(live)
     var now by remember { mutableFloatStateOf(read()) }
@@ -113,10 +135,10 @@ private fun CalibrationRow(offset: Float, live: () -> Float, haptics: Haptics?, 
         }
     }
     Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 14.dp)) {
-        BasicText(stringResource(R.string.calibration), style = Aapps.type.body.copy(color = c.fg))
+        BasicText(stringResource(Res.string.calibration), style = Aapps.type.body.copy(color = c.fg))
         Spacer(Modifier.height(2.dp))
         BasicText(
-            stringResource(R.string.calibration_sub),
+            stringResource(Res.string.calibration_sub),
             style = Aapps.type.body.copy(color = c.fgMuted, fontSize = Aapps.type.label.fontSize * 1.1f),
         )
         Spacer(Modifier.height(12.dp))
@@ -124,7 +146,7 @@ private fun CalibrationRow(offset: Float, live: () -> Float, haptics: Haptics?, 
             Modifier.fillMaxWidth().background(c.bg, CircleShape).padding(4.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Step(LoudrIcons.Minus, stringResource(R.string.lower), offset > Calibration.MIN) {
+            Step(LoudrIcons.Minus, stringResource(Res.string.lower), offset > Calibration.MIN) {
                 haptics?.press()
                 onOffset(Calibration.step(offset, -1))
             }
@@ -135,7 +157,7 @@ private fun CalibrationRow(offset: Float, live: () -> Float, haptics: Haptics?, 
                 maxLines = 1,
                 autoSize = TextAutoSize.StepBased(minFontSize = 10.sp, maxFontSize = 22.sp, stepSize = 0.5.sp),
             )
-            Step(LoudrIcons.Plus, stringResource(R.string.raise), offset < Calibration.MAX) {
+            Step(LoudrIcons.Plus, stringResource(Res.string.raise), offset < Calibration.MAX) {
                 haptics?.press()
                 onOffset(Calibration.step(offset, +1))
             }
@@ -143,7 +165,7 @@ private fun CalibrationRow(offset: Float, live: () -> Float, haptics: Haptics?, 
         if (!now.isNaN()) {
             Spacer(Modifier.height(10.dp))
             BasicText(
-                stringResource(R.string.calibration_now, formatDb(now)),
+                stringResource(Res.string.calibration_now, formatDb(now)),
                 Modifier.fillMaxWidth(),
                 style = Aapps.type.number.copy(color = c.fgMuted, fontSize = Aapps.type.body.fontSize, textAlign = TextAlign.Center),
             )
@@ -173,11 +195,11 @@ private fun Step(icon: ImageVector, desc: String, enabled: Boolean, onClick: () 
 @Composable
 fun LoudrAbout(versionName: String, onBack: () -> Unit) {
     AboutScreen(
-        appName = stringResource(R.string.app_name),
+        appName = stringResource(Res.string.app_name),
         versionName = versionName,
-        tagline = stringResource(R.string.tagline),
+        tagline = stringResource(Res.string.tagline),
         onBack = onBack,
-        notes = listOf(stringResource(R.string.note_mic), stringResource(R.string.note_estimate)),
-        icon = { Image(painterResource(R.drawable.ic_launcher_about), null, Modifier.size(88.dp)) },
+        notes = listOf(stringResource(Res.string.note_mic), stringResource(Res.string.note_estimate)),
+        icon = { Image(painterResource(Res.drawable.ic_launcher_about), null, Modifier.size(88.dp)) },
     )
 }

@@ -32,18 +32,19 @@ import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.platform.LocalWindowInfo
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.liveRegion
-import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import kotlinx.coroutines.delay
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.getString
+import org.jetbrains.compose.resources.stringResource
 import solutions.xapient.aapps.core.ui.Aapps
 import solutions.xapient.aapps.core.ui.AappsIcon
 import solutions.xapient.aapps.core.ui.AappsIconButton
@@ -52,12 +53,38 @@ import solutions.xapient.aapps.core.ui.AappsPillButton
 import solutions.xapient.aapps.core.ui.AappsScaffold
 import solutions.xapient.aapps.core.ui.Haptics
 import solutions.xapient.aapps.core.ui.KeepScreenOn
-import solutions.xapient.loudr.R
+import solutions.xapient.aapps.core.ui.Res as CoreRes
+import solutions.xapient.aapps.core.ui.aapps_settings
 import solutions.xapient.loudr.Settings
 import solutions.xapient.loudr.domain.Calibration
 import solutions.xapient.loudr.domain.Example
 import solutions.xapient.loudr.domain.Reading
 import solutions.xapient.loudr.domain.formatDb
+import solutions.xapient.loudr.res.Res
+import solutions.xapient.loudr.res.footnote
+import solutions.xapient.loudr.res.footnote_cal
+import solutions.xapient.loudr.res.history
+import solutions.xapient.loudr.res.level
+import solutions.xapient.loudr.res.level_none
+import solutions.xapient.loudr.res.level_over
+import solutions.xapient.loudr.res.level_state
+import solutions.xapient.loudr.res.mic_allow
+import solutions.xapient.loudr.res.mic_allow_short
+import solutions.xapient.loudr.res.mic_ask_text
+import solutions.xapient.loudr.res.mic_ask_title
+import solutions.xapient.loudr.res.mic_blocked_title
+import solutions.xapient.loudr.res.mic_failed_text
+import solutions.xapient.loudr.res.mic_failed_title
+import solutions.xapient.loudr.res.mic_retry
+import solutions.xapient.loudr.res.mic_settings
+import solutions.xapient.loudr.res.mic_settings_short
+import solutions.xapient.loudr.res.mic_silenced_text
+import solutions.xapient.loudr.res.mic_silenced_title
+import solutions.xapient.loudr.res.pause
+import solutions.xapient.loudr.res.reset
+import solutions.xapient.loudr.res.resume
+import solutions.xapient.loudr.res.status_live
+import solutions.xapient.loudr.res.status_paused
 
 enum class MicState { READY, ASK, BLOCKED, FAILED, SILENCED }
 
@@ -90,18 +117,17 @@ fun MeterScreen(
     val landscape = LocalWindowInfo.current.containerSize.let { it.width > it.height }
 
     // Vorlesen: Zusammenfassung hoechstens einmal pro Sekunde, nicht je Bild
-    val res = LocalResources.current
     var spoken by remember { mutableStateOf("") }
     LaunchedEffect(live, ready, settings) {
         while (true) {
-            spoken = if (ready) describe(res, reading(), settings) else ""
+            spoken = if (ready) describe(reading(), settings) else ""
             if (!live) break
             delay(1_000)
         }
     }
 
     val gauge: @Composable (Modifier) -> Unit = { m ->
-        val desc = stringResource(R.string.level)
+        val desc = stringResource(Res.string.level)
         Gauge(
             display, update, settings.weighting, settings.offset, live, empty = !ready,
             modifier = m.semantics {
@@ -120,7 +146,7 @@ fun MeterScreen(
         ) {
             if (ready) Status(live)
             Spacer(Modifier.weight(1f))
-            AappsIconButton(AappsIcons.Gear, stringResource(solutions.xapient.aapps.core.ui.R.string.aapps_settings), onSettings)
+            AappsIconButton(AappsIcons.Gear, stringResource(CoreRes.string.aapps_settings), onSettings)
         }
     }
     val bottom: @Composable () -> Unit = {
@@ -128,7 +154,7 @@ fun MeterScreen(
             Modifier.fillMaxWidth().padding(start = 12.dp, end = 12.dp, bottom = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            AappsIconButton(LoudrIcons.Reset, stringResource(R.string.reset), {
+            AappsIconButton(LoudrIcons.Reset, stringResource(Res.string.reset), {
                 haptics?.press()
                 onReset()
                 version.intValue++
@@ -142,7 +168,7 @@ fun MeterScreen(
     val chart: @Composable (Modifier) -> Unit = { m ->
         Column(m) {
             BasicText(
-                stringResource(R.string.history).uppercase(),
+                stringResource(Res.string.history).uppercase(),
                 Modifier.padding(bottom = 6.dp),
                 style = Aapps.type.label.copy(color = Aapps.colors.fgMuted, fontSize = cappedSp(12f, 16f)),
             )
@@ -221,7 +247,7 @@ private fun Status(live: Boolean) {
         Box(Modifier.size(8.dp).background(if (live) c.accent else c.fgMuted, CircleShape))
         Spacer(Modifier.width(10.dp))
         BasicText(
-            stringResource(if (live) R.string.status_live else R.string.status_paused).uppercase(),
+            stringResource(if (live) Res.string.status_live else Res.string.status_paused).uppercase(),
             style = Aapps.type.label.copy(color = c.fgMuted),
             maxLines = 1,
         )
@@ -242,10 +268,10 @@ private fun MainAction(
     val (text, icon) = when (mic) {
         // nichts zu tun: das System schaltet frei
         MicState.SILENCED -> return
-        MicState.READY -> if (live) R.string.pause to LoudrIcons.Pause else R.string.resume to LoudrIcons.Play
-        MicState.ASK -> (if (short) R.string.mic_allow_short else R.string.mic_allow) to LoudrIcons.Mic
-        MicState.BLOCKED -> (if (short) R.string.mic_settings_short else R.string.mic_settings) to LoudrIcons.Mic
-        MicState.FAILED -> R.string.mic_retry to LoudrIcons.Reset
+        MicState.READY -> if (live) Res.string.pause to LoudrIcons.Pause else Res.string.resume to LoudrIcons.Play
+        MicState.ASK -> (if (short) Res.string.mic_allow_short else Res.string.mic_allow) to LoudrIcons.Mic
+        MicState.BLOCKED -> (if (short) Res.string.mic_settings_short else Res.string.mic_settings) to LoudrIcons.Mic
+        MicState.FAILED -> Res.string.mic_retry to LoudrIcons.Reset
     }
     AappsPillButton(
         stringResource(text),
@@ -263,10 +289,10 @@ private fun MainAction(
 private fun Prompt(mic: MicState) {
     val c = Aapps.colors
     val (title, text) = when (mic) {
-        MicState.BLOCKED -> R.string.mic_blocked_title to R.string.mic_blocked_text
-        MicState.FAILED -> R.string.mic_failed_title to R.string.mic_failed_text
-        MicState.SILENCED -> R.string.mic_silenced_title to R.string.mic_silenced_text
-        else -> R.string.mic_ask_title to R.string.mic_ask_text
+        MicState.BLOCKED -> Res.string.mic_blocked_title to blockedText
+        MicState.FAILED -> Res.string.mic_failed_title to Res.string.mic_failed_text
+        MicState.SILENCED -> Res.string.mic_silenced_title to Res.string.mic_silenced_text
+        else -> Res.string.mic_ask_title to Res.string.mic_ask_text
     }
     Column(Modifier.padding(horizontal = 32.dp, vertical = 8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
         BasicText(stringResource(title), style = Aapps.type.title.copy(color = c.fg, textAlign = TextAlign.Center))
@@ -278,9 +304,9 @@ private fun Prompt(mic: MicState) {
 @Composable
 private fun Footnote(offset: Float) {
     val text = if (offset == 0f) {
-        stringResource(R.string.footnote)
+        stringResource(Res.string.footnote)
     } else {
-        stringResource(R.string.footnote_cal, Calibration.label(offset, decimalSeparator()))
+        stringResource(Res.string.footnote_cal, Calibration.label(offset, decimalSeparator()))
     }
     BasicText(
         text,
@@ -295,9 +321,12 @@ private fun Footnote(offset: Float) {
     )
 }
 
-private fun describe(res: android.content.res.Resources, r: Reading, s: Settings): String {
+private suspend fun describe(r: Reading, s: Settings): String {
     val level = Calibration.apply(r.level(s.weighting), s.offset)
-    val ex = Example.of(level) ?: return res.getString(R.string.level_none)
-    if (r.overload) return res.getString(R.string.level_over, formatDb(level))
-    return res.getString(R.string.level_state, formatDb(level), res.getString(exampleRes(ex)))
+    val ex = Example.of(level) ?: return getString(Res.string.level_none)
+    if (r.overload) return getString(Res.string.level_over, formatDb(level))
+    return getString(Res.string.level_state, formatDb(level), getString(exampleRes(ex)))
 }
+
+// Hinweis bei gesperrtem Mikrofon: Android App-Info > Berechtigungen, iOS Einstellungen-App
+internal expect val blockedText: StringResource

@@ -15,20 +15,6 @@ import androidx.annotation.RequiresApi
 import solutions.xapient.loudr.domain.Reading
 import solutions.xapient.loudr.domain.SoundMeter
 
-// Pegelquelle fuer die Oberflaeche; im Test ersetzt
-interface LevelMeter {
-    fun start(): Boolean
-    fun stop()
-    fun reset()
-    fun reading(): Reading
-    fun save(): DoubleArray
-    fun restore(state: DoubleArray)
-    // Aufnahme abgebrochen, kommt vom Audio-Thread
-    var onFailure: (() -> Unit)?
-    // System liefert nur Stille (Datenschutzschalter, andere App hat Vorrang), kommt vom Audio-Thread
-    var onSilenced: ((Boolean) -> Unit)?
-}
-
 // Legt einen Recorder an: Quelle, Rate, Puffer in Bytes; im Test ersetzt
 typealias RecordFactory = (source: Int, rate: Int, bytes: Int) -> AudioRecord
 

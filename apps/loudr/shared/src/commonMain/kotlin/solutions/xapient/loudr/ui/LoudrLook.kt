@@ -2,22 +2,32 @@ package solutions.xapient.loudr.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.sp
-import java.text.DecimalFormatSymbols
-import kotlin.math.min
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.PathBuilder
 import androidx.compose.ui.graphics.vector.path
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import solutions.xapient.loudr.R
+import androidx.compose.ui.unit.sp
+import kotlin.math.min
+import org.jetbrains.compose.resources.StringResource
 import solutions.xapient.loudr.domain.Example
 import solutions.xapient.loudr.domain.Zone
+import solutions.xapient.loudr.res.Res
+import solutions.xapient.loudr.res.ex_concert
+import solutions.xapient.loudr.res.ex_conversation
+import solutions.xapient.loudr.res.ex_motorbike
+import solutions.xapient.loudr.res.ex_mower
+import solutions.xapient.loudr.res.ex_office
+import solutions.xapient.loudr.res.ex_quiet_room
+import solutions.xapient.loudr.res.ex_silence
+import solutions.xapient.loudr.res.ex_siren
+import solutions.xapient.loudr.res.ex_traffic
+import solutions.xapient.loudr.res.ex_vacuum
+import solutions.xapient.loudr.res.ex_whisper
 
 // Orange laut Markenfarben; zugleich Farbe der Zone "laut"
 val LoudrAccent = Color(0xFFFF8A3D)
@@ -46,21 +56,20 @@ fun cappedSp(base: Float, max: Float): TextUnit {
 
 // Dezimalzeichen der aktuellen Sprache
 @Composable
-fun decimalSeparator(): Char =
-    DecimalFormatSymbols.getInstance(LocalConfiguration.current.locales[0]).decimalSeparator
+fun decimalSeparator(): Char = solutions.xapient.aapps.core.ui.decimalSeparator()
 
-fun exampleRes(e: Example): Int = when (e) {
-    Example.SILENCE -> R.string.ex_silence
-    Example.WHISPER -> R.string.ex_whisper
-    Example.QUIET_ROOM -> R.string.ex_quiet_room
-    Example.OFFICE -> R.string.ex_office
-    Example.CONVERSATION -> R.string.ex_conversation
-    Example.VACUUM -> R.string.ex_vacuum
-    Example.TRAFFIC -> R.string.ex_traffic
-    Example.MOWER -> R.string.ex_mower
-    Example.MOTORBIKE -> R.string.ex_motorbike
-    Example.CONCERT -> R.string.ex_concert
-    Example.SIREN -> R.string.ex_siren
+fun exampleRes(e: Example): StringResource = when (e) {
+    Example.SILENCE -> Res.string.ex_silence
+    Example.WHISPER -> Res.string.ex_whisper
+    Example.QUIET_ROOM -> Res.string.ex_quiet_room
+    Example.OFFICE -> Res.string.ex_office
+    Example.CONVERSATION -> Res.string.ex_conversation
+    Example.VACUUM -> Res.string.ex_vacuum
+    Example.TRAFFIC -> Res.string.ex_traffic
+    Example.MOWER -> Res.string.ex_mower
+    Example.MOTORBIKE -> Res.string.ex_motorbike
+    Example.CONCERT -> Res.string.ex_concert
+    Example.SIREN -> Res.string.ex_siren
 }
 
 // Linien-Icons nur fuer loudr, gleicher Strich wie AappsIcons

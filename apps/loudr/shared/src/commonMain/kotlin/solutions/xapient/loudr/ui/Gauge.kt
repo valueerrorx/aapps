@@ -15,7 +15,6 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
@@ -23,20 +22,25 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlin.math.PI
+import kotlin.math.cos
+import kotlin.math.min
+import kotlin.math.sin
+import kotlin.math.sqrt
+import org.jetbrains.compose.resources.stringResource
 import solutions.xapient.aapps.core.ui.Aapps
 import solutions.xapient.aapps.core.ui.drawGlow
-import solutions.xapient.loudr.R
 import solutions.xapient.loudr.domain.Calibration
 import solutions.xapient.loudr.domain.Example
 import solutions.xapient.loudr.domain.Scale
 import solutions.xapient.loudr.domain.TimeWeighting
 import solutions.xapient.loudr.domain.Zone
 import solutions.xapient.loudr.domain.formatDb
-import kotlin.math.PI
-import kotlin.math.cos
-import kotlin.math.min
-import kotlin.math.sin
-import kotlin.math.sqrt
+import solutions.xapient.loudr.res.Res
+import solutions.xapient.loudr.res.fast
+import solutions.xapient.loudr.res.overload
+import solutions.xapient.loudr.res.slow
+import solutions.xapient.loudr.res.unit
 
 private const val START = 135f
 private const val SWEEP = 270f
@@ -102,9 +106,9 @@ fun Gauge(
     val labelSp = cappedSp(11f, 15f)
     val unitSp = cappedSp(12f, 15f)
     val exampleSp = cappedSp(13f, 17f)
-    val unit = "${stringResource(R.string.unit)} · ${stringResource(if (weighting == TimeWeighting.FAST) R.string.fast else R.string.slow)}".uppercase()
+    val unit = "${stringResource(Res.string.unit)} · ${stringResource(if (weighting == TimeWeighting.FAST) Res.string.fast else Res.string.slow)}".uppercase()
     val examples = Example.entries.map { stringResource(exampleRes(it)).uppercase() }
-    val overload = stringResource(R.string.overload).uppercase()
+    val overload = stringResource(Res.string.overload).uppercase()
     Box(
         modifier.drawWithCache {
             val g = geo(size)
