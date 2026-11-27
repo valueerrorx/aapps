@@ -1,9 +1,5 @@
 package solutions.xapient.magnr
 
-import android.content.Context
-import android.hardware.SensorManager
-import android.os.SystemClock
-import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -13,38 +9,37 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.LifecycleStartEffect
 import solutions.xapient.aapps.core.ui.AappsTheme
+import solutions.xapient.aapps.core.ui.BackEffect
 import solutions.xapient.aapps.core.ui.rememberHaptics
 import solutions.xapient.magnr.domain.Beeper
 import solutions.xapient.magnr.domain.FieldMeter
 import solutions.xapient.magnr.domain.FieldSource
 import solutions.xapient.magnr.domain.Level
-import solutions.xapient.magnr.sensor.AndroidFieldSource
-import solutions.xapient.magnr.sensor.AudioBeeper
 import solutions.xapient.magnr.ui.DetectorScreen
 import solutions.xapient.magnr.ui.DetectorState
 import solutions.xapient.magnr.ui.MagnrAbout
 import solutions.xapient.magnr.ui.MagnrAccent
 import solutions.xapient.magnr.ui.MagnrSettings
 
+const val APP_NAME = "magnr"
+
 private enum class Screen { MAIN, SETTINGS, ABOUT }
 
-private fun androidSource(context: Context): FieldSource =
-    AndroidFieldSource(context.getSystemService(Context.SENSOR_SERVICE) as? SensorManager)
-
+// Gemeinsam fuer Android und iOS; Sensor, Ton, Speicher und Uhr (ms seit Geraetestart, monoton) kommen von der Plattform
 @Composable
 fun MagnrApp(
-    newSource: (Context) -> FieldSource = ::androidSource,
-    newBeeper: () -> Beeper = ::AudioBeeper,
+    prefs: Prefs,
+    newSource: () -> FieldSource,
+    newBeeper: () -> Beeper,
+    elapsedMillis: () -> Long,
+    versionName: String,
 ) {
-    val context = LocalContext.current
-    val prefs = remember { Prefs(context) }
     var settings by remember { mutableStateOf(prefs.settings) }
     var screen by rememberSaveable { mutableStateOf(Screen.MAIN) }
     var paused by rememberSaveable { mutableStateOf(false) }
-    val source = remember { newSource(context) }
+    val source = remember { newSource() }
     val beeper = remember { newBeeper() }
     // Grundwert und Verlauf ueberstehen Prozess-Tod
     val meter = rememberSaveable(
@@ -68,12 +63,12 @@ fun MagnrApp(
     // Sensor nur zwischen ON_START und ON_STOP, nie im Hintergrund; Grundwert bleibt bei kurzer Pause
     LifecycleStartEffect(source, live) {
         if (live) {
-            state.resume(SystemClock.elapsedRealtime())
+            state.resume(elapsedMillis())
             source.start(state.listener)
         }
         onStopOrDispose {
             source.stop()
-            state.pause(SystemClock.elapsedRealtime())
+            state.pause(elapsedMillis())
         }
     }
     // Ton ebenso, und nur wenn eingeschaltet
@@ -116,7 +111,7 @@ fun MagnrApp(
                 onIntro = { state.introVisible = true },
             )
             Screen.SETTINGS -> {
-                BackHandler { screen = Screen.MAIN }
+                BackEffect { screen = Screen.MAIN }
                 MagnrSettings(
                     settings,
                     {
@@ -136,8 +131,8 @@ fun MagnrApp(
                 )
             }
             Screen.ABOUT -> {
-                BackHandler { screen = Screen.SETTINGS }
-                MagnrAbout(BuildConfig.VERSION_NAME) { screen = Screen.SETTINGS }
+                BackEffect { screen = Screen.SETTINGS }
+                MagnrAbout(versionName) { screen = Screen.SETTINGS }
             }
         }
     }

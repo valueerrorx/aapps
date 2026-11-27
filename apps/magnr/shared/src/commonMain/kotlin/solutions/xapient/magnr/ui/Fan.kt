@@ -10,7 +10,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.lerp
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.Density
@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import solutions.xapient.aapps.core.ui.Aapps
 import solutions.xapient.aapps.core.ui.drawGlow
-import solutions.xapient.magnr.R
+import solutions.xapient.magnr.res.*
 import solutions.xapient.magnr.domain.Level
 import solutions.xapient.magnr.domain.Sensitivity
 import kotlin.math.PI
@@ -89,10 +89,10 @@ fun Fan(
     val unitSp = cappedSp(16f, 20f)
     val levelSp = cappedSp(13f, 17f)
     // nicht in Versalien: aus µT wuerde MT
-    val unit = stringResource(R.string.unit_total)
+    val unit = stringResource(Res.string.unit_total)
     val levels = Level.entries.map { stringResource(levelRes(it)).uppercase() }
-    val limit = stringResource(R.string.at_limit).uppercase()
-    val settling = stringResource(R.string.settling).uppercase()
+    val limit = stringResource(Res.string.at_limit).uppercase()
+    val settling = stringResource(Res.string.settling).uppercase()
     Spacer(
         modifier.drawWithCache {
             val labelStyle = type.number.copy(fontSize = labelSp)

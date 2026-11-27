@@ -1,9 +1,9 @@
 package solutions.xapient.magnr.domain
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
-import org.junit.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
+import kotlin.test.Test
 import kotlin.math.exp
 
 class FieldTest {
@@ -62,7 +62,7 @@ class FieldTest {
         var t = 1_000 * ms
         for (i in 0..26) {
             b.update(if (i % 2 == 0) 47f else 49f, 0.02f, t, drift = true, quietBand = 1.8f)
-            if (i < 25) assertFalse("zu frueh bei $i", b.settled)
+            if (i < 25) assertFalse(b.settled, "zu frueh bei $i")
             t += 20 * ms
         }
         assertTrue(b.settled)

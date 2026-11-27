@@ -45,7 +45,7 @@ class GestureTest {
 
     // Ganze App mit Fakes; key erzwingt frischen Zustand statt der App, die MainActivity schon zeigt
     private fun app() {
-        rule.runOnUiThread { rule.activity.setContent { key("test") { MagnrApp({ source }, { beeper }) } } }
+        rule.runOnUiThread { rule.activity.setContent { key("test") { MagnrRoot({ source }, { beeper }) } } }
         rule.waitForIdle()
     }
 
@@ -164,7 +164,7 @@ class GestureTest {
     }
 
     @Test fun noSensorShowsHint() {
-        rule.runOnUiThread { rule.activity.setContent { key("test") { MagnrApp({ FakeSource(isAvailable = false) }, { beeper }) } } }
+        rule.runOnUiThread { rule.activity.setContent { key("test") { MagnrRoot({ FakeSource(isAvailable = false) }, { beeper }) } } }
         rule.waitForIdle()
         rule.onNodeWithText("No magnetic sensor").assertExists()
         rule.onNodeWithText("Zero", ignoreCase = true).assertDoesNotExist()

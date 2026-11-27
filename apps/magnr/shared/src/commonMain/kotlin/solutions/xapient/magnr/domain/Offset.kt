@@ -1,5 +1,6 @@
 package solutions.xapient.magnr.domain
 
+import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sqrt
@@ -15,6 +16,31 @@ fun rotationMatrix(w: Float, x: Float, y: Float, z: Float): DoubleArray {
         2 * (qx * qy + qz * qw), 1 - 2 * (qx * qx + qz * qz), 2 * (qy * qz - qx * qw),
         2 * (qx * qz - qy * qw), 2 * (qy * qz + qx * qw), 1 - 2 * (qx * qx + qy * qy),
     )
+}
+
+// Umkehrung von rotationMatrix: Einheitsquaternion (w, x, y, z) aus einer Drehmatrix (zeilenweise, 9 Werte)
+fun quaternionOf(r: DoubleArray): FloatArray {
+    val tr = r[0] + r[4] + r[8]
+    val q = when {
+        tr > 0 -> {
+            val s = sqrt(tr + 1.0) * 2
+            doubleArrayOf(0.25 * s, (r[7] - r[5]) / s, (r[2] - r[6]) / s, (r[3] - r[1]) / s)
+        }
+        r[0] > r[4] && r[0] > r[8] -> {
+            val s = sqrt(1.0 + r[0] - r[4] - r[8]) * 2
+            doubleArrayOf((r[7] - r[5]) / s, 0.25 * s, (r[1] + r[3]) / s, (r[2] + r[6]) / s)
+        }
+        r[4] > r[8] -> {
+            val s = sqrt(1.0 + r[4] - r[0] - r[8]) * 2
+            doubleArrayOf((r[2] - r[6]) / s, (r[1] + r[3]) / s, 0.25 * s, (r[5] + r[7]) / s)
+        }
+        else -> {
+            val s = sqrt(1.0 + r[8] - r[0] - r[4]) * 2
+            doubleArrayOf((r[3] - r[1]) / s, (r[2] + r[6]) / s, (r[5] + r[7]) / s, 0.25 * s)
+        }
+    }
+    val n = sqrt(q.sumOf { it * it })
+    return FloatArray(4) { (q[it] / n).toFloat() }
 }
 
 // Lage zum Zeitpunkt eines Magnetometer-Werts aus den letzten zwei Rotationswerten (linear, auch kurz voraus)
@@ -64,7 +90,7 @@ class OffsetEstimator(
     private val maxResidual: Double = 15.0,
     private val maxOffset: Double = 100.0,
 ) {
-    private val minCos = cos(Math.toRadians(stepDegrees))
+    private val minCos = cos(stepDegrees * PI / 180.0)
     private val m = DoubleArray(9)
     private val v = DoubleArray(3)
     private val keyB = DoubleArray(3)

@@ -32,9 +32,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.platform.LocalResources
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.platform.LocalWindowInfo
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
@@ -54,7 +54,10 @@ import solutions.xapient.aapps.core.ui.AappsScaffold
 import solutions.xapient.aapps.core.ui.Haptics
 import solutions.xapient.aapps.core.ui.KeepScreenOn
 import solutions.xapient.aapps.core.ui.Springs
-import solutions.xapient.magnr.R
+import solutions.xapient.magnr.res.*
+import solutions.xapient.aapps.core.ui.Res as CoreRes
+import solutions.xapient.aapps.core.ui.aapps_settings
+import solutions.xapient.magnr.domain.Level
 import solutions.xapient.magnr.domain.Reading
 import solutions.xapient.magnr.domain.Sensitivity
 import androidx.compose.animation.core.animateFloatAsState
@@ -80,19 +83,19 @@ fun DetectorScreen(
     val landscape = LocalWindowInfo.current.containerSize.let { it.width > it.height }
 
     // Vorlesen: hoechstens einmal pro Sekunde, nicht je Messwert
-    val res = LocalResources.current
-    val sep = decimalSeparator()
+    val texts by rememberUpdatedState(rememberSpoken())
+    val sep by rememberUpdatedState(decimalSeparator())
     var spoken by remember { mutableStateOf("") }
     LaunchedEffect(live, available) {
         while (true) {
-            spoken = if (available) describe(res, state.shown, sep) else ""
+            spoken = if (available) describe(texts, state.shown, sep) else ""
             if (!live) break
             delay(1_000)
         }
     }
 
     val fan: @Composable (Modifier) -> Unit = { m ->
-        val desc = stringResource(R.string.field)
+        val desc = stringResource(Res.string.field)
         Fan(
             state, sensitivity, live, empty = !available,
             modifier = m.semantics {
@@ -109,7 +112,7 @@ fun DetectorScreen(
         ) {
             if (available) Status(live)
             Spacer(Modifier.weight(1f))
-            AappsIconButton(AappsIcons.Gear, stringResource(solutions.xapient.aapps.core.ui.R.string.aapps_settings), onSettings)
+            AappsIconButton(AappsIcons.Gear, stringResource(CoreRes.string.aapps_settings), onSettings)
         }
     }
     val bottom: @Composable () -> Unit = {
@@ -119,7 +122,7 @@ fun DetectorScreen(
         ) {
             AappsIconButton(
                 if (live) MagnrIcons.Pause else MagnrIcons.Play,
-                stringResource(if (live) R.string.pause else R.string.resume),
+                stringResource(if (live) Res.string.pause else Res.string.resume),
                 {
                     haptics?.press()
                     onPause()
@@ -128,7 +131,7 @@ fun DetectorScreen(
             Spacer(Modifier.weight(1f))
             // Text bleibt gleich: nichts springt beim Pausieren; pausiert nullt es neu und misst weiter
             AappsPillButton(
-                stringResource(R.string.zero),
+                stringResource(Res.string.zero),
                 {
                     haptics?.press()
                     onZero()
@@ -147,7 +150,7 @@ fun DetectorScreen(
     val chart: @Composable (Modifier) -> Unit = { m ->
         Column(m) {
             BasicText(
-                stringResource(R.string.history).uppercase(),
+                stringResource(Res.string.history).uppercase(),
                 Modifier.padding(bottom = 6.dp),
                 style = Aapps.type.label.copy(color = Aapps.colors.fgMuted, fontSize = cappedSp(12f, 16f)),
             )
@@ -226,7 +229,7 @@ private fun Status(live: Boolean) {
         Box(Modifier.size(8.dp).background(if (live) c.accent else c.fgMuted, CircleShape))
         Spacer(Modifier.width(10.dp))
         BasicText(
-            stringResource(if (live) R.string.status_live else R.string.status_paused).uppercase(),
+            stringResource(if (live) Res.string.status_live else Res.string.status_paused).uppercase(),
             style = Aapps.type.label.copy(color = c.fgMuted),
             maxLines = 1,
         )
@@ -240,8 +243,8 @@ private fun SoundButton(on: Boolean, onClick: () -> Unit) {
     val source = remember { MutableInteractionSource() }
     val pressed by source.collectIsPressedAsState()
     val scale by animateFloatAsState(if (pressed) 0.88f else 1f, Springs.bouncy(), label = "soundScale")
-    val desc = stringResource(R.string.sound)
-    val stateText = stringResource(if (on) R.string.on else R.string.off)
+    val desc = stringResource(Res.string.sound)
+    val stateText = stringResource(if (on) Res.string.on else Res.string.off)
     Box(
         Modifier
             .size(48.dp)
@@ -264,7 +267,7 @@ private fun SoundButton(on: Boolean, onClick: () -> Unit) {
 private fun Footnote(onIntro: () -> Unit) {
     val source = remember { MutableInteractionSource() }
     BasicText(
-        stringResource(R.string.footnote),
+        stringResource(Res.string.footnote),
         Modifier
             .clickable(source, indication = null, role = Role.Button, onClick = onIntro)
             .heightIn(min = 48.dp)
@@ -283,19 +286,39 @@ private fun Footnote(onIntro: () -> Unit) {
 private fun NoSensor() {
     val c = Aapps.colors
     Column(Modifier.padding(horizontal = 32.dp, vertical = 8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-        BasicText(stringResource(R.string.no_sensor_title), style = Aapps.type.title.copy(color = c.fg, textAlign = TextAlign.Center))
+        BasicText(stringResource(Res.string.no_sensor_title), style = Aapps.type.title.copy(color = c.fg, textAlign = TextAlign.Center))
         Spacer(Modifier.height(8.dp))
-        BasicText(stringResource(R.string.no_sensor_text), style = Aapps.type.body.copy(color = c.fgMuted, textAlign = TextAlign.Center))
+        BasicText(stringResource(Res.string.no_sensor_text), style = Aapps.type.body.copy(color = c.fgMuted, textAlign = TextAlign.Center))
     }
 }
 
-private fun describe(res: android.content.res.Resources, r: Reading, sep: Char): String {
-    if (r.total.isNaN()) return res.getString(R.string.field_none)
+// Vorlese-Texte mit Platzhaltern, in der Komposition aufgeloest (Sprache wie die Oberflaeche)
+private class Spoken(
+    val none: String,
+    val limit: String,
+    val settling: String,
+    val state: String,
+    val levels: List<String>,
+)
+
+private val ARGS = Array(4) { "\u0000$it\u0000" }
+
+private fun String.fill(vararg values: String): String =
+    values.foldIndexed(this) { i, s, v -> s.replace(ARGS[i], v) }
+
+@Composable
+private fun rememberSpoken(): Spoken = Spoken(
+    none = stringResource(Res.string.field_none),
+    limit = stringResource(Res.string.field_limit, ARGS[0]),
+    settling = stringResource(Res.string.field_settling, ARGS[0]),
+    state = stringResource(Res.string.field_state, ARGS[0], ARGS[1], ARGS[2], ARGS[3]),
+    levels = Level.entries.map { stringResource(levelRes(it)) },
+)
+
+private fun describe(t: Spoken, r: Reading, sep: Char): String {
+    if (r.total.isNaN()) return t.none
     val total = formatUt(r.total, sep)
-    if (r.saturated) return res.getString(R.string.field_limit, total)
-    if (r.settling) return res.getString(R.string.field_settling, total)
-    return res.getString(
-        R.string.field_state,
-        formatUt(r.dev, sep, signed = true), res.getString(levelRes(r.level)), total, formatUt(r.peak, sep, signed = true),
-    )
+    if (r.saturated) return t.limit.fill(total)
+    if (r.settling) return t.settling.fill(total)
+    return t.state.fill(formatUt(r.dev, sep, signed = true), t.levels[r.level.ordinal], total, formatUt(r.peak, sep, signed = true))
 }

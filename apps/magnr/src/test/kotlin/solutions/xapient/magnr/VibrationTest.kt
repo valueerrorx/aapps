@@ -35,7 +35,7 @@ class VibrationTest {
             settings = Settings(haptics = haptics)
         }
         rule.runOnUiThread {
-            rule.activity.setContent { key("test") { MagnrApp({ source }, { FakeBeeper() }) } }
+            rule.activity.setContent { key("test") { MagnrRoot({ source }, { FakeBeeper() }) } }
         }
         rule.waitForIdle()
         rule.runOnUiThread { source.emit(48f, 50) }

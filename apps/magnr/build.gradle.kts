@@ -6,7 +6,7 @@ plugins {
 // Keine eigenen Berechtigungen: VIBRATE kommt aus core/ui, Ton ueber AudioTrack (SPEC.md)
 
 dependencies {
-    implementation(project(":core:ui"))
+    implementation(project(":apps:magnr:shared"))
     implementation(libs.androidx.core.ktx)
 
     testImplementation(libs.junit)

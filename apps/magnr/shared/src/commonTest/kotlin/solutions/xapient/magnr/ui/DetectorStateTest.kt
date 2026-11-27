@@ -1,9 +1,9 @@
 package solutions.xapient.magnr.ui
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
-import org.junit.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
+import kotlin.test.Test
 import solutions.xapient.magnr.domain.FieldMeter
 import solutions.xapient.magnr.domain.Level
 

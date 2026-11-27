@@ -8,14 +8,13 @@ import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.PathBuilder
 import androidx.compose.ui.graphics.vector.path
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import solutions.xapient.magnr.R
+import org.jetbrains.compose.resources.StringResource
+import solutions.xapient.magnr.res.*
 import solutions.xapient.magnr.domain.Level
-import java.text.DecimalFormatSymbols
 import kotlin.math.abs
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -43,7 +42,7 @@ fun cappedSp(base: Float, max: Float): TextUnit {
 // Dezimalzeichen der aktuellen Sprache
 @Composable
 fun decimalSeparator(): Char =
-    DecimalFormatSymbols.getInstance(LocalConfiguration.current.locales[0]).decimalSeparator
+    solutions.xapient.aapps.core.ui.decimalSeparator()
 
 // µT mit einer Nachkommastelle, ab 1000 ganzzahlig; signed: immer mit Vorzeichen
 fun formatUt(v: Float, sep: Char = '.', signed: Boolean = false): String {
@@ -64,11 +63,11 @@ fun formatUt(v: Float, sep: Char = '.', signed: Boolean = false): String {
 fun formatScale(v: Float, sep: Char = '.'): String =
     if (v == v.roundToInt().toFloat()) v.roundToInt().toString() else formatUt(v, sep)
 
-fun levelRes(l: Level): Int = when (l) {
-    Level.QUIET -> R.string.level_quiet
-    Level.WEAK -> R.string.level_weak
-    Level.NEAR -> R.string.level_near
-    Level.STRONG -> R.string.level_strong
+fun levelRes(l: Level): StringResource = when (l) {
+    Level.QUIET -> Res.string.level_quiet
+    Level.WEAK -> Res.string.level_weak
+    Level.NEAR -> Res.string.level_near
+    Level.STRONG -> Res.string.level_strong
 }
 
 // Linien-Icons nur fuer magnr, gleicher Strich wie AappsIcons

@@ -36,13 +36,13 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.unit.dp
 import solutions.xapient.aapps.core.ui.Aapps
 import solutions.xapient.aapps.core.ui.AappsColors
 import solutions.xapient.aapps.core.ui.AappsTextButton
 import solutions.xapient.aapps.core.ui.drawGlow
-import solutions.xapient.magnr.R
+import solutions.xapient.magnr.res.*
 import kotlin.math.PI
 import kotlin.math.atan2
 import kotlin.math.cos
@@ -64,7 +64,7 @@ fun HintCard(hint: Hint, onDismiss: () -> Unit, modifier: Modifier = Modifier, p
             anim
         }
     }
-    val title = stringResource(if (intro) R.string.intro_title else R.string.cal_title)
+    val title = stringResource(if (intro) Res.string.intro_title else Res.string.cal_title)
     Column(
         modifier
             .padding(horizontal = 16.dp)
@@ -85,18 +85,18 @@ fun HintCard(hint: Hint, onDismiss: () -> Unit, modifier: Modifier = Modifier, p
                 BasicText(title.uppercase(), style = Aapps.type.label.copy(color = if (intro) c.accent else Warn))
                 Spacer(Modifier.height(6.dp))
                 if (intro) {
-                    BasicText(stringResource(R.string.intro_finds), style = Aapps.type.body.copy(color = c.fg))
+                    BasicText(stringResource(Res.string.intro_finds), style = Aapps.type.body.copy(color = c.fg))
                     Spacer(Modifier.height(6.dp))
-                    BasicText(stringResource(R.string.intro_not), style = Aapps.type.body.copy(color = c.fg))
+                    BasicText(stringResource(Res.string.intro_not), style = Aapps.type.body.copy(color = c.fg))
                     Spacer(Modifier.height(6.dp))
-                    BasicText(stringResource(R.string.intro_sensor), style = Aapps.type.body.copy(color = c.fgMuted))
+                    BasicText(stringResource(Res.string.intro_sensor), style = Aapps.type.body.copy(color = c.fgMuted))
                 } else {
-                    BasicText(stringResource(R.string.cal_body), style = Aapps.type.body.copy(color = c.fg))
+                    BasicText(stringResource(Res.string.cal_body), style = Aapps.type.body.copy(color = c.fg))
                 }
             }
         }
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-            AappsTextButton(stringResource(if (intro) R.string.intro_ok else R.string.hint_hide), onDismiss)
+            AappsTextButton(stringResource(if (intro) Res.string.intro_ok else Res.string.hint_hide), onDismiss)
         }
     }
 }

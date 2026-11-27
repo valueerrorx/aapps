@@ -46,7 +46,7 @@ class LifecycleTest {
     }
 
     @Test fun sensorAndSoundFollowLifecycle() {
-        rule.runOnUiThread { rule.activity.setContent { key("test") { MagnrApp({ source }, { beeper }) } } }
+        rule.runOnUiThread { rule.activity.setContent { key("test") { MagnrRoot({ source }, { beeper }) } } }
         settle()
         assertTrue(source.running)
         assertTrue(beeper.running)

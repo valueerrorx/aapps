@@ -1,8 +1,9 @@
 package solutions.xapient.magnr.domain
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
-import org.junit.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
+import kotlin.test.Test
+import kotlin.math.PI
 import kotlin.math.abs
 
 class ToneTest {
@@ -23,7 +24,7 @@ class ToneTest {
         var last = Float.MAX_VALUE
         for (i in 12..94) {
             val v = ToneMap.intervalMs(i / 100f)
-            assertTrue("$i: $v", v < last)
+            assertTrue(v < last, "$i: $v")
             last = v
         }
         assertTrue(last >= ToneMap.MIN_INTERVAL_MS)
@@ -79,8 +80,8 @@ class ToneTest {
         val synth = BeepSynth(RATE)
         val pcm = render(0.7f, 1f, synth) + render(1f, 0.3f, synth) + render(0f, 0.2f, synth)
         val amp = 0.3f * Short.MAX_VALUE
-        val maxStep = amp * 2 * Math.PI * 2080 / RATE * 1.05 + 20
-        for (i in 1 until pcm.size) assertTrue("Sprung bei $i", abs(pcm[i] - pcm[i - 1]) <= maxStep)
+        val maxStep = amp * 2 * PI * 2080 / RATE * 1.05 + 20
+        for (i in 1 until pcm.size) assertTrue(abs(pcm[i] - pcm[i - 1]) <= maxStep, "Sprung bei $i")
         assertEquals(0, pcm.last().toInt())
     }
 

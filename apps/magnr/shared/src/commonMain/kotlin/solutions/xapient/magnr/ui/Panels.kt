@@ -28,7 +28,7 @@ import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.drawText
@@ -37,7 +37,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import solutions.xapient.aapps.core.ui.Aapps
-import solutions.xapient.magnr.R
+import org.jetbrains.compose.resources.StringResource
+import solutions.xapient.magnr.res.*
 import solutions.xapient.magnr.domain.History
 import solutions.xapient.magnr.domain.Level
 import solutions.xapient.magnr.domain.Reading
@@ -46,10 +47,10 @@ import solutions.xapient.magnr.domain.Reading
 @Composable
 fun Stats(state: DetectorState, live: Boolean, modifier: Modifier = Modifier) {
     val sep = decimalSeparator()
-    val items = listOf<Pair<Int, (Reading) -> String>>(
-        R.string.stat_total to { formatUt(it.total, sep) },
-        R.string.stat_baseline to { formatUt(it.baseline, sep) },
-        R.string.stat_peak to { formatUt(it.peak, sep, signed = true) },
+    val items = listOf<Pair<StringResource, (Reading) -> String>>(
+        Res.string.stat_total to { formatUt(it.total, sep) },
+        Res.string.stat_baseline to { formatUt(it.baseline, sep) },
+        Res.string.stat_peak to { formatUt(it.peak, sep, signed = true) },
     )
     // TalkBack: Werte als Zustand, hoechstens einmal pro Sekunde neu
     var spoken by remember { mutableStateOf(items.map { "" }) }

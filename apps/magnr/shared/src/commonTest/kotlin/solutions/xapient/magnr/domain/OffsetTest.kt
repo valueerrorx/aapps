@@ -1,9 +1,10 @@
 package solutions.xapient.magnr.domain
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
-import org.junit.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
+import kotlin.test.Test
+import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin
@@ -18,7 +19,7 @@ class OffsetTest {
     private val ms = 1_000_000L
 
     private fun quat(ax: Float, ay: Float, az: Float, deg: Double): FloatArray {
-        val h = Math.toRadians(deg) / 2
+        val h = (deg * PI / 180.0) / 2
         val s = sin(h).toFloat()
         return floatArrayOf(cos(h).toFloat(), ax * s, ay * s, az * s)
     }
@@ -26,7 +27,7 @@ class OffsetTest {
     // Kippen um x, dann um y, je 0 -> 80° -> 0 in 3 s
     private fun tilt(sec: Double): FloatArray {
         val cycle = (sec / 3).toInt()
-        val deg = 80 * sin(Math.PI * (sec % 3) / 3)
+        val deg = 80 * sin(PI * (sec % 3) / 3)
         return if (cycle % 2 == 0) quat(1f, 0f, 0f, deg) else quat(0f, 1f, 0f, deg)
     }
 
@@ -72,9 +73,22 @@ class OffsetTest {
 
     @Test fun rotationMatrixMapsDeviceToWorld() {
         // 90° um z: Handy-x zeigt nach Welt-y
-        val r = rotationMatrix(cos(Math.PI / 4).toFloat(), 0f, 0f, sin(Math.PI / 4).toFloat())
+        val r = rotationMatrix(cos(PI / 4).toFloat(), 0f, 0f, sin(PI / 4).toFloat())
         assertEquals(0.0, r[0], 1e-6)
         assertEquals(1.0, r[3], 1e-6)
+    }
+
+    // iOS liefert die Lage als Matrix: zurueck zum Quaternion, bis aufs Vorzeichen gleich
+    @Test fun quaternionFromMatrixRoundTrips() {
+        val qs = listOf(
+            quat(1f, 0f, 0f, 30.0), quat(0f, 1f, 0f, 170.0), quat(0f, 0f, 1f, -120.0),
+            floatArrayOf(0.1f, 0.7f, -0.5f, 0.5f), floatArrayOf(0.05f, -0.2f, 0.3f, 0.93f),
+        ).map { q -> val n = kotlin.math.sqrt(q.sumOf { (it * it).toDouble() }).toFloat(); FloatArray(4) { q[it] / n } }
+        for (q in qs) {
+            val back = quaternionOf(rotationMatrix(q[0], q[1], q[2], q[3]))
+            val sign = if (back[0] * q[0] + back[1] * q[1] + back[2] * q[2] + back[3] * q[3] < 0f) -1f else 1f
+            for (i in 0 until 4) assertEquals(q[i], sign * back[i], 1e-5f)
+        }
     }
 
     @Test fun trackInterpolatesAndIgnoresSign() {
@@ -120,8 +134,8 @@ class OffsetTest {
         run(meter, 6.0)
         val after = run(meter, 12.0, start = 6.0)
         val worst = after.maxOf { abs(it.dev) }
-        assertTrue("max |dev| $worst", after.all { it.level == Level.QUIET })
-        assertTrue("max |dev| $worst", worst < 3f)
+        assertTrue(after.all { it.level == Level.QUIET }, "max |dev| $worst")
+        assertTrue(worst < 3f, "max |dev| $worst")
     }
 
     @Test fun withoutRotationTiltingLooksLikeAFind() {

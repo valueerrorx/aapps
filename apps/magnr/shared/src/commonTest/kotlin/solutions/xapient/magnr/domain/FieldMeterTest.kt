@@ -1,10 +1,10 @@
 package solutions.xapient.magnr.domain
 
-import org.junit.Assert.assertArrayEquals
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
-import org.junit.Test
+import kotlin.test.assertContentEquals
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
+import kotlin.test.Test
 import kotlin.math.sqrt
 
 class FieldMeterTest {
@@ -130,7 +130,7 @@ class FieldMeterTest {
         f.feed(48f, 0.5f)
         f.feed(48f, 2f)
         val n = f.reading.history.size
-        assertTrue("$n", n in 19..21)
+        assertTrue(n in 19..21, "$n")
         f.feed(90f, 0.5f)
         assertEquals(1f, f.reading.history.last(), 0f)
     }
@@ -192,7 +192,7 @@ class FieldMeterTest {
         val saved = f.save()
         val g = FieldMeter().apply { restore(saved) }
         assertEquals(48f, g.reading.baseline, 0.01f)
-        assertArrayEquals(history, g.reading.history, 0f)
+        assertContentEquals(history, g.reading.history)
         // bald zurueck: weiter ohne Einschwingen, mit Luecke
         g.resume(130f)
         val r = g.feed(60f, 0.5f)
