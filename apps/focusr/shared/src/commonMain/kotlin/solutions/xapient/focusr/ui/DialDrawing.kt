@@ -22,7 +22,7 @@ import kotlin.math.sin
 
 // Punkt auf dem Kreis: Anteil 0..1 im Uhrzeigersinn ab 12 Uhr
 private fun polar(center: Offset, frac: Float, radius: Float): Offset {
-    val a = frac * 2.0 * Math.PI
+    val a = frac * 2.0 * kotlin.math.PI
     return Offset(center.x + (sin(a) * radius).toFloat(), center.y - (cos(a) * radius).toFloat())
 }
 

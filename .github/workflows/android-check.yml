@@ -45,7 +45,7 @@ jobs:
       - name: Gradle fuer CI (mehr RAM als am NAS)
         run: bash .github/ci/gradle-ci.sh
       - name: Core-Tests
-        run: ./gradlew --no-daemon :core:billing:check :core:ui:testAndroidHostTest :core:store:jvmTest :apps:levlr:shared:testAndroidHostTest :apps:nordr:shared:testAndroidHostTest :apps:spinr:shared:testAndroidHostTest :apps:magnr:shared:testAndroidHostTest :apps:sleepr:shared:testAndroidHostTest :apps:scorr:shared:testAndroidHostTest
+        run: ./gradlew --no-daemon :core:billing:check :core:ui:testAndroidHostTest :core:store:jvmTest :apps:levlr:shared:testAndroidHostTest :apps:nordr:shared:testAndroidHostTest :apps:spinr:shared:testAndroidHostTest :apps:magnr:shared:testAndroidHostTest :apps:sleepr:shared:testAndroidHostTest :apps:scorr:shared:testAndroidHostTest :apps:focusr:shared:testAndroidHostTest
 
   app:
     needs: apps

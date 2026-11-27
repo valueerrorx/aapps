@@ -1,7 +1,7 @@
 package solutions.xapient.focusr.domain
 
-import org.junit.Assert.assertEquals
-import org.junit.Test
+import kotlin.test.assertEquals
+import kotlin.test.Test
 
 class TimeTextTest {
     @Test fun roundsUpToFullSeconds() {

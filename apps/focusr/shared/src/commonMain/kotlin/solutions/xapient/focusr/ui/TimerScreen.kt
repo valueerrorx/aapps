@@ -1,6 +1,5 @@
 package solutions.xapient.focusr.ui
 
-import android.os.SystemClock
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.spring
@@ -50,8 +49,8 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
-import androidx.compose.ui.res.pluralStringResource
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.pluralStringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.ui.semantics.contentDescription
@@ -75,13 +74,16 @@ import solutions.xapient.aapps.core.ui.AappsScaffold
 import solutions.xapient.aapps.core.ui.Haptics
 import solutions.xapient.aapps.core.ui.KeepScreenOn
 import solutions.xapient.aapps.core.ui.Springs
-import solutions.xapient.focusr.R
+import solutions.xapient.focusr.res.*
+import solutions.xapient.aapps.core.ui.Res as CoreRes
+import solutions.xapient.aapps.core.ui.aapps_settings
 import solutions.xapient.focusr.domain.Dial
 import solutions.xapient.focusr.domain.DialDrag
 import solutions.xapient.focusr.domain.Phase
 import solutions.xapient.focusr.domain.Scale
 import solutions.xapient.focusr.domain.TimeText
 import solutions.xapient.focusr.domain.Timer
+import solutions.xapient.focusr.timerClock
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.min
@@ -113,7 +115,7 @@ fun TimerScreen(
     endText: (Long) -> String,
     keepOn: Boolean = false,
     onReject: () -> Unit = {},
-    clock: () -> Long = SystemClock::elapsedRealtime,
+    clock: () -> Long = ::timerClock,
     animate: Boolean = true,
     dragPreview: Long? = null,
     pulseAt: Float = 0f,
@@ -203,7 +205,7 @@ fun TimerScreen(
             Controls(phase, canStart, haptics, onStart, onPause, onReset, onReject, plainPill = landscape && bigFont)
         }
         val gear: @Composable () -> Unit = {
-            AappsIconButton(AappsIcons.Gear, stringResource(solutions.xapient.aapps.core.ui.R.string.aapps_settings), onSettings)
+            AappsIconButton(AappsIcons.Gear, stringResource(CoreRes.string.aapps_settings), onSettings)
         }
         if (landscape) {
             // Scheibe so hoch wie moeglich; links Text und Bedienung, rechts Platz fuer das Zahnrad: Abstaende gleichen sich aus
@@ -275,7 +277,7 @@ private fun TimerDial(look: DialInputs, haptics: Haptics?, onCommit: (Long) -> U
     val colors = Aapps.colors
     val measurer = rememberTextMeasurer()
     val labelStyle = Aapps.type.number
-    val dialDesc = stringResource(R.string.dial_desc)
+    val dialDesc = stringResource(Res.string.dial_desc)
     val density = LocalDensity.current.density
 
     // Ansage: ganze Minuten, in der letzten Minute Sekunden; aendert sich selten
@@ -289,7 +291,7 @@ private fun TimerDial(look: DialInputs, haptics: Haptics?, onCommit: (Long) -> U
         derivedStateOf { ((look.shownMs() + scale.stepMs - 1) / scale.stepMs).coerceAtMost(Scale.STEPS.toLong()) }
     }
     val n = spoken.second.toInt()
-    val spokenText = if (spoken.first) pluralStringResource(R.plurals.minutes_n, n, n) else pluralStringResource(R.plurals.seconds_n, n, n)
+    val spokenText = if (spoken.first) pluralStringResource(Res.plurals.minutes_n, n, n) else pluralStringResource(Res.plurals.seconds_n, n, n)
 
     val draw = remember(look, scale, colors, measurer, labelStyle) {
         Modifier.drawWithCache {
@@ -399,11 +401,11 @@ private fun Readout(
         )
         Spacer(Modifier.height(4.dp))
         val status = when {
-            phase == Phase.DONE -> stringResource(R.string.state_done)
-            phase == Phase.RUNNING -> stringResource(R.string.state_ends, endText(endsIn))
-            phase == Phase.PAUSED -> stringResource(R.string.state_paused)
+            phase == Phase.DONE -> stringResource(Res.string.state_done)
+            phase == Phase.RUNNING -> stringResource(Res.string.state_ends, endText(endsIn))
+            phase == Phase.PAUSED -> stringResource(Res.string.state_paused)
             zero -> null
-            else -> stringResource(R.string.state_ready)
+            else -> stringResource(Res.string.state_ready)
         }
         // Zustand wird bei Aenderung angesagt
         val live = Modifier.fillMaxWidth().semantics { liveRegion = LiveRegionMode.Polite }
@@ -419,7 +421,7 @@ private fun Readout(
             )
         } else {
             BasicText(
-                stringResource(R.string.state_zero),
+                stringResource(Res.string.state_zero),
                 live,
                 style = Aapps.type.body.copy(color = c.fgMuted, textAlign = TextAlign.Center),
             )
@@ -448,10 +450,10 @@ private fun Controls(
         }
         Spacer(Modifier.width(12.dp))
         val (label, icon, active) = when (phase) {
-            Phase.IDLE -> Triple(R.string.start, FocusrIcons.Play, canStart)
-            Phase.RUNNING -> Triple(R.string.pause, FocusrIcons.Pause, false)
-            Phase.PAUSED -> Triple(R.string.resume, FocusrIcons.Play, true)
-            Phase.DONE -> Triple(R.string.again, FocusrIcons.Play, true)
+            Phase.IDLE -> Triple(Res.string.start, FocusrIcons.Play, canStart)
+            Phase.RUNNING -> Triple(Res.string.pause, FocusrIcons.Pause, false)
+            Phase.PAUSED -> Triple(Res.string.resume, FocusrIcons.Play, true)
+            Phase.DONE -> Triple(Res.string.again, FocusrIcons.Play, true)
         }
         AappsPillButton(
             stringResource(label),
@@ -485,6 +487,6 @@ private fun ResetButton(visible: Boolean, onClick: () -> Unit) {
         enter = fadeIn(Springs.gentle()) + scaleIn(Springs.bouncy(), initialScale = 0.6f),
         exit = fadeOut(Springs.gentle()) + scaleOut(Springs.gentle(), targetScale = 0.6f),
     ) {
-        AappsIconButton(AappsIcons.Rotate, stringResource(R.string.reset), onClick)
+        AappsIconButton(AappsIcons.Rotate, stringResource(Res.string.reset), onClick)
     }
 }

@@ -1,9 +1,9 @@
 package solutions.xapient.focusr.domain
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
-import org.junit.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
+import kotlin.test.Test
 
 class DialTest {
     private val eps = 1e-9
@@ -66,7 +66,7 @@ class DialTest {
             assertEquals(0.75, d.sweep(0.0, 0.75), eps)
             assertEquals(1.0, d.sweep(0.75, turns), eps)
             // zurueck ueber 12 Uhr: greift wieder
-            assertEquals("bei $turns", 0.9, d.sweep(turns, kotlin.math.floor(turns) - 0.1), 0.011)
+            assertEquals(0.9, d.sweep(turns, kotlin.math.floor(turns) - 0.1), 0.011, "bei $turns")
         }
     }
 
@@ -75,7 +75,7 @@ class DialTest {
             val d = DialDrag()
             d.move(0.25)
             assertEquals(0.0, d.sweep(0.25, -turns), eps)
-            assertEquals("bei $turns", 0.1, d.sweep(-turns, -kotlin.math.floor(turns) + 0.1), 0.011)
+            assertEquals(0.1, d.sweep(-turns, -kotlin.math.floor(turns) + 0.1), 0.011, "bei $turns")
         }
     }
 

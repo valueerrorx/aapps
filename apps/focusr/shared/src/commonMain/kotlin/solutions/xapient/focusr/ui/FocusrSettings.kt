@@ -4,8 +4,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.unit.dp
 import solutions.xapient.aapps.core.ui.AboutScreen
 import solutions.xapient.aapps.core.ui.SettingsAction
@@ -14,7 +14,10 @@ import solutions.xapient.aapps.core.ui.SettingsDivider
 import solutions.xapient.aapps.core.ui.SettingsGroup
 import solutions.xapient.aapps.core.ui.SettingsScreen
 import solutions.xapient.aapps.core.ui.SettingsToggle
-import solutions.xapient.focusr.R
+import solutions.xapient.focusr.res.*
+import solutions.xapient.aapps.core.ui.Res as CoreRes
+import solutions.xapient.aapps.core.ui.aapps_about
+import solutions.xapient.focusr.APP_NAME
 import solutions.xapient.focusr.domain.Scale
 
 @Composable
@@ -33,31 +36,33 @@ fun FocusrSettings(
     onNotifications: () -> Unit,
     onAbout: () -> Unit,
     onBack: () -> Unit,
+    // iOS zeigt im Hintergrund keinen laufenden Countdown, nur das Ende
+    countdownNotification: Boolean = true,
 ) {
     SettingsScreen(onBack) {
-        SettingsGroup(stringResource(R.string.group_timer)) {
+        SettingsGroup(stringResource(Res.string.group_timer)) {
             SettingsChoice(
-                stringResource(R.string.scale),
+                stringResource(Res.string.scale),
                 Scale.entries.map { it to it.minutes.toString() },
                 scale, onScale,
             )
         }
-        SettingsGroup(stringResource(R.string.group_end)) {
-            SettingsToggle(stringResource(R.string.sound), sound, onSound)
+        SettingsGroup(stringResource(Res.string.group_end)) {
+            SettingsToggle(stringResource(Res.string.sound), sound, onSound)
             SettingsDivider()
-            SettingsToggle(stringResource(R.string.vibrate), vibrate, onVibrate)
+            SettingsToggle(stringResource(Res.string.vibrate), vibrate, onVibrate)
             if (notificationsMissing) {
                 SettingsDivider()
-                SettingsAction(stringResource(R.string.notifications), stringResource(R.string.notifications_sub), onClick = onNotifications)
+                SettingsAction(stringResource(Res.string.notifications), stringResource(if (countdownNotification) Res.string.notifications_sub else Res.string.notifications_sub_done), onClick = onNotifications)
             }
         }
-        SettingsGroup(stringResource(R.string.group_device)) {
-            SettingsToggle(stringResource(R.string.haptics), haptics, onHaptics)
+        SettingsGroup(stringResource(Res.string.group_device)) {
+            SettingsToggle(stringResource(Res.string.haptics), haptics, onHaptics)
             SettingsDivider()
-            SettingsToggle(stringResource(R.string.keep_on), keepOn, onKeepOn)
+            SettingsToggle(stringResource(Res.string.keep_on), keepOn, onKeepOn)
         }
         SettingsGroup(null) {
-            SettingsAction(stringResource(solutions.xapient.aapps.core.ui.R.string.aapps_about), onClick = onAbout)
+            SettingsAction(stringResource(CoreRes.string.aapps_about), onClick = onAbout)
         }
     }
 }
@@ -65,13 +70,13 @@ fun FocusrSettings(
 @Composable
 fun FocusrAbout(versionName: String, onBack: () -> Unit) {
     AboutScreen(
-        appName = stringResource(R.string.app_name),
+        appName = APP_NAME,
         versionName = versionName,
-        tagline = stringResource(R.string.tagline),
+        tagline = stringResource(Res.string.tagline),
         onBack = onBack,
-        notes = listOf(stringResource(R.string.note_gestures)),
+        notes = listOf(stringResource(Res.string.note_gestures)),
         icon = {
-            Image(painterResource(R.drawable.ic_launcher_about), null, Modifier.size(88.dp))
+            Image(painterResource(Res.drawable.ic_launcher_about), null, Modifier.size(88.dp))
         },
     )
 }

@@ -9,14 +9,14 @@ import solutions.xapient.focusr.domain.Scale
 import solutions.xapient.focusr.domain.Timer
 
 // Timer und Einstellungen; Backup ist aus
-class Prefs(private val context: Context) {
+class Prefs(private val context: Context) : FocusrPrefs {
     private val sp = context.getSharedPreferences("focusr", Context.MODE_PRIVATE)
 
     // Geraetestart erkennen: Laufzeituhr beginnt danach wieder bei 0
     private fun boot(): Int = Settings.Global.getInt(context.contentResolver, Settings.Global.BOOT_COUNT, -1)
 
     // synchron schreiben: Receiver und Prozess-Tod muessen den Stand sehen; Wanduhr-Ende nur fuer Neustarts
-    var timer: Timer
+    override var timer: Timer
         get() = Timer(
             setMs = sp.getLong("set", Timer.DEFAULT_MS),
             mode = Mode.entries.firstOrNull { it.name == sp.getString("mode", null) } ?: Mode.IDLE,
@@ -38,23 +38,23 @@ class Prefs(private val context: Context) {
             }
         }
 
-    var scale: Scale
+    override var scale: Scale
         get() = Scale.fromMinutes(sp.getInt("scale", Scale.DEFAULT.minutes))
         set(v) = sp.edit { putInt("scale", v.minutes) }
 
-    var sound: Boolean
+    override var sound: Boolean
         get() = sp.getBoolean("sound", true)
         set(v) = sp.edit { putBoolean("sound", v) }
 
-    var vibrate: Boolean
+    override var vibrate: Boolean
         get() = sp.getBoolean("vibrate", true)
         set(v) = sp.edit { putBoolean("vibrate", v) }
 
-    var haptics: Boolean
+    override var haptics: Boolean
         get() = sp.getBoolean("haptics", true)
         set(v) = sp.edit { putBoolean("haptics", v) }
 
-    var keepOn: Boolean
+    override var keepOn: Boolean
         get() = sp.getBoolean("keepOn", true)
         set(v) = sp.edit { putBoolean("keepOn", v) }
 
