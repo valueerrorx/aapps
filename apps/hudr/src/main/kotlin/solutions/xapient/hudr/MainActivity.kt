@@ -16,6 +16,6 @@ class MainActivity : ComponentActivity() {
             navigationBarStyle = SystemBarStyle.dark(android.graphics.Color.TRANSPARENT),
         )
         super.onCreate(savedInstanceState)
-        setContent { TrialGated(HudrAccent) { HudrApp() } }
+        setContent { TrialGated(HudrAccent) { HudrRoot() } }
     }
 }

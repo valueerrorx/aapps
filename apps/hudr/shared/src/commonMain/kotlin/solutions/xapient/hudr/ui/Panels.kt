@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.drawText
@@ -23,7 +23,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import solutions.xapient.aapps.core.ui.Aapps
-import solutions.xapient.hudr.R
+import org.jetbrains.compose.resources.StringResource
+import solutions.xapient.hudr.res.*
 import solutions.xapient.hudr.domain.GpsPhase
 import solutions.xapient.hudr.domain.Reading
 import solutions.xapient.hudr.domain.SpeedUnit
@@ -38,10 +39,10 @@ fun GpsStatus(display: SpeedDisplay, update: () -> Unit, modifier: Modifier = Mo
     val c = Aapps.colors
     val measurer = rememberTextMeasurer()
     val style = Aapps.type.label.copy(color = c.fgMuted, fontSize = cappedSp(12f, 16f))
-    val searching = stringResource(R.string.gps_searching).uppercase()
-    val lost = stringResource(R.string.gps_lost).uppercase()
-    val fixFmt = stringResource(R.string.gps_fix)
-    val satFmt = stringResource(R.string.gps_sats)
+    val searching = stringResource(Res.string.gps_searching).uppercase()
+    val lost = stringResource(Res.string.gps_lost).uppercase()
+    val fixFmt = stringResource(Res.string.gps_fix, "\u0000a")
+    val satFmt = stringResource(Res.string.gps_sats, "\u0000a", "\u0000b")
     val h = with(LocalDensity.current) { measurer.measure("±8", style).size.height.toDp() }
     Spacer(
         modifier.height(h).drawWithCache {
@@ -54,8 +55,8 @@ fun GpsStatus(display: SpeedDisplay, update: () -> Unit, modifier: Modifier = Mo
                     GpsPhase.SEARCHING -> searching to c.fgMuted
                     GpsPhase.LOST -> lost to Amber
                     GpsPhase.FIX -> {
-                        val acc = if (r.accuracy.isNaN()) "" else fixFmt.format(r.accuracy.roundToInt())
-                        val sats = if (r.visible > 0) satFmt.format(r.used, r.visible) else ""
+                        val acc = if (r.accuracy.isNaN()) "" else fixFmt.replace("\u0000a", r.accuracy.roundToInt().toString())
+                        val sats = if (r.visible > 0) satFmt.replace("\u0000a", r.used.toString()).replace("\u0000b", r.visible.toString()) else ""
                         listOf(acc, sats).filter { it.isNotEmpty() }.joinToString(" · ").uppercase() to c.accent
                     }
                 }
@@ -73,10 +74,10 @@ fun Stats(display: SpeedDisplay, update: () -> Unit, unit: SpeedUnit, modifier: 
     val speedUnit = stringResource(unitRes(unit))
     val distUnit = stringResource(distRes(unit))
     val sep = decimalSeparator()
-    val items = listOf<Triple<Int, String, (Reading) -> String>>(
-        Triple(R.string.stat_max, speedUnit) { formatSpeed(it.max) },
-        Triple(R.string.stat_avg, speedUnit) { formatSpeed(it.avg) },
-        Triple(R.string.stat_dist, distUnit) { formatDistance(it.distance, sep) },
+    val items = listOf<Triple<StringResource, String, (Reading) -> String>>(
+        Triple(Res.string.stat_max, speedUnit) { formatSpeed(it.max) },
+        Triple(Res.string.stat_avg, speedUnit) { formatSpeed(it.avg) },
+        Triple(Res.string.stat_dist, distUnit) { formatDistance(it.distance, sep) },
     )
     Row(modifier, horizontalArrangement = Arrangement.SpaceEvenly) {
         items.forEach { (label, u, pick) ->

@@ -44,7 +44,7 @@ class LifecycleTest {
     private val gps = FakeGps()
 
     @Test fun gpsFollowsLifecycle() {
-        rule.runOnUiThread { rule.activity.setContent { key("test") { HudrApp({ gps }, now = { 0L }) } } }
+        rule.runOnUiThread { rule.activity.setContent { key("test") { HudrRoot({ gps }, now = { 0L }) } } }
         rule.waitForIdle()
         assertTrue(gps.running)
         rule.activityRule.scenario.moveToState(Lifecycle.State.CREATED)

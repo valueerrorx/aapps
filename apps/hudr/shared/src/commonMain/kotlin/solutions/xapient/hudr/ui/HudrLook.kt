@@ -8,14 +8,13 @@ import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.PathBuilder
 import androidx.compose.ui.graphics.vector.path
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import java.text.DecimalFormatSymbols
 import kotlin.math.min
-import solutions.xapient.hudr.R
+import org.jetbrains.compose.resources.StringResource
+import solutions.xapient.hudr.res.*
 import solutions.xapient.hudr.domain.SpeedUnit
 
 // Eis-Cyan als Markenfarbe (eigene Farbe, keine andere App)
@@ -39,16 +38,16 @@ const val FAINT_ALPHA = 0.7f
 // Signal weg: Band gedimmt, aber >= 3:1 zum Grund (ContrastTest)
 const val LOST_ALPHA = 0.72f
 
-fun unitRes(u: SpeedUnit): Int = when (u) {
-    SpeedUnit.KMH -> R.string.unit_kmh
-    SpeedUnit.MPH -> R.string.unit_mph
-    SpeedUnit.KN -> R.string.unit_kn
+fun unitRes(u: SpeedUnit): StringResource = when (u) {
+    SpeedUnit.KMH -> Res.string.unit_kmh
+    SpeedUnit.MPH -> Res.string.unit_mph
+    SpeedUnit.KN -> Res.string.unit_kn
 }
 
-fun distRes(u: SpeedUnit): Int = when (u) {
-    SpeedUnit.KMH -> R.string.dist_km
-    SpeedUnit.MPH -> R.string.dist_mi
-    SpeedUnit.KN -> R.string.dist_nm
+fun distRes(u: SpeedUnit): StringResource = when (u) {
+    SpeedUnit.KMH -> Res.string.dist_km
+    SpeedUnit.MPH -> Res.string.dist_mi
+    SpeedUnit.KN -> Res.string.dist_nm
 }
 
 // Schrift waechst mit der Systemgroesse, aber hoechstens bis max (sichtbare sp)
@@ -61,7 +60,7 @@ fun cappedSp(base: Float, max: Float): TextUnit {
 // Dezimalzeichen der aktuellen Sprache
 @Composable
 fun decimalSeparator(): Char =
-    DecimalFormatSymbols.getInstance(LocalConfiguration.current.locales[0]).decimalSeparator
+    solutions.xapient.aapps.core.ui.decimalSeparator()
 
 // Linien-Icons nur fuer hudr, gleicher Strich wie AappsIcons
 object HudrIcons {

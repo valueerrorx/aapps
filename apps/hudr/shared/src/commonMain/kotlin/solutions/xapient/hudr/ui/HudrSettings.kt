@@ -23,8 +23,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -43,7 +43,10 @@ import solutions.xapient.aapps.core.ui.SettingsGroup
 import solutions.xapient.aapps.core.ui.SettingsScreen
 import solutions.xapient.aapps.core.ui.SettingsToggle
 import solutions.xapient.aapps.core.ui.pressScale
-import solutions.xapient.hudr.R
+import solutions.xapient.hudr.res.*
+import solutions.xapient.aapps.core.ui.Res as CoreRes
+import solutions.xapient.aapps.core.ui.aapps_about
+import solutions.xapient.hudr.APP_NAME
 import solutions.xapient.hudr.Settings
 import solutions.xapient.hudr.domain.Limit
 import solutions.xapient.hudr.domain.SpeedUnit
@@ -57,44 +60,44 @@ fun HudrSettings(
     onBack: () -> Unit,
 ) {
     SettingsScreen(onBack) {
-        SettingsGroup(stringResource(R.string.group_units)) {
+        SettingsGroup(stringResource(Res.string.group_units)) {
             SettingsChoice(
-                stringResource(R.string.unit),
+                stringResource(Res.string.unit),
                 SpeedUnit.entries.map { it to stringResource(unitRes(it)) },
                 settings.unit,
             ) { onChange(settings.withUnit(it)) }
         }
-        SettingsGroup(stringResource(R.string.group_limit)) {
+        SettingsGroup(stringResource(Res.string.group_limit)) {
             SettingsToggle(
-                stringResource(R.string.limit_on), settings.limitOn,
-                { onChange(settings.copy(limitOn = it)) }, stringResource(R.string.limit_on_sub),
+                stringResource(Res.string.limit_on), settings.limitOn,
+                { onChange(settings.copy(limitOn = it)) }, stringResource(Res.string.limit_on_sub),
             )
             if (settings.limitOn) {
                 SettingsDivider()
                 LimitRow(settings, haptics) { onChange(settings.copy(limit = it)) }
                 SettingsDivider()
                 SettingsToggle(
-                    stringResource(R.string.limit_sound), settings.sound,
-                    { onChange(settings.copy(sound = it)) }, stringResource(R.string.limit_sound_sub),
+                    stringResource(Res.string.limit_sound), settings.sound,
+                    { onChange(settings.copy(sound = it)) }, stringResource(Res.string.limit_sound_sub),
                 )
             }
         }
-        SettingsGroup(stringResource(R.string.group_display)) {
-            SettingsToggle(stringResource(R.string.keep_on), settings.keepOn, { onChange(settings.copy(keepOn = it)) }, stringResource(R.string.keep_on_sub))
+        SettingsGroup(stringResource(Res.string.group_display)) {
+            SettingsToggle(stringResource(Res.string.keep_on), settings.keepOn, { onChange(settings.copy(keepOn = it)) }, stringResource(Res.string.keep_on_sub))
             SettingsDivider()
-            SettingsToggle(stringResource(R.string.hud_mirror), settings.mirror, { onChange(settings.copy(mirror = it)) }, stringResource(R.string.hud_mirror_sub))
+            SettingsToggle(stringResource(Res.string.hud_mirror), settings.mirror, { onChange(settings.copy(mirror = it)) }, stringResource(Res.string.hud_mirror_sub))
             SettingsDivider()
-            SettingsToggle(stringResource(R.string.hud_bright), settings.bright, { onChange(settings.copy(bright = it)) }, stringResource(R.string.hud_bright_sub))
+            SettingsToggle(stringResource(Res.string.hud_bright), settings.bright, { onChange(settings.copy(bright = it)) }, stringResource(Res.string.hud_bright_sub))
         }
-        SettingsGroup(stringResource(R.string.group_note)) {
+        SettingsGroup(stringResource(Res.string.group_note)) {
             BasicText(
-                stringResource(R.string.note_estimate),
+                stringResource(Res.string.note_estimate),
                 Modifier.padding(horizontal = 18.dp, vertical = 16.dp),
                 style = Aapps.type.body.copy(color = Aapps.colors.fgMuted),
             )
         }
         SettingsGroup(null) {
-            SettingsAction(stringResource(solutions.xapient.aapps.core.ui.R.string.aapps_about), onClick = onAbout)
+            SettingsAction(stringResource(CoreRes.string.aapps_about), onClick = onAbout)
         }
     }
 }
@@ -103,15 +106,15 @@ fun HudrSettings(
 @Composable
 private fun LimitRow(settings: Settings, haptics: Haptics?, onLimit: (Int) -> Unit) {
     val c = Aapps.colors
-    val value = stringResource(R.string.limit_value, settings.limit, stringResource(unitRes(settings.unit)))
+    val value = stringResource(Res.string.limit_value, settings.limit, stringResource(unitRes(settings.unit)))
     Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 14.dp)) {
-        BasicText(stringResource(R.string.limit), style = Aapps.type.body.copy(color = c.fg))
+        BasicText(stringResource(Res.string.limit), style = Aapps.type.body.copy(color = c.fg))
         Spacer(Modifier.height(12.dp))
         Row(
             Modifier.fillMaxWidth().background(c.bg, CircleShape).padding(4.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Step(HudrIcons.Minus, stringResource(R.string.lower), settings.limit > Limit.MIN) {
+            Step(HudrIcons.Minus, stringResource(Res.string.lower), settings.limit > Limit.MIN) {
                 haptics?.press()
                 onLimit(Limit.step(settings.limit, -1))
             }
@@ -122,7 +125,7 @@ private fun LimitRow(settings: Settings, haptics: Haptics?, onLimit: (Int) -> Un
                 maxLines = 1,
                 autoSize = TextAutoSize.StepBased(minFontSize = 10.sp, maxFontSize = 22.sp, stepSize = 0.5.sp),
             )
-            Step(HudrIcons.Plus, stringResource(R.string.raise), settings.limit < Limit.MAX) {
+            Step(HudrIcons.Plus, stringResource(Res.string.raise), settings.limit < Limit.MAX) {
                 haptics?.press()
                 onLimit(Limit.step(settings.limit, +1))
             }
@@ -152,11 +155,11 @@ private fun Step(icon: ImageVector, desc: String, enabled: Boolean, onClick: () 
 @Composable
 fun HudrAbout(versionName: String, onBack: () -> Unit) {
     AboutScreen(
-        appName = stringResource(R.string.app_name),
+        appName = APP_NAME,
         versionName = versionName,
-        tagline = stringResource(R.string.tagline),
+        tagline = stringResource(Res.string.tagline),
         onBack = onBack,
-        notes = listOf(stringResource(R.string.note_location), stringResource(R.string.note_estimate)),
-        icon = { Image(painterResource(R.drawable.ic_launcher_about), null, Modifier.size(88.dp)) },
+        notes = listOf(stringResource(HudrTexts.noteLocation), stringResource(Res.string.note_estimate)),
+        icon = { Image(painterResource(Res.drawable.ic_launcher_about), null, Modifier.size(88.dp)) },
     )
 }

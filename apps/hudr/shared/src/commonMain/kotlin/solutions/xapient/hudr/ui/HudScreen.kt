@@ -30,7 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalWindowInfo
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
@@ -39,7 +39,7 @@ import kotlinx.coroutines.delay
 import solutions.xapient.aapps.core.ui.AappsPillButton
 import solutions.xapient.aapps.core.ui.Haptics
 import solutions.xapient.aapps.core.ui.KeepScreenOn
-import solutions.xapient.hudr.R
+import solutions.xapient.hudr.res.*
 import solutions.xapient.hudr.Settings
 import solutions.xapient.hudr.domain.GpsPhase
 import solutions.xapient.hudr.domain.Reading
@@ -69,10 +69,10 @@ fun HudScreen(
         }
     }
     val unit = stringResource(unitRes(settings.unit))
-    val searching = stringResource(R.string.gps_searching)
-    val lost = stringResource(R.string.gps_lost)
-    val desc = stringResource(R.string.speed)
-    val showLabel = stringResource(R.string.hud_show_exit)
+    val searching = stringResource(Res.string.gps_searching)
+    val lost = stringResource(Res.string.gps_lost)
+    val desc = stringResource(Res.string.speed)
+    val showLabel = stringResource(Res.string.hud_show_exit)
     val spoken = rememberSpoken(reading, version, settings)
     val landscape = LocalWindowInfo.current.containerSize.let { it.width > it.height }
     val status: (GpsPhase) -> String = { if (it == GpsPhase.LOST) lost else searching }
@@ -114,7 +114,7 @@ fun HudScreen(
         }
         if (exit) {
             Box(Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.safeDrawing).padding(24.dp), contentAlignment = Alignment.BottomCenter) {
-                AappsPillButton(stringResource(R.string.hud_exit), {
+                AappsPillButton(stringResource(Res.string.hud_exit), {
                     haptics?.press()
                     onExit()
                 }, icon = HudrIcons.Close)

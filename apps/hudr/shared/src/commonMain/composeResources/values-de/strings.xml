@@ -59,4 +59,9 @@
     <string name="hud_bright">Volle Helligkeit im HUD</string>
     <string name="hud_bright_sub">Tagsüber besser lesbar; nachts besser aus</string>
     <string name="group_note">Hinweis</string>
+
+    <!-- iOS: andere Wege zu den Einstellungen, keine Internet-Berechtigung -->
+    <string name="note_location_ios">Nutzt deinen Standort nur, solange hudr offen ist. Es werden keine Routen gespeichert. hudr geht nie ins Internet und kann nichts senden.</string>
+    <string name="loc_blocked_text_ios">Erlaube hudr in den Einstellungen unter hudr den Standort „Beim Verwenden der App“, mit genauem Standort.</string>
+    <string name="gps_off_text_ios">Schalte die Ortungsdienste in den Einstellungen unter Datenschutz &amp; Sicherheit ein, damit hudr GPS empfangen kann.</string>
 </resources>

@@ -1,9 +1,9 @@
 package solutions.xapient.hudr.domain
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
-import org.junit.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
+import kotlin.test.Test
 
 class NeedleTest {
     @Test fun snapsFirstValue() {
@@ -26,7 +26,7 @@ class NeedleTest {
             prev = v
             frames++
         } while (!n.settled && frames < 600)
-        assertTrue("Bilder bis Ruhe: $frames", frames in 30..150)
+        assertTrue(frames in 30..150, "Bilder bis Ruhe: $frames")
         assertEquals(50f, n.value, 0f)
     }
 

@@ -30,9 +30,9 @@ import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalResources
+
 import androidx.compose.ui.platform.LocalWindowInfo
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.liveRegion
@@ -51,7 +51,9 @@ import solutions.xapient.aapps.core.ui.AappsPillButton
 import solutions.xapient.aapps.core.ui.AappsScaffold
 import solutions.xapient.aapps.core.ui.Haptics
 import solutions.xapient.aapps.core.ui.KeepScreenOn
-import solutions.xapient.hudr.R
+import solutions.xapient.hudr.res.*
+import solutions.xapient.aapps.core.ui.Res as CoreRes
+import solutions.xapient.aapps.core.ui.aapps_settings
 import solutions.xapient.hudr.Settings
 import solutions.xapient.hudr.domain.Alert
 import solutions.xapient.hudr.domain.GpsPhase
@@ -117,7 +119,7 @@ fun SpeedScreen(
     val spoken = if (ready) rememberSpoken(reading, version, settings) else ""
     val palette = mainPalette()
     val unit = stringResource(unitRes(settings.unit))
-    val desc = stringResource(R.string.speed)
+    val desc = stringResource(Res.string.speed)
 
     val digits: @Composable (Modifier) -> Unit = { m ->
         Digits(
@@ -138,7 +140,7 @@ fun SpeedScreen(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             if (ready) GpsStatus(display, update, Modifier.weight(1f)) else Spacer(Modifier.weight(1f))
-            AappsIconButton(AappsIcons.Gear, stringResource(solutions.xapient.aapps.core.ui.R.string.aapps_settings), onSettings)
+            AappsIconButton(AappsIcons.Gear, stringResource(CoreRes.string.aapps_settings), onSettings)
         }
     }
     val bottom: @Composable () -> Unit = {
@@ -146,13 +148,13 @@ fun SpeedScreen(
             Modifier.fillMaxWidth().padding(start = 12.dp, end = 12.dp, bottom = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            AappsIconButton(HudrIcons.Reset, stringResource(R.string.reset), {
+            AappsIconButton(HudrIcons.Reset, stringResource(Res.string.reset), {
                 haptics?.press()
                 onReset()
             })
             Spacer(Modifier.weight(1f))
             AappsPillButton(
-                stringResource(R.string.hud),
+                stringResource(Res.string.hud),
                 {
                     haptics?.press()
                     onHud()
@@ -226,10 +228,10 @@ private fun LocAction(loc: LocState, haptics: Haptics?, onLoc: () -> Unit) {
     val short = LocalDensity.current.fontScale > 1.3f
     val text = when (loc) {
         LocState.READY -> return
-        LocState.ASK -> if (short) R.string.loc_allow_short else R.string.loc_allow
-        LocState.COARSE -> if (short) R.string.loc_precise_short else R.string.loc_precise
-        LocState.BLOCKED -> if (short) R.string.loc_settings_short else R.string.loc_settings
-        LocState.GPS_OFF -> if (short) R.string.gps_turn_on_short else R.string.gps_turn_on
+        LocState.ASK -> if (short) Res.string.loc_allow_short else Res.string.loc_allow
+        LocState.COARSE -> if (short) Res.string.loc_precise_short else Res.string.loc_precise
+        LocState.BLOCKED -> if (short) Res.string.loc_settings_short else Res.string.loc_settings
+        LocState.GPS_OFF -> if (short) Res.string.gps_turn_on_short else Res.string.gps_turn_on
     }
     AappsPillButton(
         stringResource(text),
@@ -247,10 +249,10 @@ private fun LocAction(loc: LocState, haptics: Haptics?, onLoc: () -> Unit) {
 private fun Prompt(loc: LocState) {
     val c = Aapps.colors
     val (title, text) = when (loc) {
-        LocState.COARSE -> R.string.loc_coarse_title to R.string.loc_coarse_text
-        LocState.BLOCKED -> R.string.loc_blocked_title to R.string.loc_blocked_text
-        LocState.GPS_OFF -> R.string.gps_off_title to R.string.gps_off_text
-        else -> R.string.loc_ask_title to R.string.loc_ask_text
+        LocState.COARSE -> Res.string.loc_coarse_title to Res.string.loc_coarse_text
+        LocState.BLOCKED -> Res.string.loc_blocked_title to HudrTexts.locBlocked
+        LocState.GPS_OFF -> Res.string.gps_off_title to HudrTexts.gpsOff
+        else -> Res.string.loc_ask_title to Res.string.loc_ask_text
     }
     Column(Modifier.padding(horizontal = 8.dp, vertical = 8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
         BasicText(stringResource(title), style = Aapps.type.title.copy(color = c.fg, textAlign = TextAlign.Center))
@@ -262,7 +264,7 @@ private fun Prompt(loc: LocState) {
 @Composable
 private fun Footnote() {
     BasicText(
-        stringResource(R.string.footnote),
+        stringResource(Res.string.footnote),
         Modifier.padding(horizontal = 24.dp),
         // waechst mit der Schrift nur bis 16 sp: der Hinweis bleibt eine Nebenzeile
         style = Aapps.type.body.copy(
@@ -277,23 +279,32 @@ private fun Footnote() {
 // Vorlesen: nur bei Wechsel von Warnzustand, Zehnerstelle oder GPS-Phase, nicht jede Sekunde
 @Composable
 fun rememberSpoken(reading: () -> Reading, version: IntState, settings: Settings): String {
-    val res = LocalResources.current
+    // Texte mit Platzhaltern in der Komposition (Sprache wie die Oberflaeche), Werte erst beim Vorlesen
+    val texts by rememberUpdatedState(
+        SpokenTexts(
+            none = stringResource(Res.string.speed_none),
+            state = stringResource(Res.string.speed_state, ARG_SPEED, stringResource(unitRes(settings.unit))),
+            over = stringResource(Res.string.speed_over, ARG_SPEED, stringResource(unitRes(settings.unit))),
+        ),
+    )
     val source by rememberUpdatedState(reading)
     var spoken by remember { mutableStateOf("") }
     LaunchedEffect(settings) {
         snapshotFlow { version.intValue }
             .map { source() }
             .distinctUntilChanged { a, b -> announceKey(a) == announceKey(b) }
-            .collect { spoken = describe(res, it, settings) }
+            .collect { spoken = describe(texts, it) }
     }
     return spoken
 }
 
-fun describe(res: android.content.res.Resources, r: Reading, s: Settings): String {
-    if (r.phase != GpsPhase.FIX || r.speed.isNaN()) return res.getString(R.string.speed_none)
-    val unit = res.getString(unitRes(s.unit))
-    val v = formatSpeed(r.speed)
-    return res.getString(if (r.alert == Alert.OVER) R.string.speed_over else R.string.speed_state, v, unit)
+private const val ARG_SPEED = "\u0000v"
+
+private class SpokenTexts(val none: String, val state: String, val over: String)
+
+private fun describe(t: SpokenTexts, r: Reading): String {
+    if (r.phase != GpsPhase.FIX || r.speed.isNaN()) return t.none
+    return (if (r.alert == Alert.OVER) t.over else t.state).replace(ARG_SPEED, formatSpeed(r.speed))
 }
 
 // Breite des senkrechten Bands im Querformat

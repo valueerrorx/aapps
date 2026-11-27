@@ -1,9 +1,9 @@
 package solutions.xapient.hudr.domain
 
-import org.junit.Assert.assertArrayEquals
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
-import org.junit.Test
+import kotlin.test.assertContentEquals
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
+import kotlin.test.Test
 
 class TripTest {
     private val trip = Trip()
@@ -92,7 +92,7 @@ class TripTest {
         for (i in 0..10) trip.add(Track.fix(i.toDouble()), 15f, true)
         val s = trip.save()
         val other = Trip().apply { restore(s) }
-        assertArrayEquals(s, other.save(), 0.0)
+        assertContentEquals(s, other.save())
         assertEquals(15f, other.avgMps, 1e-4f)
         // nach Wiederherstellen kein Segment zum alten Fix
         other.add(Track.fix(100.0), 15f, true)

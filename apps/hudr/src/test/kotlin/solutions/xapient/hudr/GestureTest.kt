@@ -85,7 +85,7 @@ class GestureTest {
 
     // Ganze App mit Fake; key erzwingt frischen Zustand
     private fun app(beep: (() -> Unit)? = null) {
-        rule.runOnUiThread { rule.activity.setContent { key("test") { HudrApp({ gps }, now = { 0L }, beep = beep) } } }
+        rule.runOnUiThread { rule.activity.setContent { key("test") { HudrRoot({ gps }, now = { 0L }, beep = beep) } } }
         rule.waitForIdle()
     }
 
