@@ -1,7 +1,5 @@
 package solutions.xapient.hertzr.ui
 
-import android.os.Build
-import android.view.HapticFeedbackConstants
 import androidx.compose.animation.core.AnimationState
 import androidx.compose.animation.core.animateDecay
 import androidx.compose.animation.core.exponentialDecay
@@ -28,9 +26,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.util.VelocityTracker
 import androidx.compose.ui.input.pointer.util.addPointerInputChange
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalView
-import androidx.compose.ui.res.stringArrayResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.CustomAccessibilityAction
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.customActions
@@ -42,19 +37,30 @@ import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
-import solutions.xapient.aapps.core.ui.Aapps
-import solutions.xapient.aapps.core.ui.Haptics
-import solutions.xapient.aapps.core.ui.drawGlow
-import solutions.xapient.hertzr.R
-import solutions.xapient.hertzr.domain.Freq
 import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.log2
 import kotlin.math.min
 import kotlin.math.pow
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.stringArrayResource
+import org.jetbrains.compose.resources.stringResource
+import solutions.xapient.aapps.core.ui.Aapps
+import solutions.xapient.aapps.core.ui.Haptics
+import solutions.xapient.aapps.core.ui.drawGlow
+import solutions.xapient.hertzr.domain.Freq
+import solutions.xapient.hertzr.res.Res
+import solutions.xapient.hertzr.res.decimal_sep
+import solutions.xapient.hertzr.res.frequency
+import solutions.xapient.hertzr.res.higher
+import solutions.xapient.hertzr.res.lower
+import solutions.xapient.hertzr.res.note_names
+import solutions.xapient.hertzr.res.octave_down
+import solutions.xapient.hertzr.res.octave_up
+import solutions.xapient.hertzr.res.semitone_down
+import solutions.xapient.hertzr.res.semitone_up
 
 private val BLACK_KEYS = setOf(1, 3, 6, 8, 10)
 private const val STILL_MS = 40L
@@ -77,20 +83,20 @@ fun FreqTape(
     modifier: Modifier = Modifier,
 ) {
     val c = Aapps.colors
-    val view = LocalView.current
+    val bump = rememberLimitBump()
     val set by rememberUpdatedState(onHz)
     val base by rememberUpdatedState(baseHz)
     val top by rememberUpdatedState(maxHz)
-    val notes = stringArrayResource(R.array.note_names)
-    val dec = stringResource(R.string.decimal_sep).first()
-    val desc = stringResource(R.string.frequency)
+    val notes = stringArrayResource(Res.array.note_names)
+    val dec = stringResource(Res.string.decimal_sep).first()
+    val desc = stringResource(Res.string.frequency)
     val a11y = listOf(
-        stringResource(R.string.higher) to { h: Double -> Freq.nudge(h, 1, maxHz) },
-        stringResource(R.string.lower) to { h: Double -> Freq.nudge(h, -1, maxHz) },
-        stringResource(R.string.semitone_up) to { h: Double -> Freq.shift(h, 1.0 / 12, maxHz) },
-        stringResource(R.string.semitone_down) to { h: Double -> Freq.shift(h, -1.0 / 12, maxHz) },
-        stringResource(R.string.octave_up) to { h: Double -> Freq.octave(h, true, maxHz) },
-        stringResource(R.string.octave_down) to { h: Double -> Freq.octave(h, false, maxHz) },
+        stringResource(Res.string.higher) to { h: Double -> Freq.nudge(h, 1, maxHz) },
+        stringResource(Res.string.lower) to { h: Double -> Freq.nudge(h, -1, maxHz) },
+        stringResource(Res.string.semitone_up) to { h: Double -> Freq.shift(h, 1.0 / 12, maxHz) },
+        stringResource(Res.string.semitone_down) to { h: Double -> Freq.shift(h, -1.0 / 12, maxHz) },
+        stringResource(Res.string.octave_up) to { h: Double -> Freq.octave(h, true, maxHz) },
+        stringResource(Res.string.octave_down) to { h: Double -> Freq.octave(h, false, maxHz) },
     )
     val measurer = rememberTextMeasurer()
     val type = Aapps.type
@@ -131,7 +137,7 @@ fun FreqTape(
                             }
                             if (want != oct) {
                                 if (!atLimit && haptics != null) {
-                                    view.performHapticFeedback(if (Build.VERSION.SDK_INT >= 30) HapticFeedbackConstants.REJECT else HapticFeedbackConstants.LONG_PRESS)
+                                    bump()
                                 }
                                 atLimit = true
                                 return false
@@ -244,7 +250,7 @@ fun FreqTape(
                             val fr = Freq.A4 * 2.0.pow((m - 69) / 12.0)
                             if (fr < Freq.MIN || fr > maxHz) continue
                             val kx = x(fr) - pxSemi / 2
-                            val pc = Math.floorMod(m, 12)
+                            val pc = (m).mod(12)
                             val black = pc in BLACK_KEYS
                             // weiss durchgehend, schwarz als kurze Taste oben drauf
                             drawRect(KeyWhite, Offset(kx + 0.5f, keysTop), Size(pxSemi - 1f, keysH))
@@ -253,9 +259,9 @@ fun FreqTape(
                         }
                         // C mit Oktavzahl, nach den Tasten, damit die Nachbartaste nichts abdeckt
                         for (m in m0..m1) {
-                            if (Math.floorMod(m, 12) != 0 || Freq.A4 * 2.0.pow((m - 69) / 12.0) < Freq.MIN) continue
+                            if ((m).mod(12) != 0 || Freq.A4 * 2.0.pow((m - 69) / 12.0) < Freq.MIN) continue
                             val kx = x(Freq.A4 * 2.0.pow((m - 69) / 12.0)) - pxSemi / 2
-                            val l = label(notes[0] + (Math.floorDiv(m, 12) - 1), keyStyle)
+                            val l = label(notes[0] + ((m).floorDiv(12) - 1), keyStyle)
                             if (l.size.width < pxSemi * 2.2f) drawText(l, topLeft = Offset(kx + 2.dp.toPx(), h - l.size.height - 2.dp.toPx()))
                         }
                         drawRect(edge, Offset.Zero, size)
@@ -275,3 +281,7 @@ private fun decadeLabel(hz: Double): String = when {
     hz >= 1_000 -> "${(hz / 1_000).toInt()}k"
     else -> hz.toInt().toString()
 }
+
+// Anschlag am Rand des Bands: Android REJECT ueber die View, iOS Fehler-Haptik
+@Composable
+internal expect fun rememberLimitBump(): () -> Unit

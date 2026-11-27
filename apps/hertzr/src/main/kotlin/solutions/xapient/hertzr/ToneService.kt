@@ -21,9 +21,9 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import solutions.xapient.hertzr.domain.Mode
 import solutions.xapient.hertzr.domain.Settings
+import solutions.xapient.hertzr.domain.Wave
 import solutions.xapient.hertzr.ui.HertzrAccent
 import solutions.xapient.hertzr.ui.hzText
-import solutions.xapient.hertzr.ui.waveName
 
 // Haelt den Ton bei ausgeschaltetem Bildschirm am Leben: Vordergrund (mediaPlayback), Wakelock, Stopp in der Benachrichtigung.
 // Kopfhoerer- und Telefonat-Schutz liegt im AudioGuard.
@@ -127,7 +127,7 @@ class ToneService : Service() {
         return NotificationCompat.Builder(this, CHANNEL)
             .setSmallIcon(R.drawable.ic_stat_hertzr)
             .setContentTitle(title)
-            .setContentText(getString(R.string.notify_text, getString(waveName(s.wave)), s.levelDb))
+            .setContentText(getString(R.string.notify_text, getString(waveRes(s.wave)), s.levelDb))
             .setColor(HertzrAccent.toArgb())
             .setOngoing(true)
             .setSilent(true)
@@ -183,4 +183,12 @@ class ToneService : Service() {
             }
         }
     }
+}
+
+// Wellenform fuer die Benachrichtigung (Android-Ressourcen; die Oberflaeche nutzt Compose-Ressourcen)
+private fun waveRes(w: Wave): Int = when (w) {
+    Wave.SINE -> R.string.wave_sine
+    Wave.SQUARE -> R.string.wave_square
+    Wave.TRIANGLE -> R.string.wave_triangle
+    Wave.SAW -> R.string.wave_saw
 }

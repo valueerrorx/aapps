@@ -1,6 +1,5 @@
 package solutions.xapient.hertzr.ui
 
-import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.StrokeCap
@@ -9,10 +8,15 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.PathBuilder
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
-import solutions.xapient.hertzr.R
+import org.jetbrains.compose.resources.StringResource
 import solutions.xapient.hertzr.domain.Freq
 import solutions.xapient.hertzr.domain.Oscillator
 import solutions.xapient.hertzr.domain.Wave
+import solutions.xapient.hertzr.res.Res
+import solutions.xapient.hertzr.res.wave_saw
+import solutions.xapient.hertzr.res.wave_sine
+import solutions.xapient.hertzr.res.wave_square
+import solutions.xapient.hertzr.res.wave_triangle
 
 // Kobaltblau: Spur, Nadel, Hauptaktion
 val HertzrAccent = Color(0xFF5B8DFF)
@@ -28,12 +32,11 @@ const val WAVE_IDLE_ALPHA = 0.65f
 // Sweep-Bereich auf dem Band; Beschriftung darin bleibt >= 4,5:1
 const val BAND_ALPHA = 0.12f
 
-@StringRes
-fun waveName(w: Wave): Int = when (w) {
-    Wave.SINE -> R.string.wave_sine
-    Wave.SQUARE -> R.string.wave_square
-    Wave.TRIANGLE -> R.string.wave_triangle
-    Wave.SAW -> R.string.wave_saw
+fun waveName(w: Wave): StringResource = when (w) {
+    Wave.SINE -> Res.string.wave_sine
+    Wave.SQUARE -> Res.string.wave_square
+    Wave.TRIANGLE -> Res.string.wave_triangle
+    Wave.SAW -> Res.string.wave_saw
 }
 
 // "440 Hz", "1.5 kHz"

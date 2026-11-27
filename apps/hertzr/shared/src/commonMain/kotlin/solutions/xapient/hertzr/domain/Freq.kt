@@ -70,7 +70,7 @@ object Freq {
         val midi = (69 + 12 * log2(hz / A4)).roundToInt()
         if (midi < 0) return null
         val ref = A4 * 2.0.pow((midi - 69) / 12.0)
-        return Note(Math.floorMod(midi, 12), Math.floorDiv(midi, 12) - 1, (1200 * log2(hz / ref)).roundToInt())
+        return Note((midi).mod(12), (midi).floorDiv(12) - 1, (1200 * log2(hz / ref)).roundToInt())
     }
 
     // Zahl wie angezeigt: eine Nachkommastelle unter 100 Hz, sonst ganz

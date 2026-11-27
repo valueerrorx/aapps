@@ -45,7 +45,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalWindowInfo
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -54,12 +53,22 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.jetbrains.compose.resources.stringResource
 import solutions.xapient.aapps.core.ui.Aapps
 import solutions.xapient.aapps.core.ui.AappsPillButton
 import solutions.xapient.aapps.core.ui.AappsTextButton
 import solutions.xapient.aapps.core.ui.glow
-import solutions.xapient.hertzr.R
 import solutions.xapient.hertzr.domain.Freq
+import solutions.xapient.hertzr.res.Res
+import solutions.xapient.hertzr.res.cancel
+import solutions.xapient.hertzr.res.decimal_sep
+import solutions.xapient.hertzr.res.enter_frequency
+import solutions.xapient.hertzr.res.hz
+import solutions.xapient.hertzr.res.input_hint
+import solutions.xapient.hertzr.res.input_range
+import solutions.xapient.hertzr.res.khz
+import solutions.xapient.hertzr.res.set
+import solutions.xapient.hertzr.res.unit
 
 // Direkte Eingabe mit Zifferntastatur und Hz/kHz-Umschalter ("k" geht dort nicht); Werte ausserhalb werden begrenzt
 @Composable
@@ -73,7 +82,7 @@ fun FreqInput(
     focus: Boolean = true,
 ) {
     val c = Aapps.colors
-    val dec = stringResource(R.string.decimal_sep).first()
+    val dec = stringResource(Res.string.decimal_sep).first()
     var text by rememberSaveable { mutableStateOf(initial) }
     var kilo by rememberSaveable { mutableStateOf(false) }
     // "k" von einer Hardware-Tastatur gilt weiter, sonst entscheidet der Umschalter
@@ -108,7 +117,7 @@ fun FreqInput(
         ) {
             BasicText(title, style = Aapps.type.title.copy(color = c.fg, textAlign = TextAlign.Center), maxLines = 2)
             Spacer(Modifier.height(if (landscape) 6.dp else 14.dp))
-            val hint = stringResource(R.string.enter_frequency)
+            val hint = stringResource(Res.string.enter_frequency)
             val style = Aapps.type.display.copy(color = c.accent, fontSize = 60.sp, textAlign = TextAlign.Center)
             BasicTextField(
                 value = text,
@@ -134,21 +143,21 @@ fun FreqInput(
             Spacer(Modifier.height(8.dp))
             // Vorschau des Ergebnisses oder der erlaubte Bereich
             BasicText(
-                if (parsed != null) "= ${Freq.short(parsed, dec)}" else stringResource(R.string.input_range, Freq.short(Freq.MIN, dec), Freq.short(maxHz, dec)),
+                if (parsed != null) "= ${Freq.short(parsed, dec)}" else stringResource(Res.string.input_range, Freq.short(Freq.MIN, dec), Freq.short(maxHz, dec)),
                 style = Aapps.type.number.copy(color = c.fgMuted, fontSize = 16.sp, textAlign = TextAlign.Center),
                 maxLines = 1,
                 autoSize = TextAutoSize.StepBased(minFontSize = 9.sp, maxFontSize = 16.sp, stepSize = 0.5.sp),
             )
             BasicText(
-                stringResource(R.string.input_hint),
+                stringResource(Res.string.input_hint),
                 style = Aapps.type.body.copy(color = c.fgFaint, fontSize = 13.sp, textAlign = TextAlign.Center),
                 maxLines = 2,
             )
             Spacer(Modifier.height(if (landscape) 10.dp else 18.dp))
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
-                AappsTextButton(stringResource(R.string.cancel), onDismiss)
+                AappsTextButton(stringResource(Res.string.cancel), onDismiss)
                 Spacer(Modifier.width(8.dp))
-                AappsPillButton(stringResource(R.string.set), apply, active = parsed != null, enabled = parsed != null)
+                AappsPillButton(stringResource(Res.string.set), apply, active = parsed != null, enabled = parsed != null)
             }
         }
     }
@@ -158,7 +167,7 @@ fun FreqInput(
 @Composable
 private fun UnitSwitch(kilo: Boolean, onKilo: (Boolean) -> Unit) {
     val c = Aapps.colors
-    val desc = stringResource(R.string.unit)
+    val desc = stringResource(Res.string.unit)
     Row(
         Modifier
             .background(c.bg, CircleShape)
@@ -168,7 +177,7 @@ private fun UnitSwitch(kilo: Boolean, onKilo: (Boolean) -> Unit) {
             .semantics { contentDescription = desc },
         horizontalArrangement = Arrangement.spacedBy(2.dp),
     ) {
-        listOf(false to stringResource(R.string.hz), true to stringResource(R.string.khz)).forEach { (k, label) ->
+        listOf(false to stringResource(Res.string.hz), true to stringResource(Res.string.khz)).forEach { (k, label) ->
             val sel = k == kilo
             Box(
                 Modifier

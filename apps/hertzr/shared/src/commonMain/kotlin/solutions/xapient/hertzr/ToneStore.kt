@@ -1,9 +1,8 @@
 package solutions.xapient.hertzr
 
-import android.content.Context
-import androidx.annotation.VisibleForTesting
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlin.concurrent.Volatile
 import solutions.xapient.hertzr.domain.Freq
 import solutions.xapient.hertzr.domain.Level
 import solutions.xapient.hertzr.domain.Mode
@@ -106,25 +105,12 @@ class ToneStore(
     fun progress(): Float? = if (_playing.value) player.progress() else null
 
     companion object {
-        @Volatile private var instance: ToneStore? = null
+        // ein Store pro Prozess (Android: ToneStore.get(context) in der App), im Test ersetzbar
+        @Volatile var current: ToneStore? = null
+            private set
 
-        // Schutz (Kopfhoerer, Telefonat) haengt am Store, nicht am Dienst: wirkt auch ohne Vordergrund
-        fun get(context: Context): ToneStore = instance ?: synchronized(this) {
-            instance ?: Prefs(context).let { p ->
-                val save = Debounced(SAVE_DELAY_MS) { s: Settings -> p.settings = s }
-                ToneStore({ p.settings }, save::post, AudioEngine(), Freq.maxFor(AudioEngine.nativeRate()))
-            }.also {
-                instance = it
-                AudioGuard(context, it)
-            }
-        }
-
-        // Ziehen am Band schreibt nicht je Bild
-        private const val SAVE_DELAY_MS = 400L
-
-        @VisibleForTesting
         fun install(store: ToneStore?) {
-            instance = store
+            current = store
         }
     }
 }

@@ -56,7 +56,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
@@ -70,9 +69,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlin.math.roundToInt
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.stringResource
 import solutions.xapient.aapps.core.ui.Aapps
 import solutions.xapient.aapps.core.ui.AappsIcon
 import solutions.xapient.aapps.core.ui.AappsIconButton
@@ -81,17 +82,39 @@ import solutions.xapient.aapps.core.ui.AappsPillButton
 import solutions.xapient.aapps.core.ui.AappsScaffold
 import solutions.xapient.aapps.core.ui.Haptics
 import solutions.xapient.aapps.core.ui.KeepScreenOn
+import solutions.xapient.aapps.core.ui.Res as CoreRes
 import solutions.xapient.aapps.core.ui.Springs
+import solutions.xapient.aapps.core.ui.aapps_settings
 import solutions.xapient.aapps.core.ui.drawGlow
 import solutions.xapient.aapps.core.ui.pressScale
-import solutions.xapient.hertzr.R
 import solutions.xapient.hertzr.domain.Freq
 import solutions.xapient.hertzr.domain.Level
 import solutions.xapient.hertzr.domain.Mode
 import solutions.xapient.hertzr.domain.Settings
 import solutions.xapient.hertzr.domain.Warning
 import solutions.xapient.hertzr.domain.Wave
-import kotlin.math.roundToInt
+import solutions.xapient.hertzr.res.Res
+import solutions.xapient.hertzr.res.decimal_sep
+import solutions.xapient.hertzr.res.frequency
+import solutions.xapient.hertzr.res.higher
+import solutions.xapient.hertzr.res.level
+import solutions.xapient.hertzr.res.lower
+import solutions.xapient.hertzr.res.mode_sweep
+import solutions.xapient.hertzr.res.mode_tone
+import solutions.xapient.hertzr.res.octave_down
+import solutions.xapient.hertzr.res.octave_up
+import solutions.xapient.hertzr.res.seconds
+import solutions.xapient.hertzr.res.start
+import solutions.xapient.hertzr.res.start_sweep
+import solutions.xapient.hertzr.res.stop
+import solutions.xapient.hertzr.res.sweep_from
+import solutions.xapient.hertzr.res.sweep_from_title
+import solutions.xapient.hertzr.res.sweep_time
+import solutions.xapient.hertzr.res.sweep_time_desc
+import solutions.xapient.hertzr.res.sweep_to
+import solutions.xapient.hertzr.res.sweep_to_title
+import solutions.xapient.hertzr.res.warn_headphones
+import solutions.xapient.hertzr.res.warn_loud
 
 enum class InputTarget { NONE, HZ, FROM, TO }
 
@@ -183,7 +206,7 @@ fun ToneScreen(
         ) {
             ModeSwitch(settings.mode, haptics, actions.onMode)
             Spacer(Modifier.weight(1f))
-            AappsIconButton(AappsIcons.Gear, stringResource(solutions.xapient.aapps.core.ui.R.string.aapps_settings), actions.onSettings)
+            AappsIconButton(AappsIcons.Gear, stringResource(CoreRes.string.aapps_settings), actions.onSettings)
         }
     }
     val panel: @Composable () -> Unit = {
@@ -205,7 +228,7 @@ fun ToneScreen(
     }
     val main: @Composable () -> Unit = {
         AappsPillButton(
-            stringResource(if (playing) R.string.stop else if (sweep) R.string.start_sweep else R.string.start),
+            stringResource(if (playing) Res.string.stop else if (sweep) Res.string.start_sweep else Res.string.start),
             { haptics?.press(); actions.onToggle() },
             Modifier.widthIn(min = 176.dp),
             icon = if (playing) HertzrIcons.Stop else HertzrIcons.Play,
@@ -262,9 +285,9 @@ fun ToneScreen(
             FreqInput(
                 title = stringResource(
                     when (target) {
-                        InputTarget.FROM -> R.string.sweep_from_title
-                        InputTarget.TO -> R.string.sweep_to_title
-                        else -> R.string.frequency
+                        InputTarget.FROM -> Res.string.sweep_from_title
+                        InputTarget.TO -> Res.string.sweep_to_title
+                        else -> Res.string.frequency
                     },
                 ),
                 current = current,
@@ -309,7 +332,7 @@ private fun ModeSwitch(mode: Mode, haptics: Haptics?, onMode: (Mode) -> Unit) {
         Modifier.background(c.surface, CircleShape).border(1.dp, c.line, CircleShape).padding(3.dp).selectableGroup(),
         horizontalArrangement = Arrangement.spacedBy(2.dp),
     ) {
-        listOf(Mode.TONE to R.string.mode_tone, Mode.SWEEP to R.string.mode_sweep).forEach { (m, label) ->
+        listOf(Mode.TONE to Res.string.mode_tone, Mode.SWEEP to Res.string.mode_sweep).forEach { (m, label) ->
             val sel = m == mode
             val bg by animateColorAsState(if (sel) c.surfaceHigh else Color.Transparent, Springs.gentle(), label = "mode")
             val fg by animateColorAsState(if (sel) c.fg else c.fgMuted, Springs.gentle(), label = "modeFg")
@@ -339,16 +362,16 @@ private fun ModeSwitch(mode: Mode, haptics: Haptics?, onMode: (Mode) -> Unit) {
 @Composable
 private fun ToneControls(hz: Double, maxHz: Double, haptics: Haptics?, actions: ToneActions) {
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
-        StepButton(stringResource(R.string.octave_down), hz > Freq.MIN, haptics, repeat = false, { actions.onOctave(false) }) { fg ->
+        StepButton(stringResource(Res.string.octave_down), hz > Freq.MIN, haptics, repeat = false, { actions.onOctave(false) }) { fg ->
             BasicText("÷2", style = Aapps.type.number.copy(color = fg, fontSize = 19.sp), maxLines = 1)
         }
-        StepButton(stringResource(R.string.lower), hz > Freq.MIN, haptics, repeat = true, { actions.onNudge(-1) }) { fg ->
+        StepButton(stringResource(Res.string.lower), hz > Freq.MIN, haptics, repeat = true, { actions.onNudge(-1) }) { fg ->
             AappsIcon(HertzrIcons.Minus, null, fg, size = 22.dp)
         }
-        StepButton(stringResource(R.string.higher), hz < maxHz, haptics, repeat = true, { actions.onNudge(1) }) { fg ->
+        StepButton(stringResource(Res.string.higher), hz < maxHz, haptics, repeat = true, { actions.onNudge(1) }) { fg ->
             AappsIcon(HertzrIcons.Plus, null, fg, size = 22.dp)
         }
-        StepButton(stringResource(R.string.octave_up), hz < maxHz, haptics, repeat = false, { actions.onOctave(true) }) { fg ->
+        StepButton(stringResource(Res.string.octave_up), hz < maxHz, haptics, repeat = false, { actions.onOctave(true) }) { fg ->
             BasicText("×2", style = Aapps.type.number.copy(color = fg, fontSize = 19.sp), maxLines = 1)
         }
     }
@@ -416,18 +439,18 @@ private fun StepButton(
 // VON → BIS · DAUER
 @Composable
 private fun SweepControls(s: Settings, enabled: Boolean, haptics: Haptics?, onFrom: () -> Unit, onTo: () -> Unit, onDuration: () -> Unit) {
-    val dec = stringResource(R.string.decimal_sep).first()
+    val dec = stringResource(Res.string.decimal_sep).first()
     val alpha by animateFloatAsState(if (enabled) 1f else 0.45f, Springs.gentle(), label = "sweepLock")
     Row(Modifier.fillMaxWidth().graphicsLayer { this.alpha = alpha }, verticalAlignment = Alignment.CenterVertically) {
-        Chip(stringResource(R.string.sweep_from), hzText(s.sweepFrom, dec), stringResource(R.string.sweep_from_title), enabled, Modifier.weight(1f)) {
+        Chip(stringResource(Res.string.sweep_from), hzText(s.sweepFrom, dec), stringResource(Res.string.sweep_from_title), enabled, Modifier.weight(1f)) {
             haptics?.press(); onFrom()
         }
         AappsIcon(HertzrIcons.Arrow, null, Aapps.colors.fgFaint, Modifier.padding(horizontal = 4.dp), size = 18.dp)
-        Chip(stringResource(R.string.sweep_to), hzText(s.sweepTo, dec), stringResource(R.string.sweep_to_title), enabled, Modifier.weight(1f)) {
+        Chip(stringResource(Res.string.sweep_to), hzText(s.sweepTo, dec), stringResource(Res.string.sweep_to_title), enabled, Modifier.weight(1f)) {
             haptics?.press(); onTo()
         }
         Spacer(Modifier.width(10.dp))
-        Chip(stringResource(R.string.sweep_time), stringResource(R.string.seconds, s.sweepSec), stringResource(R.string.sweep_time_desc), enabled, Modifier.weight(0.78f)) {
+        Chip(stringResource(Res.string.sweep_time), stringResource(Res.string.seconds, s.sweepSec), stringResource(Res.string.sweep_time_desc), enabled, Modifier.weight(0.78f)) {
             haptics?.press(); onDuration()
         }
     }
@@ -510,7 +533,7 @@ private fun LevelSlider(db: Int, warning: Warning, haptics: Haptics?, onLevel: (
     val set by rememberUpdatedState(onLevel)
     val current by rememberUpdatedState(db)
     val loud = warning == Warning.LOUD
-    val desc = stringResource(R.string.level)
+    val desc = stringResource(Res.string.level)
     val valueText = dbText(db)
     val fs = LocalDensity.current.fontScale.coerceIn(1f, 2f)
     val label: @Composable () -> Unit = {
@@ -602,8 +625,8 @@ private fun LevelSlider(db: Int, warning: Warning, haptics: Haptics?, onLevel: (
 @Composable
 private fun WarningLine(w: Warning) {
     val text = when (w) {
-        Warning.LOUD -> stringResource(R.string.warn_loud)
-        Warning.HEADPHONES -> stringResource(R.string.warn_headphones)
+        Warning.LOUD -> stringResource(Res.string.warn_loud)
+        Warning.HEADPHONES -> stringResource(Res.string.warn_headphones)
         Warning.NONE -> ""
     }
     val fs = LocalDensity.current.fontScale.coerceIn(1f, 2f)

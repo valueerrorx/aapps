@@ -27,8 +27,6 @@ import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.stringArrayResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -36,15 +34,22 @@ import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlin.math.PI
+import kotlin.math.min
+import kotlin.math.sin
+import org.jetbrains.compose.resources.stringArrayResource
+import org.jetbrains.compose.resources.stringResource
 import solutions.xapient.aapps.core.ui.Aapps
 import solutions.xapient.aapps.core.ui.Haptics
 import solutions.xapient.aapps.core.ui.Springs
-import solutions.xapient.hertzr.R
 import solutions.xapient.hertzr.domain.Freq
 import solutions.xapient.hertzr.domain.Oscillator
 import solutions.xapient.hertzr.domain.Wave
-import kotlin.math.min
-import kotlin.math.sin
+import solutions.xapient.hertzr.res.Res
+import solutions.xapient.hertzr.res.decimal_sep
+import solutions.xapient.hertzr.res.enter_frequency
+import solutions.xapient.hertzr.res.hz
+import solutions.xapient.hertzr.res.note_names
 
 private const val COLS = 8
 private const val ROWS = 6
@@ -68,9 +73,9 @@ fun Scope(
     modifier: Modifier = Modifier,
 ) {
     val c = Aapps.colors
-    val notes = stringArrayResource(R.array.note_names)
-    val dec = stringResource(R.string.decimal_sep).first()
-    val unit = stringResource(R.string.hz)
+    val notes = stringArrayResource(Res.array.note_names)
+    val dec = stringResource(Res.string.decimal_sep).first()
+    val unit = stringResource(Res.string.hz)
     val measurer = rememberTextMeasurer()
     val type = Aapps.type
     val fs = LocalDensity.current.fontScale
@@ -150,7 +155,7 @@ fun Scope(
                     val blend = Oscillator.sineBlend(f / rate)
                     fun shape(w: Wave, t: Double): Double {
                         val raw = Oscillator.naive(w, t)
-                        return if (blend <= 0.0 || w == Wave.SINE) raw else (1 - blend) * raw + blend * Oscillator.fundamental(w) * sin(2 * Math.PI * t)
+                        return if (blend <= 0.0 || w == Wave.SINE) raw else (1 - blend) * raw + blend * Oscillator.fundamental(w) * sin(2 * PI * t)
                     }
                     fun trace(path: Path, lag: Double) {
                         path.rewind()
@@ -207,7 +212,7 @@ fun Scope(
         if (onEdit != null) {
             val density = LocalDensity.current
             val g = screen(Size(constraints.maxWidth.toFloat(), constraints.maxHeight.toFloat()))
-            val edit = stringResource(R.string.enter_frequency)
+            val edit = stringResource(Res.string.enter_frequency)
             Box(
                 Modifier
                     .size(with(density) { (g.width * 0.62f).toDp() }, with(density) { (g.height * 0.34f).toDp() })
@@ -234,7 +239,7 @@ private fun screen(size: Size) = ScopeRect(0f, 0f, size.width, size.height)
 private fun Size.center() = Offset(width / 2, height / 2)
 
 // "A4", "A4 +12 ct", unter C-1 ein Strich
-internal fun noteLabel(hz: Double, names: Array<String>): String {
+internal fun noteLabel(hz: Double, names: List<String>): String {
     val n = Freq.note(hz) ?: return "—"
     val name = names[n.pitchClass] + n.octave
     return when {
@@ -244,7 +249,7 @@ internal fun noteLabel(hz: Double, names: Array<String>): String {
     }
 }
 
-internal fun noteState(hz: Double, names: Array<String>, dec: Char): String = "${Freq.short(hz, dec)}, ${noteLabel(hz, names)}"
+internal fun noteState(hz: Double, names: List<String>, dec: Char): String = "${Freq.short(hz, dec)}, ${noteLabel(hz, names)}"
 
 // Laufgeschwindigkeit der Spur (Perioden je Sekunde im Bild) und Abstand der Nachleucht-Kopien
 private const val SCOPE_SPEED = 0.6
