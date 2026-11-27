@@ -10,7 +10,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.lifecycle.compose.LifecycleStartEffect
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.stringResource
@@ -54,7 +53,6 @@ fun StoreScreen(appName: String, state: StoreState, onTrial: () -> Unit, onBuy: 
     val price = state.price
     // auch bei ausstehendem Kauf aktiv: eine abgelehnte Kaufanfrage meldet StoreKit nicht
     val canBuy = price != null && !state.busy
-    val uri = LocalUriHandler.current
     val unlockLabel = if (price != null) stringResource(Res.string.store_unlock_price, price) else stringResource(Res.string.store_unlock)
     val hint = when {
         state.pending -> Res.string.store_hint_pending
@@ -75,13 +73,7 @@ fun StoreScreen(appName: String, state: StoreState, onTrial: () -> Unit, onBuy: 
         points = listOf(
             ThanksPoint(AappsIcons.Shield, stringResource(Res.string.store_point_data)),
             ThanksPoint(AappsIcons.Offline, stringResource(Res.string.store_point_offline)),
-            ThanksPoint(AappsIcons.Code, stringResource(Res.string.store_point_source), SOURCE_URL.removePrefix("https://")) {
-                try {
-                    uri.openUri(SOURCE_URL)
-                } catch (_: Exception) {
-                    // ohne Browser: nichts tun
-                }
-            },
+            ThanksPoint(AappsIcons.Code, stringResource(Res.string.store_point_source)),
         ),
         primary = {
             if (offer) {
