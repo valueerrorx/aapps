@@ -3,7 +3,7 @@ package solutions.xapient.nordr.domain
 import kotlin.math.cos
 import kotlin.math.sin
 
-// Testhilfen: Geraetelagen als Rotationsmatrix (Spalten = Geraeteachsen in Welt Ost/Nord/Oben)
+// Testhilfen (Kopie von shared/commonTest fuer den Android-Sensortest): Geraetelagen als Rotationsmatrix (Spalten = Geraeteachsen in Welt Ost/Nord/Oben)
 object Poses {
     private fun rad(deg: Float) = Math.toRadians(deg.toDouble()).toFloat()
 

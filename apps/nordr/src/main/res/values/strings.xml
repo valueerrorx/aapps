@@ -1,82 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- App-Texte liegen in shared/src/commonMain/composeResources -->
 <resources>
     <string name="app_name" translatable="false">nordr</string>
-    <string name="tagline">A compass that turns like a real one and holds your course. One job, done beautifully.</string>
-    <string name="note_navigation">Not for navigation in critical situations. Phone sensors are not certified instruments and react to magnets and metal.</string>
-    <string name="no_sensor">This device has no compass sensor.</string>
 
-    <string name="north_magnetic">Magnetic</string>
-    <string name="north_true">True north</string>
-    <string name="heading_desc">%1$d°, %2$s</string>
-    <string name="accuracy_low">low accuracy</string>
-    <string name="set_course">Set course</string>
-    <string name="clear_course">Clear course</string>
-    <string name="on_course">On course</string>
-    <string name="course_line">Course %1$s</string>
-    <string name="dev_right">%1$s right</string>
-    <string name="dev_left">%1$s left</string>
-
-    <string-array name="points">
-        <item>N</item><item>NNE</item><item>NE</item><item>ENE</item>
-        <item>E</item><item>ESE</item><item>SE</item><item>SSE</item>
-        <item>S</item><item>SSW</item><item>SW</item><item>WSW</item>
-        <item>W</item><item>WNW</item><item>NW</item><item>NNW</item>
-    </string-array>
-
-    <string name="cal_title">Calibrate</string>
-    <string name="cal_body">Move the phone in a figure eight a few times, tilting it as you go.</string>
-    <string name="interference_title">Magnetic interference</string>
-    <string name="interference_body">Something nearby bends the field. Keep away from magnets, metal and laptops.</string>
-    <string name="hint_hide">Hide</string>
-    <string name="hint_done">Done</string>
-
-    <string name="group_north">North</string>
-    <string name="group_compass">Compass</string>
-    <string name="group_debug">Diagnostics</string>
-    <string name="reference">Reference</string>
-    <string name="region">Region</string>
-    <string name="region_sub">%1$s · declination %2$s</string>
-    <string name="region_note">A nearby city is enough: declination changes only slowly across a region.</string>
-    <string name="decl_east">%1$s E</string>
-    <string name="decl_west">%1$s W</string>
-    <string name="haptics">Vibrate at N, E, S, W and on course</string>
-    <string name="show_calibration">Calibration help</string>
-    <string name="show_calibration_sub">Figure-eight motion when the heading drifts</string>
     <string name="record_sensor">Record sensors (10 s)</string>
     <string name="record_sub">CSV via share menu</string>
     <string name="recording">Recording… %1$d s</string>
-
-    <string name="region_vienna">Vienna</string>
-    <string name="region_innsbruck" translatable="false">Innsbruck</string>
-    <string name="region_berlin" translatable="false">Berlin</string>
-    <string name="region_hamburg" translatable="false">Hamburg</string>
-    <string name="region_cologne">Cologne</string>
-    <string name="region_munich">Munich</string>
-    <string name="region_zurich">Zurich</string>
-    <string name="region_amsterdam" translatable="false">Amsterdam</string>
-    <string name="region_london" translatable="false">London</string>
-    <string name="region_paris" translatable="false">Paris</string>
-    <string name="region_madrid" translatable="false">Madrid</string>
-    <string name="region_rome">Rome</string>
-    <string name="region_ljubljana" translatable="false">Ljubljana</string>
-    <string name="region_prague">Prague</string>
-    <string name="region_budapest" translatable="false">Budapest</string>
-    <string name="region_warsaw">Warsaw</string>
-    <string name="region_copenhagen">Copenhagen</string>
-    <string name="region_stockholm" translatable="false">Stockholm</string>
-    <string name="region_athens">Athens</string>
-    <string name="region_istanbul" translatable="false">Istanbul</string>
-    <string name="region_new_york" translatable="false">New York</string>
-    <string name="region_chicago" translatable="false">Chicago</string>
-    <string name="region_denver" translatable="false">Denver</string>
-    <string name="region_los_angeles" translatable="false">Los Angeles</string>
-    <string name="region_mexico_city">Mexico City</string>
-    <string name="region_sao_paulo" translatable="false">São Paulo</string>
-    <string name="region_cape_town">Cape Town</string>
-    <string name="region_dubai" translatable="false">Dubai</string>
-    <string name="region_delhi">New Delhi</string>
-    <string name="region_beijing">Beijing</string>
-    <string name="region_tokyo">Tokyo</string>
-    <string name="region_sydney" translatable="false">Sydney</string>
-    <string name="region_auckland" translatable="false">Auckland</string>
 </resources>
