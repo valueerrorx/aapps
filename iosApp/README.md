@@ -21,7 +21,8 @@ iosApp/<app>       XcodeGen-Projekt (project.yml), SwiftUI-Hülle, Info.plist, P
 - Kotlin-Framework heißt in jeder App `AappsKit` (statisch, per `embedAndSignAppleFrameworkForXcode`, ohne CocoaPods).
 - StoreKit 2 ist nur aus Swift erreichbar: `StoreKitBridge.swift` implementiert das Kotlin-Interface `StoreBridge`, die Entscheidung (Angebot/Testphase/frei/abgelaufen) trifft `StoreGate` in Kotlin.
 - Xcode-Projekt per XcodeGen statt handgeschriebener `.pbxproj`: lesbar, diff-bar, ohne Mac nicht fehleranfällig zu pflegen. Das erzeugte `levlr.xcodeproj` ist nicht im Repo.
-- Version wie Android aus `apps/levlr/version.txt`, Build-Nummer = `github.run_number + 100` (Workflow umbenannt, Zaehler neu).
+- Version wie Android aus `apps/<app>/version.txt`, Build-Nummer = `github.run_number + 100` (steigt je Lauf, damit je App monoton; alte Builds gingen bis 10).
+- CI: Push mit eigenen Aenderungen (`apps/<app>/`, `iosApp/<app>/`) = Kotlin-Tests + TestFlight-Upload; Aenderungen an core/Build/iosApp/common = nur Kotlin-Tests aller Apps, kein Upload. UI-Tests und Store-Screenshots nur per Handstart (`workflow_dispatch`, screenshots=true).
 
 ## Testphase und Kauf auf iOS (Apple 3.1.1)
 - Zwei Non-Consumables: `solutions.xapient.levlr.trial` (Preis 0, „1-Day Trial“) und `solutions.xapient.levlr.full_unlock` (1,49 €).

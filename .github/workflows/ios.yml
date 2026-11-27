@@ -1,6 +1,7 @@
-# iOS-Build je App (iosApp/<app>/project.yml) auf macOS: Kotlin-Tests, Simulator-Build + UI-Tests; mit Secrets zusaetzlich TestFlight.
-# Gebaut werden nur Apps, deren Dateien sich geaendert haben; gemeinsame Teile (core, Build, iosApp/common) bauen alle.
-# Keine Build-Artefakte hochladen: das Repo ist oeffentlich, Builds gehen nur an App Store Connect.
+# iOS-Build je App (iosApp/<app>/project.yml) auf macOS. Keine Build-Artefakte hochladen: das Repo ist oeffentlich.
+# Push: Apps mit eigenen Aenderungen (apps/<app>/, iosApp/<app>/) -> Kotlin-Tests + Archiv + TestFlight.
+#       Gemeinsame Teile (core, Build, iosApp/common, Workflow) -> alle Apps nur Kotlin kompilieren + testen, kein Upload.
+# Handstart (workflow_dispatch): app = eine App oder leer = alle, immer mit Upload; screenshots = UI-Tests + Store-Screenshots.
 name: iOS
 
 on:
@@ -22,6 +23,10 @@ on:
         description: "App (leer = alle iOS-Apps)"
         required: false
         default: ""
+      screenshots:
+        description: "UI-Tests + App-/IAP-Screenshots zu App Store Connect"
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -30,7 +35,7 @@ jobs:
   apps:
     runs-on: ubuntu-latest
     outputs:
-      apps: ${{ steps.list.outputs.apps }}
+      matrix: ${{ steps.list.outputs.matrix }}
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
@@ -41,36 +46,42 @@ jobs:
           BEFORE: ${{ github.event.before }}
         run: |
           all=$(ls iosApp/*/project.yml | cut -d/ -f2)
+          own=""; shared=""
           if [ "$GITHUB_EVENT_NAME" = workflow_dispatch ]; then
-            apps=${INPUT_APP:-$all}
+            own=${INPUT_APP:-$all}
           elif ! git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
-            apps=$all
+            shared=1
           else
-            apps=""
             while read -r f; do
               case "$f" in
                 apps/*|iosApp/*)
                   a=$(echo "$f" | cut -d/ -f2)
-                  if echo "$all" | grep -qx "$a"; then apps="$apps $a"
-                  elif [ "${f%%/*}" = iosApp ]; then apps="$all"; fi ;;
+                  if echo "$all" | grep -qx "$a"; then own="$own $a"
+                  elif [ "${f%%/*}" = iosApp ]; then shared=1; fi ;;
                 core/ui/*|core/store/*|build-logic/*|gradle/*|*.gradle.kts|gradle.properties|.github/workflows/ios.yml)
-                  apps="$all" ;;
+                  shared=1 ;;
               esac
             done < <(git diff --name-only "$BEFORE" "$GITHUB_SHA")
           fi
-          json=$(printf '%s\n' $apps | sort -u | { grep . || true; } | jq -R . | jq -cs .)
-          echo "apps=$json" >> "$GITHUB_OUTPUT"
-          echo "Apps: $json"
+          own=$(printf '%s\n' $own | sort -u | { grep . || true; })
+          list=$( { [ -n "$shared" ] && echo "$all"; echo "$own"; } | sort -u | { grep . || true; })
+          # je App: upload = eigene Aenderung oder Handstart
+          matrix=$(for a in $list; do
+            if echo "$own" | grep -qx "$a"; then u=true; else u=false; fi
+            jq -nc --arg app "$a" --argjson upload "$u" '{app: $app, upload: $upload}'
+          done | jq -cs .)
+          echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
+          echo "Matrix: $matrix"
 
   build:
     needs: apps
-    if: needs.apps.outputs.apps != '[]'
+    if: needs.apps.outputs.matrix != '[]'
     runs-on: macos-latest
     timeout-minutes: 90
     strategy:
       fail-fast: false
       matrix:
-        app: ${{ fromJSON(needs.apps.outputs.apps) }}
+        include: ${{ fromJSON(needs.apps.outputs.matrix) }}
     # neuer Lauf derselben App bricht den alten ab, andere Apps laufen weiter
     concurrency:
       group: ios-${{ matrix.app }}-${{ github.ref }}
@@ -78,6 +89,8 @@ jobs:
     env:
       APP: ${{ matrix.app }}
       BUNDLE: solutions.xapient.${{ matrix.app }}
+      UPLOAD: ${{ matrix.upload }}
+      SHOTS: ${{ inputs.screenshots == true }}
       HAS_ASC: ${{ secrets.ASC_KEY_P8 != '' && secrets.ASC_KEY_ID != '' && secrets.ASC_ISSUER_ID != '' && secrets.APPLE_TEAM_ID != '' }}
     steps:
       # Actions auf Commit-SHAs gepinnt (Tag als Kommentar)
@@ -88,7 +101,17 @@ jobs:
           distribution: temurin
           java-version: "17"
 
+      # Cache auch auf feat/ios schreiben (Standard: nur auf dem Default-Branch)
       - uses: gradle/actions/setup-gradle@0723195856401067f7a2779048b490ace7a47d7c # v5.0.2
+        with:
+          cache-read-only: false
+
+      # Kotlin/Native-Toolchain und Plattform-Caches (cached setup-gradle nicht)
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.konan
+          key: konan-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('gradle/libs.versions.toml') }}
+          restore-keys: konan-${{ runner.os }}-${{ runner.arch }}-
 
       - name: Xcode waehlen (neueste installierte)
         run: |
@@ -102,7 +125,7 @@ jobs:
           mkdir -p ~/.gradle
           echo "org.gradle.jvmargs=-Xmx5g -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8" >> ~/.gradle/gradle.properties
 
-      # Build-Nummer: run_number + 100 (Workflow umbenannt, levlr hatte schon Builds bis 6)
+      # Build-Nummer = run_number + 100: steigt mit jedem Lauf, damit je App monoton (alte Builds gingen bis 10)
       - name: Version wie Android
         run: |
           echo "AAPPS_VERSION=$(cat apps/$APP/version.txt)" >> "$GITHUB_ENV"
@@ -111,14 +134,32 @@ jobs:
       - name: Kotlin-Tests (JVM + iOS-Simulator)
         run: ./gradlew --no-daemon :core:store:jvmTest :core:store:iosSimulatorArm64Test ":apps:$APP:shared:iosSimulatorArm64Test"
 
+      # App-Eintrag legt Thomas von Hand an (nicht per API); bis dahin kein Upload
+      - name: App in App Store Connect?
+        if: env.HAS_ASC == 'true' && (env.UPLOAD == 'true' || env.SHOTS == 'true')
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+        run: |
+          export ASC_KEY_PATH="$RUNNER_TEMP/exists_key.p8"
+          trap 'rm -f "$ASC_KEY_PATH"' EXIT
+          printf '%s' "$ASC_KEY_P8" > "$ASC_KEY_PATH"
+          EXISTS=$(node iosApp/tools/asc-app-exists.mjs "$BUNDLE")
+          echo "ASC_APP=$EXISTS" >> "$GITHUB_ENV"
+          if [ "$EXISTS" != true ]; then echo "::notice::$BUNDLE noch nicht in App Store Connect, kein Upload"; fi
+
       - name: Xcode-Projekt erzeugen (XcodeGen 2.49.0, Pruefsumme fest)
+        if: env.UPLOAD == 'true' || env.SHOTS == 'true'
         run: |
           curl -sSL -o "$RUNNER_TEMP/xcodegen.zip" https://github.com/yonaskolb/XcodeGen/releases/download/2.49.0/xcodegen.zip
           echo "ae5598b33a19ad1e23e775d6648f97375c3529c970905f489358a21055b65e53  $RUNNER_TEMP/xcodegen.zip" | shasum -a 256 -c -
           unzip -q "$RUNNER_TEMP/xcodegen.zip" -d "$RUNNER_TEMP"
           cd "iosApp/$APP" && "$RUNNER_TEMP/xcodegen/bin/xcodegen" generate
 
+      # UI-Tests (Start + alle Szenen) nur mit Screenshots; die .app dient danach als Quelle fuer die Store-Bilder
       - name: Simulator-Build + UI-Tests
+        if: env.SHOTS == 'true'
         run: |
           UDID=$(xcrun simctl list devices available -j | python3 -c '
           import json, sys
@@ -133,24 +174,9 @@ jobs:
             -resultBundlePath "$RUNNER_TEMP/$APP-tests.xcresult" \
             CODE_SIGNING_ALLOWED=NO
 
-      # App-Eintrag legt Thomas von Hand an (nicht per API); bis dahin nur bauen und testen
-      - name: App in App Store Connect?
-        if: env.HAS_ASC == 'true'
-        env:
-          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
-          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
-          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
-        run: |
-          export ASC_KEY_PATH="$RUNNER_TEMP/exists_key.p8"
-          trap 'rm -f "$ASC_KEY_PATH"' EXIT
-          printf '%s' "$ASC_KEY_P8" > "$ASC_KEY_PATH"
-          EXISTS=$(node iosApp/tools/asc-app-exists.mjs "$BUNDLE")
-          echo "ASC_APP=$EXISTS" >> "$GITHUB_ENV"
-          if [ "$EXISTS" != true ]; then echo "::notice::$BUNDLE noch nicht in App Store Connect, kein Upload"; fi
-
       # Review-Screenshot je In-App-Kauf direkt per API (keine Artefakte); laedt nur, wenn noch keiner da ist
       - name: IAP-Review-Screenshots
-        if: env.ASC_APP == 'true'
+        if: env.SHOTS == 'true' && env.ASC_APP == 'true'
         env:
           ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
@@ -173,7 +199,7 @@ jobs:
 
       # App-Screenshots 6.9" + 13", EN + DE, Szenen aus iosApp/<app>/appstore/scenes.txt; direkt per API, ersetzt nur Geaendertes
       - name: App-Screenshots
-        if: env.ASC_APP == 'true'
+        if: env.SHOTS == 'true' && env.ASC_APP == 'true'
         env:
           ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
@@ -190,7 +216,7 @@ jobs:
           rm -rf "$RUNNER_TEMP/shots"
 
       - name: Archiv + Upload zu TestFlight
-        if: env.ASC_APP == 'true'
+        if: env.UPLOAD == 'true' && env.ASC_APP == 'true'
         env:
           ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
