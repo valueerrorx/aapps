@@ -44,6 +44,8 @@ fun ThanksLayout(
     footer: String,
     // kleiner Kopf und engere Abstaende, damit auch auf kleinen iPhones alles ohne Scrollen passt
     compact: Boolean = false,
+    // dezente Zeile unter der Fusszeile (Android: Hinweis auf das Bundle)
+    extra: (@Composable () -> Unit)? = null,
 ) {
     val c = Aapps.colors
     val gap = if (compact) 0.6f else 1f
@@ -103,6 +105,10 @@ fun ThanksLayout(
                     color = c.fgMuted, fontSize = Aapps.type.label.fontSize * 1.1f, textAlign = TextAlign.Center,
                 ),
             )
+            if (extra != null) {
+                Spacer(Modifier.height(10.dp * gap))
+                extra()
+            }
         }
     }
 }

@@ -6,6 +6,8 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +17,7 @@ import android.widget.ScrollView
 import android.widget.Space
 import android.widget.TextView
 import androidx.core.net.toUri
+import solutions.xapient.aapps.core.billing.BundleKey
 import solutions.xapient.aapps.core.billing.GateState
 import solutions.xapient.aapps.core.billing.Notice
 import solutions.xapient.aapps.core.billing.R as BR
@@ -166,6 +169,15 @@ class Pages(private val a: Activity, private val look: Look) {
                     setOnClickListener { press(it); if (!state.busy) onRestore() }
                 }, lp(w = ViewGroup.LayoutParams.WRAP_CONTENT, top = 8))
                 addView(center(small(a.getString(BR.string.billing_once))), lp(w = ViewGroup.LayoutParams.WRAP_CONTENT, top = 12))
+                // dezenter Verweis auf die Schluessel-App im Play Store
+                val bundle = SpannableString(a.getString(BR.string.billing_bundle) + " " + a.getString(BR.string.billing_bundle_name) + " ›")
+                bundle.setSpan(ForegroundColorSpan(accent), a.getString(BR.string.billing_bundle).length + 1, bundle.length, 0)
+                addView(center(small(bundle)).apply {
+                    minHeight = dp(48); setPadding(dp(12), 0, dp(12), 0)
+                    isClickable = true; isFocusable = true
+                    springPress(this, 0.94f); asButton(this)
+                    setOnClickListener { BundleKey.openStore(a) }
+                }, lp(w = ViewGroup.LayoutParams.WRAP_CONTENT, top = 10))
             }
         }
 

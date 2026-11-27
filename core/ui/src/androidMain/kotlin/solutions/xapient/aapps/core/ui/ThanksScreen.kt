@@ -1,7 +1,24 @@
 package solutions.xapient.aapps.core.ui
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.unit.dp
+import solutions.xapient.aapps.core.billing.BundleKey
 import solutions.xapient.aapps.core.billing.GateState
 import solutions.xapient.aapps.core.billing.Notice
 import solutions.xapient.aapps.core.billing.R as BR
@@ -50,5 +67,29 @@ fun ThanksScreen(
             )
         },
         footer = stringResource(BR.string.billing_once),
+        extra = { BundleLink() },
     )
+}
+
+// Dezenter Verweis auf die Schluessel-App im Play Store
+@Composable
+private fun BundleLink() {
+    val context = LocalContext.current
+    val c = Aapps.colors
+    val small = Aapps.type.body.copy(fontSize = Aapps.type.label.fontSize * 1.1f)
+    val source = remember { MutableInteractionSource() }
+    val pressed by source.collectIsPressedAsState()
+    Row(
+        Modifier
+            .pressScale(pressed)
+            .clickable(source, indication = null, role = Role.Button) { BundleKey.openStore(context) }
+            .heightIn(min = 48.dp)
+            .padding(horizontal = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        BasicText(stringResource(BR.string.billing_bundle), style = small.copy(color = c.fgMuted))
+        Spacer(Modifier.width(5.dp))
+        BasicText(stringResource(BR.string.billing_bundle_name), style = small.copy(color = c.accent))
+        AappsIcon(AappsIcons.Chevron, null, c.accent, size = 16.dp)
+    }
 }
