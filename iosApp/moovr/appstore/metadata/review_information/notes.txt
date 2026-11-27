@@ -1,0 +1,3 @@
+moovr (Clumsy Cow) is a free skill game: an HTML5 canvas game (Phaser) bundled with the app and shown in a WKWebView. All game files ship inside the app bundle and are served through a custom URL scheme; the app never goes online and has no in-app purchases, ads or accounts.
+
+How to play: tap the play button in the menu. Tap the jump/push buttons to hop the cow across the ice floes and avoid the spikes. Your best distance is stored on the device (WebView local storage). Landscape only.

@@ -1,0 +1,62 @@
+# XcodeGen: erzeugt moovr.xcodeproj (nicht im Repo). Version/Build kommen aus der Umgebung:
+# AAPPS_VERSION = apps/moovr/version.txt (wie Android), AAPPS_BUILD = Build-Nummer (CI: run_number + 100)
+# Reines Swift: Spiel-Assets direkt aus apps/moovr/src/main/assets, kein Kotlin, kein Kauf
+name: moovr
+options:
+  bundleIdPrefix: solutions.xapient
+  developmentLanguage: en
+  deploymentTarget:
+    iOS: "17.0"
+settings:
+  base:
+    MARKETING_VERSION: ${AAPPS_VERSION}
+    CURRENT_PROJECT_VERSION: ${AAPPS_BUILD}
+    SWIFT_VERSION: "5.0"
+    SWIFT_STRICT_CONCURRENCY: minimal
+    CODE_SIGN_STYLE: Automatic
+targets:
+  moovr:
+    type: application
+    platform: iOS
+    sources:
+      - path: moovr
+      # Ordner-Referenzen: im Bundle als assets/ (Spiel wie Android) und ios-assets/ (AAC statt Ogg)
+      - path: ../../apps/moovr/src/main/assets
+        type: folder
+        buildPhase: resources
+      - path: ios-assets
+        type: folder
+        buildPhase: resources
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: solutions.xapient.moovr
+        PRODUCT_NAME: moovr
+        INFOPLIST_FILE: moovr/Info.plist
+        TARGETED_DEVICE_FAMILY: "1,2"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+  MoovrUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: MoovrUITests
+    dependencies:
+      - target: moovr
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: solutions.xapient.moovr.uitests
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_TARGET_NAME: moovr
+schemes:
+  moovr:
+    build:
+      targets:
+        moovr: all
+        MoovrUITests: [test]
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - MoovrUITests
+    archive:
+      config: Release

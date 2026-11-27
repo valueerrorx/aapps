@@ -15,6 +15,12 @@ import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
 import solutions.xapient.moovr.R
+import java.io.ByteArrayOutputStream
+import java.io.DataOutputStream
+import java.io.File
+import java.util.zip.CRC32
+import java.util.zip.Deflater
+import java.util.zip.DeflaterOutputStream
 import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.pow
@@ -101,6 +107,45 @@ class IconRenderTest {
         val bmp = Bitmap.createBitmap(512, 512, Bitmap.Config.ARGB_8888)
         drawIcon(Canvas(bmp), 0f, 0f, 512, Mask.NONE, false)
         bmp.captureRoboImage("screenshots/icon_store_512.png", options)
+    }
+
+    // iOS-App-Icon: 1024 px, randlos, ohne Alpha (iOS legt die Maske selbst an); nur beim Aufnehmen
+    @Test
+    fun icon_ios_1024() {
+        if (System.getProperty("roborazzi.test.record") != "true") return
+        val bmp = Bitmap.createBitmap(1024, 1024, Bitmap.Config.ARGB_8888)
+        drawIcon(Canvas(bmp), 0f, 0f, 1024, Mask.NONE, false)
+        val px = IntArray(1024 * 1024)
+        bmp.getPixels(px, 0, 1024, 0, 0, 1024, 1024)
+        File("../../iosApp/moovr/moovr/Assets.xcassets/AppIcon.appiconset/icon-1024.png").writeBytes(rgbPng(px, 1024, 1024))
+    }
+
+    // Minimaler PNG-Schreiber, Farbtyp 2 (RGB, 8 bit)
+    private fun rgbPng(px: IntArray, w: Int, h: Int): ByteArray {
+        val raw = ByteArrayOutputStream()
+        for (y in 0 until h) {
+            raw.write(0)
+            for (x in 0 until w) {
+                val c = px[y * w + x]
+                raw.write(c shr 16 and 0xFF); raw.write(c shr 8 and 0xFF); raw.write(c and 0xFF)
+            }
+        }
+        val out = ByteArrayOutputStream()
+        out.write(byteArrayOf(0x89.toByte(), 'P'.code.toByte(), 'N'.code.toByte(), 'G'.code.toByte(), 13, 10, 26, 10))
+        fun chunk(type: String, data: ByteArray) {
+            val d = DataOutputStream(out)
+            d.writeInt(data.size)
+            val td = type.toByteArray() + data
+            d.write(td)
+            d.writeInt(CRC32().apply { update(td) }.value.toInt())
+        }
+        val ihdr = ByteArrayOutputStream().also { DataOutputStream(it).apply { writeInt(w); writeInt(h); write(byteArrayOf(8, 2, 0, 0, 0)) } }
+        chunk("IHDR", ihdr.toByteArray())
+        val z = ByteArrayOutputStream()
+        DeflaterOutputStream(z, Deflater(9)).use { it.write(raw.toByteArray()) }
+        chunk("IDAT", z.toByteArray())
+        chunk("IEND", ByteArray(0))
+        return out.toByteArray()
     }
 
     // windowBackground bis Android 11, Querformat 800x480 bei mdpi
