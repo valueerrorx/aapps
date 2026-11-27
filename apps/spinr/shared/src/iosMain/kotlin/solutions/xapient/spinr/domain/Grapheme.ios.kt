@@ -4,6 +4,7 @@ import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.useContents
 import platform.Foundation.NSString
 import platform.Foundation.create
+import platform.Foundation.rangeOfComposedCharacterSequenceAtIndex
 
 // Grapheme ueber NSString (UTF-16 wie Kotlin-Strings): Anfang der Zeichenfolge, in der index liegt
 @OptIn(ExperimentalForeignApi::class, kotlinx.cinterop.BetaInteropApi::class)
