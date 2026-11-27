@@ -3,6 +3,7 @@ package solutions.xapient.scorr.domain
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.Test
+import kotlin.test.assertTrue
 
 class BoardTest {
     @Test fun portraitGrid() {
@@ -26,8 +27,8 @@ class BoardTest {
     @Test fun gridAlwaysFitsPlayers() {
         for (n in 1..8) for (l in listOf(true, false)) {
             val g = Board.grid(n, l)
-            assert(g.cols * g.rows >= n)
-            assert(g.cols * g.rows - n < g.cols)
+            assertTrue(g.cols * g.rows >= n)
+            assertTrue(g.cols * g.rows - n < g.cols)
         }
         assertEquals(Grid(1, 1), Board.grid(0, false))
     }

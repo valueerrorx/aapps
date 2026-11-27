@@ -18,7 +18,7 @@ class DialTest {
 
     @Test fun fractionJustLeftOfTwelveIsAlmostFull() {
         val f = Dial.fraction(-0.1f, -10f)
-        assert(f > 0.99 && f < 1.0) { "f=$f" }
+        assertTrue(f > 0.99 && f < 1.0, "f=$f")
     }
 
     // Finger von a nach b (Anteile, auch > 1 bzw. < 0) in kleinen Schritten
