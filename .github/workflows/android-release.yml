@@ -82,7 +82,7 @@ jobs:
           trap 'rm -f "$KEYSTORE_FILE"' EXIT
           printf '%s' "$KS_B64" | base64 -d > "$KEYSTORE_FILE"
           export KEYSTORE_PASSWORD="$KS_PW" "KEY_PASSWORD_${APP^^}=$KS_PW"
-          ./gradlew --no-daemon -Paapps.requireReleaseKey="$APP"":apps:$APP:bundleRelease" ":apps:$APP:assembleRelease"
+          ./gradlew --no-daemon -Paapps.requireReleaseKey="$APP" ":apps:$APP:bundleRelease" ":apps:$APP:assembleRelease"
           AAB=$(ls apps/$APP/build/outputs/bundle/release/*.aab)
           APK=$(ls apps/$APP/build/outputs/apk/release/*.apk)
           want=$(keytool -list -v -keystore "$KEYSTORE_FILE" -storepass:env KS_PW -alias "$APP" | sed -n 's/.*SHA256: //p' | head -1)
