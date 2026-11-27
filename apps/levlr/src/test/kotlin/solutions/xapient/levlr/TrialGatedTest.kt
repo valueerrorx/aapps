@@ -85,4 +85,18 @@ class TrialGatedTest {
         compose.setContent { TrialGated(LevlrAccent) { BasicText("APP") } }
         compose.onNodeWithText("APP").assertExists()
     }
+
+    @Test fun validBundleNeverShowsTrialOrPurchaseScreen() {
+        prefs.edit().clear().putLong(TrialGate.KEY_FIRST, 0L).commit()
+        owned = Owned.NONE
+        TrialGate.factory = { TrialGate(prefs, fake, { true }) { TrialPolicy.TRIAL_MS * 9 } }
+        compose.setContent { TrialGated(LevlrAccent) { BasicText("APP") } }
+        compose.onNodeWithText("APP").assertExists()
+        compose.onNodeWithText("RESTORE PURCHASE").assertDoesNotExist()
+    }
+
+    @Test fun thanksScreenLinksToBundle() {
+        start(TrialPolicy.TRIAL_MS)
+        compose.onNodeWithText("xapient bundle").performScrollTo().assertExists()
+    }
 }

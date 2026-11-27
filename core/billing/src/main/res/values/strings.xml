@@ -15,6 +15,6 @@
     <string name="billing_hint_notfound">No purchase found for this Google account.</string>
     <string name="billing_hint_offline">Google Play is not reachable right now. Please try again later.</string>
     <string name="billing_hint_unavailable">The purchase cannot be started right now. Please try again later.</string>
-    <string name="billing_bundle">All xapient apps at once:</string>
+    <string name="billing_bundle">All 16 xapient apps plus future ones for €9.99</string>
     <string name="billing_bundle_name" translatable="false">xapient bundle</string>
 </resources>

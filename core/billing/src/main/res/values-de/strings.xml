@@ -15,5 +15,5 @@
     <string name="billing_hint_notfound">Für dieses Google-Konto wurde kein Kauf gefunden.</string>
     <string name="billing_hint_offline">Google Play ist gerade nicht erreichbar. Bitte versuch es später noch einmal.</string>
     <string name="billing_hint_unavailable">Der Kauf lässt sich gerade nicht starten. Bitte versuch es später noch einmal.</string>
-    <string name="billing_bundle">Alle xapient-Apps auf einmal:</string>
+    <string name="billing_bundle">Alle 16 xapient-Apps plus künftige um 9,99 €</string>
 </resources>
