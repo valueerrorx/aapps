@@ -15,7 +15,7 @@ aapps {
 }
 
 dependencies {
-    implementation(project(":core:ui"))
+    implementation(project(":apps:roundr:shared"))
     implementation(libs.androidx.core.ktx)
 
     testImplementation(libs.junit)

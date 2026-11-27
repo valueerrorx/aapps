@@ -1,76 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="tagline">Ein Intervall-Timer für Sport, Spielrunden, Lernen und mehr. Große Zahlen, kräftige Farben, klare Signale.</string>
-    <string name="note_background">Der Timer läuft bei gesperrtem Bildschirm weiter. Die Benachrichtigung zeigt die Phase, dort kannst du anhalten oder beenden.</string>
-
     <string name="phase_prep">Bereit machen</string>
     <string name="phase_work">Aktiv</string>
     <string name="phase_rest">Pause</string>
     <string name="phase_set_rest">Blockpause</string>
-
-    <string name="preset_tabata">Tabata</string>
-    <string name="preset_tabata3">Tabata · 3 Blöcke</string>
-    <string name="preset_hiit">HIIT 40/20</string>
-    <string name="preset_emom">EMOM</string>
-    <string name="preset_boxing">Boxen</string>
-    <string name="preset_game">Spielrunde</string>
-    <string name="preset_study">Lernen 25/5</string>
-    <string name="custom">Eigenes</string>
-
     <string name="round_of">Runde %1$d/%2$d</string>
     <string name="round_set_of">Runde %1$d/%2$d · Block %3$d/%4$d</string>
     <string name="next_is">Danach · %1$s %2$s</string>
-    <string name="last_phase">Die letzte</string>
-    <string name="paused">Angehalten</string>
     <string name="paused_at">Angehalten · noch %1$s</string>
-    <plurals name="seconds_left">
-        <item quantity="one">Noch %1$d Sekunde</item>
-        <item quantity="other">Noch %1$d Sekunden</item>
-    </plurals>
     <string name="pause">Anhalten</string>
     <string name="resume">Weiter</string>
     <string name="skip">Nächste Phase</string>
-    <string name="back">Vorige Phase</string>
     <string name="stop">Beenden</string>
-    <string name="stop_confirm">Nochmal tippen zum Beenden</string>
     <string name="notify_channel">Laufender Timer</string>
-
-    <string name="start">Start</string>
-    <string name="total">Gesamt</string>
-    <string name="total_is">Gesamt %1$s</string>
-    <string name="library">Meine Timer</string>
-    <string name="edit">Bearbeiten</string>
-    <string name="rounds">Runden</string>
-    <string name="sets">Blöcke</string>
-    <string name="field_prep">Vorbereitung</string>
-    <string name="less_named">%1$s weniger</string>
-    <string name="more_named">%1$s mehr</string>
-
-    <string name="done">Geschafft</string>
-    <plurals name="rounds_done">
-        <item quantity="one">%1$d Runde</item>
-        <item quantity="other">%1$d Runden</item>
-    </plurals>
-    <string name="again">Nochmal</string>
-    <string name="close">Schließen</string>
-
-    <string name="presets">Vorlagen</string>
-    <string name="saved">Gespeichert</string>
-    <string name="saved_empty">Bearbeite einen Timer und speichere ihn unter einem Namen. Dann steht er hier.</string>
-    <string name="selected">Gewählt</string>
-    <string name="delete_named">%1$s löschen</string>
-    <string name="delete_confirm">Nochmal × tippen zum Löschen</string>
-    <string name="save_as">Speichern als</string>
-    <string name="name_hint">Name</string>
-    <string name="save">Speichern</string>
-    <string name="saved_full">Die Liste ist voll (%1$d). Lösche zuerst eines.</string>
-    <string name="saved_count">%1$d von %2$d gespeichert</string>
-
-    <string name="group_signals">Signale</string>
-    <string name="sound">Töne</string>
-    <string name="sound_sub">3-2-1 vor jedem Phasenende, über die Medienlautstärke</string>
-    <string name="vibrate">Vibration</string>
-    <string name="group_display">Anzeige</string>
-    <string name="keep_on">Bildschirm an lassen</string>
-    <string name="keep_on_sub">Solange ein Timer läuft</string>
 </resources>

@@ -8,14 +8,14 @@ import solutions.xapient.roundr.domain.Run
 import solutions.xapient.roundr.domain.Workout
 
 // Training, Vorlagen, Lauf und Einstellungen; Backup ist aus
-class Prefs(context: Context) {
+class Prefs(context: Context) : RoundrPrefs {
     private val sp = context.applicationContext.getSharedPreferences("roundr", Context.MODE_PRIVATE)
 
-    var workout: Workout
+    override var workout: Workout
         get() = Codec.decode(sp.getString("workout", null)) ?: Presets.default
         set(v) = sp.edit { putString("workout", Codec.encode(v)) }
 
-    var saved: List<Workout>
+    override var saved: List<Workout>
         get() = Codec.decodeList(sp.getString("saved", null))
         set(v) = sp.edit { putString("saved", Codec.encodeList(v)) }
 
@@ -24,15 +24,15 @@ class Prefs(context: Context) {
         get() = Codec.decodeRun(sp.getString("run", null))
         set(v) = sp.edit(commit = true) { if (v == null) remove("run") else putString("run", Codec.encodeRun(v)) }
 
-    var sound: Boolean
+    override var sound: Boolean
         get() = sp.getBoolean("sound", true)
         set(v) = sp.edit { putBoolean("sound", v) }
 
-    var vibrate: Boolean
+    override var vibrate: Boolean
         get() = sp.getBoolean("vibrate", true)
         set(v) = sp.edit { putBoolean("vibrate", v) }
 
-    var keepOn: Boolean
+    override var keepOn: Boolean
         get() = sp.getBoolean("keepOn", true)
         set(v) = sp.edit { putBoolean("keepOn", v) }
 
