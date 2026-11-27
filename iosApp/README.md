@@ -95,3 +95,8 @@ Signieren: Target **levlr** → **Signing & Capabilities** → **Automatically m
 - **Bedienungshilfen**: Android sagt das Ergebnis über TalkBack an; ob VoiceOver das auf iOS ebenso tut, ist am Gerät zu prüfen (in der Store-Beschreibung deshalb nicht erwähnt).
 - **Zeichen kürzen**: Einträge werden an Graphem-Grenzen gekürzt (Android BreakIterator, iOS NSString composed character sequences).
 - **Drehung, Zurück, Sicherung**: wie levlr.
+
+## Einschränkungen auf iOS (magnr)
+- **Sensor**: CoreMotion Device Motion (kalibriertes Magnetfeld in µT, 50 Hz) statt des Android-Magnetsensors; die Lage kommt aus Gyro + Schwerkraft mit Magnetometer-Korrektur und wird für den Feld-Ausgleich beim Drehen genutzt wie auf Android. iOS nennt keinen Messbereich, die Sättigung wird daher nur an einer stehen bleibenden Achse erkannt. Keine Berechtigung nötig. Der Simulator hat kein Magnetometer (zeigt „kein Sensor“, Screenshots über feste Szenen).
+- **Ton**: AVAudioEngine mit derselben Ton-Synthese wie Android, Audio-Kategorie Ambient (Stummschalter gilt, Musik läuft weiter).
+- **Haptik, Drehung, Zurück, Sicherung**: wie levlr.

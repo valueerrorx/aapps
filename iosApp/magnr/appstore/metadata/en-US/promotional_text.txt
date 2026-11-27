@@ -1,0 +1,1 @@
+Honest metal detector: finds screws, nails, studs and magnets with the magnetometer, readings in µT. No tracking, no location access, fully offline, open source.

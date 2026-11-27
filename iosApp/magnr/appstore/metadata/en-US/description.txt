@@ -1,0 +1,21 @@
+magnr uses the magnetometer of your iPhone or iPad to find screws, nails, steel beams and magnets nearby. A fan of eight arcs shows how far the field deviates from the baseline, with the deviation in microtesla below.
+
+What magnr finds and what it does not: it only detects ferromagnetic metals (iron, steel, nickel) and magnets. It does not detect gold, silver, copper or aluminium. magnr is not a wire or pipe detector: cables and pipes may go unnoticed. The sensor usually sits near the top of the device, so move the top edge slowly across the surface.
+
+Features
+• Deviation from the baseline in µT, plus field strength, baseline and peak
+• Three sensitivity levels
+• Zero at the push of a button and slow drift compensation at rest (can be turned off)
+• Compensates a residual sensor offset when tilting
+• Haptic tap as the level rises, optional beeps
+• History of the last 20 seconds
+• Calibration hint and a notice when the sensor is saturated
+• Portrait and landscape, iPad with Split View, English and German
+
+magnr asks for no permissions and does not access your location.
+
+Try magnr free for one day with every feature: just start the free trial in the app. After that, a one-time purchase unlocks it for good, including all future updates. No subscription, no ads.
+
+• Private: no tracking, no account, no data collected. magnr does not make money from your data.
+• Completely offline: magnr works without a connection. Only the purchase goes through the App Store, the app itself never goes online.
+• Open source: free software under the GNU GPLv3. Source code: https://github.com/valueerrorx/aapps

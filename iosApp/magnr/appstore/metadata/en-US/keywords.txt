@@ -1,0 +1,1 @@
+magnetometer,magnet,stud finder,screw,nail,steel,iron,microtesla,field,sensor,detector,offline

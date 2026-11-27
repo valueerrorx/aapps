@@ -1,0 +1,1 @@
+Ehrlicher Metalldetektor: findet Schrauben, Nägel, Ständer und Magnete über das Magnetometer, Anzeige in µT. Ohne Tracking, ohne Standort, offline, Open Source.

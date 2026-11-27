@@ -1,0 +1,1 @@
+magnetometer,magnet,ständer,schraube,nagel,stahl,eisen,mikrotesla,magnetfeld,sensor,detektor
