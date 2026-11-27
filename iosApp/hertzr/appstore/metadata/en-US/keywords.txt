@@ -1,0 +1,1 @@
+frequency,sine,square,sawtooth,sweep,speaker,subwoofer,test,hearing,oscilloscope,signal,hz

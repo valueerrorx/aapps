@@ -133,3 +133,9 @@ Gratis, ohne Kauf und ohne Kotlin: je App eine eigene Swift-Hülle `WebGame.swif
 - **Pause**: beim Wechsel in den Hintergrund `<app>Pause()`, danach `<app>Resume()` wie auf Android.
 - **Absturz des Web-Prozesses**: neu laden, höchstens einmal pro 30 s.
 - **Spielstand**: localStorage der WebView (bleibt bei Updates, geht beim Löschen der App verloren).
+
+## Einschränkungen auf iOS (hertzr)
+- **Audio**: AVAudioEngine mit vier Puffern zu je 512 Frames bei fester Rate 48 kHz (rund 43 ms, der Mixer passt an die Hardware an); derselbe `ToneRenderer` wie auf Android, Obergrenze damit immer 22 kHz. Hintergrund-Audio statt Vordergrunddienst, Anzeige und Stopp am Sperrbildschirm statt Benachrichtigung, darum keine Berechtigung.
+- **Schutz**: Kopfhörer über die Audio-Route (kabelgebunden, Bluetooth), Stopp bei abgezogenem Kopfhörer und bei Unterbrechung wie `AudioGuard` auf Android.
+- **Haptik**: Anschlag am Bandende = Fehler-Haptik (`UINotificationFeedbackGenerator`), sonst wie levlr.
+- **Zurück, Sicherung**: wie levlr.

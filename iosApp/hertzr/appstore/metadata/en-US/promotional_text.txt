@@ -1,0 +1,1 @@
+A clean tone from 1 Hz to 22 kHz: four waveforms, logarithmic sweep, left/right/inverted output and an oscilloscope. No tracking, fully offline, open source.

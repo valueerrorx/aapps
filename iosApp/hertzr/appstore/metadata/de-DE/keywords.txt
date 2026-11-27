@@ -1,0 +1,1 @@
+frequenz,sinus,rechteck,sägezahn,sweep,lautsprecher,subwoofer,test,hörtest,oszilloskop,signal

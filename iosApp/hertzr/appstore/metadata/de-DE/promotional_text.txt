@@ -1,0 +1,1 @@
+Sauberer Ton von 1 Hz bis 22 kHz: vier Wellenformen, logarithmischer Sweep, Ausgang links/rechts/gegenphasig und Oszilloskop. Ohne Tracking, offline, Open Source.

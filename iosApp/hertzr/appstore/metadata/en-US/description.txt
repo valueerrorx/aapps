@@ -1,0 +1,24 @@
+hertzr generates a clean tone with a precisely adjustable frequency and waveform. For speaker and subwoofer tests, finding room resonances, exploring your own hearing range or physics lessons.
+
+Features
+• Frequency from 1 Hz to 22 kHz
+• Adjust with a logarithmic frequency band, −/+, octave steps or direct input
+• Shows the nearest note name with its deviation in cents
+• Sine, square, triangle and sawtooth waveforms with anti-aliasing
+• Sweep: logarithmic from start to end frequency in 5 to 60 seconds
+• Output on both channels, left only, right only or inverted (polarity test)
+• Oscilloscope display of the waveform
+• Keeps playing with the screen locked, stop it from the lock screen; stops when you unplug your headphones or a call comes in
+• Portrait and landscape, iPhone and iPad, English and German
+
+Protect your ears and speakers: hertzr starts at −24 dB, fades in and out smoothly, warns at high levels and turns the level down when headphones are connected during playback. Always start quietly anyway.
+
+hertzr is a technical tool, with no "healing frequencies" and no health claims.
+
+hertzr asks for no permissions.
+
+Try hertzr free for one day with every feature: just start the trial in the app. After that, a one-time purchase unlocks it for good, including all future updates. No subscription, no ads.
+
+• Private: no tracking, no account, no data collected. hertzr does not make money from your data.
+• Completely offline: hertzr works without a connection. Only the purchase goes through the App Store, the app itself never goes online.
+• Open source: free software under the GNU GPLv3. Source code: https://github.com/valueerrorx/aapps
