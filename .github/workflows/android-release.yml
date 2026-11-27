@@ -89,7 +89,8 @@ jobs:
           BT=$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)
           "$BT/apksigner" verify --print-certs "$APK" > "$RUNNER_TEMP/apk-certs.txt"
           apk=$(sed -n 's/.*certificate SHA-256 digest: //p' "$RUNNER_TEMP/apk-certs.txt" | head -1 | tr 'a-f' 'A-F')
-          jarsigner -verify -strict "$AAB" > /dev/null
+          # ohne -strict: der Upload-Key ist selbstsigniert (Exit 4 = Kette nicht validiert)
+          jarsigner -verify "$AAB" | grep -qx 'jar verified.' || { echo "::error::AAB-Signatur ungueltig"; exit 1; }
           aab=$(keytool -printcert -jarfile "$AAB" | sed -n 's/.*SHA256: //p' | head -1)
           [ -n "$want" ] && [ "$aab" = "$want" ] && [ "$apk" = "$(echo "$want" | tr -d ':')" ] \
             || { echo "::error::Signatur stimmt nicht mit dem Upload-Key ueberein"; exit 1; }
