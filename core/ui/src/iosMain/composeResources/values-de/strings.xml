@@ -2,7 +2,7 @@
 <resources>
     <string name="ios_promise_offline">Geht nie ins Internet</string>
     <string name="store_offer_title">Einen Tag gratis testen</string>
-    <string name="store_offer_text">Nutze einen Tag lang alle Funktionen, kostenlos und ohne Abo. Danach bleibt die App gesperrt, bis du sie mit einem einmaligen Kauf freischaltest – inklusive aller zukünftigen Updates.</string>
+    <string name="store_offer_text">Nutze einen Tag lang alle Funktionen, kostenlos und ohne Abo. Danach bleibt die App gesperrt, bis du sie mit einem einmaligen Kauf freischaltest – inklusive aller zukünftigen Updates.\n\nZum Start zeigt Apple einen Kauf um 0,00 € an, den du mit Face ID oder Passwort bestätigst. Das kostet nichts und verlängert sich nicht.</string>
     <string name="store_offer_price">Nach der Testphase: einmaliger Kauf für %1$s.</string>
     <string name="store_trial_start">Testphase starten</string>
     <string name="store_title">Danke!</string>
