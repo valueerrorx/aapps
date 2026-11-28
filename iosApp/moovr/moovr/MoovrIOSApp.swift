@@ -56,9 +56,10 @@ struct MoovrIOSApp: App {
     }()
 }
 
-// Screenshots: App hochkant halten, das Spiel dreht WebGame.swift selbst ins Querformat
+// Screenshots: iPhone hochkant halten, das Spiel dreht WebGame.swift selbst ins Querformat.
+// iPad nicht: dort bleibt die App im Simulator ohnehin hochkant, erzwungenes Hochformat gibt nur ein kleines Fenster.
 final class ShotOrientation: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
-        MoovrIOSApp.scene == nil ? .landscape : .portrait
+        MoovrIOSApp.scene == nil || UIDevice.current.userInterfaceIdiom == .pad ? .landscape : .portrait
     }
 }

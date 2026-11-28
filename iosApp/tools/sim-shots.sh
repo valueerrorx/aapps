@@ -24,13 +24,15 @@ xcrun simctl install "$UDID" "$APP"
 TOOLS=$(cd "$(dirname "$0")" && pwd)
 SMALL=$(mktemp -t shot).png
 has_content() {
-  sips -Z 320 "$1" --out "$SMALL" > /dev/null 2>&1 &&
+  rm -f "$SMALL"
+  # sips meldet bei fehlender Datei nur eine Warnung (Exit 0), darum Datei selbst pruefen
+  [ -s "$1" ] && sips -Z 320 "$1" --out "$SMALL" > /dev/null 2>&1 && [ -s "$SMALL" ] &&
     python3 -I "$TOOLS/shot-content.py" "$SMALL" | awk 'END { exit !($1 > 0.005) }'
 }
 
 # simctl mit Zeitlimit (haengt sonst ggf. bis zum Job-Abbruch); <sekunden> <befehl...>
 limit() { perl -e 'alarm shift; exec @ARGV' "$@"; }
-snap() { rm -f "$1"; limit 30 xcrun simctl io "$UDID" screenshot "$1" > /dev/null 2>&1 || true; }
+snap() { rm -f "$1"; limit 60 xcrun simctl io "$UDID" screenshot "$1" > /dev/null 2>&1 || echo "::warning::$TYPE $LOCALE: Foto fehlgeschlagen"; }
 
 # Szene starten und fotografieren, sobald Inhalt da ist (+3 s fuer Animationen); bis zu 3 Starts
 shoot() {
