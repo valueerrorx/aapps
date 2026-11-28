@@ -2,7 +2,7 @@ import XCTest
 
 // Startet das Spiel in den Screenshot-Zustaenden und haengt Bilder an das Testergebnis
 final class ScreenshotTests: XCTestCase {
-    private let scenes = ["MENU", "PLAY"]
+    private let scenes = ["MENU", "PLAY", "RUN", "SUPER", "RESULT"]
 
     override func setUpWithError() throws {
         continueAfterFailure = false

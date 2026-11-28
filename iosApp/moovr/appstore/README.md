@@ -15,4 +15,4 @@ Spielfläche im Seitenverhältnis 16:10 (768×480) eingepasst, Rest schwarz (Pha
 Keine. `UIRequiredDeviceCapabilities`: arm64. Nur Querformat, iPad im Vollbild (`UIRequiresFullScreen`).
 
 ## Screenshots
-Szenen `scenes.txt` (`MENU`, `PLAY`), Startargument `-aappsScene <NAME>` (nur Debug). Das Spiel läuft quer, der Simulator liefert das Bild hochkant: `rotate.txt` = Grad im Uhrzeigersinn, um die `sim-shots.sh` dreht (bei Querlage „Home rechts“ = 270).
+Szenen `scenes.txt` (`MENU`, `PLAY`, `RUN`, `SUPER`, `RESULT`), Startargument `-aappsScene <NAME>` (nur Debug). Fahrten halten bei festen Metern an (Spielzeit), das Menü zeigt einen Rekord. Im Screenshot-Modus bleibt die App hochkant und `WebGame.swift` dreht das Spiel selbst quer auf den ganzen Bildschirm (ohne Balken, gestreckt wie auf Android), so hängt nichts von einer Simulator-Drehung ab. `rotate.txt` = Grad im Uhrzeigersinn, um die `sim-shots.sh` das Foto (iPhone und iPad) gerade dreht (270).
