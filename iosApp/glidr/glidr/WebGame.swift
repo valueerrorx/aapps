@@ -61,6 +61,8 @@ final class WebGameController: UIViewController, WKNavigationDelegate, WKUIDeleg
         scripts.addUserScript(WKUserScript(source: Self.oggToM4a, injectionTime: .atDocumentStart, forMainFrameOnly: true))
         scripts.addUserScript(WKUserScript(source: Self.noSelection, injectionTime: .atDocumentEnd, forMainFrameOnly: true))
         if sceneScript != nil {
+            // iPad: Desktop-Modus nimmt die Bildschirmbreite (hochkant) als device-width, das Spiel waere zu klein
+            config.defaultWebpagePreferences.preferredContentMode = .mobile
             scripts.addUserScript(WKUserScript(source: Self.shotSetup + scenePrelude, injectionTime: .atDocumentStart, forMainFrameOnly: true))
         }
 
@@ -117,6 +119,17 @@ final class WebGameController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     private func start() {
         started = true
+        // Screenshots: Viewport fest auf die (quer gedrehte) WebView-Groesse statt device-width
+        if sceneScript != nil {
+            let w = Int(webView.bounds.width), h = Int(webView.bounds.height)
+            let fix = """
+            new MutationObserver(function (l, o) {
+                var m = document.querySelector('meta[name=viewport]');
+                if (m) { m.setAttribute('content', 'width=\(w), height=\(h), initial-scale=1, maximum-scale=1, user-scalable=no'); o.disconnect(); }
+            }).observe(document, { childList: true, subtree: true });
+            """
+            webView.configuration.userContentController.addUserScript(WKUserScript(source: fix, injectionTime: .atDocumentStart, forMainFrameOnly: true))
+        }
         webView.load(URLRequest(url: BundleAssets.start))
     }
 

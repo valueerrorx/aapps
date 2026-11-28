@@ -28,17 +28,23 @@ has_content() {
     python3 -I "$TOOLS/shot-content.py" "$SMALL" | awk 'END { exit !($1 > 0.005) }'
 }
 
+# simctl mit Zeitlimit (haengt sonst ggf. bis zum Job-Abbruch); <sekunden> <befehl...>
+limit() { perl -e 'alarm shift; exec @ARGV' "$@"; }
+snap() { rm -f "$1"; limit 30 xcrun simctl io "$UDID" screenshot "$1" > /dev/null 2>&1 || true; }
+
 # Szene starten und fotografieren, sobald Inhalt da ist (+3 s fuer Animationen); bis zu 3 Starts
 shoot() {
   local scene=$1 f=$2 try wait
   for try in 1 2 3; do
-    xcrun simctl launch --terminate-running-process "$UDID" "$BUNDLE" -aappsScene "$scene" -AppleLanguages "($LANG_)" -AppleLocale "$CC" > /dev/null
+    echo "$(date +%T) $TYPE $LOCALE $scene"
+    limit 120 xcrun simctl launch --terminate-running-process "$UDID" "$BUNDLE" -aappsScene "$scene" -AppleLanguages "($LANG_)" -AppleLocale "$CC" > /dev/null ||
+      echo "::warning::$TYPE $LOCALE $scene: Start fehlgeschlagen oder Zeitlimit"
     sleep "${SHOT_WAIT:-6}"
     for wait in 1 2 3 4 5 6 7 8 9 10; do
-      xcrun simctl io "$UDID" screenshot "$f" > /dev/null 2>&1
+      snap "$f"
       if has_content "$f"; then
         sleep 3
-        xcrun simctl io "$UDID" screenshot "$f" > /dev/null 2>&1
+        snap "$f"
         if has_content "$f"; then return 0; fi
       fi
       sleep 2
