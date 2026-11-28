@@ -111,6 +111,21 @@ final class WebGameController: UIViewController, WKNavigationDelegate, WKUIDeleg
         webView.center = CGPoint(x: b.midX, y: b.midY)
         webView.transform = turn ? CGAffineTransform(rotationAngle: .pi / 2) : .identity
         if !started { start() }
+        logLayout()
+    }
+
+    // Screenshots: Groessen fuer das CI-Log (sim-shots.sh liest Documents/shot-layout.txt)
+    private func logLayout() {
+        let win = view.window
+        let scene = win?.windowScene
+        let text = """
+        screen \(UIScreen.main.bounds.size) window \(win?.bounds.size ?? .zero) view \(view.bounds.size) web \(webView.bounds.size) \
+        orientation \(scene?.effectiveGeometry.interfaceOrientation.rawValue ?? -1) \
+        sizeClass \(traitCollection.horizontalSizeClass.rawValue)x\(traitCollection.verticalSizeClass.rawValue)
+
+        """
+        let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        try? text.write(to: dir.appendingPathComponent("shot-layout.txt"), atomically: true, encoding: .utf8)
     }
 
     private var started = false

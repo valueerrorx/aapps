@@ -64,6 +64,9 @@ for spec in en-US:en:en_US de-DE:de:de_AT; do
   for scene in "$@"; do
     f="$OUT/$LOCALE/$TYPE/$(printf %02d "$n")_$(echo "$scene" | tr 'A-Z' 'a-z').png"
     shoot "$scene" "$f"
+    # Spiele schreiben ihre Fenster-/Bildschirmgroesse mit (Diagnose)
+    DATA=$(xcrun simctl get_app_container "$UDID" "$BUNDLE" data 2>/dev/null || true)
+    if [ -n "$DATA" ] && [ -f "$DATA/Documents/shot-layout.txt" ]; then echo "layout $scene: $(cat "$DATA/Documents/shot-layout.txt")"; fi
     got="$(sips -g pixelWidth -g pixelHeight "$f" | awk '/pixelWidth/{w=$2}/pixelHeight/{h=$2}END{print w"x"h}')"
     if [ "$got" != "$SIZE" ]; then echo "::error::$f ist $got statt $SIZE"; exit 1; fi
     # Querformat-App: Simulator liefert das Bild hochkant, gerade drehen (SHOT_ROTATE = Grad im Uhrzeigersinn)
