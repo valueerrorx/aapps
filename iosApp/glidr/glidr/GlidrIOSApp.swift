@@ -60,10 +60,10 @@ struct GlidrIOSApp: App {
     }()
 }
 
-// Screenshots: iPhone hochkant halten, das Spiel dreht WebGame.swift selbst ins Querformat.
-// iPad nicht: dort bleibt die App im Simulator ohnehin hochkant, erzwungenes Hochformat gibt nur ein kleines Fenster.
+// Screenshots: App hochkant halten, das Spiel dreht WebGame.swift selbst ins Querformat.
+// iPad: Debug-Info.plist erlaubt dafuer Hochformat (project.yml), sonst skaliert iPadOS die Querszene auf 3/4.
 final class ShotOrientation: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
-        GlidrIOSApp.scene == nil || UIDevice.current.userInterfaceIdiom == .pad ? .landscape : .portrait
+        GlidrIOSApp.scene == nil ? .landscape : .portrait
     }
 }
