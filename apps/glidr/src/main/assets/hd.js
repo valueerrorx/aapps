@@ -1,16 +1,14 @@
-// HD-Grafik fuer glidr: Canvas in doppelter Aufloesung, Spiellogik bleibt 768x480.
-// URL-Parameter: ?hd=0 = Original (768x480, alte PNGs), ?gfx=b = Stil-Variante B.
+// HD-Grafik (glidr, moovr): Canvas in doppelter Aufloesung, Spiellogik bleibt 768x480.
+// URL-Parameter ?hd=0 = Original (768x480, alte PNGs) zum Vergleich.
 // Prinzip: Atlas-/Font-Koordinaten bleiben logisch (JSON/XML unveraendert),
 // die @2x-PNGs bekommen baseTexture.resolution=2 und nur das Zeichnen liest Quellpixel x2.
 (function () {
-    var q = new URLSearchParams(location.search);
-    var hd = q.get("hd") !== "0";
-    var styled = hd && q.get("gfx") === "b" ? ".styled" : "";
-    window.glidrHD = {
+    var hd = new URLSearchParams(location.search).get("hd") !== "0";
+    window.hdGfx = {
         on: hd,
         resolution: hd ? 2 : 1,
-        sprites: hd ? "assets/sprites/allsprites@2x" + styled + ".png" : "assets/sprites/allsprites.png",
-        font: hd ? "assets/fonts/font1@2x" + styled + ".png" : "assets/fonts/font1.png",
+        sprites: hd ? "assets/sprites/allsprites@2x.png" : "assets/sprites/allsprites.png",
+        font: hd ? "assets/fonts/font1@2x.png" : "assets/fonts/font1.png",
     };
     if (!hd) return;
 
@@ -21,7 +19,7 @@
             var base = PIXI.BaseTextureCache[key];
             if (base && /@2x/.test(url)) {
                 base.resolution = 2;
-                base.glidrHD = true;
+                base.hdGfx = true;
             }
             return r;
         };
@@ -30,12 +28,28 @@
     C.addTextureAtlas = markHD(C.addTextureAtlas);
     C.addBitmapFont = markHD(C.addBitmapFont);
 
+    // Einfaerben wie PIXI.CanvasTinter.tintWithMultiply, nur in Quellaufloesung
+    function tintHD(t, tint, B, canvas) {
+        var cr = t.crop, w = Math.round(cr.width * B), h = Math.round(cr.height * B);
+        canvas = canvas || document.createElement("canvas");
+        canvas.width = w;
+        canvas.height = h;
+        var c = canvas.getContext("2d"), src = t.baseTexture.source;
+        c.fillStyle = "#" + ("00000" + (tint | 0).toString(16)).substr(-6);
+        c.fillRect(0, 0, w, h);
+        c.globalCompositeOperation = "multiply";
+        c.drawImage(src, cr.x * B, cr.y * B, w, h, 0, 0, w, h);
+        c.globalCompositeOperation = "destination-atop";
+        c.drawImage(src, cr.x * B, cr.y * B, w, h, 0, 0, w, h);
+        return canvas;
+    }
+
     // Sprite/Image/BitmapText-Zeichen: Quelle = crop*B, Ziel = logisch*R (sonst Original-Pfad)
     var S = PIXI.Sprite.prototype;
     var spriteCanvas = S._renderCanvas;
     S._renderCanvas = function (rs) {
         var t = this.texture;
-        if (!t.baseTexture.glidrHD || this.tint !== 0xffffff) return spriteCanvas.call(this, rs);
+        if (!t.baseTexture.hdGfx) return spriteCanvas.call(this, rs);
         if (this.visible === false || this.alpha === 0 || this.renderable === false || t.crop.width <= 0 || t.crop.height <= 0) return;
         var ctx = rs.context, B = t.baseTexture.resolution, R = rs.resolution, wt = this.worldTransform, cr = t.crop;
         if (this.blendMode !== rs.currentBlendMode) {
@@ -56,7 +70,18 @@
                 dx |= 0;
                 dy |= 0;
             } else ctx.setTransform(wt.a, wt.b, wt.c, wt.d, wt.tx * R, wt.ty * R);
-            ctx.drawImage(t.baseTexture.source, cr.x * B, cr.y * B, cr.width * B, cr.height * B, dx * R, dy * R, cr.width * R, cr.height * R);
+            var src = t.baseTexture.source, sx = cr.x * B, sy = cr.y * B;
+            if (this.tint !== 0xffffff) {
+                // Animationen tauschen crop im selben Texture-Objekt -> Schluessel inkl. crop
+                var key = this.tint + ":" + cr.x + "," + cr.y + "," + cr.width + "," + cr.height;
+                if (this._hdTintKey !== key) {
+                    this._hdTintKey = key;
+                    this._hdTinted = tintHD(t, this.tint, B, this._hdTinted);
+                }
+                src = this._hdTinted;
+                sx = sy = 0;
+            }
+            ctx.drawImage(src, sx, sy, cr.width * B, cr.height * B, dx * R, dy * R, cr.width * R, cr.height * R);
         }
         for (var i = 0; i < this.children.length; i++) this.children[i]._renderCanvas(rs);
         if (this._mask) rs.maskManager.popMask(rs);
@@ -67,7 +92,7 @@
     var tileGen = T.generateTilingTexture, tileCanvas = T._renderCanvas;
     function hdSource(ts) {
         var e = ts.originalTexture || ts.texture;
-        return e.baseTexture.glidrHD ? e : null;
+        return e.baseTexture.hdGfx ? e : null;
     }
     T.generateTilingTexture = function (pow2) {
         var e = hdSource(this);
@@ -80,7 +105,7 @@
         this.tilingTexture = PIXI.Texture.fromCanvas(buf.canvas);
         this.tilingTexture.canvasBuffer = buf;
         this.tilingTexture.isTiling = true;
-        this.tilingTexture.glidrScale = B;
+        this.tilingTexture.hdScale = B;
         this.tileScaleOffset.x = 1 / B;
         this.tileScaleOffset.y = 1 / B;
         this.refreshTexture = false;
@@ -103,7 +128,7 @@
             rs.currentBlendMode = this.blendMode;
             ctx.globalCompositeOperation = PIXI.blendModesCanvas[rs.currentBlendMode];
         }
-        var B = this.tilingTexture.glidrScale || 1, p = this.tilePosition, s = this.tileScale;
+        var B = this.tilingTexture.hdScale || 1, p = this.tilePosition, s = this.tileScale;
         p.x %= this.tilingTexture.baseTexture.width / B;
         p.y %= this.tilingTexture.baseTexture.height / B;
         // wie Original, nur Musterpixel = 1/B Welteinheit
