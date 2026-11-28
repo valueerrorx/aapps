@@ -79,7 +79,7 @@ var PreloadState = {
         // gray filter 
         game.load.script('Gray', 'Gray.js');
         // font
-        game.load.bitmapFont('desyrel', 'assets/fonts/font1.png', 'assets/fonts/font1.xml');
+        game.load.bitmapFont('desyrel', hdGfx.font, 'assets/fonts/font1.xml');
         //sounds
         //game.load.audio('clumsytheme', 'assets/sounds/clumsycowrag.ogg');
         game.load.audio('clumsycowragfast', 'assets/sounds/clumsycowragfast.ogg',false);
@@ -103,7 +103,7 @@ var PreloadState = {
         //polygons
         game.load.physics('border-polygons', './assets/polygons/border.json');
         //sprites
-        game.load.atlas('allsprites', 'assets/sprites/allsprites.png', 'assets/sprites/allsprites.jsona');
+        game.load.atlas('allsprites', hdGfx.sprites, 'assets/sprites/allsprites.jsona');
         game.load.image('help','assets/sprites/clumsy-cheatsheet.jpg');
     },
     create: function() {
@@ -1733,7 +1733,8 @@ function destroyCover() {
         tweenx2 = game.add.tween(icon_cowjump ).to({ alpha : 1, x:"60"  }, 600, Phaser.Easing.Exponential.Out, true);
     }
 }
-var game = new Phaser.Game(worldwidth, worldheight, Phaser.CANVAS, '', {});
+// Config-Objekt statt positional, damit die Render-Aufloesung (hd.js) gesetzt werden kann
+var game = new Phaser.Game({ width: worldwidth, height: worldheight, renderer: Phaser.CANVAS, parent: '', state: {}, resolution: hdGfx.resolution });
 game.state.add('boot', BootState, true);
 game.state.add('preload', PreloadState, false);
 game.state.add('menu', Menu, false);
