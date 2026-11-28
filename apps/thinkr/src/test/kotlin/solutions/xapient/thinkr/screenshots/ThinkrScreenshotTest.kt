@@ -1,8 +1,6 @@
 package solutions.xapient.thinkr.screenshots
 
-import androidx.compose.foundation.ScrollState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
 import com.github.takahirom.roborazzi.RobolectricDeviceQualifiers
 import com.github.takahirom.roborazzi.RoborazziOptions
@@ -19,7 +17,6 @@ import solutions.xapient.thinkr.R
 import solutions.xapient.thinkr.domain.Daily
 import solutions.xapient.thinkr.domain.echo.EchoGame
 import solutions.xapient.thinkr.domain.echo.EchoState
-import solutions.xapient.thinkr.ui.DailyItem
 import solutions.xapient.thinkr.ui.GameItem
 import solutions.xapient.thinkr.ui.GamesScreen
 import solutions.xapient.thinkr.ui.HomeScreen
@@ -56,14 +53,10 @@ class ThinkrScreenshotTest {
     private val weekDone = listOf(true, true, true, false, false, false, false)
     private val levels = listOf(6, 3, 4, 5, 2, 7, 4, 3, 5)
 
-    // Tagesbild aus der echten Auswahl fuer heute (drei der fuenf Spiele); done = wie viele schon erledigt
+    // Lernpfad mit der echten Tagesauswahl; done = wie viele davon schon erledigt
     @Composable
-    private fun Home(done: Int = 0, scroll: Int = 0) = HomeScreen(
+    private fun Home(done: Int = 0) = HomeScreen(
         today = today,
-        items = Daily.pick(today, Games.ids).mapIndexed { i, id ->
-            val def = Games.of(id)!!
-            DailyItem(id, stringResource(def.name), def.icon, levels[Games.ids.indexOf(id)], i < done)
-        },
         games = Games.all.mapIndexed { i, def ->
             val pick = Daily.pick(today, Games.ids)
             val daily = def.id in pick
@@ -72,7 +65,6 @@ class ThinkrScreenshotTest {
         streak = if (done == 3) 5 else 4,
         week = if (done == 3) weekDone else week,
         haptics = null, onPlay = {}, onGames = {}, onSettings = {},
-        scroll = remember { ScrollState(scroll) },
     )
 
     @Test fun home() = shot("home") { Home() }
@@ -83,13 +75,6 @@ class ThinkrScreenshotTest {
     @Test fun home_partly() = shot("home_partly") { Home(done = 1) }
     @Test fun home_partly_land() = shot("home_partly_land", "+land") { Home(done = 2) }
     @Test fun home_done() = shot("home_done") { Home(done = 3) }
-
-    // Lernpfad: Startseite gescrollt (Pixel 7: 2,625 px je dp); mitte = Uebergang Hero -> Pfad, ende = letzte Stationen
-    @Test fun home_path() = shot("home_path") { Home(done = 1, scroll = 1700) }
-    @Test fun home_path_end() = shot("home_path_end") { Home(done = 1, scroll = Int.MAX_VALUE) }
-    @Test fun home_path_de() = shot("home_path_de", "+de") { Home(done = 2, scroll = 1700) }
-    @Test fun home_path_font200() = shot("home_path_font200", fontScale = 2f) { Home(done = 1, scroll = 2600) }
-    @Test fun home_path_land() = shot("home_path_land", "+land") { Home(done = 1, scroll = 900) }
 
     @Composable
     private fun GamesList() = GamesScreen(

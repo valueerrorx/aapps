@@ -23,7 +23,6 @@ import solutions.xapient.thinkr.domain.GameId
 import solutions.xapient.thinkr.domain.Play
 import solutions.xapient.thinkr.domain.RoundResult
 import solutions.xapient.thinkr.domain.Streak
-import solutions.xapient.thinkr.ui.DailyItem
 import solutions.xapient.thinkr.ui.GameItem
 import solutions.xapient.thinkr.ui.GamesScreen
 import solutions.xapient.thinkr.ui.HomeScreen
@@ -125,9 +124,6 @@ fun ThinkrApp(clock: () -> LocalDate = LocalDate::now) {
         when (shown) {
             Screen.HOME -> HomeScreen(
                 today = today,
-                items = daily.mapNotNull { id ->
-                    Games.of(id)?.let { DailyItem(id, stringResource(it.name), it.icon, journal.progress(id, relaxed).level, id in done) }
-                },
                 games = gameItems,
                 streak = Streak.count(journal.dailyDone, today),
                 week = Streak.week(journal.dailyDone, today),
