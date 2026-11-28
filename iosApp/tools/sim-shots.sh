@@ -2,6 +2,7 @@
 # Store-Screenshots im Simulator: App in festen Szenen starten (Debug-Build, -aappsScene) und abfotografieren.
 # sim-shots.sh <app.app> <bundleId> <ordner> <displayType> <Geraete-Regex> <BxH> <Szene>...
 # Ergebnis: <ordner>/<locale>/<displayType>/NN_<szene>.png (en-US und de-DE)
+# Umgebung: SHOT_ROTATE (Grad im Uhrzeigersinn), SHOT_WAIT (Sekunden bis zum ersten Foto, Standard 6)
 set -euo pipefail
 APP=$1 BUNDLE=$2 OUT=$3 TYPE=$4 DEVICE=$5 SIZE=$6
 shift 6
@@ -19,15 +20,42 @@ xcrun simctl bootstatus "$UDID" -b
 xcrun simctl status_bar "$UDID" override --time 9:41 --batteryState charged --batteryLevel 100 --wifiBars 3 --cellularBars 4 || true
 xcrun simctl install "$UDID" "$APP"
 
+# Bild hat Inhalt? (Debug-Build startet manchmal >6 s, dann zeigt das Foto nur den leeren Hintergrund)
+TOOLS=$(cd "$(dirname "$0")" && pwd)
+SMALL=$(mktemp -t shot).png
+has_content() {
+  sips -Z 320 "$1" --out "$SMALL" > /dev/null 2>&1 &&
+    python3 -I "$TOOLS/shot-content.py" "$SMALL" | awk 'END { exit !($1 > 0.005) }'
+}
+
+# Szene starten und fotografieren, sobald Inhalt da ist (+3 s fuer Animationen); bis zu 3 Starts
+shoot() {
+  local scene=$1 f=$2 try wait
+  for try in 1 2 3; do
+    xcrun simctl launch --terminate-running-process "$UDID" "$BUNDLE" -aappsScene "$scene" -AppleLanguages "($LANG_)" -AppleLocale "$CC" > /dev/null
+    sleep "${SHOT_WAIT:-6}"
+    for wait in 1 2 3 4 5 6 7 8 9 10; do
+      xcrun simctl io "$UDID" screenshot "$f" > /dev/null 2>&1
+      if has_content "$f"; then
+        sleep 3
+        xcrun simctl io "$UDID" screenshot "$f" > /dev/null 2>&1
+        if has_content "$f"; then return 0; fi
+      fi
+      sleep 2
+    done
+    echo "::warning::$TYPE $LOCALE $scene: noch leer, Start $try wiederholen"
+  done
+  echo "::error::$TYPE $LOCALE $scene bleibt leer"
+  exit 1
+}
+
 for spec in en-US:en:en_US de-DE:de:de_AT; do
   IFS=: read -r LOCALE LANG_ CC <<< "$spec"
   mkdir -p "$OUT/$LOCALE/$TYPE"
   n=1
   for scene in "$@"; do
-    xcrun simctl launch --terminate-running-process "$UDID" "$BUNDLE" -aappsScene "$scene" -AppleLanguages "($LANG_)" -AppleLocale "$CC" > /dev/null
-    sleep 6
     f="$OUT/$LOCALE/$TYPE/$(printf %02d "$n")_$(echo "$scene" | tr 'A-Z' 'a-z').png"
-    xcrun simctl io "$UDID" screenshot "$f" > /dev/null 2>&1
+    shoot "$scene" "$f"
     got="$(sips -g pixelWidth -g pixelHeight "$f" | awk '/pixelWidth/{w=$2}/pixelHeight/{h=$2}END{print w"x"h}')"
     if [ "$got" != "$SIZE" ]; then echo "::error::$f ist $got statt $SIZE"; exit 1; fi
     # Querformat-App: Simulator liefert das Bild hochkant, gerade drehen (SHOT_ROTATE = Grad im Uhrzeigersinn)
@@ -35,6 +63,7 @@ for spec in en-US:en:en_US de-DE:de:de_AT; do
     n=$((n + 1))
   done
 done
+rm -f "$SMALL"
 xcrun simctl terminate "$UDID" "$BUNDLE" || true
 xcrun simctl shutdown "$UDID" || true
 echo "$TYPE: $(( $# * 2 )) Bilder"
